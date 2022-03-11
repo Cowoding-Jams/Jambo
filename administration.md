@@ -52,8 +52,8 @@ Hosting ideas:
   sub commands
   - 1 <value(s)> --> <reply>
   - 2 <value(s)> --> <reply>
-- /proposal 
-  sub commands \
+- /proposal \
+  sub commands
   - add <title> <description> <sources> 
   - remove <title>
   - list --> returns a list of all proposals
