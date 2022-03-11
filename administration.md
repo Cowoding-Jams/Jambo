@@ -46,3 +46,14 @@ Hosting ideas:
 ### Channels 
 - creating result channels 
 - moving them to the results archive
+
+### Command examples/ideas (slash command)
+- /template
+  sub commands
+  - 1 <value(s)> --> <reply>
+  - 2 <value(s)> --> <reply>
+- /proposal 
+  sub commands
+  - add <title> <description> <sources> 
+  - remove <title>
+  - list --> returns a list of all proposals
