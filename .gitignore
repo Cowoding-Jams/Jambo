@@ -1,4 +1,20 @@
-# control
+# Coverage reports
+coverage
+
+# API keys and secrets
 .env
 
-# temporary files
+# Dependency directory
+node_modules
+
+# Editors
+.idea
+.vscode
+*.iml
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Ignore built ts files
+dist/**/*
