@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A bot for the CowodingJam server",
   "main": "dist/start.js",
+  "private": "true",
   "scripts": {
     "prettify": "eslint --fix",
     "build": "tsc",
