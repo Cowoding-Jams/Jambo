@@ -37,11 +37,11 @@ own [.env](.env) file. To run the bot, either do `npm run start` in the console.
 
 ### Development
 
-1. Install [Node.JS](https://nodejs.org/en/download/) and [Yarn](https://classic.yarnpkg.com/en/docs/install) if don't
+1. Install [Node.JS](https://nodejs.org/en/download/) and [npm](https://npmjs.com) if don't
    have them already
 1. Create an application at [Discord Developer Portal](https://discord.com/developers/applications)
 1. Create a bot for the application
 1. Copy the bot's token and enable the server members intent
 1. Fill in `.env` with the help of `.env.example` or use a file provided by another contributor
-1. Install dependencies with `yarn`
-1. Run with `yarn start`
+1. Install dependencies with `npm install`
+1. Run with `npm run start`
