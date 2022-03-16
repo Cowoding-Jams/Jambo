@@ -1,7 +1,7 @@
 name: Feature Request
 description: Suggest an idea for this project.
-title: 'Feat: '
-labels: [ 'enhancement' ]
+title: "Feat: "
+labels: ["enhancement"]
 body:
   - type: textarea
     id: problem
@@ -28,6 +28,6 @@ body:
     id: context
     attributes:
       label: Additional context
-      description: 'Add any other context about the problem here.'
+      description: "Add any other context about the problem here."
     validations:
       required: false
