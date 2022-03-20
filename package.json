@@ -1,54 +1,54 @@
 {
-  "name": "jam-bot",
-  "version": "1.0.0",
-  "description": "A bot for the CowodingJam server",
-  "main": "dist/start.js",
-  "private": "true",
-  "type": "module",
-  "scripts": {
-    "prettify": "eslint ./src/ --fix",
-    "build": "tsc -p tsconfig.json",
-    "run": "node --experimental-specifier-resolution=node dist/start.js",
-    "start": "npm run prettify && npm run build && npm run run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Wonderful-bot/Jam-Bot.git"
-  },
-  "contributors": [
-    "Commentator2.0 aka Leonie <kommentator2.9.0.1@gmail.com>",
-    "Lucy <lucy@blackdemon.codes>",
-    "Antti <antti@antti.codes>",
-    "WilsontheWolf (https://wilson.antti.codes)",
-    "Murph - StrangeGirlMurph",
-    "Amber - UselessAmber",
-    "Floschy - flloschy",
-    "Riley - Exonorid",
-    "Crispr - CrispiCas",
-    "Kryal - Da-Real-Kryall",
-    "Ian - IanToujou"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Wonderful-bot/Jam-Bot/issues"
-  },
-  "homepage": "https://github.com/Wonderful-bot/Jam-Bot#readme",
-  "devDependencies": {
-    "@digitak/tsc-esm": "^3.1.2",
-    "@typescript-eslint/eslint-plugin": "^5.15.0",
-    "@typescript-eslint/parser": "^5.15.0",
-    "eslint": "^8.11.0",
-    "nodemon": "^2.0.15",
-    "ts-node": "^10.7.0"
-  },
-  "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.6.0",
-    "typescript": "^4.6.2",
-    "winston": "^3.6.0"
-  }
+	"name": "jam-bot",
+	"version": "1.0.0",
+	"description": "A bot for the CowodingJam server",
+	"main": "dist/start.js",
+	"private": "true",
+	"type": "module",
+	"scripts": {
+		"prettify": "eslint ./src/ --fix && npx prettier -w .",
+		"build": "tsc -p tsconfig.json",
+		"run": "node --experimental-specifier-resolution=node dist/start.js",
+		"start": "npm run prettify && npm run build && npm run run"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Wonderful-bot/Jam-Bot.git"
+	},
+	"contributors": [
+		"Commentator2.0 aka Leonie <kommentator2.9.0.1@gmail.com>",
+		"Lucy <lucy@blackdemon.codes>",
+		"Antti <antti@antti.codes>",
+		"WilsontheWolf (https://wilson.antti.codes)",
+		"Murph - StrangeGirlMurph",
+		"Amber - UselessAmber",
+		"Floschy - flloschy",
+		"Riley - Exonorid",
+		"Crispr - CrispiCas",
+		"Kryal - Da-Real-Kryall",
+		"Ian - IanToujou"
+	],
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Wonderful-bot/Jam-Bot/issues"
+	},
+	"homepage": "https://github.com/Wonderful-bot/Jam-Bot#readme",
+	"devDependencies": {
+		"@digitak/tsc-esm": "^3.1.2",
+		"@typescript-eslint/eslint-plugin": "^5.15.0",
+		"@typescript-eslint/parser": "^5.15.0",
+		"eslint": "^8.11.0",
+		"nodemon": "^2.0.15",
+		"ts-node": "^10.7.0"
+	},
+	"dependencies": {
+		"@discordjs/builders": "^0.12.0",
+		"discord.js": "^13.6.0",
+		"dotenv": "^16.0.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.0.0",
+		"prettier": "^2.6.0",
+		"typescript": "^4.6.2",
+		"winston": "^3.6.0"
+	}
 }

@@ -1,5 +1,5 @@
-import {ButtonInteraction, CommandInteraction, Interaction} from "discord.js";
-import {ctx} from "../ctx";
+import { ButtonInteraction, CommandInteraction, Interaction } from "discord.js";
+import { ctx } from "../ctx";
 
 export default async function interactionCreate(interaction: Interaction) {
 	if (interaction.isCommand()) {
