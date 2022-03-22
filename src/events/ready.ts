@@ -43,5 +43,5 @@ function commandsEqual(c1: unknown, c2: unknown): boolean {
 	// ts ignore is required, as the .toJSON() functions return a type unknown.
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	return (c1.name === c2.name && c1.options === c2.options && c1.description === c2.description);
+	return c1.name === c2.name && c1.options === c2.options && c1.description === c2.description;
 }
