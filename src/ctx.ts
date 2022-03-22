@@ -11,8 +11,11 @@ class Ctx {
 	// Databases are gonna go here
 
 	constructor() {
-		this.defaultGuild = process.env.DEFAULT_GUILD || "";
-		this.logLevel = process.env.LOG_LEVEL || "error";
+		const { DEFAULT_GUILD, LOG_LEVEL } = process.env;
+		if (!DEFAULT_GUILD) throw new Error("Default guild not defined!");
+
+		this.defaultGuild = DEFAULT_GUILD;
+		this.logLevel = LOG_LEVEL || "error";
 	}
 
 	update(commands: Collection<string, Command>, buttons: Collection<string, ButtonHandler>) {

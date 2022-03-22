@@ -2,13 +2,13 @@ import { Command } from "../Command";
 import { CommandInteraction } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-class PingCommand implements Command {
-	async execute(interaction: CommandInteraction): Promise<void> {
-		await interaction.reply("Pong!");
+class PingCommand extends Command {
+	constructor() {
+		super("ping");
 	}
 
-	getName(): string {
-		return "ping";
+	async execute(interaction: CommandInteraction): Promise<void> {
+		await interaction.reply("Pong!");
 	}
 
 	register(): SlashCommandBuilder {

@@ -1,8 +1,12 @@
-import { Client, CommandInteraction } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { CommandInteraction } from "discord.js";
 
-export interface Command {
-	getName(): string;
-	execute(interaction: CommandInteraction): Promise<void>;
-	register(client: Client): SlashCommandBuilder;
+export abstract class Command {
+	protected constructor(name: string) {
+		this.name = name;
+	}
+
+	public readonly name: string;
+	abstract execute(interaction: CommandInteraction): Promise<void>;
+	abstract register(): SlashCommandBuilder;
 }

@@ -1,13 +1,13 @@
 import { ButtonHandler } from "../ButtonHandler";
 import { ButtonInteraction } from "discord.js";
 
-class ExampleButton implements ButtonHandler {
-	async execute(interaction: ButtonInteraction): Promise<void> {
-		await interaction.reply("example Message");
+class ExampleButton extends ButtonHandler {
+	constructor() {
+		super("exampleButton.myButton");
 	}
 
-	getName(): string {
-		return "exampleButton.myButton";
+	async execute(interaction: ButtonInteraction): Promise<void> {
+		await interaction.reply("example Message");
 	}
 }
 

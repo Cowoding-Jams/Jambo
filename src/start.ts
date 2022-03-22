@@ -7,10 +7,11 @@ import { logger } from "./logger";
 function shutdown(info: number | unknown | Error) {
 	logger.error("Shutting down unexpectedly...");
 	logger.error(`Shutting down with info: ${info instanceof Error ? info.message : info}`);
+	client.destroy();
 	//ctx.db.shutdown()
 }
 
-async function start() {
+async function start(): Promise<Client> {
 	logger.debug("Creating client...");
 	const client = new Client({ intents: [] });
 
@@ -20,6 +21,8 @@ async function start() {
 	await loadEvents(client);
 	logger.debug("Attempting login");
 	await client.login(process.env.TOKEN).catch((reason) => logger.error(`Login failed due to ${reason}`));
+	logger.info("Successfully started Application");
+	return client;
 }
 
 process.on("unhandledRejection", shutdown);
@@ -27,4 +30,4 @@ process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 process.on("uncaughtException", shutdown);
 
-start().then(() => logger.info("Successfully started Application"));
+const client = await start();

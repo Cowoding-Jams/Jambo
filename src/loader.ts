@@ -11,7 +11,7 @@ export async function loadCommands(): Promise<Collection<string, Command>> {
 			.filter((f) => f.endsWith(".js"))
 			.map(async (filename) => {
 				const cmd = (await import(`./commands/${filename}`)).default as Command;
-				loadedCommands.set(cmd.getName(), cmd);
+				loadedCommands.set(cmd.name, cmd);
 			})
 	);
 	return loadedCommands;
@@ -25,7 +25,7 @@ export async function loadButtonHandlers(): Promise<Collection<string, ButtonHan
 			.filter((f) => f.endsWith(".js"))
 			.map(async (filename) => {
 				const buttonHandler = (await import(`./buttons/${filename}`)).default as ButtonHandler;
-				loadedButtons.set(buttonHandler.getName(), buttonHandler);
+				loadedButtons.set(buttonHandler.name, buttonHandler);
 			})
 	);
 	return loadedButtons;
