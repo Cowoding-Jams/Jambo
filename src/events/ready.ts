@@ -39,8 +39,14 @@ function commandsEqual(c1: unknown, c2: unknown): boolean {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	return (
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		c1.name === c2.name &&
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		c1.description === c2.description &&
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		JSON.stringify(c1.options) === JSON.stringify(c2.options)
 	);
 }
