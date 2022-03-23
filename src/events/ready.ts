@@ -1,6 +1,6 @@
 import { Client, Collection } from "discord.js";
-import { logger } from "../logger";
 import { ctx } from "../ctx";
+import { logger } from "../logger";
 
 export default async function ready(client: Client) {
 	logger.info(`Successfully logged in as ${client.user?.username}.`);
@@ -29,10 +29,6 @@ async function publishCommands(client: Client) {
 			if (!existingCmd) {
 				return client.application?.commands.create(cmdJson, ctx.defaultGuild);
 			} else if (commandsEqual(existingCmd, cmdJson)) {
-				console.log(cmdJson);
-				console.log(existingCmd.toJSON());
-				logger.info(cmdJson);
-				logger.info(existingCmd.toJSON());
 				return client.application?.commands.edit(existingCmd.id, cmdJson, ctx.defaultGuild);
 			}
 		})
@@ -43,5 +39,9 @@ function commandsEqual(c1: unknown, c2: unknown): boolean {
 	// ts ignore is required, as the .toJSON() functions return a type unknown.
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	return c1.name === c2.name && c1.options === c2.options && c1.description === c2.description;
+	return (
+		c1.name === c2.name &&
+		c1.description === c2.description &&
+		JSON.stringify(c1.options) === JSON.stringify(c2.options)
+	);
 }

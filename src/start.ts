@@ -20,7 +20,7 @@ async function start(): Promise<Client> {
 	logger.debug("Loading events...");
 	await loadEvents(client);
 	logger.debug("Attempting login");
-	await client.login(process.env.TOKEN).catch((reason) => logger.error(`Login failed due to ${reason}`));
+	await client.login(process.env.TOKEN);
 	logger.info("Successfully started Application");
 	return client;
 }
