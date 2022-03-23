@@ -8,7 +8,7 @@ class PingCommand extends Command {
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
-		const botping: number = Math.round(interaction.client.ws.ping)
+		const botping: number = Math.round(interaction.client.ws.ping);
 		await interaction.reply(`Pong! (Bot ping: ${botping}ms)`);
 	}
 
