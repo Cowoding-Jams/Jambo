@@ -26,14 +26,17 @@ async function handleCommandInteractions(interaction: CommandInteraction) {
 		await command.execute(interaction);
 	} else {
 		logger.error(`error resolving command ${interaction.commandName}`);
-		await interaction.reply("internal error resolving command");
+		await interaction.reply("An error occurred. Please contact a developer");
 	}
 }
 
 async function handleButtonInteractions(interaction: ButtonInteraction) {
-	const clickedButton = await ctx.buttons.get(interaction.customId)?.execute(interaction);
-	if (!clickedButton) {
-		logger.error(`error resolving clicked button ${interaction.customId}`);
-		await interaction.reply("internal error resolving button");
+	const buttonName = interaction.customId.split(".")[0];
+	const clickedButton = await ctx.buttons.get(buttonName);
+	if (clickedButton) {
+		await clickedButton.execute(interaction);
+	} else {
+		logger.error(`error resolving clicked button ${buttonName}`);
+		await interaction.reply("An error occurred. Please contact a developer");
 	}
 }

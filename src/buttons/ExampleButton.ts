@@ -3,7 +3,7 @@ import { ButtonInteraction } from "discord.js";
 
 class ExampleButton extends ButtonHandler {
 	constructor() {
-		super("exampleButton.myButton");
+		super("exampleButton");
 	}
 
 	async execute(interaction: ButtonInteraction): Promise<void> {

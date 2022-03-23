@@ -9,7 +9,6 @@ class PingCommand extends Command {
 
 	async execute(interaction: CommandInteraction): Promise<void> {
 		await interaction.reply("Pong!");
-		throw Error("hello");
 	}
 
 	register(): SlashCommandBuilder {

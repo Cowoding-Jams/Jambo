@@ -1,4 +1,4 @@
-import { Client, Collection } from "discord.js";
+import { Client } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 
@@ -19,8 +19,7 @@ async function publishCommands(client: Client) {
 		logger.error("client has no application");
 		throw new Error("client must have an application");
 	}
-	const registeredCommands =
-		(await client.application.commands.fetch(undefined, { guildId: ctx.defaultGuild })) || new Collection();
+	const registeredCommands = await client.application.commands.fetch(undefined, { guildId: ctx.defaultGuild });
 
 	await Promise.all(
 		ctx.commands.map(async (cmd) => {
@@ -28,7 +27,7 @@ async function publishCommands(client: Client) {
 			const existingCmd = registeredCommands.find((c) => c.name === cmd.name);
 			if (!existingCmd) {
 				return client.application?.commands.create(cmdJson, ctx.defaultGuild);
-			} else if (commandsEqual(existingCmd, cmdJson)) {
+			} else if (!commandsEqual(existingCmd, cmdJson)) {
 				return client.application?.commands.edit(existingCmd.id, cmdJson, ctx.defaultGuild);
 			}
 		})
