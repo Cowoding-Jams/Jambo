@@ -1,4 +1,5 @@
-import { Client } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { ApplicationCommand, Client } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 
@@ -23,21 +24,21 @@ async function publishCommands(client: Client) {
 
 	await Promise.all(
 		ctx.commands.map(async (cmd) => {
-			const cmdJson = cmd.register().toJSON();
+			const cmdBuilder = cmd.register();
 			const existingCmd = registeredCommands.find((c) => c.name === cmd.name);
 			if (!existingCmd) {
-				return client.application?.commands.create(cmdJson, ctx.defaultGuild);
-			} else if (!commandsEqual(existingCmd, cmdJson)) {
-				return client.application?.commands.edit(existingCmd.id, cmdJson, ctx.defaultGuild);
+				return client.application?.commands.create(cmdBuilder.toJSON(), ctx.defaultGuild);
+			} else if (!commandsEqual(existingCmd, cmdBuilder)) {
+				return client.application?.commands.edit(existingCmd.id, cmdBuilder.toJSON(), ctx.defaultGuild);
 			}
 		})
 	);
+	for (const cmd of registeredCommands) {
+		if (!ctx.commands.has(cmd[1].name)) client.application?.commands.delete(cmd[1]);
+	}
 }
 
-function commandsEqual(c1: unknown, c2: unknown): boolean {
-	// ts ignore is required, as the .toJSON() functions return a type unknown.
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
+function commandsEqual(c1: ApplicationCommand, c2: SlashCommandBuilder): boolean {
 	return (
 		c1.name === c2.name &&
 		c1.description === c2.description &&
