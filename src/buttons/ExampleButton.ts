@@ -6,8 +6,8 @@ class ExampleButton extends ButtonHandler {
 		super("exampleButton");
 	}
 
-	async execute(interaction: ButtonInteraction): Promise<void> {
-		await interaction.reply("example Message");
+	async execute(interaction: ButtonInteraction, args: string[]): Promise<void> {
+		await interaction.reply(`you selected the following options: ${args}`);
 	}
 }
 

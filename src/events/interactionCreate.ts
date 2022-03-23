@@ -31,10 +31,11 @@ async function handleCommandInteractions(interaction: CommandInteraction) {
 }
 
 async function handleButtonInteractions(interaction: ButtonInteraction) {
-	const buttonName = interaction.customId.split(".")[0];
-	const clickedButton = await ctx.buttons.get(buttonName);
+	const args = interaction.customId.split(".");
+	const buttonName = args.shift() || "";
+	const clickedButton = ctx.buttons.get(buttonName);
 	if (clickedButton) {
-		await clickedButton.execute(interaction);
+		await clickedButton.execute(interaction, args);
 	} else {
 		logger.error(`error resolving clicked button ${buttonName}`);
 		await interaction.reply("An error occurred. Please contact a developer");

@@ -7,5 +7,5 @@ export abstract class ButtonHandler {
 		this.name = name;
 	}
 
-	abstract execute(interaction: ButtonInteraction): Promise<void>;
+	abstract execute(interaction: ButtonInteraction, args: string[]): Promise<void>;
 }
