@@ -18,6 +18,7 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
+!.gitkeep
 
 # log files
 logs
