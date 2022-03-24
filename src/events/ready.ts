@@ -8,14 +8,12 @@ export default async function ready(client: Client) {
 	logger.info(`Watching over ${client.guilds.cache.size} guilds.`);
 
 	logger.info("Publishing commands...");
-	await publishCommands(client)
-		.then(() => logger.info("Finished publishing commands."))
-		.catch((err) => logger.error(err));
+	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
 	logger.info("Setup successfully");
 }
 
-async function publishCommands(client: Client) {
+async function updateRegisteredCommands(client: Client) {
 	if (!client.application) {
 		logger.error("client has no application");
 		throw new Error("client must have an application");
@@ -27,14 +25,19 @@ async function publishCommands(client: Client) {
 			const cmdBuilder = cmd.register();
 			const existingCmd = registeredCommands.find((c) => c.name === cmd.name);
 			if (!existingCmd) {
+				logger.debug(`creating new command: ${cmdBuilder.name}`);
 				return client.application?.commands.create(cmdBuilder.toJSON(), ctx.defaultGuild);
 			} else if (!commandsEqual(existingCmd, cmdBuilder)) {
+				logger.debug(`updating command: ${cmdBuilder.name}`);
 				return client.application?.commands.edit(existingCmd.id, cmdBuilder.toJSON(), ctx.defaultGuild);
 			}
 		})
 	);
 	for (const cmd of registeredCommands) {
-		if (!ctx.commands.has(cmd[1].name)) client.application?.commands.delete(cmd[1]);
+		if (!ctx.commands.has(cmd[1].name)) {
+			logger.debug(`removing command: ${cmd[1]} with id ${cmd[0]}`);
+			client.application?.commands.delete(cmd[0], ctx.defaultGuild);
+		}
 	}
 }
 
