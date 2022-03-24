@@ -7,6 +7,9 @@ import { logger } from "./logger";
 function shutdown(info: number | unknown | Error) {
 	logger.error("Shutting down unexpectedly...");
 	logger.error(`Shutting down with info: ${info instanceof Error ? info.message : info}`);
+	if (info instanceof Error) {
+		logger.debug(info.stack);
+	}
 	client.destroy();
 	//ctx.db.shutdown()
 }
