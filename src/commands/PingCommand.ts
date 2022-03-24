@@ -8,11 +8,12 @@ class PingCommand extends Command {
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
-		await interaction.reply("Pong!");
+		const botping: number = Math.round(interaction.client.ws.ping);
+		await interaction.reply(`Pong! (Bot ping: ${botping}ms)`);
 	}
 
 	register(): SlashCommandBuilder {
-		return new SlashCommandBuilder().setName("ping").setDescription("Replies pong.");
+		return new SlashCommandBuilder().setName("ping").setDescription("Replies pong and the bots ping.");
 	}
 }
 
