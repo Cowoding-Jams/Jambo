@@ -12,7 +12,7 @@ class PingCommand extends Command {
 		await interaction.reply(`Pong! (Bot ping: ${botping}ms)`);
 	}
 
-	register(): SlashCommandBuilder {
+	register() {
 		return new SlashCommandBuilder().setName("ping").setDescription("Replies pong and the bots ping.");
 	}
 }
