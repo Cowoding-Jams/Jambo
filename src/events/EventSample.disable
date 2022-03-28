@@ -1,0 +1,5 @@
+// set the function name to the event name 
+// and edit the parameter to fit in its type and nameto the event
+export default async function interactionName(agrs: unknown) {
+    // do things if the event occures 
+}
