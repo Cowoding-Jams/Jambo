@@ -5,7 +5,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 // set the class name, the export at the bottom and the file name to your desired command name (same as the one in the register function)
 class CommandName extends Command {
     constructor() {
-        super("bunny"); // the name under which the bot internally stores your command
+        super("bunny"); // the name under which the bot internally stores your command (should be the same as the named set in `register`
     }
 
     async execute(interaction: CommandInteraction): Promise<void> {
