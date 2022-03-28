@@ -2,7 +2,7 @@ import { Command } from "../Command";
 import { CommandInteraction } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 
-// set the class name, the export at the bottom and the file name to your desired command name
+// set the class name, the export at the bottom and the file name to your desired command name (same as the one in the register function)
 class CommandName extends Command {
     constructor() {
         super("bunny"); // the name under which the bot internally stores your command
