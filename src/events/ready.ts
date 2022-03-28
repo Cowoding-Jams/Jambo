@@ -41,7 +41,10 @@ async function updateRegisteredCommands(client: Client) {
 	}
 }
 
-function commandsEqual(c1: ApplicationCommand, c2: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">): boolean {
+function commandsEqual(
+	c1: ApplicationCommand,
+	c2: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
+): boolean {
 	return (
 		c1.name === c2.name &&
 		c1.description === c2.description &&
