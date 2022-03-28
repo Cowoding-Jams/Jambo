@@ -8,5 +8,5 @@ export abstract class Command {
 
 	public readonly name: string;
 	abstract execute(interaction: CommandInteraction): Promise<void>;
-	abstract register(): SlashCommandBuilder;
+	abstract register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
 }
