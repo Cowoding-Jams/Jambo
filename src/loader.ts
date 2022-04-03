@@ -56,8 +56,8 @@ export async function loadAutocompleters(): Promise<Collection<string, Autocompl
 			.readdirSync("./dist/autocompleters")
 			.filter((f) => f.endsWith(".js"))
 			.map(async (filename) => {
-				const cmd = (await import(`./autocompleters/${filename}`)).default as Autocompleter;
-				loadedAutocompleters.set(cmd.name, cmd);
+				const autocompleter = (await import(`./autocompleters/${filename}`)).default as Autocompleter;
+				loadedAutocompleters.set(autocompleter.command, autocompleter);
 			})
 	);
 	return loadedAutocompleters;

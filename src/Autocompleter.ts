@@ -1,10 +1,10 @@
 import { AutocompleteInteraction } from "discord.js";
 
 export abstract class Autocompleter {
-	public readonly name: string;
+	public readonly command: string;
 
-	protected constructor(name: string) {
-		this.name = name;
+	protected constructor(command: string) {
+		this.command = command;
 	}
 
 	abstract execute(interaction: AutocompleteInteraction): Promise<void>;
