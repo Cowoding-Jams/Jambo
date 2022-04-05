@@ -1,5 +1,6 @@
 import { Client, Collection } from "discord.js";
 import { Command } from "./Command";
+import { Autocompleter } from "./Autocompleter";
 import * as fs from "fs";
 import { ButtonHandler } from "./ButtonHandler";
 import { logger } from "./logger";
@@ -45,4 +46,19 @@ export async function loadEvents(client: Client) {
 				client.on(filename.replace(".js", ""), fun);
 			})
 	);
+}
+
+export async function loadAutocompleters(): Promise<Collection<string, Autocompleter>> {
+	logger.debug("loading autocompleters...");
+	const loadedAutocompleters = new Collection<string, Autocompleter>();
+	await Promise.all(
+		fs
+			.readdirSync("./dist/autocompleters")
+			.filter((f) => f.endsWith(".js"))
+			.map(async (filename) => {
+				const autocompleter = (await import(`./autocompleters/${filename}`)).default as Autocompleter;
+				loadedAutocompleters.set(autocompleter.command, autocompleter);
+			})
+	);
+	return loadedAutocompleters;
 }
