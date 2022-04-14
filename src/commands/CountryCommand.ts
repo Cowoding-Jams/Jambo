@@ -3,10 +3,8 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 import { inlineCode, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { Country, countryChoices, getCountryWithCode } from "../util/countryUtil/dataManager";
 
-
 class CountryCommand extends Command {
-	choices: [name: string, value: string][]
-
+	choices: [name: string, value: string][];
 
 	constructor() {
 		super("country");
@@ -29,8 +27,8 @@ class CountryCommand extends Command {
                                  - Is ${!country.unMember ? "not" : ""} a member of the UN
                                  - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
                                  - Currencie(s): ${Object.values(country.currencies)
-									.map((v) => v.name)
-									.join(", ")}
+																		.map((v) => v.name)
+																		.join(", ")}
 								 - Language(s): ${Object.values(country.languages)}`,
 						},
 						{
@@ -95,11 +93,7 @@ class CountryCommand extends Command {
 					.setName("overview")
 					.setDescription("gives you an overview")
 					.addStringOption((option) =>
-						option
-							.setName("country")
-							.setDescription("name of the country")
-							.setRequired(true)
-							.setChoices(this.choices)
+						option.setName("country").setDescription("name of the country").setRequired(true).setChoices(this.choices)
 					)
 			)
 			.addSubcommandGroup((option) =>
@@ -111,11 +105,7 @@ class CountryCommand extends Command {
 							.setName("official-name")
 							.setDescription("get a countries official name")
 							.addStringOption((option) =>
-								option
-									.setName("country")
-									.setDescription("name of the country")
-									.setRequired(true)
-								//.setChoices(this.choices)
+								option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true)
 							)
 					)
 					.addSubcommand((option) =>
