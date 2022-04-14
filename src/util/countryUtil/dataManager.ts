@@ -32,9 +32,9 @@ export const countryChoices: [name: string, value: string][] = countryNameAndCod
 
 export function init() {
 	/* if (fs.existsSync("./countryData.json")) {
-            this.updateDataFromSource();
-        } else {
-        } */
+			this.updateDataFromSource();
+		} else {
+		} */
 }
 
 export async function updateDataFromSource() {

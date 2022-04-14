@@ -12,8 +12,21 @@ class CountryCommand extends Command {
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
-		const countryCode: string = interaction.options.getString("country") || "UY";
-		const country: Country = getCountryWithCode(countryCode);
+		const countryCode: string | null = interaction.options.getString("country");
+		let country: Country = getCountryWithCode("BT"); // default country
+
+		if (countryCode) {
+			country = getCountryWithCode(countryCode);
+
+			if (country == undefined) {
+				interaction.reply({
+					content: "I've never heard of that country... I think you mispelled that.",
+					ephemeral: true,
+				});
+				return;
+			}
+		}
+
 		switch (interaction.options.getSubcommand()) {
 			case "overview": {
 				const embed = new MessageEmbed()
@@ -93,7 +106,7 @@ class CountryCommand extends Command {
 					.setName("overview")
 					.setDescription("gives you an overview")
 					.addStringOption((option) =>
-						option.setName("country").setDescription("name of the country").setRequired(true).setChoices(this.choices)
+						option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true)
 					)
 			)
 			.addSubcommandGroup((option) =>
@@ -113,11 +126,7 @@ class CountryCommand extends Command {
 							.setName("tld")
 							.setDescription("get a countries top level domain")
 							.addStringOption((option) =>
-								option
-									.setName("country")
-									.setDescription("name of the country")
-									.setRequired(true)
-									.setChoices(this.choices)
+								option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true)
 							)
 					)
 					.addSubcommand((option) =>
@@ -125,11 +134,7 @@ class CountryCommand extends Command {
 							.setName("population")
 							.setDescription("get a countries population")
 							.addStringOption((option) =>
-								option
-									.setName("country")
-									.setDescription("name of the country")
-									.setRequired(true)
-									.setChoices(this.choices)
+								option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true)
 							)
 					)
 			);
