@@ -11,7 +11,7 @@ export async function loadCommands(): Promise<Collection<string, Command>> {
 	await Promise.all(
 		fs
 			.readdirSync("./dist/commands")
-			.filter((f) => f.endsWith(".js") && !f.startsWith("sample"))
+			.filter(isActive)
 			.map(async (filename) => {
 				const cmd = (await import(`./commands/${filename}`)).default as Command;
 				loadedCommands.set(cmd.name, cmd);
@@ -26,7 +26,7 @@ export async function loadButtonHandlers(): Promise<Collection<string, ButtonHan
 	await Promise.all(
 		fs
 			.readdirSync("./dist/buttons")
-			.filter((f) => f.endsWith(".js") && !f.startsWith("sample"))
+			.filter(isActive)
 			.map(async (filename) => {
 				const buttonHandler = (await import(`./buttons/${filename}`)).default as ButtonHandler;
 				loadedButtons.set(buttonHandler.name, buttonHandler);
@@ -40,7 +40,7 @@ export async function loadEvents(client: Client) {
 	await Promise.all(
 		fs
 			.readdirSync("./dist/events")
-			.filter((f) => f.endsWith(".js") && !f.startsWith("sample"))
+			.filter(isActive)
 			.map(async (filename) => {
 				const { default: fun } = await import(`./events/${filename}`);
 				client.on(filename.replace(".js", ""), fun);
@@ -54,11 +54,15 @@ export async function loadAutocompleters(): Promise<Collection<string, Autocompl
 	await Promise.all(
 		fs
 			.readdirSync("./dist/autocompleters")
-			.filter((f) => f.endsWith(".js") && !f.startsWith("sample"))
+			.filter(isActive)
 			.map(async (filename) => {
 				const autocompleter = (await import(`./autocompleters/${filename}`)).default as Autocompleter;
 				loadedAutocompleters.set(autocompleter.command, autocompleter);
 			})
 	);
 	return loadedAutocompleters;
+}
+
+function isActive(f: String): boolean {
+	return f.endsWith(".js") && !f.startsWith("sample")
 }
