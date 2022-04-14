@@ -1,49 +1,21 @@
 import { Command } from "../Command";
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import { inlineCode, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
-import fetch from "node-fetch";
-import { logger } from "../logger";
-import fs from "fs";
-import data from "../util/countryData.json";
+import { Country, countryChoices, getCountryWithCode } from "../util/countryUtil/dataManager";
 
-export interface Country {
-	name: { common: string; official: string };
-	cca2: string;
-	tld: string[];
-	population: number;
-	capital: string[];
-	currencies: object;
-	languages: object;
-	unMember: boolean;
-	latlng: number[];
-	region: string;
-	subregion: string;
-	area: number;
-	maps: { googleMaps: string; openStreetMaps: string };
-	timezones: string[];
-	flags: { png: string; svg: string };
-}
 
-export class CountryCommand extends Command {
-	countryData: Country[] = [];
-	countryWithCode: [name: string, value: string][];
+class CountryCommand extends Command {
+	choices: [name: string, value: string][]
+
 
 	constructor() {
 		super("country");
-		this.countryData = data as Country[];
-		this.countryData = this.sortedByPopulation();
-
-		this.countryWithCode = this.choiceName();
-
-		/* if (fs.existsSync("../util/countryData.json")) {
-			this.updateDataFromSource();
-		} else {
-		} */
+		this.choices = countryChoices.slice(0, 25);
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
 		const countryCode: string = interaction.options.getString("country") || "UY";
-		const country: Country = this.getCountryWithCode(countryCode);
+		const country: Country = getCountryWithCode(countryCode);
 		switch (interaction.options.getSubcommand()) {
 			case "overview": {
 				const embed = new MessageEmbed()
@@ -127,7 +99,7 @@ export class CountryCommand extends Command {
 							.setName("country")
 							.setDescription("name of the country")
 							.setRequired(true)
-							.setChoices(this.choiceName())
+							.setChoices(this.choices)
 					)
 			)
 			.addSubcommandGroup((option) =>
@@ -143,7 +115,7 @@ export class CountryCommand extends Command {
 									.setName("country")
 									.setDescription("name of the country")
 									.setRequired(true)
-								//.setChoices(this.choiceName())
+								//.setChoices(this.choices)
 							)
 					)
 					.addSubcommand((option) =>
@@ -155,7 +127,7 @@ export class CountryCommand extends Command {
 									.setName("country")
 									.setDescription("name of the country")
 									.setRequired(true)
-									.setChoices(this.choiceName())
+									.setChoices(this.choices)
 							)
 					)
 					.addSubcommand((option) =>
@@ -167,37 +139,10 @@ export class CountryCommand extends Command {
 									.setName("country")
 									.setDescription("name of the country")
 									.setRequired(true)
-									.setChoices(this.choiceName())
+									.setChoices(this.choices)
 							)
 					)
 			);
-	}
-
-	async updateDataFromSource() {
-		const url = "https://restcountries.com/v3.1/all";
-
-		this.countryData = await fetch(url)
-			.then((response) => response.json())
-			.catch((err) => logger.debug(err))
-			.then((res) => {
-				return res as Country[];
-			});
-
-		fs.writeFile("./src/util/countryData.json", JSON.stringify(this.countryData), (err) => {
-			if (err) throw err;
-		});
-	}
-
-	sortedByPopulation(): Country[] {
-		return this.countryData.sort((a, b) => b.population - a.population);
-	}
-
-	choiceName(): [name: string, value: string][] {
-		return this.countryData.map((v) => [v.name.common, v.cca2]).slice(0, 25) as [name: string, value: string][];
-	}
-
-	getCountryWithCode(code: string): Country {
-		return this.countryData.find((v) => v.cca2 === code) as Country;
 	}
 }
 
