@@ -10,7 +10,11 @@ class CountryAutocompleter extends Autocompleter {
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
 		// for example return all options which start with the user input
 		await interaction.respond(
-			countryNameAndCode.filter((c) => c.name.startsWith(interaction.options.getFocused() as string)).slice(0, 25)
+			countryNameAndCode
+				.filter((c) =>
+					c.name.toLowerCase().startsWith((interaction.options.getFocused() as string).toLocaleLowerCase())
+				)
+				.slice(0, 25)
 		);
 	}
 }

@@ -20,7 +20,7 @@ class CountryCommand extends Command {
 
 			if (country == undefined) {
 				interaction.reply({
-					content: "I've never heard of that country... I think you mispelled that.",
+					content: "I've never heard of that country... Next time pick one from the list, okay?",
 					ephemeral: true,
 				});
 				return;
@@ -42,7 +42,7 @@ class CountryCommand extends Command {
                                  - Currencie(s): ${Object.values(country.currencies)
 																		.map((v) => v.name)
 																		.join(", ")}
-								 - Language(s): ${Object.values(country.languages)}`,
+								 - Language(s): ${Object.values(country.languages).join(", ")}`,
 						},
 						{
 							name: "Geographics",
@@ -100,19 +100,19 @@ class CountryCommand extends Command {
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
 			.setName("country")
-			.setDescription("lets you access country specific data")
+			.setDescription("accessing country data")
 			.addSubcommand((option) =>
 				option
 					.setName("overview")
-					.setDescription("gives you an overview")
+					.setDescription("important infos")
 					.addStringOption((option) =>
 						option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true)
 					)
 			)
 			.addSubcommandGroup((option) =>
 				option
-					.setName("details")
-					.setDescription("gives you a specific info about a country")
+					.setName("specific")
+					.setDescription("specific infos")
 					.addSubcommand((option) =>
 						option
 							.setName("official-name")
@@ -137,6 +137,9 @@ class CountryCommand extends Command {
 								option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true)
 							)
 					)
+			)
+			.addSubcommand((option) =>
+				option.setName("update-data").setDescription("updates the data from its online source")
 			);
 	}
 }
