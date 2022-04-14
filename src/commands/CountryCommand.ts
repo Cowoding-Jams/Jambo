@@ -13,8 +13,11 @@ interface Country {
 	population: number;
 	capital: string[];
 	currencies: object;
+	languages: object;
 	unMember: boolean;
 	latlng: number[];
+	region: string;
+	subregion: string;
 	area: number;
 	maps: { googleMaps: string; openStreetMaps: string };
 	timezones: string[];
@@ -25,14 +28,14 @@ class CountryCommand extends Command {
 	countryData: Country[] = [];
 
 	constructor() {
-		super("country-info");
+		super("country");
 		this.countryData = data as Country[];
 		this.countryData = this.sortedByPopulation();
 
 		/* if (fs.existsSync("../util/countryData.json")) {
-            this.updateDataFromSource();
-        } else {
-        } */
+			this.updateDataFromSource();
+		} else {
+		} */
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
@@ -52,12 +55,16 @@ class CountryCommand extends Command {
                                  - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
                                  - Currencie(s): ${Object.values(country.currencies)
 																		.map((v) => v.name)
-																		.join(", ")}`,
+																		.join(", ")}
+								 - Language(s): ${Object.values(country.languages)}`,
 						},
 						{
 							name: "Geographics",
 							value: `- Capital: ${country.capital.join(", ")}
-                                 - Coordinates: ${country.latlng[0]}° N/S, ${country.latlng[1]}° E/W
+								 - Region: ${country.region}, Subregion: ${country.subregion}
+                                 - Coordinates: ${Math.round(country.latlng[0])}° N/S, ${Math.round(
+								country.latlng[1]
+							)}° E/W
                                  - Timezone(s): ${country.timezones.join(", ")}
                                  - Area: ${country.area.toLocaleString("de-DE")} km²
                                  - [Google Maps](${country.maps.googleMaps})`,
@@ -106,7 +113,7 @@ class CountryCommand extends Command {
 		| SlashCommandSubcommandsOnlyBuilder
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
-			.setName("country-info")
+			.setName("country")
 			.setDescription("lets you access country specific data")
 			.addSubcommand((option) =>
 				option
@@ -123,7 +130,7 @@ class CountryCommand extends Command {
 			.addSubcommandGroup((option) =>
 				option
 					.setName("details")
-					.setDescription("gives you specific infos for a country")
+					.setDescription("gives you a specific info about a country")
 					.addSubcommand((option) =>
 						option
 							.setName("official-name")
