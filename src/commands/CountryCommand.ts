@@ -6,7 +6,7 @@ import { logger } from "../logger";
 import fs from "fs";
 import data from "../util/countryData.json";
 
-interface Country {
+export interface Country {
 	name: { common: string; official: string };
 	cca2: string;
 	tld: string[];
@@ -24,13 +24,16 @@ interface Country {
 	flags: { png: string; svg: string };
 }
 
-class CountryCommand extends Command {
+export class CountryCommand extends Command {
 	countryData: Country[] = [];
+	countryWithCode: [name: string, value: string][];
 
 	constructor() {
 		super("country");
 		this.countryData = data as Country[];
 		this.countryData = this.sortedByPopulation();
+
+		this.countryWithCode = this.choiceName();
 
 		/* if (fs.existsSync("../util/countryData.json")) {
 			this.updateDataFromSource();
@@ -54,8 +57,8 @@ class CountryCommand extends Command {
                                  - Is ${!country.unMember ? "not" : ""} a member of the UN
                                  - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
                                  - Currencie(s): ${Object.values(country.currencies)
-																		.map((v) => v.name)
-																		.join(", ")}
+									.map((v) => v.name)
+									.join(", ")}
 								 - Language(s): ${Object.values(country.languages)}`,
 						},
 						{
@@ -140,7 +143,7 @@ class CountryCommand extends Command {
 									.setName("country")
 									.setDescription("name of the country")
 									.setRequired(true)
-									.setChoices(this.choiceName())
+								//.setChoices(this.choiceName())
 							)
 					)
 					.addSubcommand((option) =>
