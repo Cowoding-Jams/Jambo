@@ -1,4 +1,4 @@
-import { ButtonInteraction, CommandInteraction, Interaction } from "discord.js";
+import { AutocompleteInteraction, ButtonInteraction, CommandInteraction, Interaction } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 
@@ -8,6 +8,8 @@ export default async function interactionCreate(interaction: Interaction) {
 			await handleCommandInteractions(interaction);
 		} else if (interaction.isButton()) {
 			await handleButtonInteractions(interaction);
+		} else if (interaction.isAutocomplete()) {
+			await handleAutocompleteInteraction(interaction);
 		}
 	} catch (err: unknown) {
 		if (err instanceof Error) {
@@ -39,5 +41,15 @@ async function handleButtonInteractions(interaction: ButtonInteraction) {
 	} else {
 		logger.error(`error resolving clicked button ${buttonName}`);
 		await interaction.reply("An error occurred. Please contact a developer");
+	}
+}
+
+async function handleAutocompleteInteraction(interaction: AutocompleteInteraction) {
+	const autocompleter = ctx.autocompleters.get(interaction.commandName);
+	if (autocompleter) {
+		await autocompleter.execute(interaction);
+	} else {
+		logger.error(`error resolving autocompleter for ${interaction.commandName}`);
+		await interaction.respond([]);
 	}
 }

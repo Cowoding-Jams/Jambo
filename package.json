@@ -1,5 +1,5 @@
 {
-	"name": "jam-bot",
+	"name": "jambo",
 	"version": "1.0.0",
 	"description": "A bot to manage a whole game jam server from a fully functional poll-system to managing color roles.",
 	"main": "dist/start.js",

@@ -1,8 +1,8 @@
-# Jam Bot
+# Jambo
 
 This bot is made to autonomously manage a discord server with regular game jams/hackathons.  
 It will collect the proposals for the jam, create polls for everyone to participate (with reactions directly on the server) and will give the server some more glamour with color roles for example.
-You can read about the full set of features in our wiki [here](https://github.com/Wonderful-bot/Jam-Bot/wiki#overview-of-all-the-features).
+You can read about the full set of features in our lovely wiki [here](https://github.com/Cowoding-Jams/Jambo/wiki).
 
 ## The team :)
 
@@ -13,7 +13,7 @@ Have fun coding!
 
 ## Usage
 
-To see how to use this bot on your own visit our [wiki](https://github.com/Wonderful-bot/Jam-Bot/wiki#usage).
+To see how to use this bot on your own visit our [wiki](https://github.com/Cowoding-Jams/Jambo/wiki/Usage).
 
 ## License
 
