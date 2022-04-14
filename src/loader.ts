@@ -63,6 +63,6 @@ export async function loadAutocompleters(): Promise<Collection<string, Autocompl
 	return loadedAutocompleters;
 }
 
-function isActive(f: String): boolean {
-	return f.endsWith(".js") && !f.startsWith("sample")
+function isActive(f: string): boolean {
+	return f.endsWith(".js") && !f.startsWith("sample");
 }
