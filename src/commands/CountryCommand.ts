@@ -16,78 +16,92 @@ class CountryCommand extends Command {
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
-		const countryCode: string | null = interaction.options.getString("country");
-		let country: Country = getCountryWithCode("BT"); // default country
-
 		formatNumber = (n: number) => {
 			return n.toLocaleString(interaction.locale);
 		};
 
-		if (countryCode) {
-			country = getCountryWithCode(countryCode);
-
-			if (country == undefined) {
-				interaction.reply({
-					content: "I've never heard of that country... Next time pick one from the list, okay?",
-					ephemeral: true,
-				});
-				return;
-			}
-		}
-
 		switch (interaction.options.getSubcommand()) {
-			case "overview": {
-				interaction.reply({ embeds: [getOverviewEmbed(country)] });
-				break;
-			}
 			case "update-data": {
 				updateDataFromSource();
 				interaction.reply({ content: "On it!", ephemeral: false });
 				break;
 			}
-			case "list": {
-				let list: [string, number][];
+			case "overview": {
+				const country: Country | undefined = getCountryWithCode(interaction.options.getString("country") ?? "BT");
+				if (country == undefined) {
+					countryUndefinedReply(interaction);
+					break;
+				}
+				interaction.reply({ embeds: [getOverviewEmbed(country)] });
+
+				break;
+			}
+			case "specific": {
+				const country: Country | undefined = getCountryWithCode(interaction.options.getString("country") ?? "BT");
+				const info: string = interaction.options.getString("info") ?? "population";
+				if (country == undefined) {
+					countryUndefinedReply(interaction);
+					break;
+				}
+
+				const name = country.name.common;
+				const replies: { [id: string]: string | object } = {
+					name: `The official name of ${name} is: ${country.name.official}`,
+					capital: `The capital of ${name}`,
+					flag: { content: `${name}'s flag:`, files: [country.flags.png] },
+					population: `The population size of ${name} is: ${formatNumber(country.population)}`,
+					area: `The area of ${name} is: ${formatNumber(country.area)} km²`,
+				};
+
+				interaction.reply(replies[info]);
+				break;
+			}
+			case "sort": {
 				const criteria = interaction.options.getString("criteria") ?? "population";
 				const order = interaction.options.getString("order") ?? "ascending";
 				const scale = interaction.options.getInteger("scale") ?? 10;
 				const includeData = interaction.options.getBoolean("include-data") ?? true;
 
-				if (criteria === "population") {
-					list = countryData.sort((a, b) => a.population - b.population).map((c) => [c.name.common, c.population]);
-				} else if (criteria == "area") {
-					list = countryData.sort((a, b) => a.area - b.area).map((c) => [c.name.common, c.area]);
-				} else if (criteria == "latitude (north -> south)") {
-					list = countryData.sort((a, b) => b.latlng[0] - a.latlng[0]).map((c) => [c.name.common, c.latlng[0]]);
-				} else {
-					// longitude (east -> west)
-					list = countryData.sort((a, b) => b.latlng[1] - a.latlng[1]).map((c) => [c.name.common, c.latlng[1]]);
-				}
+				const sorting: { [id: string]: (c: Country[]) => [string, number][] } = {
+					population: (data: Country[]) =>
+						data.sort((a, b) => a.population - b.population).map((c) => [c.name.common, c.population]),
+					area: (data: Country[]) => data.sort((a, b) => a.area - b.area).map((c) => [c.name.common, c.area]),
+					latitude: (data: Country[]) =>
+						data.sort((a, b) => b.latlng[0] - a.latlng[0]).map((c) => [c.name.common, c.latlng[0]]),
+					longitude: (data: Country[]) =>
+						data.sort((a, b) => b.latlng[1] - a.latlng[1]).map((c) => [c.name.common, c.latlng[1]]),
+				};
 
+				const list: [string, number][] = sorting[criteria](countryData);
 				if (order === "descending") {
 					list.reverse();
 				}
-
-				interaction.reply({ embeds: [getListEmbed(list.slice(0, scale), criteria, order, includeData)] });
+				interaction.reply({ embeds: [getSortEmbed(list.slice(0, scale), criteria, order, includeData)] });
 				break;
 			}
-			case "official-name": {
-				interaction.reply({
-					content: `The official name of ${country.name.common} is: ${country.name.official}`,
-				});
-				break;
-			}
-			case "tld": {
-				interaction.reply({
-					content: `The top level domain of ${country.name.common} is: ${inlineCode(country.tld.join(" / "))}`,
-				});
-				break;
-			}
-			case "population": {
-				interaction.reply({
-					content: `The population of ${country.name.common} is: ${formatNumber(country.population)}`,
-				});
-				break;
-			}
+			/* case "group": {
+					const criteria = interaction.options.getString("criteria") ?? "hemisphere";
+	
+					const embed: { [id: string]: MessageEmbed } = {
+						"un": getGroupEmbed(
+							[countryData.filter((c) => c.unMember), countryData.filter((c) => !c.unMember)],
+							["UN-Member", "Not a UN-Member"],
+							"UN-Membership"
+						),
+						"hemisphere": getGroupEmbed(
+							[countryData.filter((c) => (c.latlng[0] > 0)), countryData.filter((c) => !(c.latlng[0] > 0))],
+							["Northern Hemisphere", "Southern Hemisphere"],
+							"hemisphere"
+						)
+					}
+	
+					interaction.reply({ embeds: [embed[criteria]] });
+					break;
+				}
+				case "filter": {
+	
+					break;
+				} */
 			default: {
 				interaction.reply("Sorry, I don't know what to do... qwq");
 				break;
@@ -103,31 +117,48 @@ class CountryCommand extends Command {
 			.setName("country")
 			.setDescription("accessing country data")
 			.addSubcommand((option) =>
-				option.setName("overview").setDescription("to get an overview over a country").addStringOption(getCountryOption)
-			)
-			.addSubcommand((option) =>
 				option.setName("update-data").setDescription("updates the data from its online source")
 			)
 			.addSubcommand((option) =>
+				option.setName("overview").setDescription("lists all the data from a country").addStringOption(getCountryOption)
+			)
+			.addSubcommand((option) =>
 				option
-					.setName("list")
-					.setDescription("lets you list countries with queries")
+					.setName("specific")
+					.setDescription("gives you a specific info about a country")
+					.addStringOption((option) =>
+						option
+							.setName("info")
+							.setDescription("the piece of data you want")
+							.addChoice("official-name", "name")
+							.addChoice("capital", "capital")
+							.addChoice("flag", "flag")
+							.addChoice("population size", "population")
+							.addChoice("area", "area")
+							.setRequired(true)
+					)
+					.addStringOption(getCountryOption)
+			)
+			.addSubcommand((option) =>
+				option
+					.setName("sort")
+					.setDescription("lets you sort the countries with queries")
 					.addStringOption((option) =>
 						option
 							.setName("criteria")
 							.setDescription("criteria to sort by")
 							.addChoice("population", "population")
 							.addChoice("area", "area")
-							.addChoice("latitude (north -> south)", "latitude (north -> south)")
-							.addChoice("longitude (east -> west)", "longitude (east -> west)")
+							.addChoice("latitude (north -> south)", "latitude")
+							.addChoice("longitude (east -> west)", "longitude")
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
 						option
 							.setName("order")
 							.setDescription("determines the order")
-							.addChoice("descending", "descending")
 							.addChoice("ascending", "ascending")
+							.addChoice("descending", "descending")
 							.setRequired(true)
 					)
 					.addIntegerOption((option) =>
@@ -144,24 +175,35 @@ class CountryCommand extends Command {
 					.addBooleanOption((option) =>
 						option.setName("include-data").setDescription("set whether or not the list includes the data")
 					)
-			)
-			.addSubcommandGroup((option) =>
-				option
-					.setName("specific")
-					.setDescription("to get more specific infos")
-					.addSubcommand((option) =>
-						option
-							.setName("official-name")
-							.setDescription("get a countries official name")
-							.addStringOption(getCountryOption)
-					)
-					.addSubcommand((option) =>
-						option.setName("tld").setDescription("get a countries top level domain").addStringOption(getCountryOption)
-					)
-					.addSubcommand((option) =>
-						option.setName("population").setDescription("get a countries population").addStringOption(getCountryOption)
-					)
 			);
+		/* .addSubcommand((option) =>
+				option
+					.setName("group")
+					.setDescription("lets you group the countries with queries")
+					.addStringOption((option) =>
+						option
+							.setName("criteria")
+							.setDescription("criteria to sort by")
+							.addChoice("un-membership", "un")
+							.addChoice("hemisphere", "hemisphere")
+							.setRequired(true)
+					)
+			)
+			.addSubcommand((option) =>
+				option
+					.setName("filter")
+					.setDescription("lets you filter the countries with queries")
+					.addStringOption((option) =>
+						option
+							.setName("criteria")
+							.setDescription("criteria to filter by")
+							.addChoice("population", "population")
+							.addChoice("area", "area")
+							.addChoice("latitude (north -> south)", "latitude (north -> south)")
+							.addChoice("longitude (east -> west)", "longitude (east -> west)")
+							.setRequired(true)
+					)
+			) */
 	}
 }
 
@@ -175,7 +217,7 @@ function getOverviewEmbed(country: Country): MessageEmbed {
 		.addFields(
 			{
 				name: "Demographics",
-				value: `- Population size: ${formatNumber(country.population)}
+				value: `- Population size: ${formatNumber(country.population)} (${countryData.indexOf(country) + 1}.)
 				 - Is ${!country.unMember ? "not" : ""} a member of the UN
 				 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
 				 - Currencie(s): ${Object.values(country.currencies)
@@ -202,7 +244,7 @@ function getOverviewEmbed(country: Country): MessageEmbed {
 		.setTimestamp();
 }
 
-function getListEmbed(
+function getSortEmbed(
 	countries: [string, number][],
 	criteria: string,
 	order: string,
@@ -232,6 +274,31 @@ function getListEmbed(
 		})
 		.setColor("#F0A5AC")
 		.setTimestamp();
+}
+
+/* function getGroupEmbed(
+	grouped: Country[][],
+	titles: string[],
+	criteria: string,
+): MessageEmbed {
+	let embed: MessageEmbed = new MessageEmbed()
+		.setTitle(`Countries grouped by ${criteria}`)
+		.setAuthor({
+			name: "Made by me, Jambo :)",
+			iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
+			url: "https://github.com/Cowoding-Jams/Jambo",
+		})
+		.setColor("#F0A5AC")
+		.setTimestamp();
+
+	return embed;
+} */
+
+function countryUndefinedReply(interaction: CommandInteraction) {
+	interaction.reply({
+		content: "I've never heard of that country... Next time pick one from the list, okay?",
+		ephemeral: true,
+	});
 }
 
 function getCountryOption(option: SlashCommandStringOption) {

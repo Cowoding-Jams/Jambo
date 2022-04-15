@@ -49,7 +49,7 @@ export async function updateDataFromSource() {
 	logger.debug("Updated the country data");
 }
 
-export function getCountryWithCode(code: string): Country {
+export function getCountryWithCode(code: string): Country | undefined {
 	return countryData.find((v) => v.cca2 === code) as Country;
 }
 
