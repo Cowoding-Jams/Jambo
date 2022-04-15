@@ -6,7 +6,8 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
-import { Country, getCountryWithCode } from "../util/countryUtil/dataManager";
+import { Country, getCountryWithCode, updateDataFromSource } from "../util/countryUtil/dataManager";
+import { logger } from "../logger";
 
 class CountryCommand extends Command {
 	constructor() {
@@ -28,11 +29,17 @@ class CountryCommand extends Command {
 				return;
 			}
 		}
+		logger.debug(interaction.options.getSubcommand());
 		switch (interaction.options.getSubcommand()) {
 			case "overview": {
 				interaction.reply({
 					embeds: [getOverviewEmbed(country, interaction.locale)],
 				});
+				break;
+			}
+			case "update": {
+				updateDataFromSource();
+				interaction.reply({ content: "On it!", ephemeral: true })
 				break;
 			}
 			case "official-name": {
@@ -49,7 +56,7 @@ class CountryCommand extends Command {
 			}
 			case "population": {
 				interaction.reply({
-					content: `The population of ${country.name.common} is: ${country.population.toLocaleString("de-DE")}`,
+					content: `The population of ${country.name.common} is: ${formatNumber(country.population, interaction.locale)}`,
 				});
 				break;
 			}
@@ -69,6 +76,9 @@ class CountryCommand extends Command {
 			.setDescription("accessing country data")
 			.addSubcommand((option) =>
 				option.setName("overview").setDescription("important infos").addStringOption(getCountryOption)
+			)
+			.addSubcommand((option) =>
+				option.setName("update").setDescription("updates the data")
 			)
 			.addSubcommandGroup((option) =>
 				option
@@ -103,7 +113,7 @@ function getOverviewEmbed(country: Country, numberFormat: string): MessageEmbed 
 		.addFields(
 			{
 				name: "Demographics",
-				value: `- Population size: ${country.population.toLocaleString(numberFormat)}
+				value: `- Population size: ${formatNumber(country.population, numberFormat)}
 				 - Is ${!country.unMember ? "not" : ""} a member of the UN
 				 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
 				 - Currencie(s): ${Object.values(country.currencies)
@@ -117,7 +127,7 @@ function getOverviewEmbed(country: Country, numberFormat: string): MessageEmbed 
 				 - Region: ${country.region}, Subregion: ${country.subregion}
 				 - Coordinates: ${Math.round(country.latlng[0])}° N/S, ${Math.round(country.latlng[1])}° E/W
 				 - Timezone(s): ${country.timezones.join(", ")}
-				 - Area: ${country.area.toLocaleString(numberFormat)} km²
+				 - Area: ${formatNumber(country.area, numberFormat)} km²
 				 - [Google Maps](${country.maps.googleMaps})`,
 			}
 		)
@@ -128,6 +138,10 @@ function getOverviewEmbed(country: Country, numberFormat: string): MessageEmbed 
 		})
 		.setColor("#F0A5AC")
 		.setTimestamp();
+}
+
+function formatNumber(n: number, format: string): string {
+	return n.toLocaleString(format);
 }
 
 function getCountryOption(option: SlashCommandStringOption) {

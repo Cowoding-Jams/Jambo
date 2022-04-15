@@ -30,14 +30,10 @@ export const countryChoices: [name: string, value: string][] = countryNameAndCod
 	value: string
 ][];
 
-export function init() {
-	/* if (fs.existsSync("./countryData.json")) {
-			this.updateDataFromSource();
-		} else {
-		} */
-}
 
 export async function updateDataFromSource() {
+	logger.debug("Updating the country data from the API");
+
 	const url = "https://restcountries.com/v3.1/all";
 
 	countryData = await fetch(url)
@@ -47,9 +43,11 @@ export async function updateDataFromSource() {
 			return res as Country[];
 		});
 
-	fs.writeFile("./src/util/countryData.json", JSON.stringify(countryData), (err) => {
+	fs.writeFile("./countryData.json", JSON.stringify(countryData), (err) => {
 		if (err) throw err;
 	});
+
+	logger.debug("Updated the country data");
 }
 
 export function getCountryWithCode(code: string): Country {
