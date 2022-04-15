@@ -32,9 +32,10 @@ export const countryChoices: [name: string, value: string][] = countryNameAndCod
 
 
 export async function updateDataFromSource() {
-	logger.debug("Updating the country data from the API");
 
 	const url = "https://restcountries.com/v3.1/all";
+
+	logger.debug(`Updating the country data from: ${url}`);
 
 	countryData = await fetch(url)
 		.then((response) => response.json())
