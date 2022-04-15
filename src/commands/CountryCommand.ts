@@ -79,29 +79,10 @@ class CountryCommand extends Command {
 				interaction.reply({ embeds: [getSortEmbed(list.slice(0, scale), criteria, order, includeData)] });
 				break;
 			}
-			/* case "group": {
-					const criteria = interaction.options.getString("criteria") ?? "hemisphere";
-	
-					const embed: { [id: string]: MessageEmbed } = {
-						"un": getGroupEmbed(
-							[countryData.filter((c) => c.unMember), countryData.filter((c) => !c.unMember)],
-							["UN-Member", "Not a UN-Member"],
-							"UN-Membership"
-						),
-						"hemisphere": getGroupEmbed(
-							[countryData.filter((c) => (c.latlng[0] > 0)), countryData.filter((c) => !(c.latlng[0] > 0))],
-							["Northern Hemisphere", "Southern Hemisphere"],
-							"hemisphere"
-						)
-					}
-	
-					interaction.reply({ embeds: [embed[criteria]] });
-					break;
-				}
-				case "filter": {
-	
-					break;
-				} */
+			/* case "filter": {
+
+				break;
+			} */
 			default: {
 				interaction.reply("Sorry, I don't know what to do... qwq");
 				break;
@@ -175,19 +156,6 @@ class CountryCommand extends Command {
 					.addBooleanOption((option) =>
 						option.setName("include-data").setDescription("set whether or not the list includes the data")
 					)
-			);
-		/* .addSubcommand((option) =>
-				option
-					.setName("group")
-					.setDescription("lets you group the countries with queries")
-					.addStringOption((option) =>
-						option
-							.setName("criteria")
-							.setDescription("criteria to sort by")
-							.addChoice("un-membership", "un")
-							.addChoice("hemisphere", "hemisphere")
-							.setRequired(true)
-					)
 			)
 			.addSubcommand((option) =>
 				option
@@ -203,7 +171,7 @@ class CountryCommand extends Command {
 							.addChoice("longitude (east -> west)", "longitude (east -> west)")
 							.setRequired(true)
 					)
-			) */
+			);
 	}
 }
 
@@ -275,24 +243,6 @@ function getSortEmbed(
 		.setColor("#F0A5AC")
 		.setTimestamp();
 }
-
-/* function getGroupEmbed(
-	grouped: Country[][],
-	titles: string[],
-	criteria: string,
-): MessageEmbed {
-	let embed: MessageEmbed = new MessageEmbed()
-		.setTitle(`Countries grouped by ${criteria}`)
-		.setAuthor({
-			name: "Made by me, Jambo :)",
-			iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
-			url: "https://github.com/Cowoding-Jams/Jambo",
-		})
-		.setColor("#F0A5AC")
-		.setTimestamp();
-
-	return embed;
-} */
 
 function countryUndefinedReply(interaction: CommandInteraction) {
 	interaction.reply({
