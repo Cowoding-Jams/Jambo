@@ -42,7 +42,7 @@ export async function updateDataFromSource() {
 			return res as Country[];
 		});
 
-	fs.writeFile("./countryData.json", JSON.stringify(countryData), (err) => {
+	fs.writeFile("./src/util/countryUtil/countryData.json", JSON.stringify(countryData), (err) => {
 		if (err) throw err;
 	});
 
