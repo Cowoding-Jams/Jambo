@@ -6,7 +6,7 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
-import { Country, getCountryWithCode, updateDataFromSource, countryData } from "../util/countryUtil/dataManager";
+import { Country, countryData, getCountryWithCode, updateDataFromSource } from "../util/countryUtil/dataManager";
 
 let formatNumber: (n: number) => string;
 
@@ -19,7 +19,9 @@ class CountryCommand extends Command {
 		const countryCode: string | null = interaction.options.getString("country");
 		let country: Country = getCountryWithCode("BT"); // default country
 
-		formatNumber = (n: number) => { return n.toLocaleString(interaction.locale) }
+		formatNumber = (n: number) => {
+			return n.toLocaleString(interaction.locale);
+		};
 
 		if (countryCode) {
 			country = getCountryWithCode(countryCode);
@@ -35,12 +37,12 @@ class CountryCommand extends Command {
 
 		switch (interaction.options.getSubcommand()) {
 			case "overview": {
-				interaction.reply({ embeds: [getOverviewEmbed(country)], });
+				interaction.reply({ embeds: [getOverviewEmbed(country)] });
 				break;
 			}
 			case "update-data": {
 				updateDataFromSource();
-				interaction.reply({ content: "On it!", ephemeral: false })
+				interaction.reply({ content: "On it!", ephemeral: false });
 				break;
 			}
 			case "list": {
@@ -51,20 +53,21 @@ class CountryCommand extends Command {
 				const includeData = interaction.options.getBoolean("include-data") ?? true;
 
 				if (criteria === "population") {
-					list = countryData.sort((a, b) => a.population - b.population).map((c) => [c.name.common, c.population])
+					list = countryData.sort((a, b) => a.population - b.population).map((c) => [c.name.common, c.population]);
 				} else if (criteria == "area") {
-					list = countryData.sort((a, b) => a.area - b.area).map((c) => [c.name.common, c.area])
+					list = countryData.sort((a, b) => a.area - b.area).map((c) => [c.name.common, c.area]);
 				} else if (criteria == "latitude (north -> south)") {
-					list = countryData.sort((a, b) => b.latlng[0] - a.latlng[0]).map((c) => [c.name.common, c.latlng[0]])
-				} else { // longitude (east -> west)
-					list = countryData.sort((a, b) => b.latlng[1] - a.latlng[1]).map((c) => [c.name.common, c.latlng[1]])
+					list = countryData.sort((a, b) => b.latlng[0] - a.latlng[0]).map((c) => [c.name.common, c.latlng[0]]);
+				} else {
+					// longitude (east -> west)
+					list = countryData.sort((a, b) => b.latlng[1] - a.latlng[1]).map((c) => [c.name.common, c.latlng[1]]);
 				}
 
 				if (order === "descending") {
-					list.reverse()
+					list.reverse();
 				}
 
-				interaction.reply({ embeds: [getListEmbed(list.slice(0, scale), criteria, order, includeData)] })
+				interaction.reply({ embeds: [getListEmbed(list.slice(0, scale), criteria, order, includeData)] });
 				break;
 			}
 			case "official-name": {
@@ -139,9 +142,7 @@ class CountryCommand extends Command {
 							.setRequired(true)
 					)
 					.addBooleanOption((option) =>
-						option
-							.setName("include-data")
-							.setDescription("set whether or not the list includes the data")
+						option.setName("include-data").setDescription("set whether or not the list includes the data")
 					)
 			)
 			.addSubcommandGroup((option) =>
@@ -201,19 +202,24 @@ function getOverviewEmbed(country: Country): MessageEmbed {
 		.setTimestamp();
 }
 
-function getListEmbed(countries: [string, number][], criteria: string, order: string, includeData: boolean): MessageEmbed {
+function getListEmbed(
+	countries: [string, number][],
+	criteria: string,
+	order: string,
+	includeData: boolean
+): MessageEmbed {
 	let titel: string;
 	if (countries.length == countryData.length) {
-		titel = "All"
+		titel = "All";
 	} else {
-		titel = `Top ${countries.length}`
+		titel = `Top ${countries.length}`;
 	}
 
 	let des: string;
 	if (includeData) {
-		des = `${countries.map((c) => `${countries.indexOf(c) + 1}. ${c[0]} - ${formatNumber(c[1])}`).join("\n")}`
+		des = `${countries.map((c) => `${countries.indexOf(c) + 1}. ${c[0]} - ${formatNumber(c[1])}`).join("\n")}`;
 	} else {
-		des = `${countries.map((c) => `${countries.indexOf(c) + 1}. ${c[0]}`).join("\n")}`
+		des = `${countries.map((c) => `${countries.indexOf(c) + 1}. ${c[0]}`).join("\n")}`;
 	}
 
 	return new MessageEmbed()
@@ -227,8 +233,6 @@ function getListEmbed(countries: [string, number][], criteria: string, order: st
 		.setColor("#F0A5AC")
 		.setTimestamp();
 }
-
-
 
 function getCountryOption(option: SlashCommandStringOption) {
 	return option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true);

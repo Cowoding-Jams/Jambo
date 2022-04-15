@@ -30,9 +30,7 @@ export const countryChoices: [name: string, value: string][] = countryNameAndCod
 	value: string
 ][];
 
-
 export async function updateDataFromSource() {
-
 	const url = "https://restcountries.com/v3.1/all";
 
 	logger.debug(`Updating the country data from: ${url}`);
