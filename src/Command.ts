@@ -11,5 +11,5 @@ export abstract class Command {
 	abstract register():
 		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
+		| Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
 }
