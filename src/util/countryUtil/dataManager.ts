@@ -21,14 +21,7 @@ export interface Country {
 	flags: { png: string; svg: string };
 }
 
-type nameAndCode = { name: string; value: string };
-
 export let countryData: Country[] = (data as Country[]).sort((a, b) => b.population - a.population);
-export const countryNameAndCode: nameAndCode[] = countryData.map(returnNameAndCode) as nameAndCode[];
-export const countryChoices: [name: string, value: string][] = countryNameAndCode.map((c) => [c.name, c.value]) as [
-	name: string,
-	value: string
-][];
 
 export async function updateDataFromSource() {
 	const url = "https://restcountries.com/v3.1/all";
@@ -49,10 +42,7 @@ export async function updateDataFromSource() {
 	logger.debug("Updated the country data");
 }
 
-export function getCountryWithCode(code: string): Country | undefined {
+export function getCountryWithItsCCA2(code: string): Country | undefined {
 	return countryData.find((v) => v.cca2 === code) as Country;
 }
 
-function returnNameAndCode(c: Country): nameAndCode {
-	return { name: c.name.common, value: c.cca2 };
-}
