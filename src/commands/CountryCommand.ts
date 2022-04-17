@@ -6,10 +6,10 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
-import { Country, countryData, getCountryWithItsCCA2, updateDataFromSource } from "../util/countryUtil/dataManager";
-import { inputType } from "../autocompleters/CountryAutocomplete";
+import { updateDataFromSource, filterCountryDataWithValue, reduceCountryData, getCountryWithItsCCA2, sortCountryData, Country, countryData, relations } from "../util/countryUtil/dataManager";
+import { filterInputType } from "../autocompleters/CountryAutocomplete";
 
-let formatNumber: (n: number) => string;
+export let formatNumber: (n: number) => string;
 
 class CountryCommand extends Command {
 	constructor() {
@@ -67,7 +67,8 @@ class CountryCommand extends Command {
 				const scale = interaction.options.getInteger("scale") ?? 10;
 				const includeData = interaction.options.getBoolean("include-data") ?? true;
 
-				const list = reduceCountryData[criteria](sortCountryData[criteria](countryData));
+				sortCountryData[criteria]()
+				const list = reduceCountryData[criteria]();
 				if (order === "descending") {
 					list.reverse();
 				}
@@ -92,17 +93,18 @@ class CountryCommand extends Command {
 				const value = interaction.options.getString("value") ?? "10000";
 				let num: number;
 
-				if (inputType[criteria] == "data") {
+				if (filterInputType[criteria] == "data") {
 					if (relation !== "eq") {
 						thatDoesntMakeSense(interaction);
 						break;
 					}
 
-					let data = reduceCountryData[criteria](filterCountryData[criteria](countryData, value));
+					filterCountryDataWithValue[criteria](relations[relation], value)
+					let data = reduceCountryData[criteria]();
 
 					interaction.reply({ embeds: [getListEmbed(data, filterTitles[criteria](value), false)] });
 
-				} else if (inputType[criteria] == "num") {
+				} else if (filterInputType[criteria] == "num") {
 					if (!isNaN(+value)) {
 						num = +value;
 					} else {
@@ -231,6 +233,8 @@ class CountryCommand extends Command {
 							.addChoice("equals (==)", "eq")
 							.addChoice("less then (<)", "l")
 							.addChoice("bigger then (>)", "b")
+							.addChoice("less & equal then (<=)", "le")
+							.addChoice("bigger & equal then (>=)", "be")
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -257,33 +261,6 @@ const filterTitles: { [id: string]: (v: string) => string } = {
 	"subregion": (v) => `Every country where ${v} is spoken`,
 	"timezone": (v) => `Every country where ${v} is spoken`
 }
-
-const sortCountryData: { [id: string]: (c: Country[]) => Country[] } = {
-	population: (data: Country[]) => data.sort((a, b) => a.population - b.population),
-	area: (data: Country[]) => data.sort((a, b) => a.area - b.area),
-	latitude: (data: Country[]) => data.sort((a, b) => b.latlng[0] - a.latlng[0]),
-	longitude: (data: Country[]) => data.sort((a, b) => b.latlng[1] - a.latlng[1]),
-};
-
-const filterCountryData: { [id: string]: (c: Country[], value: string) => Country[] } = {
-	currency: (data, value) => data.filter((c) => value in Object.values(c.currencies).map((co) => co.name)),
-	language: (data, value) => data.filter((c) => value in Object.values(c.languages)),
-	region: (data, value) => data.filter((c) => value === c.region),
-	subregion: (data, value) => data.filter((c) => value === c.subregion),
-	timezone: (data, value) => data.filter((c) => value in c.timezones)
-};
-
-const reduceCountryData: { [id: string]: (c: Country[]) => string[][] } = {
-	population: (data) => data.map((c) => [c.name.common, formatNumber(c.population)]),
-	area: (data) => data.map((c) => [c.name.common, formatNumber(c.area)]),
-	latitude: (data) => data.map((c) => [c.name.common, formatNumber(c.latlng[0])]),
-	longitude: (data) => data.map((c) => [c.name.common, formatNumber(c.latlng[1])]),
-	currency: (data) => data.map((c) => [c.name.common].concat(Object.values(c.currencies).map((co) => co.name))),
-	language: (data) => data.map((c) => [c.name.common].concat(Object.values(c.languages))),
-	region: (data) => data.map((c) => [c.name.common, c.region]),
-	subregion: (data) => data.map((c) => [c.name.common, c.subregion]),
-	timezone: (data) => data.map((c) => [c.name.common].concat(c.timezones)),
-};
 
 function getOverviewEmbed(country: Country): MessageEmbed {
 	return new MessageEmbed()

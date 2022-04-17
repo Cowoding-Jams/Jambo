@@ -1,11 +1,9 @@
 import { Autocompleter } from "../Autocompleter";
 import { AutocompleteInteraction } from "discord.js";
-import { countryData, Country } from "../util/countryUtil/dataManager";
-
-type nameAndValue = { name: string; value: string };
+import { countryData, Country, nameAndValue } from "../util/countryUtil/dataManager";
 
 class CountryAutocompleter extends Autocompleter {
-	countryNameAndCode: nameAndValue[] = countryData.map(returnNameAndCode) as nameAndValue[];
+	countryNameAndCode: { name: string, value: string }[] = countryData.map((c: Country) => { return { name: c.name.common, value: c.cca2 } });
 	countryChoices: [name: string, value: string][] = this.countryNameAndCode.map((c) => [c.name, c.value]) as [
 		name: string,
 		value: string
@@ -19,7 +17,7 @@ class CountryAutocompleter extends Autocompleter {
 		if (interaction.options.getSubcommand() == "filter") {
 			const criteria: string = interaction.options.getString("criteria") ?? "population";
 
-			if (inputType[criteria] == "num") {
+			if (filterInputType[criteria] == "num") {
 				const input = interaction.options.getFocused() as string;
 				if (input !== "") {
 					await interaction.respond([{ name: input, value: input }])
@@ -31,7 +29,7 @@ class CountryAutocompleter extends Autocompleter {
 				await interaction.respond(
 					this.extractAutocompletionData(criteria)
 						.filter((c) =>
-							c.name.toLowerCase().startsWith((interaction.options.getFocused() as string).toLocaleLowerCase())
+							c.name.toLowerCase().startsWith((interaction.options.getFocused() as string).toLowerCase())
 						)
 						.slice(0, 25)
 				);
@@ -42,7 +40,7 @@ class CountryAutocompleter extends Autocompleter {
 			await interaction.respond(
 				this.countryNameAndCode
 					.filter((c) =>
-						c.name.toLowerCase().startsWith((interaction.options.getFocused() as string).toLocaleLowerCase())
+						c.name.toLowerCase().startsWith((interaction.options.getFocused() as string).toLowerCase())
 					)
 					.slice(0, 25)
 			);
@@ -50,7 +48,7 @@ class CountryAutocompleter extends Autocompleter {
 
 	}
 
-	extractAutocompletionData(criteria: string): nameAndValue[] {
+	extractAutocompletionData(criteria: string): { name: string, value: string }[] {
 		let returnValue: nameAndValue[] = [];
 		switch (criteria) {
 			case "language":
@@ -76,18 +74,20 @@ class CountryAutocompleter extends Autocompleter {
 				break;
 		}
 
+		// filtering undefined values
 		returnValue = returnValue.filter((c) => (c.name !== undefined && c !== undefined));
 
 		// removes the duplicates
 		return returnValue.filter((c, index) => {
 			return returnValue.findIndex((o) => (o.name == c.name)) === index;
-		});
+		}) as { name: string, value: string }[];
 	}
 }
 
 export default new CountryAutocompleter();
 
-export const inputType: { [id: string]: string } = {
+// the type of input is needed for the autocompletion for the specific criteria
+export const filterInputType: { [id: string]: string } = {
 	"population": "num",
 	"language": "data",
 	"currency": "data",
@@ -97,10 +97,6 @@ export const inputType: { [id: string]: string } = {
 	"area": "num",
 	"latitude": "num",
 	"longitude": "num"
-}
-
-function returnNameAndCode(c: Country): nameAndValue {
-	return { name: c.name.common, value: c.cca2 };
 }
 
 function returnNameAndValueSame(e: string): nameAndValue {
