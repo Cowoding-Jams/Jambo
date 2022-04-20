@@ -12,16 +12,17 @@ import {
 	CountryKey,
 	getCountryByName,
 	getFilteredCountryDataBy,
+	initializeCountryData,
 	sortCountryDataBy,
 	typeOfCountryProperty,
-	updateDataFromSource,
-} from "../util/countryUtil/dataManager";
+} from "../util/countryDataManager";
 
 export let formatNumber: (n: number) => string;
 
 class CountryCommand extends Command {
 	constructor() {
 		super("country");
+		initializeCountryData();
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
@@ -29,12 +30,12 @@ class CountryCommand extends Command {
 			return n.toLocaleString(interaction.locale);
 		};
 
+		if (!countryData) {
+			interaction.reply({ content: "Still initiliazing the data, try again later...", ephemeral: true });
+			return;
+		}
+
 		switch (interaction.options.getSubcommand()) {
-			case "update-data": {
-				updateDataFromSource();
-				interaction.reply({ content: "On it!", ephemeral: false });
-				break;
-			}
 			case "overview": {
 				const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
 				if (country == undefined) {
@@ -109,7 +110,7 @@ class CountryCommand extends Command {
 				}
 
 				// output
-				const title = `${scale === countryData.length ? "All" : `Top ${scale}`} countries ${
+				const title = `${scale > countryData.length ? "All" : `Top ${scale}`} countries ${
 					(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
 				}${(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](filterValue, filterCriteria)}` : ""}`;
 				interaction.reply({
@@ -134,16 +135,13 @@ class CountryCommand extends Command {
 			.setName("country")
 			.setDescription("accessing country data")
 			.addSubcommand((option) =>
-				option.setName("update-data").setDescription("updates the data from its online source")
-			)
-			.addSubcommand((option) =>
 				option.setName("overview").setDescription("lists all the data from a country").addStringOption(getCountryOption)
 			)
 			.addSubcommand((option) => option.setName("random").setDescription("lists all the data from a random country"))
 			.addSubcommand((option) =>
 				option
 					.setName("specific")
-					.setDescription("gives you a specific info about a country")
+					.setDescription("gives you a specific information about a country")
 					.addStringOption((option) =>
 						option
 							.setName("info")
@@ -210,7 +208,7 @@ class CountryCommand extends Command {
 							.addChoice("top 25", 25)
 							.addChoice("top 50", 50)
 							.addChoice("top 100", 100)
-							.addChoice("all", countryData.length)
+							.addChoice("all", 400)
 							.setRequired(true)
 					)
 					.addStringOption((option) =>

@@ -1,15 +1,22 @@
 import { Autocompleter } from "../Autocompleter";
 import { ApplicationCommandOptionChoice, AutocompleteInteraction } from "discord.js";
-import { Country, countryData, CountryKey, typeOfCountryProperty } from "../util/countryUtil/dataManager";
+import { countryData, CountryKey, typeOfCountryProperty } from "../util/countryDataManager";
+import { logger } from "../logger";
 
 class CountryAutocompleter extends Autocompleter {
-	countryNames: string[] = countryData.map((c: Country) => c.name);
-
 	constructor() {
 		super("country");
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
+		if (countryData.length === 0) {
+			logger.debug("can't autocomplete because the country data is still being initialized");
+			await interaction.respond([
+				returnChoiceWithSameValues("I can't autocomplete because the data is still being initialized"),
+			]);
+			return;
+		}
+
 		const input = interaction.options.getFocused() as string;
 
 		if (interaction.options.getSubcommand() == "query") {
@@ -53,9 +60,9 @@ class CountryAutocompleter extends Autocompleter {
 		}
 
 		// any other command only needs the default country autocompletion
-		const matchingCountries: string[] = this.countryNames.filter((t) =>
-			t.toLowerCase().startsWith(input.toLowerCase())
-		);
+		const matchingCountries: string[] = countryData
+			.map((c) => c.name)
+			.filter((t) => t.toLowerCase().startsWith(input.toLowerCase()));
 
 		await interaction.respond(matchingCountries.map(returnChoiceWithSameValues).slice(0, 25));
 	}

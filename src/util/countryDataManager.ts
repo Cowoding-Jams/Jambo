@@ -1,7 +1,5 @@
 import fetch from "node-fetch";
-import { logger } from "../../logger";
-import data from "./countryData.json";
-import fs from "fs";
+import { logger } from "../logger";
 
 export interface Country {
 	name: string;
@@ -23,7 +21,7 @@ export interface Country {
 	flags: { png: string; svg: string };
 }
 
-export let countryData: Country[] = (data as Country[]).sort((a, b) => b.population - a.population);
+export let countryData: Country[] = [];
 export type CountryKey = keyof Country;
 
 type MainCountryDataTypes = number | string | boolean | string[]; // without the maps and flags object
@@ -82,11 +80,11 @@ const defaultCountryData: Country = {
 	flags: { png: "", svg: "" },
 };
 
-// updating and importing the data
-export async function updateDataFromSource() {
+// importing the data
+export async function initializeCountryData() {
 	const url = "https://restcountries.com/v3.1/all";
 
-	logger.debug(`Updating the country data from: ${url}`);
+	logger.debug("fetching the country data");
 
 	countryData = CountryDataImportToCountryData(
 		await fetch(url)
@@ -95,13 +93,9 @@ export async function updateDataFromSource() {
 			.then((res) => {
 				return res as CountryImport[];
 			})
-	);
+	).sort((a, b) => b.population - a.population);
 
-	fs.writeFile("./src/util/countryUtil/countryData.json", JSON.stringify(countryData), (err) => {
-		if (err) throw err;
-	});
-
-	logger.debug("Updated the country data");
+	logger.debug("initialized the country data");
 }
 
 function CountryDataImportToCountryData(countryImport: CountryImport[]): Country[] {
