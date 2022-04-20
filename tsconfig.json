@@ -21,7 +21,8 @@
 		"noImplicitThis": true,
 		"noUnusedLocals": true,
 		"allowUnreachableCode": false,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"sourceMap": true
 	},
 	"include": ["src/**/*"],
 	"ts-node": {

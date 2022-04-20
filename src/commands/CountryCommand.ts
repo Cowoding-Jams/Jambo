@@ -6,8 +6,16 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
-import { updateDataFromSource, filterCountryDataWithValue, reduceCountryData, getCountryWithItsCCA2, sortCountryData, Country, countryData, relations } from "../util/countryUtil/dataManager";
-import { filterInputType } from "../autocompleters/CountryAutocomplete";
+import {
+	Country,
+	countryData,
+	CountryKey,
+	getCountryByName,
+	getFilteredCountryDataBy,
+	sortCountryDataBy,
+	typeOfCountryProperty,
+	updateDataFromSource,
+} from "../util/countryUtil/dataManager";
 
 export let formatNumber: (n: number) => string;
 
@@ -28,106 +36,87 @@ class CountryCommand extends Command {
 				break;
 			}
 			case "overview": {
-				const country: Country | undefined = getCountryWithItsCCA2(interaction.options.getString("country") ?? "BT");
+				const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
 				if (country == undefined) {
 					countryUndefinedReply(interaction);
-					break;
+				} else {
+					interaction.reply({ embeds: [getOverviewEmbed(country)] });
 				}
-				interaction.reply({ embeds: [getOverviewEmbed(country)] });
 				break;
 			}
 			case "random": {
-				const country: Country = countryData[Math.floor(Math.random() * countryData.length)];
-				interaction.reply({ embeds: [getOverviewEmbed(country)] });
+				interaction.reply({ embeds: [getOverviewEmbed(countryData[Math.floor(Math.random() * countryData.length)])] });
 				break;
 			}
 			case "specific": {
-				const country: Country | undefined = getCountryWithItsCCA2(interaction.options.getString("country") ?? "BT");
+				const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
 				const info: string = interaction.options.getString("info") ?? "population";
+
 				if (country == undefined) {
 					countryUndefinedReply(interaction);
-					break;
+				} else {
+					interaction.reply(specificRequestReplies[info](country));
 				}
-
-				const name = country.name.common;
-				const replies: { [id: string]: string | object } = {
-					name: `The official name of ${name} is: ${country.name.official}`,
-					capital: `The capital of ${name}`,
-					flag: { content: `${name}'s flag:`, files: [country.flags.png] },
-					population: `The population size of ${name} is: ${formatNumber(country.population)}`,
-					area: `The area of ${name} is: ${formatNumber(country.area)} km²`,
-				};
-
-				interaction.reply(replies[info]);
 				break;
 			}
-			case "sort": {
-				const criteria = interaction.options.getString("criteria") ?? "population";
+			case "query": {
+				const sortCriteria: CountryKey = (interaction.options.getString("sort-criteria") ?? "none") as CountryKey;
 				const order = interaction.options.getString("order") ?? "ascending";
 				const scale = interaction.options.getInteger("scale") ?? 10;
-				const includeData = interaction.options.getBoolean("include-data") ?? true;
-
-				sortCountryData[criteria]()
-				const list = reduceCountryData[criteria]();
-				if (order === "descending") {
-					list.reverse();
-				}
-
-				if (includeData == false) {
-					list.map((c) => c[0])
-				}
-
-				let title: string;
-				if (list.length == countryData.length) {
-					title = `All countries listed by ${criteria} in ${order} order`;
-				} else {
-					title = `Top ${list.length} countries listed by ${criteria} in ${order} order`;
-				}
-
-				interaction.reply({ embeds: [getListEmbed(list.slice(0, scale), title, true)] });
-				break;
-			}
-			case "filter": {
-				const criteria = interaction.options.getString("criteria") ?? "population";
+				const filterCriteria: CountryKey = (interaction.options.getString("filter-criteria") ?? "none") as CountryKey;
 				const relation = interaction.options.getString("relation") ?? "eq";
-				const value = interaction.options.getString("value") ?? "10000";
-				let num: number;
+				const filterValue = interaction.options.getString("filter-value") ?? "";
+				let includeData = interaction.options.getBoolean("include-data") ?? true;
+				let numbered = false;
+				let embedDataCriteria: CountryKey = sortCriteria;
 
-				if (filterInputType[criteria] == "data") {
-					if (relation !== "eq") {
-						thatDoesntMakeSense(interaction);
-						break;
+				// sorting
+				if ((sortCriteria as string) !== "none") {
+					numbered = true;
+					sortCountryDataBy(sortCriteria);
+					if (order === "descending") {
+						countryData.reverse();
 					}
-
-					filterCountryDataWithValue[criteria](relations[relation], value)
-					let data = reduceCountryData[criteria]();
-
-					interaction.reply({ embeds: [getListEmbed(data, filterTitles[criteria](value), false)] });
-
-				} else if (filterInputType[criteria] == "num") {
-					if (!isNaN(+value)) {
-						num = +value;
-					} else {
-						thatDoesntMakeSense(interaction);
-						break;
-					}
-
-					let data: [string, string][] = reduceCountryData[criteria](sortCountryData[criteria](countryData)) as [string, string][];
-					let rel: string = "";
-					if (relation === "eq") {
-						data = data.filter((c) => (c[0] === formatNumber(num)));
-						rel = "equal to"
-					} else if (relation === "l") {
-						data = data.filter((c) => (c[0] < formatNumber(num)));
-						rel = "less then"
-					} else if (relation === "b") {
-						data = data.filter((c) => (c[0] > formatNumber(num)));
-						rel = "greater then"
-					}
-
-					interaction.reply({ embeds: [getListEmbed(data, `Every country with a ${criteria} ${rel} ${formatNumber(num)}`, false)] });
+				} else {
+					countryData.sort(() => Math.random() - 0.5); // shuffle
+					includeData = false;
 				}
 
+				// filtering
+				let data: Country[] = countryData;
+				let val: number | string | boolean = filterValue;
+				if ((filterCriteria as string) !== "none") {
+					if (["true", "false"].includes(filterValue)) {
+						val = filterValue === "true";
+					} else if (!isNaN(+filterValue)) {
+						val = +filterValue;
+					}
+
+					if (
+						typeof val !== typeOfCountryProperty(filterCriteria) &&
+						!(typeof val === "string" && typeOfCountryProperty(filterCriteria) === "object")
+					) {
+						thatDoesntMakeSenseReply(interaction);
+						break;
+					}
+
+					includeData = true;
+					data = getFilteredCountryDataBy(filterCriteria, relation, val);
+
+					if (relation !== "eq") {
+						embedDataCriteria = filterCriteria;
+					}
+				}
+
+				// output
+				const title = `${scale === countryData.length ? "All" : `Top ${scale}`} countries ${
+					(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
+				}${(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](filterValue, filterCriteria)}` : ""}`;
+				interaction.reply({
+					embeds: [
+						getListEmbed(countriesToEmbedForm(data.slice(0, scale), embedDataCriteria, includeData), title, numbered),
+					],
+				});
 				break;
 			}
 			default: {
@@ -150,9 +139,7 @@ class CountryCommand extends Command {
 			.addSubcommand((option) =>
 				option.setName("overview").setDescription("lists all the data from a country").addStringOption(getCountryOption)
 			)
-			.addSubcommand((option) =>
-				option.setName("random").setDescription("lists all the data from a random country")
-			)
+			.addSubcommand((option) => option.setName("random").setDescription("lists all the data from a random country"))
 			.addSubcommand((option) =>
 				option
 					.setName("specific")
@@ -161,27 +148,50 @@ class CountryCommand extends Command {
 						option
 							.setName("info")
 							.setDescription("the piece of data you want")
-							.addChoice("official-name", "name")
-							.addChoice("capital", "capital")
+							.addChoice("official_name", "official_name")
+							.addChoice("population", "population")
 							.addChoice("flag", "flag")
-							.addChoice("population size", "population")
+							.addChoice("region", "region")
+							.addChoice("subregion", "subregion")
+							.addChoice("latitude", "latitude")
+							.addChoice("longitude", "longitude")
 							.addChoice("area", "area")
+							.addChoice("google maps", "map")
+							.addChoice("capital", "capital")
+							.addChoice("languages", "languages")
+							.addChoice("currencies", "currencies")
+							.addChoice("timezones", "timezones")
+							.addChoice("cca2", "cca2")
+							.addChoice("tld", "tld")
+							.addChoice("unMember", "unMember")
 							.setRequired(true)
 					)
 					.addStringOption(getCountryOption)
 			)
 			.addSubcommand((option) =>
 				option
-					.setName("sort")
-					.setDescription("lets you sort the countries with queries")
+					.setName("query")
+					.setDescription("lets you sort and filter the countries with queries")
 					.addStringOption((option) =>
 						option
-							.setName("criteria")
+							.setName("sort-criteria")
 							.setDescription("criteria to sort by")
+							.addChoice("none", "none")
+							.addChoice("name", "name")
+							.addChoice("official_name", "official_name")
+							.addChoice("cca2", "cca2")
+							.addChoice("tld", "tld")
+							.addChoice("unMember", "unMember")
 							.addChoice("population", "population")
+							.addChoice("capital", "capital")
+							.addChoice("languages", "languages")
+							.addChoice("currencies", "currencies")
+							.addChoice("timezones", "timezones")
+							.addChoice("region", "region")
+							.addChoice("subregion", "subregion")
+							.addChoice("latitude", "latitude")
+							.addChoice("longitude", "longitude")
 							.addChoice("area", "area")
-							.addChoice("latitude (north -> south)", "latitude")
-							.addChoice("longitude (east -> west)", "longitude")
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -203,27 +213,26 @@ class CountryCommand extends Command {
 							.addChoice("all", countryData.length)
 							.setRequired(true)
 					)
-					.addBooleanOption((option) =>
-						option.setName("include-data").setDescription("set whether or not the list includes the data")
-					)
-			)
-			.addSubcommand((option) =>
-				option
-					.setName("filter")
-					.setDescription("lets you filter the countries with queries")
 					.addStringOption((option) =>
 						option
-							.setName("criteria")
+							.setName("filter-criteria")
 							.setDescription("criteria to filter by")
+							.addChoice("none", "none")
+							.addChoice("name", "name")
+							.addChoice("official_name", "official_name")
+							.addChoice("cca2", "cca2")
+							.addChoice("tld", "tld")
+							.addChoice("unMember", "unMember")
 							.addChoice("population", "population")
-							.addChoice("language", "language")
-							.addChoice("currency", "currency")
+							.addChoice("capital", "capital")
+							.addChoice("languages", "languages")
+							.addChoice("currencies", "currencies")
+							.addChoice("timezones", "timezones")
 							.addChoice("region", "region")
 							.addChoice("subregion", "subregion")
-							.addChoice("timezone", "timezone")
-							.addChoice("area", "area")
 							.addChoice("latitude", "latitude")
 							.addChoice("longitude", "longitude")
+							.addChoice("area", "area")
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -232,17 +241,20 @@ class CountryCommand extends Command {
 							.setDescription("relation to test the criteria on")
 							.addChoice("equals (==)", "eq")
 							.addChoice("less then (<)", "l")
-							.addChoice("bigger then (>)", "b")
+							.addChoice("greater then (>)", "g")
 							.addChoice("less & equal then (<=)", "le")
-							.addChoice("bigger & equal then (>=)", "be")
+							.addChoice("greater & equal then (>=)", "ge")
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
 						option
-							.setName("value")
+							.setName("filter-value")
 							.setDescription("value to use for the relation")
 							.setRequired(true)
 							.setAutocomplete(true)
+					)
+					.addBooleanOption((option) =>
+						option.setName("include-data").setDescription("set whether or not the list includes the data")
 					)
 			);
 	}
@@ -250,39 +262,29 @@ class CountryCommand extends Command {
 
 export default new CountryCommand();
 
-function thatDoesntMakeSense(interaction: CommandInteraction) {
-	interaction.reply({ content: "Now I don't want to call you dumb infront of everyone but that just makes no sense...", ephemeral: true });
-}
-
-const filterTitles: { [id: string]: (v: string) => string } = {
-	"language": (v) => `Every country where ${v} is spoken`,
-	"currency": (v) => `Every country where ${v} is used as a currency`,
-	"region": (v) => `Every country in ${v}`,
-	"subregion": (v) => `Every country where ${v} is spoken`,
-	"timezone": (v) => `Every country where ${v} is spoken`
+function getCountryOption(option: SlashCommandStringOption) {
+	return option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true);
 }
 
 function getOverviewEmbed(country: Country): MessageEmbed {
 	return new MessageEmbed()
-		.setTitle(country.name.common)
+		.setTitle(country.name)
 		.setThumbnail(country.flags.png)
-		.setDescription(`(officially: ${country.name.official}, code: ${country.cca2})`)
+		.setDescription(`(officially: ${country.official_name}, code: ${country.cca2})`)
 		.addFields(
 			{
 				name: "Demographics",
 				value: `- Population size: ${formatNumber(country.population)} (${countryData.indexOf(country) + 1}.)
 				 - Is ${!country.unMember ? "not" : ""} a member of the UN
 				 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
-				 - Currencie(s): ${Object.values(country.currencies)
-						.map((v) => v.name)
-						.join(", ")}
+				 - Currencie(s): ${country.currencies.join(", ")}
 				 - Language(s): ${Object.values(country.languages).join(", ")}`,
 			},
 			{
 				name: "Geographics",
 				value: `- Capital: ${country.capital.join(", ")}
 				 - Region: ${country.region}, Subregion: ${country.subregion}
-				 - Coordinates: ${Math.round(country.latlng[0])}° N/S, ${Math.round(country.latlng[1])}° E/W
+				 - Coordinates: ${Math.round(country.latitude)}° N/S, ${Math.round(country.longitude)}° E/W
 				 - Timezone(s): ${country.timezones.join(", ")}
 				 - Area: ${formatNumber(country.area)} km²
 				 - [Google Maps](${country.maps.googleMaps})`,
@@ -297,16 +299,13 @@ function getOverviewEmbed(country: Country): MessageEmbed {
 		.setTimestamp();
 }
 
-function getListEmbed(
-	countries: string[][],
-	title: string,
-	numbered: boolean
-): MessageEmbed {
+function getListEmbed(data: string[][], title: string, numbered: boolean): MessageEmbed {
 	let des: string;
+	const dataSymbol: string = (data[0].length ?? 0) > 1 ? " ⁘ " : " ";
 	if (numbered) {
-		des = countries.map((c, index) => `${index + 1}. ${c.join(" - ")}`).join("\n");
+		des = data.map((c, index) => `${index + 1}. ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
 	} else {
-		des = countries.map((c) => `- ${c.join(" - ")}`).join("\n");
+		des = data.map((c) => `- ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
 	}
 
 	return new MessageEmbed()
@@ -321,6 +320,27 @@ function getListEmbed(
 		.setTimestamp();
 }
 
+function countriesToEmbedForm(countries: Country[], criteria: CountryKey, includeData: boolean): string[][] {
+	if (!includeData) {
+		return countries.map((c) => [c.name]);
+	}
+
+	if (typeOfCountryProperty(criteria) === "number") {
+		return countries.map((c) => [c.name, formatNumber(c[criteria] as number)]);
+	} else if (typeOfCountryProperty(criteria) === "boolean") {
+		return countries.map((c) => [c.name, String(c[criteria])]);
+	} else {
+		return countries.map((c) => [c.name].concat(c[criteria] as ConcatArray<string>));
+	}
+}
+
+function thatDoesntMakeSenseReply(interaction: CommandInteraction) {
+	interaction.reply({
+		content: "Now I don't want to call you dumb infront of everyone but that just makes no sense...",
+		ephemeral: true,
+	});
+}
+
 function countryUndefinedReply(interaction: CommandInteraction) {
 	interaction.reply({
 		content: "I've never heard of that country... Next time pick one from the list, okay?",
@@ -328,6 +348,46 @@ function countryUndefinedReply(interaction: CommandInteraction) {
 	});
 }
 
-function getCountryOption(option: SlashCommandStringOption) {
-	return option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true);
-}
+const filteringTitles: { [id: string]: (value: string, criteria: CountryKey) => string } = {
+	eq: (v, c) => `where its ${c} ${typeOfCountryProperty(c) === "object" ? "include" : "is"} ${v}`,
+	l: (v, c) =>
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		} less then ${v}`,
+	g: (v, c) =>
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		} greater then ${v}`,
+	le: (v, c) =>
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		} less then or equal to ${v}`,
+	ge: (v, c) =>
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		} greater then or equal to ${v}`,
+};
+
+const filterTitleIncludePart = (c: CountryKey) =>
+	typeOfCountryProperty(c) === "object" ? "include a value which is alphabetically" : "is";
+
+const specificRequestReplies: { [id: string]: (country: Country) => string | object } = {
+	official_name: (country) => `The official name of ${country.name} is: ${country.official_name}`,
+	flag: (country) => {
+		return { content: `${country.name}'s flag:`, files: [country.flags.png] };
+	},
+	map: (country) => `You can find ${country.name} on google maps here: ${country.maps.googleMaps}`,
+	cca2: (country) => `The cca2 code of ${country.name} is ${country.cca2}`,
+	tld: (country) => `The Top Level Domain of ${country.name} is ${country.tld}`,
+	unMember: (country) => `${country.name} is${country.unMember ? " " : " not "} a member of the UN`,
+	population: (country) => `The population size of ${country.name} is: ${formatNumber(country.population)}`,
+	capital: (country) => `The capital of ${country.name} is ${country.capital}`,
+	languages: (country) => `In ${country.name} these following languages are spoken: ${country.languages.join(", ")}`,
+	currencies: (country) => `In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
+	timezones: (country) => `${country.name} includes these timezones: ${country.timezones.join(", ")}`,
+	region: (country) => `${country.name} is part of ${country.region}`,
+	subregion: (country) => `${country.name} is part of ${country.subregion}`,
+	latitude: (country) => `The latitude of ${country.name} is ${country.latitude}° N/S`,
+	longitude: (country) => `The longitude of ${country.name} is ${country.longitude}° E/W`,
+	area: (country) => `The area of ${country.name} is: ${formatNumber(country.area)} km²`,
+};

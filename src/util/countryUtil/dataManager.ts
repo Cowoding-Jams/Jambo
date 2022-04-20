@@ -2,79 +2,100 @@ import fetch from "node-fetch";
 import { logger } from "../../logger";
 import data from "./countryData.json";
 import fs from "fs";
-import { formatNumber } from "../../commands/CountryCommand";
 
 export interface Country {
-	name: { common: string; official: string };
+	name: string;
+	official_name: string;
 	cca2: string;
 	tld: string[];
+	unMember: boolean;
 	population: number;
 	capital: string[];
-	currencies: object;
-	languages: object;
-	unMember: boolean;
-	latlng: number[];
+	languages: string[];
+	currencies: string[];
+	timezones: string[];
 	region: string;
 	subregion: string;
+	latitude: number;
+	longitude: number;
 	area: number;
 	maps: { googleMaps: string; openStreetMaps: string };
-	timezones: string[];
 	flags: { png: string; svg: string };
 }
 
-export type nameAndValue = { name: string; value: string | string[] };
-
 export let countryData: Country[] = (data as Country[]).sort((a, b) => b.population - a.population);
+export type CountryKey = keyof Country;
 
-// sorts the array in place and returns it
-export const sortCountryData: { [id: string]: () => {} } = {
-	population: () => countryData.sort((a, b) => a.population - b.population),
-	area: () => countryData.sort((a, b) => a.area - b.area),
-	latitude: () => countryData.sort((a, b) => b.latlng[0] - a.latlng[0]),
-	longitude: () => countryData.sort((a, b) => b.latlng[1] - a.latlng[1])
-};
+type MainCountryDataTypes = number | string | boolean | string[]; // without the maps and flags object
 
-export const relations: { [id: string]: (a: number | string, b: number | string) => boolean } = {
-	eq: (a, b) => (a === b),
-	l: (a, b) => (a < b),
-	g: (a, b) => (a > b),
-	le: (a, b) => (a <= b),
-	ge: (a, b) => (a >= b),
+export function getCountryByName(name: string): Country | undefined {
+	return countryData.find((c) => c.name === name);
 }
 
-// returns array
-export const filterCountryDataWithValue: { [id: string]: (relation: string, value: string) => Country[] } = {
-	currency: (value) => countryData.filter((c) => value in Object.values(c.currencies).map((co) => co.name)),
-	language: (value) => countryData.filter((c) => value in Object.values(c.languages)),
-	region: (value) => countryData.filter((c) => value === c.region),
-	subregion: (value) => countryData.filter((c) => value === c.subregion),
-	timezone: (value) => countryData.filter((c) => value in c.timezones)
+export function getCountryByCriteriaAndValue(criteria: CountryKey, value: MainCountryDataTypes): Country | undefined {
+	return countryData.find((c) => c[criteria] === value);
+}
+
+export function typeOfCountryProperty(criteria: CountryKey) {
+	type ValueOf<T> = T[keyof T];
+	const representative: ValueOf<Country> = countryData[0][criteria];
+	return typeof representative;
+}
+
+const extractData: { [id: string]: (c: CountryImport) => MainCountryDataTypes | undefined | object } = {
+	name: (c) => c.name.common,
+	official_name: (c) => c.name.official,
+	cca2: (c) => c.cca2,
+	tld: (c) => c.tld,
+	unMember: (c) => c.unMember,
+	population: (c) => c.population,
+	capital: (c) => c.capital,
+	languages: (c) => (c.languages ? Object.values(c.languages) : undefined),
+	currencies: (c) => (c.currencies ? Object.values(c.currencies ?? { "-": "-" }).map((co) => co.name) : undefined),
+	timezones: (c) => c.timezones,
+	region: (c) => c.region,
+	subregion: (c) => c.subregion,
+	area: (c) => c.area,
+	latitude: (c) => c.latlng[0],
+	longitude: (c) => c.latlng[1],
+	maps: (c) => c.maps,
+	flags: (c) => c.flags,
 };
 
-export const reduceCountryData: { [id: string]: () => string[][] } = {
-	population: () => countryData.map((c) => [c.name.common, formatNumber(c.population)]),
-	area: () => countryData.map((c) => [c.name.common, formatNumber(c.area)]),
-	latitude: () => countryData.map((c) => [c.name.common, formatNumber(c.latlng[0])]),
-	longitude: () => countryData.map((c) => [c.name.common, formatNumber(c.latlng[1])]),
-	currency: () => countryData.map((c) => [c.name.common].concat(Object.values(c.currencies).map((co) => co.name))),
-	language: () => countryData.map((c) => [c.name.common].concat(Object.values(c.languages))),
-	region: () => countryData.map((c) => [c.name.common, c.region]),
-	subregion: () => countryData.map((c) => [c.name.common, c.subregion]),
-	timezone: () => countryData.map((c) => [c.name.common].concat(c.timezones)),
+const defaultCountryData: Country = {
+	name: "unknown-name",
+	official_name: "unkown-official-name",
+	cca2: "unknown-cca2",
+	tld: ["-"],
+	unMember: false,
+	population: 0,
+	capital: ["-"],
+	languages: ["-"],
+	currencies: ["-"],
+	timezones: ["-"],
+	region: "unknown-region",
+	subregion: "unknown-subregion",
+	latitude: 0,
+	longitude: 0,
+	area: 0,
+	maps: { googleMaps: "", openStreetMaps: "" },
+	flags: { png: "", svg: "" },
 };
 
-
+// updating and importing the data
 export async function updateDataFromSource() {
 	const url = "https://restcountries.com/v3.1/all";
 
 	logger.debug(`Updating the country data from: ${url}`);
 
-	countryData = await fetch(url)
-		.then((response) => response.json())
-		.catch((err) => logger.debug(err))
-		.then((res) => {
-			return res as Country[];
-		});
+	countryData = CountryDataImportToCountryData(
+		await fetch(url)
+			.then((response) => response.json())
+			.catch((err) => logger.debug(err))
+			.then((res) => {
+				return res as CountryImport[];
+			})
+	);
 
 	fs.writeFile("./src/util/countryUtil/countryData.json", JSON.stringify(countryData), (err) => {
 		if (err) throw err;
@@ -83,7 +104,93 @@ export async function updateDataFromSource() {
 	logger.debug("Updated the country data");
 }
 
-export function getCountryWithItsCCA2(code: string): Country | undefined {
-	return countryData.find((v) => v.cca2 === code) as Country;
+function CountryDataImportToCountryData(countryImport: CountryImport[]): Country[] {
+	const countrydata: Country[] = [];
+
+	countryImport.forEach((c) => {
+		const newCountry: Country = { ...defaultCountryData };
+
+		Object.entries(extractData).forEach(([key, entry]) => {
+			const value = entry(c);
+			if (value !== undefined) {
+				(newCountry[key as CountryKey] as unknown) = value;
+			}
+		});
+
+		countrydata.push(newCountry);
+	});
+
+	return countrydata;
+	//return countryImport.map(c => Object.fromEntries(Object.entries(extractData).map(([k, v]) => [k, v(c) ?? defaultCountryData[k as CountryKey]])) as unknown as Country);
 }
 
+interface CountryImport {
+	name: { common: string; official: string };
+	cca2: string;
+	tld: string[];
+	unMember: boolean;
+	population: number;
+	capital: string[];
+	languages: object;
+	currencies: object;
+	timezones: string[];
+	region: string;
+	subregion: string;
+	latlng: number[];
+	area: number;
+	maps: { googleMaps: string; openStreetMaps: string };
+	flags: { png: string; svg: string };
+}
+
+// sorting the data
+export function sortCountryDataBy(criteria: CountryKey) {
+	countryData.sort((a, b) =>
+		sortingComparators[typeOfCountryProperty(criteria)](
+			a[criteria] as MainCountryDataTypes,
+			b[criteria] as MainCountryDataTypes
+		)
+	);
+}
+
+const sortingComparators: { [id: string]: (a: MainCountryDataTypes, b: MainCountryDataTypes) => number } = {
+	number: (a, b) => (a as number) - (b as number),
+	string: (a, b) => ((a as string).toLowerCase() <= (b as string).toLowerCase() ? -1 : 1),
+	boolean: (a, b) => ((!a as boolean) && (b as boolean) ? -1 : 0),
+	object: (a, b) =>
+		sortingComparators["string"](
+			(a as string[]).sort(sortingComparators["string"])[0] ?? "",
+			(b as string[]).sort(sortingComparators["string"])[0] ?? ""
+		),
+};
+
+// filtering the data
+export function getFilteredCountryDataBy(
+	criteria: CountryKey,
+	relation: string,
+	value: number | string | boolean
+): Country[] {
+	return countryData.filter((c) =>
+		filteringComparators[typeOfCountryProperty(criteria)](c[criteria] as MainCountryDataTypes, relation, value)
+	);
+}
+
+const filteringComparators: {
+	[id: string]: (
+		value: MainCountryDataTypes,
+		relation: keyof typeof dataRelations,
+		valueCom: number | string | boolean
+	) => boolean;
+} = {
+	number: (a, rel, b) => dataRelations[rel](a as number, b as number),
+	string: (a, rel, b) => dataRelations[rel]((a as string).toLowerCase(), (b as string).toLowerCase()),
+	boolean: (a, rel, b) => dataRelations[rel](a as boolean, b as boolean),
+	object: (a, rel, b) => (a as string[]).map((s) => filteringComparators["string"](s, rel, b)).some((e) => e),
+};
+
+const dataRelations: { [id: string]: (a: number | string | boolean, b: number | string | boolean) => boolean } = {
+	eq: (a, b) => a === b,
+	l: (a, b) => a < b,
+	g: (a, b) => a > b,
+	le: (a, b) => a <= b,
+	ge: (a, b) => a >= b,
+};
