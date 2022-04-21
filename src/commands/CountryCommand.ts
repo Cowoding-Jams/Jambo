@@ -16,8 +16,9 @@ import {
 	sortCountryDataBy,
 	typeOfCountryProperty,
 } from "../util/countryDataManager";
+import { formatNumber } from "../util/numbers"
 
-export let formatNumber: (n: number) => string;
+let locale: string = "";
 
 class CountryCommand extends Command {
 	constructor() {
@@ -26,9 +27,7 @@ class CountryCommand extends Command {
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
-		formatNumber = (n: number) => {
-			return n.toLocaleString(interaction.locale);
-		};
+		locale = interaction.locale;
 
 		if (!countryData) {
 			interaction.reply({ content: "Still initiliazing the data, try again later...", ephemeral: true });
@@ -110,9 +109,8 @@ class CountryCommand extends Command {
 				}
 
 				// output
-				const title = `${scale > countryData.length ? "All" : `Top ${scale}`} countries ${
-					(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
-				}${(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](filterValue, filterCriteria)}` : ""}`;
+				const title = `${scale > countryData.length ? "All" : `Top ${scale}`} countries ${(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
+					}${(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](filterValue, filterCriteria)}` : ""}`;
 				interaction.reply({
 					embeds: [
 						getListEmbed(countriesToEmbedForm(data.slice(0, scale), embedDataCriteria, includeData), title, numbered),
@@ -272,7 +270,7 @@ function getOverviewEmbed(country: Country): MessageEmbed {
 		.addFields(
 			{
 				name: "Demographics",
-				value: `- Population size: ${formatNumber(country.population)} (${countryData.indexOf(country) + 1}.)
+				value: `- Population size: ${formatNumber(country.population, locale)} (${countryData.indexOf(country) + 1}.)
 				 - Is ${!country.unMember ? "not" : ""} a member of the UN
 				 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
 				 - Currencie(s): ${country.currencies.join(", ")}
@@ -284,7 +282,7 @@ function getOverviewEmbed(country: Country): MessageEmbed {
 				 - Region: ${country.region}, Subregion: ${country.subregion}
 				 - Coordinates: ${Math.round(country.latitude)}° N/S, ${Math.round(country.longitude)}° E/W
 				 - Timezone(s): ${country.timezones.join(", ")}
-				 - Area: ${formatNumber(country.area)} km²
+				 - Area: ${formatNumber(country.area, locale)} km²
 				 - [Google Maps](${country.maps.googleMaps})`,
 			}
 		)
@@ -324,7 +322,7 @@ function countriesToEmbedForm(countries: Country[], criteria: CountryKey, includ
 	}
 
 	if (typeOfCountryProperty(criteria) === "number") {
-		return countries.map((c) => [c.name, formatNumber(c[criteria] as number)]);
+		return countries.map((c) => [c.name, formatNumber(c[criteria] as number, locale)]);
 	} else if (typeOfCountryProperty(criteria) === "boolean") {
 		return countries.map((c) => [c.name, String(c[criteria])]);
 	} else {
@@ -349,20 +347,16 @@ function countryUndefinedReply(interaction: CommandInteraction) {
 const filteringTitles: { [id: string]: (value: string, criteria: CountryKey) => string } = {
 	eq: (v, c) => `where its ${c} ${typeOfCountryProperty(c) === "object" ? "include" : "is"} ${v}`,
 	l: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} less then ${v}`,
 	g: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} greater then ${v}`,
 	le: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} less then or equal to ${v}`,
 	ge: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} greater then or equal to ${v}`,
 };
 
@@ -378,7 +372,7 @@ const specificRequestReplies: { [id: string]: (country: Country) => string | obj
 	cca2: (country) => `The cca2 code of ${country.name} is ${country.cca2}`,
 	tld: (country) => `The Top Level Domain of ${country.name} is ${country.tld}`,
 	unMember: (country) => `${country.name} is${country.unMember ? " " : " not "} a member of the UN`,
-	population: (country) => `The population size of ${country.name} is: ${formatNumber(country.population)}`,
+	population: (country) => `The population size of ${country.name} is: ${formatNumber(country.population, locale)}`,
 	capital: (country) => `The capital of ${country.name} is ${country.capital}`,
 	languages: (country) => `In ${country.name} these following languages are spoken: ${country.languages.join(", ")}`,
 	currencies: (country) => `In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
@@ -387,5 +381,5 @@ const specificRequestReplies: { [id: string]: (country: Country) => string | obj
 	subregion: (country) => `${country.name} is part of ${country.subregion}`,
 	latitude: (country) => `The latitude of ${country.name} is ${country.latitude}° N/S`,
 	longitude: (country) => `The longitude of ${country.name} is ${country.longitude}° E/W`,
-	area: (country) => `The area of ${country.name} is: ${formatNumber(country.area)} km²`,
+	area: (country) => `The area of ${country.name} is: ${formatNumber(country.area, locale)} km²`,
 };
