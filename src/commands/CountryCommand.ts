@@ -65,7 +65,7 @@ class CountryCommand extends Command {
 				const scale = interaction.options.getInteger("scale") ?? 10;
 				const filterCriteria: CountryKey = (interaction.options.getString("filter-criteria") ?? "none") as CountryKey;
 				const relation = interaction.options.getString("relation") ?? "eq";
-				const filterValue = interaction.options.getString("filter-value") ?? "";
+				let filterValue: string | boolean | number = interaction.options.getString("filter-value") ?? "";
 				let includeData = interaction.options.getBoolean("include-data") ?? true;
 				let numbered = false;
 				let embedDataCriteria: CountryKey = sortCriteria;
@@ -84,24 +84,23 @@ class CountryCommand extends Command {
 
 				// filtering
 				let data: Country[] = countryData;
-				let val: number | string | boolean = filterValue;
 				if ((filterCriteria as string) !== "none") {
 					if (["true", "false"].includes(filterValue)) {
-						val = filterValue === "true";
+						filterValue = filterValue === "true";
 					} else if (!isNaN(+filterValue)) {
-						val = +filterValue;
+						filterValue = +filterValue;
 					}
 
 					if (
-						typeof val !== typeOfCountryProperty(filterCriteria) &&
-						!(typeof val === "string" && typeOfCountryProperty(filterCriteria) === "object")
+						typeof filterValue !== typeOfCountryProperty(filterCriteria) &&
+						!(typeof filterValue === "string" && typeOfCountryProperty(filterCriteria) === "object")
 					) {
 						thatDoesntMakeSenseReply(interaction);
 						break;
 					}
 
 					includeData = true;
-					data = getFilteredCountryDataBy(filterCriteria, relation, val);
+					data = getFilteredCountryDataBy(filterCriteria, relation, filterValue);
 
 					if (relation !== "eq") {
 						embedDataCriteria = filterCriteria;
@@ -110,7 +109,7 @@ class CountryCommand extends Command {
 
 				// output
 				const title = `${scale > countryData.length ? "All" : `Top ${scale}`} countries ${(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
-					}${(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](filterValue, filterCriteria)}` : ""}`;
+					}${(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}` : ""}`;
 				interaction.reply({
 					embeds: [
 						getListEmbed(countriesToEmbedForm(data.slice(0, scale), embedDataCriteria, includeData), title, numbered),
@@ -144,22 +143,9 @@ class CountryCommand extends Command {
 						option
 							.setName("info")
 							.setDescription("The piece of data you want.")
-							.addChoice("official_name", "official_name")
-							.addChoice("population", "population")
 							.addChoice("flag", "flag")
-							.addChoice("region", "region")
-							.addChoice("subregion", "subregion")
-							.addChoice("latitude", "latitude")
-							.addChoice("longitude", "longitude")
-							.addChoice("area", "area")
 							.addChoice("google maps", "map")
-							.addChoice("capital", "capital")
-							.addChoice("languages", "languages")
-							.addChoice("currencies", "currencies")
-							.addChoice("timezones", "timezones")
-							.addChoice("cca2", "cca2")
-							.addChoice("tld", "tld")
-							.addChoice("unMember", "unMember")
+							.addChoices(this.defaultchoices.slice(1))
 							.setRequired(true)
 					)
 					.addStringOption(getCountryOption)
@@ -173,21 +159,7 @@ class CountryCommand extends Command {
 							.setName("sort-criteria")
 							.setDescription("criteria to sort by")
 							.addChoice("none", "none")
-							.addChoice("name", "name")
-							.addChoice("official_name", "official_name")
-							.addChoice("cca2", "cca2")
-							.addChoice("tld", "tld")
-							.addChoice("unMember", "unMember")
-							.addChoice("population", "population")
-							.addChoice("capital", "capital")
-							.addChoice("languages", "languages")
-							.addChoice("currencies", "currencies")
-							.addChoice("timezones", "timezones")
-							.addChoice("region", "region")
-							.addChoice("subregion", "subregion")
-							.addChoice("latitude", "latitude")
-							.addChoice("longitude", "longitude")
-							.addChoice("area", "area")
+							.addChoices(this.defaultchoices)
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -214,21 +186,7 @@ class CountryCommand extends Command {
 							.setName("filter-criteria")
 							.setDescription("Criteria to filter by.")
 							.addChoice("none", "none")
-							.addChoice("name", "name")
-							.addChoice("official_name", "official_name")
-							.addChoice("cca2", "cca2")
-							.addChoice("tld", "tld")
-							.addChoice("unMember", "unMember")
-							.addChoice("population", "population")
-							.addChoice("capital", "capital")
-							.addChoice("languages", "languages")
-							.addChoice("currencies", "currencies")
-							.addChoice("timezones", "timezones")
-							.addChoice("region", "region")
-							.addChoice("subregion", "subregion")
-							.addChoice("latitude", "latitude")
-							.addChoice("longitude", "longitude")
-							.addChoice("area", "area")
+							.addChoices(this.defaultchoices)
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -254,6 +212,24 @@ class CountryCommand extends Command {
 					)
 			);
 	}
+
+	defaultchoices: [string, string][] = [
+		["name", "name"],
+		["official_name", "official_name"],
+		["cca2", "cca2"],
+		["tld", "tld"],
+		["unMember", "unMember"],
+		["population", "population"],
+		["capital", "capital"],
+		["languages", "languages"],
+		["currencies", "currencies"],
+		["timezones", "timezones"],
+		["region", "region"],
+		["subregion", "subregion"],
+		["latitude", "latitude"],
+		["longitude", "longitude"],
+		["area", "area"]
+	];
 }
 
 export default new CountryCommand();
