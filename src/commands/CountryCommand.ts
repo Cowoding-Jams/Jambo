@@ -18,6 +18,7 @@ import {
 } from "../util/countryDataManager";
 import { formatNumber } from "../util/numbers"
 import { addDefaultEmbedFooter } from "util/embeds";
+import { pickRandomFromList, shuffleList } from "util/random";
 
 let locale: string = "";
 
@@ -35,9 +36,9 @@ class CountryCommand extends Command {
 			return;
 		}
 
+		const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
 		switch (interaction.options.getSubcommand()) {
 			case "overview": {
-				const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
 				if (country == undefined) {
 					countryUndefinedReply(interaction);
 				} else {
@@ -46,11 +47,10 @@ class CountryCommand extends Command {
 				break;
 			}
 			case "random": {
-				interaction.reply({ embeds: [getOverviewEmbed(countryData[Math.floor(Math.random() * countryData.length)])] });
+				interaction.reply({ embeds: [getOverviewEmbed(pickRandomFromList(countryData))] });
 				break;
 			}
 			case "specific": {
-				const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
 				const info: string = interaction.options.getString("info") ?? "population";
 
 				if (country == undefined) {
@@ -79,7 +79,7 @@ class CountryCommand extends Command {
 						countryData.reverse();
 					}
 				} else {
-					countryData.sort(() => Math.random() - 0.5); // shuffle
+					shuffleList(countryData);
 					includeData = false;
 				}
 
