@@ -17,6 +17,7 @@ import {
 	typeOfCountryProperty,
 } from "../util/countryDataManager";
 import { formatNumber } from "../util/numbers"
+import { addDefaultEmbedFooter } from "util/embeds";
 
 let locale: string = "";
 
@@ -29,7 +30,7 @@ class CountryCommand extends Command {
 	async execute(interaction: CommandInteraction): Promise<void> {
 		locale = interaction.locale;
 
-		if (!countryData) {
+		if (countryData.length === 0) {
 			interaction.reply({ content: "Still initiliazing the data, try again later...", ephemeral: true });
 			return;
 		}
@@ -239,7 +240,7 @@ function getCountryOption(option: SlashCommandStringOption) {
 }
 
 function getOverviewEmbed(country: Country): MessageEmbed {
-	return new MessageEmbed()
+	const embed = new MessageEmbed()
 		.setTitle(country.name)
 		.setThumbnail(country.flags.png)
 		.setDescription(`(officially: ${country.official_name}, code: ${country.cca2})`)
@@ -247,28 +248,23 @@ function getOverviewEmbed(country: Country): MessageEmbed {
 			{
 				name: "Demographics",
 				value: `- Population size: ${formatNumber(country.population, locale)} (${countryData.indexOf(country) + 1}.)
-				 - Is ${!country.unMember ? "not" : ""} a member of the UN
-				 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
-				 - Currencie(s): ${country.currencies.join(", ")}
-				 - Language(s): ${Object.values(country.languages).join(", ")}`,
+			 - Is ${!country.unMember ? "not" : ""} a member of the UN
+			 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
+			 - Currencie(s): ${country.currencies.join(", ")}
+			 - Language(s): ${Object.values(country.languages).join(", ")}`,
 			},
 			{
 				name: "Geographics",
 				value: `- Capital: ${country.capital.join(", ")}
-				 - Region: ${country.region}, Subregion: ${country.subregion}
-				 - Coordinates: ${Math.round(country.latitude)}° N/S, ${Math.round(country.longitude)}° E/W
-				 - Timezone(s): ${country.timezones.join(", ")}
-				 - Area: ${formatNumber(country.area, locale)} km²
-				 - [Google Maps](${country.maps.googleMaps})`,
+			 - Region: ${country.region}, Subregion: ${country.subregion}
+			 - Coordinates: ${Math.round(country.latitude)}° N/S, ${Math.round(country.longitude)}° E/W
+			 - Timezone(s): ${country.timezones.join(", ")}
+			 - Area: ${formatNumber(country.area, locale)} km²
+			 - [Google Maps](${country.maps.googleMaps})`,
 			}
-		)
-		.setAuthor({
-			name: "Made by me, Jambo :)",
-			iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
-			url: "https://github.com/Cowoding-Jams/Jambo",
-		})
-		.setColor("#F0A5AC")
-		.setTimestamp();
+		);
+
+	return addDefaultEmbedFooter(embed);
 }
 
 function getListEmbed(data: string[][], title: string, numbered: boolean): MessageEmbed {
@@ -280,16 +276,10 @@ function getListEmbed(data: string[][], title: string, numbered: boolean): Messa
 		des = data.map((c) => `- ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
 	}
 
-	return new MessageEmbed()
+	return addDefaultEmbedFooter(new MessageEmbed()
 		.setTitle(title)
 		.setDescription(des)
-		.setAuthor({
-			name: "Made by me, Jambo :)",
-			iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
-			url: "https://github.com/Cowoding-Jams/Jambo",
-		})
-		.setColor("#F0A5AC")
-		.setTimestamp();
+	);
 }
 
 function countriesToEmbedForm(countries: Country[], criteria: CountryKey, includeData: boolean): string[][] {
