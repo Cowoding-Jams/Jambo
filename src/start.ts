@@ -18,9 +18,9 @@ async function start(): Promise<Client> {
 	logger.debug("Creating client...");
 	const client = new Client({ intents: [] });
 
-	logger.debug("loading context...");
+	logger.debug("Loading context...");
 	ctx.update(await loadCommands(), await loadButtonHandlers(), await loadAutocompleters());
-	logger.debug("loading events...");
+	logger.debug("Loading events...");
 	await loadEvents(client);
 	logger.debug("Attempting login");
 	await client.login(process.env.TOKEN);

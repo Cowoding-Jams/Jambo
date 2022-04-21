@@ -84,7 +84,7 @@ const defaultCountryData: Country = {
 export async function initializeCountryData() {
 	const url = "https://restcountries.com/v3.1/all";
 
-	logger.debug("fetching the country data");
+	logger.debug("Fetching the country data");
 
 	countryData = countryDataImportToCountryData(
 		await fetch(url)
@@ -95,7 +95,7 @@ export async function initializeCountryData() {
 			})
 	).sort((a, b) => b.population - a.population);
 
-	logger.debug("initialized the country data");
+	logger.debug("Initialized the country data");
 }
 
 function countryDataImportToCountryData(countryImport: CountryImport[]): Country[] {

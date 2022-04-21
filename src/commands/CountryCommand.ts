@@ -39,10 +39,10 @@ class CountryCommand extends Command {
 		const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
 		switch (interaction.options.getSubcommand()) {
 			case "overview": {
-				if (country == undefined) {
-					countryUndefinedReply(interaction);
-				} else {
+				if (country) {
 					interaction.reply({ embeds: [getOverviewEmbed(country)] });
+				} else {
+					countryUndefinedReply(interaction);
 				}
 				break;
 			}
