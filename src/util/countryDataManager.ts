@@ -35,9 +35,9 @@ export function getCountryByCriteriaAndValue(criteria: CountryKey, value: MainCo
 }
 
 export function typeOfCountryProperty(criteria: CountryKey) {
-	type ValueOf<T> = T[keyof T];
-	const representative: ValueOf<Country> = countryData[0][criteria];
-	return typeof representative;
+	// type ValueOf<T> = T[keyof T];
+	// const representative: ValueOf<Country> = countryData[0][criteria];
+	return typeof countryData[0][criteria];
 }
 
 const extractData: { [id: string]: (c: CountryImport) => MainCountryDataTypes | undefined | object } = {
@@ -86,7 +86,7 @@ export async function initializeCountryData() {
 
 	logger.debug("fetching the country data");
 
-	countryData = CountryDataImportToCountryData(
+	countryData = countryDataImportToCountryData(
 		await fetch(url)
 			.then((response) => response.json())
 			.catch((err) => logger.debug(err))
@@ -98,7 +98,7 @@ export async function initializeCountryData() {
 	logger.debug("initialized the country data");
 }
 
-function CountryDataImportToCountryData(countryImport: CountryImport[]): Country[] {
+function countryDataImportToCountryData(countryImport: CountryImport[]): Country[] {
 	const countrydata: Country[] = [];
 
 	countryImport.forEach((c) => {

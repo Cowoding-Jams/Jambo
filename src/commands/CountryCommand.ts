@@ -131,11 +131,11 @@ class CountryCommand extends Command {
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
 			.setName("country")
-			.setDescription("accessing country data")
+			.setDescription("Accessing country data.")
 			.addSubcommand((option) =>
-				option.setName("overview").setDescription("lists all the data from a country").addStringOption(getCountryOption)
+				option.setName("overview").setDescription("Lists all the data from a country.").addStringOption(getCountryOption)
 			)
-			.addSubcommand((option) => option.setName("random").setDescription("lists all the data from a random country"))
+			.addSubcommand((option) => option.setName("random").setDescription("Lists all the data from a random country."))
 			.addSubcommand((option) =>
 				option
 					.setName("specific")
@@ -143,7 +143,7 @@ class CountryCommand extends Command {
 					.addStringOption((option) =>
 						option
 							.setName("info")
-							.setDescription("the piece of data you want")
+							.setDescription("The piece of data you want.")
 							.addChoice("official_name", "official_name")
 							.addChoice("population", "population")
 							.addChoice("flag", "flag")
@@ -167,7 +167,7 @@ class CountryCommand extends Command {
 			.addSubcommand((option) =>
 				option
 					.setName("query")
-					.setDescription("lets you sort and filter the countries with queries")
+					.setDescription("Lets you sort and filter the countries with queries.")
 					.addStringOption((option) =>
 						option
 							.setName("sort-criteria")
@@ -193,7 +193,7 @@ class CountryCommand extends Command {
 					.addStringOption((option) =>
 						option
 							.setName("order")
-							.setDescription("determines the order")
+							.setDescription("Determines the order.")
 							.addChoice("ascending", "ascending")
 							.addChoice("descending", "descending")
 							.setRequired(true)
@@ -201,7 +201,7 @@ class CountryCommand extends Command {
 					.addIntegerOption((option) =>
 						option
 							.setName("scale")
-							.setDescription("set which part you want to see")
+							.setDescription("Set which part you want to see.")
 							.addChoice("top 10", 10)
 							.addChoice("top 25", 25)
 							.addChoice("top 50", 50)
@@ -212,7 +212,7 @@ class CountryCommand extends Command {
 					.addStringOption((option) =>
 						option
 							.setName("filter-criteria")
-							.setDescription("criteria to filter by")
+							.setDescription("Criteria to filter by.")
 							.addChoice("none", "none")
 							.addChoice("name", "name")
 							.addChoice("official_name", "official_name")
@@ -234,7 +234,7 @@ class CountryCommand extends Command {
 					.addStringOption((option) =>
 						option
 							.setName("relation")
-							.setDescription("relation to test the criteria on")
+							.setDescription("Relation to test the criteria on.")
 							.addChoice("equals (==)", "eq")
 							.addChoice("less then (<)", "l")
 							.addChoice("greater then (>)", "g")
@@ -245,12 +245,12 @@ class CountryCommand extends Command {
 					.addStringOption((option) =>
 						option
 							.setName("filter-value")
-							.setDescription("value to use for the relation")
+							.setDescription("Value to use for the relation.")
 							.setRequired(true)
 							.setAutocomplete(true)
 					)
 					.addBooleanOption((option) =>
-						option.setName("include-data").setDescription("set whether or not the list includes the data")
+						option.setName("include-data").setDescription("Set whether or not the list includes the data.")
 					)
 			);
 	}
@@ -259,7 +259,7 @@ class CountryCommand extends Command {
 export default new CountryCommand();
 
 function getCountryOption(option: SlashCommandStringOption) {
-	return option.setName("country").setDescription("name of the country").setRequired(true).setAutocomplete(true);
+	return option.setName("country").setDescription("Name of the country.").setRequired(true).setAutocomplete(true);
 }
 
 function getOverviewEmbed(country: Country): MessageEmbed {
