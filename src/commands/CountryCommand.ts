@@ -158,7 +158,7 @@ class CountryCommand extends Command {
 					.addStringOption((option) =>
 						option
 							.setName("sort-criteria")
-							.setDescription("criteria to sort by")
+							.setDescription("Criteria to sort by.")
 							.addChoice("none", "none")
 							.addChoices(this.defaultchoices)
 							.setRequired(true)
