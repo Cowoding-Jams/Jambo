@@ -55,11 +55,10 @@ export function querySubcommand(interaction: CommandInteraction) {
 	}
 
 	// output
-	const title = `${scale > countryData.length ? "All" : `Top ${scale}`} countries ${
-		(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
-	}${
-		(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}` : ""
-	}`;
+	const titleStart = (scale > countryData.length) ? "All" : `Top ${scale}`;
+	const titleSort = ((sortCriteria as string) !== "none") ? `listed by ${sortCriteria} in ${order} order` : "shuffeled";
+	const titleFilter = ((filterCriteria as string) !== "none") ? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}` : "";
+	const title = `${titleStart} countries ${titleSort}${titleFilter}`;
 	interaction.reply({
 		embeds: [
 			getListEmbed(
@@ -93,20 +92,16 @@ function getListEmbed(data: string[][], title: string, numbered: boolean): Messa
 const filteringTitles: { [id: string]: (value: string, criteria: CountryKey) => string } = {
 	eq: (v, c) => `where its ${c} ${typeOfCountryProperty(c) === "object" ? "include" : "is"} ${v}`,
 	l: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} less then ${v}`,
 	g: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} greater then ${v}`,
 	le: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} less then or equal to ${v}`,
 	ge: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${
-			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} greater then or equal to ${v}`,
 };
 
