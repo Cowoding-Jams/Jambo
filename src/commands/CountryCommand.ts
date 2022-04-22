@@ -65,7 +65,7 @@ class CountryCommand extends Command {
 			.addSubcommand((option) =>
 				option
 					.setName("specific")
-					.setDescription("gives you a specific information about a country")
+					.setDescription("Gives you a specific information about a country.")
 					.addStringOption((option) =>
 						option
 							.setName("info")

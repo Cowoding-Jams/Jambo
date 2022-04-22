@@ -7,7 +7,7 @@ export function pickRandomFromList<T>(list: T[]): T {
 }
 
 /** 
- * upperbound is not included
+ * int in [lowerbound, upperbount) (upperbound is not included)
  */
 export function randInt(lowerbound: number, upperbound: number) {
 	return lowerbound + Math.floor(Math.random() * (upperbound - lowerbound));
