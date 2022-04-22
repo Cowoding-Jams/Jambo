@@ -53,10 +53,10 @@ class CountryCommand extends Command {
 			case "specific": {
 				const info: string = interaction.options.getString("info") ?? "population";
 
-				if (country == undefined) {
-					countryUndefinedReply(interaction);
-				} else {
+				if (country) {
 					interaction.reply(specificRequestReplies[info](country));
+				} else {
+					countryUndefinedReply(interaction);
 				}
 				break;
 			}
@@ -87,7 +87,7 @@ class CountryCommand extends Command {
 				let data: Country[] = countryData;
 				if ((filterCriteria as string) !== "none") {
 					if (["true", "false"].includes(filterValue)) {
-						filterValue = filterValue === "true";
+						filterValue = Boolean(filterValue);
 					} else if (!isNaN(+filterValue)) {
 						filterValue = +filterValue;
 					}
@@ -146,7 +146,7 @@ class CountryCommand extends Command {
 							.setDescription("The piece of data you want.")
 							.addChoice("flag", "flag")
 							.addChoice("google maps", "map")
-							.addChoices(this.defaultchoices.slice(1))
+							.addChoices(this.countryInformationChoices.slice(1))
 							.setRequired(true)
 					)
 					.addStringOption(getCountryOption)
@@ -160,7 +160,7 @@ class CountryCommand extends Command {
 							.setName("sort-criteria")
 							.setDescription("Criteria to sort by.")
 							.addChoice("none", "none")
-							.addChoices(this.defaultchoices)
+							.addChoices(this.countryInformationChoices)
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -187,7 +187,7 @@ class CountryCommand extends Command {
 							.setName("filter-criteria")
 							.setDescription("Criteria to filter by.")
 							.addChoice("none", "none")
-							.addChoices(this.defaultchoices)
+							.addChoices(this.countryInformationChoices)
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -214,7 +214,7 @@ class CountryCommand extends Command {
 			);
 	}
 
-	defaultchoices: [string, string][] = [
+	countryInformationChoices: [string, string][] = [
 		["name", "name"],
 		["official_name", "official_name"],
 		["cca2", "cca2"],
