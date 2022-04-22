@@ -1,14 +1,7 @@
 import { Command } from "../Command";
 import { CommandInteraction } from "discord.js";
-import {
-	SlashCommandBuilder,
-	SlashCommandStringOption,
-	SlashCommandSubcommandsOnlyBuilder,
-} from "@discordjs/builders";
-import {
-	countryData,
-	initializeCountryData
-} from "../util/countryCommand/countryDataManager";
+import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
+import { countryData, initializeCountryData } from "../util/countryCommand/countryDataManager";
 import { overviewSubcommand, randomOverviewSubcommand } from "util/countryCommand/overviewSubcommand";
 import { specificCommand } from "util/countryCommand/specificSubcommand";
 import { querySubcommand } from "util/countryCommand/querySubcommand";
@@ -23,11 +16,10 @@ class CountryCommand extends Command {
 		if (countryData.length === 0) {
 			interaction.reply({
 				content: "Still initiliazing the data, try again later...",
-				ephemeral: true
+				ephemeral: true,
 			});
 			return;
 		}
-
 
 		switch (interaction.options.getSubcommand()) {
 			case "overview": {
@@ -49,7 +41,7 @@ class CountryCommand extends Command {
 			default: {
 				interaction.reply({
 					content: "Sorry, I don't know what to do... I've never heard of that subcommand.",
-					ephemeral: true
+					ephemeral: true,
 				});
 				break;
 			}
@@ -147,8 +139,6 @@ class CountryCommand extends Command {
 					)
 			);
 	}
-
-
 }
 
 function getCountryOption(option: SlashCommandStringOption) {
@@ -174,6 +164,3 @@ const defaultCountryInformationChoices: [string, string][] = [
 ];
 
 export default new CountryCommand();
-
-
-
