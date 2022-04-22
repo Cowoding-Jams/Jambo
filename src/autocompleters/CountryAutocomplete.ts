@@ -12,7 +12,7 @@ class CountryAutocompleter extends Autocompleter {
 		if (countryData.length === 0) {
 			logger.debug("can't autocomplete because the country data is still being initialized");
 			await interaction.respond([
-				{ name: "I can't autocomplete because the data is still being initialized", value: "-" }
+				{ name: "I can't autocomplete because the data is still being initialized", value: "-" },
 			]);
 			return;
 		}
@@ -25,10 +25,9 @@ class CountryAutocompleter extends Autocompleter {
 		}
 
 		// any other command only needs the default country autocompletion
-		const matchingCountries: string[] =
-			countryData
-				.map((c) => c.name)
-				.filter((t) => t.toLowerCase().startsWith(input.toLowerCase()));
+		const matchingCountries: string[] = countryData
+			.map((c) => c.name)
+			.filter((t) => t.toLowerCase().startsWith(input.toLowerCase()));
 
 		await interaction.respond(matchingCountries.map(returnChoiceWithSameValues).slice(0, 25));
 	}
@@ -77,4 +76,3 @@ function returnChoiceWithSameValues(e: string): ApplicationCommandOptionChoice {
 }
 
 export default new CountryAutocompleter();
-

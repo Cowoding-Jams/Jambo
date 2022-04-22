@@ -16,11 +16,11 @@ import {
 	sortCountryDataBy,
 	typeOfCountryProperty,
 } from "../util/countryDataManager";
-import { formatNumber } from "../util/numbers"
+import { formatNumber } from "../util/numbers";
 import { addDefaultEmbedFooter } from "util/embeds";
 import { pickRandomFromList, shuffleList } from "util/random";
 
-let locale: string = "";
+let locale = "";
 
 class CountryCommand extends Command {
 	constructor() {
@@ -109,8 +109,13 @@ class CountryCommand extends Command {
 				}
 
 				// output
-				const title = `${scale > countryData.length ? "All" : `Top ${scale}`} countries ${(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
-					}${(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}` : ""}`;
+				const title = `${scale > countryData.length ? "All" : `Top ${scale}`} countries ${
+					(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled"
+				}${
+					(filterCriteria as string) !== "none"
+						? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}`
+						: ""
+				}`;
 				interaction.reply({
 					embeds: [
 						getListEmbed(countriesToEmbedForm(data.slice(0, scale), embedDataCriteria, includeData), title, numbered),
@@ -133,7 +138,10 @@ class CountryCommand extends Command {
 			.setName("country")
 			.setDescription("Accessing country data.")
 			.addSubcommand((option) =>
-				option.setName("overview").setDescription("Lists all the data from a country.").addStringOption(getCountryOption)
+				option
+					.setName("overview")
+					.setDescription("Lists all the data from a country.")
+					.addStringOption(getCountryOption)
 			)
 			.addSubcommand((option) => option.setName("random").setDescription("Lists all the data from a random country."))
 			.addSubcommand((option) =>
@@ -229,7 +237,7 @@ class CountryCommand extends Command {
 		["subregion", "subregion"],
 		["latitude", "latitude"],
 		["longitude", "longitude"],
-		["area", "area"]
+		["area", "area"],
 	];
 }
 
@@ -276,10 +284,7 @@ function getListEmbed(data: string[][], title: string, numbered: boolean): Messa
 		des = data.map((c) => `- ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
 	}
 
-	return addDefaultEmbedFooter(new MessageEmbed()
-		.setTitle(title)
-		.setDescription(des)
-	);
+	return addDefaultEmbedFooter(new MessageEmbed().setTitle(title).setDescription(des));
 }
 
 function countriesToEmbedForm(countries: Country[], criteria: CountryKey, includeData: boolean): string[][] {
@@ -313,16 +318,20 @@ function countryUndefinedReply(interaction: CommandInteraction) {
 const filteringTitles: { [id: string]: (value: string, criteria: CountryKey) => string } = {
 	eq: (v, c) => `where its ${c} ${typeOfCountryProperty(c) === "object" ? "include" : "is"} ${v}`,
 	l: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} less then ${v}`,
 	g: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} greater then ${v}`,
 	le: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} less then or equal to ${v}`,
 	ge: (v, c) =>
-		`where its ${c} ${filterTitleIncludePart(c)}${typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
+		`where its ${c} ${filterTitleIncludePart(c)}${
+			typeOfCountryProperty(c) === "string" ? " alphabetically" : ""
 		} greater then or equal to ${v}`,
 };
 
