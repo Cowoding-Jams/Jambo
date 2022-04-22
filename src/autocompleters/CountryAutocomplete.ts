@@ -1,6 +1,6 @@
 import { Autocompleter } from "../Autocompleter";
 import { ApplicationCommandOptionChoice, AutocompleteInteraction } from "discord.js";
-import { countryData, CountryKey, typeOfCountryProperty } from "../util/countryDataManager";
+import { countryData, CountryKey, typeOfCountryProperty } from "../util/countryCommand/countryDataManager";
 import { logger } from "../logger";
 
 class CountryAutocompleter extends Autocompleter {
