@@ -1,6 +1,7 @@
 import { CommandInteraction } from "discord.js";
 import { countryUndefinedReply } from "./generalCountryCommandUtil";
-import { Country, getCountryByName } from "./countryDataManager";
+import { Country } from "./typesCountryCommand";
+import { getCountryByName } from "./countryDataManager";
 import { formatNumber } from "util/numbers";
 
 export function specificCommand(interaction: CommandInteraction) {
