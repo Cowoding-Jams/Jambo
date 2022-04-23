@@ -1,7 +1,7 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { addDefaultEmbedFooter } from "util/embeds";
-import { formatNumber } from "util/numbers";
-import { shuffleList } from "util/random";
+import { addDefaultEmbedFooter } from "../embeds";
+import { formatNumber } from "../numbers";
+import { shuffleList } from "../random";
 import { countryData } from "./countryDataLoader";
 import { getFilteredCountryDataBy, sortCountryDataBy, typeOfCountryProperty } from "./countryDataManager";
 import { Country, CountryKey } from "./typesCountryCommand";

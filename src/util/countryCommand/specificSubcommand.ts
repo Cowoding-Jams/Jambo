@@ -2,7 +2,7 @@ import { CommandInteraction } from "discord.js";
 import { countryUndefinedReply } from "./generalCountryCommandUtil";
 import { Country } from "./typesCountryCommand";
 import { getCountryByName } from "./countryDataManager";
-import { formatNumber } from "util/numbers";
+import { formatNumber } from "../numbers";
 
 export function specificCommand(interaction: CommandInteraction) {
 	const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");

@@ -2,9 +2,9 @@ import { Command } from "../Command";
 import { CommandInteraction } from "discord.js";
 import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { countryData, initializeCountryData } from "../util/countryCommand/countryDataLoader";
-import { overviewSubcommand, randomOverviewSubcommand } from "util/countryCommand/overviewSubcommand";
-import { specificCommand } from "util/countryCommand/specificSubcommand";
-import { querySubcommand } from "util/countryCommand/querySubcommand";
+import { overviewSubcommand, randomOverviewSubcommand } from "../util/countryCommand/overviewSubcommand";
+import { specificCommand } from "../util/countryCommand/specificSubcommand";
+import { querySubcommand } from "../util/countryCommand/querySubcommand";
 
 class CountryCommand extends Command {
 	constructor() {
