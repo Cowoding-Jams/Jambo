@@ -6,7 +6,7 @@ export function pickRandomFromList<T>(list: T[]): T {
 	return list[randInt(0, list.length)];
 }
 
-/** 
+/**
  * int in [lowerbound, upperbount) (upperbound is not included)
  */
 export function randInt(lowerbound: number, upperbound: number) {
