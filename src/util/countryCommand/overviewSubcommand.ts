@@ -2,7 +2,7 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 import { inlineCode } from "@discordjs/builders";
 import { getCountryByName } from "./countryDataManager";
 import { Country } from "./typesCountryCommand";
-import { countryUndefinedReply } from "./generalCountryCommandUtil";
+import { handleUndefinedCountry } from "./generalCountryCommandUtil";
 import { addDefaultEmbedFooter } from "../embeds";
 import { formatNumber } from "../numbers";
 import { pickRandomFromList } from "../random";
@@ -14,7 +14,7 @@ export function overviewSubcommand(interaction: CommandInteraction) {
 	if (country) {
 		interaction.reply({ embeds: [getOverviewEmbed(country, interaction.locale)] });
 	} else {
-		countryUndefinedReply(interaction);
+		handleUndefinedCountry(interaction);
 	}
 }
 

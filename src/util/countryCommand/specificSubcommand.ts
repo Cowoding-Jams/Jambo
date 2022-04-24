@@ -1,5 +1,5 @@
 import { CommandInteraction } from "discord.js";
-import { countryUndefinedReply } from "./generalCountryCommandUtil";
+import { handleUndefinedCountry } from "./generalCountryCommandUtil";
 import { Country } from "./typesCountryCommand";
 import { getCountryByName } from "./countryDataManager";
 import { formatNumber } from "../numbers";
@@ -12,7 +12,7 @@ export function specificCommand(interaction: CommandInteraction) {
 	if (country) {
 		interaction.reply(specificRequestReplies[info](country, interaction.locale));
 	} else {
-		countryUndefinedReply(interaction);
+		handleUndefinedCountry(interaction);
 	}
 }
 

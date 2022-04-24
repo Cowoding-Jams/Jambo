@@ -42,7 +42,7 @@ export function querySubcommand(interaction: CommandInteraction) {
 			typeof filterValue !== typeOfCountryProperty(filterCriteria) &&
 			!(typeof filterValue === "string" && typeOfCountryProperty(filterCriteria) === "object")
 		) {
-			thatDoesntMakeSenseReply(interaction);
+			filterValueTypeDoesNotMatchCriteriaType(interaction);
 			return;
 		}
 
@@ -71,9 +71,10 @@ export function querySubcommand(interaction: CommandInteraction) {
 	});
 }
 
-function thatDoesntMakeSenseReply(interaction: CommandInteraction) {
+function filterValueTypeDoesNotMatchCriteriaType(interaction: CommandInteraction) {
 	interaction.reply({
-		content: "Now I don't want to call you dumb infront of everyone but that just makes no sense...",
+		content:
+			"Now I don't want to call you dumb infront of everyone but that just makes no sense...\nThat filter value just doesn't match the type of the criteria you wanted to filter by.",
 		ephemeral: true,
 	});
 }
