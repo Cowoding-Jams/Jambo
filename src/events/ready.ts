@@ -51,7 +51,7 @@ function commandsEqual(
 	return (
 		c1.name === c2.name &&
 		c1.description === c2.description &&
-		// this causes the bot to always update the commands
+		// this causes the bot to always update the country Command
 		// the SlashCommandSubcommandsOnlyBuilder has no .options parameter
 		JSON.stringify(c1.options) === JSON.stringify(c2.toJSON().options ?? [])
 	);
