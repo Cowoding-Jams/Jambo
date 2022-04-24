@@ -10,8 +10,6 @@ export function getCountryByCriteriaAndValue(criteria: CountryKey, value: MainCo
 }
 
 export function typeOfCountryProperty(criteria: CountryKey) {
-	// type ValueOf<T> = T[keyof T];
-	// const representative: ValueOf<Country> = countryData[0][criteria];
 	return typeof countryData[0][criteria];
 }
 

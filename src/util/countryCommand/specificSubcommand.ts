@@ -24,7 +24,7 @@ const specificRequestReplies: { [id: string]: (country: Country, locale: string)
 	map: (country) => `You can find ${country.name} on google maps here: ${country.maps.googleMaps}`,
 	cca2: (country) => `The cca2 code of ${country.name} is ${country.cca2}`,
 	tld: (country) => `The Top Level Domain of ${country.name} is ${country.tld}`,
-	unMember: (country) => `${country.name} is${country.unMember ? " " : " not "} a member of the UN`,
+	unMember: (country) => `${country.name} is${country.unMember ? " " : " not "}a member of the UN`,
 	population: (country, locale) =>
 		`The population size of ${country.name} is: ${formatNumber(country.population, locale)}`,
 	capital: (country) => `The capital of ${country.name} is ${country.capital}`,

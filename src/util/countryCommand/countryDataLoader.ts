@@ -34,8 +34,6 @@ function countryDataImportToCountryData(countryImport: CountryImport[]): Country
 
 		return newCountry;
 	});
-
-	//return countryImport.map(c => Object.fromEntries(Object.entries(extractData).map(([k, v]) => [k, v(c) ?? defaultCountryData[k as CountryKey]])) as unknown as Country);
 }
 
 const defaultCountryData: Country = {
