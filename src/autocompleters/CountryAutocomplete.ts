@@ -1,9 +1,10 @@
 import { Autocompleter } from "../Autocompleter";
-import { ApplicationCommandOptionChoice, AutocompleteInteraction } from "discord.js";
+import { AutocompleteInteraction } from "discord.js";
 import { typeOfCountryProperty } from "../util/countryCommand/countryDataManager";
 import { countryData } from "../util/countryCommand/countryDataLoader";
 import { CountryKey } from "../util/countryCommand/typesCountryCommand";
 import { logger } from "../logger";
+import { returnChoiceWithSameValues } from "../util/countryCommand/generalCountryCommandUtil";
 
 class CountryAutocompleter extends Autocompleter {
 	constructor() {
@@ -71,10 +72,6 @@ class CountryAutocompleter extends Autocompleter {
 			await interaction.respond([returnChoiceWithSameValues("true"), returnChoiceWithSameValues("false")]);
 		}
 	}
-}
-
-function returnChoiceWithSameValues(e: string): ApplicationCommandOptionChoice {
-	return { name: e, value: e };
 }
 
 export default new CountryAutocompleter();

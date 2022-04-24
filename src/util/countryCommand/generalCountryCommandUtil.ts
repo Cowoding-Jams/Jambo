@@ -1,4 +1,8 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, ApplicationCommandOptionChoice } from "discord.js";
+
+export function returnChoiceWithSameValues(e: string): ApplicationCommandOptionChoice {
+	return { name: e, value: e };
+}
 
 export function handleUndefinedCountry(interaction: CommandInteraction) {
 	interaction.reply({
