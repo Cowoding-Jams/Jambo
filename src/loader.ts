@@ -1,7 +1,7 @@
 import { Client, Collection } from "discord.js";
 import { Command } from "./Command";
 import { Autocompleter } from "./Autocompleter";
-import * as fs from "fs";
+import fs from "fs";
 import { ButtonHandler } from "./ButtonHandler";
 import { logger } from "./logger";
 

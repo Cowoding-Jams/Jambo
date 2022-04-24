@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
 
 export abstract class Command {
@@ -8,5 +8,8 @@ export abstract class Command {
 
 	public readonly name: string;
 	abstract execute(interaction: CommandInteraction): Promise<void>;
-	abstract register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
+	abstract register():
+		| SlashCommandBuilder
+		| SlashCommandSubcommandsOnlyBuilder
+		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
 }
