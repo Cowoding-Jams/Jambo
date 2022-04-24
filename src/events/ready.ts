@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { ApplicationCommand, Client } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
@@ -43,11 +43,16 @@ async function updateRegisteredCommands(client: Client) {
 
 function commandsEqual(
 	c1: ApplicationCommand,
-	c2: SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
+	c2:
+		| SlashCommandBuilder
+		| SlashCommandSubcommandsOnlyBuilder
+		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
 ): boolean {
 	return (
 		c1.name === c2.name &&
 		c1.description === c2.description &&
-		JSON.stringify(c1.options) === JSON.stringify(c2.options)
+		// this causes the bot to always update the country Command
+		// the SlashCommandSubcommandsOnlyBuilder has no .options parameter
+		JSON.stringify(c1.options) === JSON.stringify(c2.toJSON().options ?? [])
 	);
 }

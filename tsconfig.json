@@ -14,13 +14,15 @@
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"noImplicitAny": true,
+		"resolveJsonModule": true,
 		"strictFunctionTypes": true,
 		"strictBindCallApply": true,
 		"strictPropertyInitialization": true,
 		"noImplicitThis": true,
 		"noUnusedLocals": true,
 		"allowUnreachableCode": false,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"sourceMap": true
 	},
 	"include": ["src/**/*"],
 	"ts-node": {
