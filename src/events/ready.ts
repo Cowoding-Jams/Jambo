@@ -53,6 +53,6 @@ function commandsEqual(
 		c1.description === c2.description &&
 		// this causes the bot to always update the commands
 		// the SlashCommandSubcommandsOnlyBuilder has no .options parameter
-		JSON.stringify(c1.options) === JSON.stringify(c2.toJSON)
+		JSON.stringify(c1.options) === JSON.stringify(c2.toJSON().options ?? [])
 	);
 }

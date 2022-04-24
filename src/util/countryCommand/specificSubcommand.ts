@@ -5,7 +5,7 @@ import { getCountryByName } from "./countryDataManager";
 import { formatNumber } from "../numbers";
 
 export function specificCommand(interaction: CommandInteraction) {
-	const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
+	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
 
 	const info: string = interaction.options.getString("info") ?? "population";
 

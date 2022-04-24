@@ -12,7 +12,10 @@ export async function initializeCountryData() {
 	countryData = countryDataImportToCountryData(
 		await fetch(url)
 			.then((response) => response.json())
-			.catch((err) => logger.debug(err))
+			.catch((err) => {
+				logger.debug(err);
+				throw err;
+			})
 			.then((res) => {
 				return res as CountryImport[];
 			})

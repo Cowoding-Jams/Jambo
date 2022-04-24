@@ -9,7 +9,7 @@ import { pickRandomFromList } from "../random";
 import { countryData } from "./countryDataLoader";
 
 export function overviewSubcommand(interaction: CommandInteraction) {
-	const country: Country | undefined = getCountryByName(interaction.options.getString("country") ?? "Bhutan");
+	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
 
 	if (country) {
 		interaction.reply({ embeds: [getOverviewEmbed(country, interaction.locale)] });
