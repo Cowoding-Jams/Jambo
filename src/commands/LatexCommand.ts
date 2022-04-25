@@ -15,7 +15,6 @@ class Latex extends Command {
 		const input = interaction.options.getString("input", true);
 
 		if (subcommand === "latex") {
-
 		} else if (subcommand === "mixed") {
 		} else {
 			unknownSubcommandEdit(interaction);
@@ -38,7 +37,7 @@ class Latex extends Command {
 				option
 					.setName("mixed")
 					.setDescription(
-						"Lets you write normale LaTeX code with text, inline equations ($x^2$) and block equations ($$x^2$$)."
+						"Lets you write mixed LaTeX code with text, inline equations ($x^2$) and block equations ($$x^2$$)."
 					)
 					.addStringOption((option) =>
 						option.setName("input").setDescription("Your LaTeX input to render.").setRequired(true)
