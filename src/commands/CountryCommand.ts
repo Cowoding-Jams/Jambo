@@ -5,6 +5,7 @@ import { countryData, initializeCountryData } from "../util/countryCommand/count
 import { overviewSubcommand, randomOverviewSubcommand } from "../util/countryCommand/overviewSubcommand";
 import { specificCommand } from "../util/countryCommand/specificSubcommand";
 import { querySubcommand } from "../util/countryCommand/querySubcommand";
+import { unknownSubcommandReply } from "../util/unknownSubcommand";
 
 class CountryCommand extends Command {
 	constructor() {
@@ -39,10 +40,7 @@ class CountryCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.reply({
-					content: "Sorry, I don't know what to do... I've never heard of that subcommand.",
-					ephemeral: true,
-				});
+				unknownSubcommandReply(interaction);
 				break;
 			}
 		}
