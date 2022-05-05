@@ -2,6 +2,7 @@ import { Command } from "../Command";
 import { CommandInteraction } from "discord.js";
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { unknownSubcommandEdit } from "../util/unknownSubcommand";
+import { renderEquation, renderMixed, getImage } from "../util/latexCommand/latexRendering";
 
 class Latex extends Command {
 	constructor() {
@@ -15,10 +16,19 @@ class Latex extends Command {
 		const input = interaction.options.getString("input", true);
 
 		if (subcommand === "latex") {
+			renderEquation(input);
+			this.answerWithImage(interaction);
 		} else if (subcommand === "mixed") {
+			renderMixed(input);
+			this.answerWithImage(interaction);
 		} else {
 			unknownSubcommandEdit(interaction);
 		}
+	}
+
+	answerWithImage(interaction: CommandInteraction) {
+		getImage();
+		interaction.editReply("Test");
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
