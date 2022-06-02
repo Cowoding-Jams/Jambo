@@ -4,6 +4,7 @@ import { Autocompleter } from "./Autocompleter";
 import fs from "fs";
 import { ButtonHandler } from "./ButtonHandler";
 import { logger } from "./logger";
+import { SelectMenuHandler } from "SelectMenuHandler";
 
 export async function loadCommands(): Promise<Collection<string, Command>> {
 	logger.debug("loading commands...");
@@ -33,6 +34,21 @@ export async function loadButtonHandlers(): Promise<Collection<string, ButtonHan
 			})
 	);
 	return loadedButtons;
+}
+
+export async function loadSelectMenuHandlers(): Promise<Collection<string, SelectMenuHandler>> {
+	logger.debug("loading selectmenus...");
+	const loadedSelectMenus = new Collection<string, SelectMenuHandler>();
+	await Promise.all(
+		fs
+			.readdirSync("./dist/selectmenus")
+			.filter(isActive)
+			.map(async (filename) => {
+				const selectMenuHandler = (await import(`./selectmenus/${filename}`)).default as SelectMenuHandler;
+				loadedSelectMenus.set(selectMenuHandler.name, selectMenuHandler);
+			})
+	);
+	return loadedSelectMenus;
 }
 
 export async function loadEvents(client: Client) {

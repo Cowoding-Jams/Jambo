@@ -6,7 +6,7 @@
 	"private": "true",
 	"type": "module",
 	"scripts": {
-		"prettify": "eslint ./src/ --fix && npx prettier -w .",
+		"prettify": "npx eslint ./src/ --fix && npx prettier -w .",
 		"build": "tsc -p tsconfig.json",
 		"run": "node --experimental-specifier-resolution=node .",
 		"start": "npm run build && npm run run",
@@ -51,6 +51,7 @@
 		"dotenv": "^16.0.0",
 		"node-fetch": "^3.2.3",
 		"husky": "^7.0.4",
+		"enmap": "^5.9.0",
 		"prettier": "^2.6.0",
 		"winston": "^3.6.0"
 	}

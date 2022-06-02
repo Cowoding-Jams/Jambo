@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { ApplicationCommand, Client } from "discord.js";
+import { initPolls } from "poller";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 
@@ -11,6 +12,10 @@ export default async function ready(client: Client) {
 	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
 	logger.info("Setup successfully");
+
+	logger.info("Starting poll timers...");
+	initPolls();
+	logger.info("Poll timers started");
 }
 
 async function updateRegisteredCommands(client: Client) {
