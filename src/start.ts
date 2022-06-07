@@ -16,7 +16,7 @@ function shutdown(info: number | unknown | Error) {
 
 async function start(): Promise<Client> {
 	logger.debug("Creating client...");
-	const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES"] });
+	const client = new Client({ intents: ["GUILDS"] });
 
 	logger.debug("Loading context...");
 	ctx.update(await loadCommands(), await loadButtonHandlers(), await loadAutocompleters());
