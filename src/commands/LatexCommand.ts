@@ -2,7 +2,8 @@ import { Command } from "../Command";
 import { CommandInteraction } from "discord.js";
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { unknownSubcommandEdit } from "../util/unknownSubcommand";
-import { renderEquation, renderMixed, getImage } from "../util/latexCommand/latexRendering";
+import { logger } from "../logger";
+import {latexEquation, latexMixed} from "../util/latexCommand/latexRendering"
 
 class Latex extends Command {
 	constructor() {
@@ -10,25 +11,31 @@ class Latex extends Command {
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
-		interaction.deferReply();
+		await interaction.deferReply();
 
 		const subcommand = interaction.options.getSubcommand();
 		const input = interaction.options.getString("input", true);
 
-		if (subcommand === "latex") {
-			renderEquation(input);
-			this.answerWithImage(interaction);
+		let urlToFile: string | null;
+		if (subcommand === "equation") {
+			logger.debug(input);
+			urlToFile = await latexEquation(input);
+			this.answerWithImage(interaction, urlToFile);
 		} else if (subcommand === "mixed") {
-			renderMixed(input);
-			this.answerWithImage(interaction);
+			logger.debug(input);
+			urlToFile = await latexMixed(input);
+			this.answerWithImage(interaction, urlToFile);
 		} else {
 			unknownSubcommandEdit(interaction);
 		}
 	}
 
-	answerWithImage(interaction: CommandInteraction) {
-		getImage();
-		interaction.editReply("Test");
+	answerWithImage(interaction: CommandInteraction, urlToFile: string | null = null): void {
+		if (urlToFile === null) {
+			interaction.editReply("Something went wrong...");
+		} else {
+			interaction.editReply({files: [urlToFile]});
+		}
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {

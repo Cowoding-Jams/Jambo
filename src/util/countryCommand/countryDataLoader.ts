@@ -7,7 +7,7 @@ export let countryData: Country[] = [];
 export async function initializeCountryData() {
 	const url = "https://restcountries.com/v3.1/all";
 
-	logger.debug("Fetching the country data");
+	logger.debug("Fetching the country data...");
 
 	countryData = countryDataImportToCountryData(
 		await fetch(url)
