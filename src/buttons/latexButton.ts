@@ -1,7 +1,7 @@
 import { ButtonHandler } from "../ButtonHandler";
 import { ButtonInteraction, Message } from "discord.js";
 import { inlineCode } from "@discordjs/builders";
-//import { logger } from "logger";
+import { latexDb } from "../db";
 
 class LatexButton extends ButtonHandler {
 	constructor() {
@@ -10,7 +10,11 @@ class LatexButton extends ButtonHandler {
 
 	async execute(interaction: ButtonInteraction, args: string[]): Promise<void> {
 		const id = args[0];
-		const input = args[1] ? inlineCode(args[1]) : "No data availabe...";
+
+		let input = await latexDb.get(interaction.message.id);
+		latexDb.delete(interaction.message.id);
+
+		input = input ? inlineCode(input) : "No data availabe...";
 
 		if (id == "delete") {
 			if (interaction.message.interaction?.user.id == interaction.user.id) {

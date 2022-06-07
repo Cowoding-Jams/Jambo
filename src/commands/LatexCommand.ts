@@ -3,6 +3,7 @@ import { CommandInteraction, MessageActionRow, MessageButton } from "discord.js"
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { unknownSubcommandEdit } from "../util/unknownSubcommand";
 import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
+import { latexDb } from "../db";
 
 class Latex extends Command {
 	constructor() {
@@ -12,28 +13,28 @@ class Latex extends Command {
 	async execute(interaction: CommandInteraction): Promise<void> {
 		await interaction.deferReply();
 
+		const id = (await interaction.fetchReply()).id;
+
 		const subcommand = interaction.options.getSubcommand();
 		const input = interaction.options.getString("input", true);
+
+		await latexDb.set(id, input);
 
 		let urlToFile: string | null;
 		if (subcommand === "equation") {
 			urlToFile = await latexEquation(input);
-			this.answerWithImage(interaction, urlToFile, input);
+			this.answerWithImage(interaction, urlToFile);
 		} else if (subcommand === "inline") {
 			urlToFile = await latexMixed(input);
-			this.answerWithImage(interaction, urlToFile, input);
+			this.answerWithImage(interaction, urlToFile);
 		} else {
 			unknownSubcommandEdit(interaction);
 		}
 	}
 
-	answerWithImage(interaction: CommandInteraction, urlToFile: string | null = null, input: string): void {
+	answerWithImage(interaction: CommandInteraction, urlToFile: string | null = null): void {
 		const row = new MessageActionRow().addComponents(
-			new MessageButton()
-				.setCustomId(`latex.delete.${input}`)
-				.setLabel("Retry/Delete")
-				.setStyle("SECONDARY")
-				.setEmoji("🔁")
+			new MessageButton().setCustomId("latex.delete").setLabel("Retry/Delete").setStyle("SECONDARY").setEmoji("🔁")
 		);
 
 		if (urlToFile === null) {

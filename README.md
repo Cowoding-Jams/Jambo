@@ -13,6 +13,7 @@ Have fun coding!
 
 ## Usage & Development
 
+We won't host the bot for you. If you want to use it on your own server you have to do that yourself :)  
 To see how to use this bot on your own visit our [wiki](https://github.com/Cowoding-Jams/Jambo/wiki/Usage). It's really good! We promise. It can help you a lot.
 
 ## License
