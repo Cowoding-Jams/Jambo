@@ -1,9 +1,8 @@
 import { Command } from "../Command";
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, MessageActionRow, MessageButton } from "discord.js";
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
 import { unknownSubcommandEdit } from "../util/unknownSubcommand";
-import { logger } from "../logger";
-import {latexEquation, latexMixed} from "../util/latexCommand/latexRendering"
+import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
 
 class Latex extends Command {
 	constructor() {
@@ -18,23 +17,29 @@ class Latex extends Command {
 
 		let urlToFile: string | null;
 		if (subcommand === "equation") {
-			logger.debug(input);
 			urlToFile = await latexEquation(input);
-			this.answerWithImage(interaction, urlToFile);
-		} else if (subcommand === "mixed") {
-			logger.debug(input);
+			this.answerWithImage(interaction, urlToFile, input);
+		} else if (subcommand === "inline") {
 			urlToFile = await latexMixed(input);
-			this.answerWithImage(interaction, urlToFile);
+			this.answerWithImage(interaction, urlToFile, input);
 		} else {
 			unknownSubcommandEdit(interaction);
 		}
 	}
 
-	answerWithImage(interaction: CommandInteraction, urlToFile: string | null = null): void {
+	answerWithImage(interaction: CommandInteraction, urlToFile: string | null = null, input: string): void {
+		const row = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId(`latex.delete.${input}`)
+				.setLabel("Retry/Delete")
+				.setStyle("SECONDARY")
+				.setEmoji("🔁")
+		);
+
 		if (urlToFile === null) {
-			interaction.editReply("Something went wrong...");
+			interaction.editReply({ content: "LaTeX compiling error...\nPlease double check your code.", components: [row] });
 		} else {
-			interaction.editReply({files: [urlToFile]});
+			interaction.editReply({ files: [urlToFile], components: [row] });
 		}
 	}
 
@@ -52,7 +57,7 @@ class Latex extends Command {
 			)
 			.addSubcommand((option) =>
 				option
-					.setName("mixed")
+					.setName("inline")
 					.setDescription(
 						"Lets you write mixed LaTeX code with text, inline equations ($x^2$) and block equations ($$x^2$$)."
 					)
