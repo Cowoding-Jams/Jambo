@@ -4,21 +4,16 @@ import { logger } from "../../logger";
 
 const pathToTemplate = "./src/util/latexCommand/template.tex";
 const apiUrl = "http://rtex.probablyaweb.site/api/v2";
+const templateCode = fs.readFileSync(pathToTemplate, "utf8");
 
 export async function latexMixed(input = "Welcome to \\LaTeX"): Promise<string | null> {
-	let code = readTemplate();
-	code = code.replace("#CONTENT", input.replaceAll("$", "$$$"));
+	const code = templateCode.replace("#CONTENT", input.replaceAll("$", "$$$"));
 	return await requestRendering(code);
 }
 
 export async function latexEquation(input = "\\pi = 3.14") {
-	let code = readTemplate();
-	code = code.replace("#CONTENT", "$$$" + input + "$$$");
+	const code = templateCode.replace("#CONTENT", "$$$" + input + "$$$");
 	return await requestRendering(code);
-}
-
-function readTemplate(): string {
-	return fs.readFileSync(pathToTemplate, "utf8");
 }
 
 async function requestRendering(code: string): Promise<string | null> {
