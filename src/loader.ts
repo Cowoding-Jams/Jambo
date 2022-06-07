@@ -6,7 +6,7 @@ import { ButtonHandler } from "./ButtonHandler";
 import { logger } from "./logger";
 
 export async function loadCommands(): Promise<Collection<string, Command>> {
-	logger.debug("loading commands...");
+	logger.debug("Loading commands...");
 	const loadedCommands = new Collection<string, Command>();
 	await Promise.all(
 		fs
@@ -21,7 +21,7 @@ export async function loadCommands(): Promise<Collection<string, Command>> {
 }
 
 export async function loadButtonHandlers(): Promise<Collection<string, ButtonHandler>> {
-	logger.debug("loading buttons...");
+	logger.debug("Loading buttons...");
 	const loadedButtons = new Collection<string, ButtonHandler>();
 	await Promise.all(
 		fs
@@ -36,7 +36,7 @@ export async function loadButtonHandlers(): Promise<Collection<string, ButtonHan
 }
 
 export async function loadEvents(client: Client) {
-	logger.debug("loading events...");
+	logger.debug("Loading events...");
 	await Promise.all(
 		fs
 			.readdirSync("./dist/events")
@@ -49,7 +49,7 @@ export async function loadEvents(client: Client) {
 }
 
 export async function loadAutocompleters(): Promise<Collection<string, Autocompleter>> {
-	logger.debug("loading autocompleters...");
+	logger.debug("Loading autocompleters...");
 	const loadedAutocompleters = new Collection<string, Autocompleter>();
 	await Promise.all(
 		fs
