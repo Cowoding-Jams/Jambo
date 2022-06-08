@@ -26,12 +26,15 @@
 
 \usepackage[a5paper]{geometry}
 \usepackage[usenames,dvipsnames]{color}
-\definecolor{defaultGray}{gray}{0.9}
+\usepackage{pagecolor}
+\definecolor{defaultGray}{gray}{#GRAYSCALE}
 \setlength{\parindent}{0px} 
 
 \begin{document}
 \pagenumbering{gobble}
 \color{defaultGray}
+
+%BACKGROUND\pagecolor{white}
 
 #CONTENT
 

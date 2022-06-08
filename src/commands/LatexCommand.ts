@@ -1,6 +1,10 @@
 import { Command } from "../Command";
 import { CommandInteraction, MessageActionRow, MessageButton } from "discord.js";
-import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
+import {
+	SlashCommandBooleanOption,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "@discordjs/builders";
 import { unknownSubcommandEdit } from "../util/unknownSubcommand";
 import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
 import { latexDb } from "../db";
@@ -17,15 +21,16 @@ class Latex extends Command {
 
 		const subcommand = interaction.options.getSubcommand();
 		const input = interaction.options.getString("input", true);
+		const transparent = interaction.options.getBoolean("transparent") ?? true;
 
 		await latexDb.set(id, input);
 
 		let urlToFile: string | null;
 		if (subcommand === "equation") {
-			urlToFile = await latexEquation(input);
+			urlToFile = await latexEquation(input, transparent);
 			this.answerWithImage(interaction, urlToFile);
 		} else if (subcommand === "inline") {
-			urlToFile = await latexMixed(input);
+			urlToFile = await latexMixed(input, transparent);
 			this.answerWithImage(interaction, urlToFile);
 		} else {
 			unknownSubcommandEdit(interaction);
@@ -55,6 +60,7 @@ class Latex extends Command {
 					.addStringOption((option) =>
 						option.setName("input").setDescription("Your equation in LaTeX notation.").setRequired(true)
 					)
+					.addBooleanOption(transparencyOption)
 			)
 			.addSubcommand((option) =>
 				option
@@ -65,8 +71,14 @@ class Latex extends Command {
 					.addStringOption((option) =>
 						option.setName("input").setDescription("Your LaTeX input to render.").setRequired(true)
 					)
+					.addBooleanOption(transparencyOption)
 			);
 	}
 }
+
+const transparencyOption = new SlashCommandBooleanOption()
+	.setName("transparent")
+	.setDescription("Whether or not the image is a png with no background or a jpg with a white background.")
+	.setRequired(false);
 
 export default new Latex();

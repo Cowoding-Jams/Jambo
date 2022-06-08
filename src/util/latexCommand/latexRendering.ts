@@ -6,22 +6,24 @@ const pathToTemplate = "./src/util/latexCommand/template.tex";
 const apiUrl = "http://rtex.probablyaweb.site/api/v2";
 const templateCode = fs.readFileSync(pathToTemplate, "utf8");
 
-export async function latexMixed(input = "Welcome to \\LaTeX"): Promise<string | null> {
+export async function latexMixed(input = "Welcome to \\LaTeX", transparent: boolean): Promise<string | null> {
 	const code = templateCode.replace("#CONTENT", input.replaceAll("$", "$$$"));
-	return await requestRendering(code);
+	return await requestRendering(code, transparent);
 }
 
-export async function latexEquation(input = "\\pi = 3.14") {
+export async function latexEquation(input = "\\pi = 3.14", transparent: boolean) {
 	const code = templateCode.replace("#CONTENT", "$$$" + input + "$$$");
-	return await requestRendering(code);
+	return await requestRendering(code, transparent);
 }
 
-async function requestRendering(code: string): Promise<string | null> {
+async function requestRendering(code: string, transparent: boolean): Promise<string | null> {
+	code = code.replace("#GRAYSCALE", transparent ? "0.9" : "0");
+
 	const body = {
-		code: code,
+		code: transparent ? code : code.replace("%BACKGROUND", ""),
 		format: "png",
-		quality: 85,
-		density: 200,
+		quality: 100,
+		density: 250,
 	};
 
 	type res = { filename: string; description: string };
