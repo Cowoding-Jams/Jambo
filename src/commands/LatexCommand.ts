@@ -29,7 +29,7 @@ class Latex extends Command {
 		if (subcommand === "equation") {
 			urlToFile = await latexEquation(input, transparent);
 			this.answerWithImage(interaction, urlToFile);
-		} else if (subcommand === "inline") {
+		} else if (subcommand === "mixed") {
 			urlToFile = await latexMixed(input, transparent);
 			this.answerWithImage(interaction, urlToFile);
 		} else {
@@ -64,7 +64,7 @@ class Latex extends Command {
 			)
 			.addSubcommand((option) =>
 				option
-					.setName("inline")
+					.setName("mixed")
 					.setDescription(
 						"Lets you write mixed LaTeX code with text, inline equations ($x^2$) and block equations ($$x^2$$)."
 					)
