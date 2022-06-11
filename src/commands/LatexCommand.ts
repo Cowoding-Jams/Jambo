@@ -76,7 +76,7 @@ class Latex extends Command {
 					.addStringOption((option) =>
 						option
 							.setName("paper-size")
-							.setDescription("set the paper size from a few options")
+							.setDescription("Sets the paper size from a few options.")
 							.addChoices([
 								["a5", "a5"],
 								["a4", "a4"],
