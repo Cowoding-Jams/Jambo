@@ -6,8 +6,15 @@ const pathToTemplate = "./src/util/latexCommand/template.tex";
 const apiUrl = "http://rtex.probablyaweb.site/api/v2";
 const templateCode = fs.readFileSync(pathToTemplate, "utf8");
 
-export async function latexMixed(input = "Welcome to \\LaTeX", transparent: boolean): Promise<string | null> {
-	const code = templateCode.replace("#CONTENT", input.replaceAll("$", "$$$")).replaceAll("%MIXED", "");
+export async function latexMixed(
+	input = "Welcome to \\LaTeX",
+	transparent: boolean,
+	paper: string
+): Promise<string | null> {
+	const code = templateCode
+		.replace("#CONTENT", input.replaceAll("$", "$$$"))
+		.replaceAll("%MIXED", "")
+		.replace("a5", paper);
 	return await requestRendering(code, transparent);
 }
 
@@ -44,51 +51,3 @@ async function requestRendering(code: string, transparent: boolean): Promise<str
 
 	return apiUrl + "/" + response.filename;
 }
-
-/* async function getImage(url: string, path: string) {
-    fetch(url).then((res: any) =>
-		res.body.pipe(fs.createWriteStream(path))
-	)
-} */
-
-// 1 bright 0 dark
-/* 
-Equation transparent:
-
-mixed transparent:
-
-
-Equation with background:
-- boxed
-- boxcolor 0.95
-
-
-mixed with background:
-
-*/
-
-// 1 bright 0 dark
-/* 
-Equation transparent:
-- no frame, no box
-- no pagecolor
-- fontcolor 0.9
-
-mixed transparent:
-- frame
-- framecolor 0.1
-- no pagecolor
-- fontcolor 0.9
-
-Equation with background:
-- boxed
-- boxcolor 0.95
-- fontcolor 0
-- pagecolor 1
-
-mixed with background:
-- frame
-- framecolor 0.95 //bright
-- fontcolor 0
-- pagecolor 1
-*/

@@ -22,6 +22,7 @@ class Latex extends Command {
 		const subcommand = interaction.options.getSubcommand();
 		const input = interaction.options.getString("input", true);
 		const transparent = interaction.options.getBoolean("transparent") ?? true;
+		const paper = interaction.options.getString("paper-size") ?? "a5";
 
 		await latexDb.set(id, input);
 
@@ -30,7 +31,7 @@ class Latex extends Command {
 			urlToFile = await latexEquation(input, transparent);
 			this.answerWithImage(interaction, urlToFile);
 		} else if (subcommand === "mixed") {
-			urlToFile = await latexMixed(input, transparent);
+			urlToFile = await latexMixed(input, transparent, paper);
 			this.answerWithImage(interaction, urlToFile);
 		} else {
 			unknownSubcommandEdit(interaction);
@@ -72,6 +73,15 @@ class Latex extends Command {
 						option.setName("input").setDescription("Your LaTeX input to render.").setRequired(true)
 					)
 					.addBooleanOption(transparencyOption)
+					.addStringOption((option) =>
+						option
+							.setName("paper-size")
+							.setDescription("set the paper size from a few options")
+							.addChoices([
+								["a5", "a5"],
+								["a4", "a4"],
+							])
+					)
 			);
 	}
 }
