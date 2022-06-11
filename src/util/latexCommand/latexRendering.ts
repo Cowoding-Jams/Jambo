@@ -22,8 +22,6 @@ export async function latexEquation(input = "\\pi = 3.14", transparent: boolean)
 async function requestRendering(code: string, transparent: boolean): Promise<string | null> {
 	code = transparent ? code.replaceAll("%TRANSPARENT", "") : code.replaceAll("%BACKGROUND", "");
 
-	logger.debug(code);
-
 	const body = {
 		code: code,
 		format: "png",
@@ -44,7 +42,6 @@ async function requestRendering(code: string, transparent: boolean): Promise<str
 		return null;
 	}
 
-	logger.debug("LaTeX: " + apiUrl + "/" + response.filename);
 	return apiUrl + "/" + response.filename;
 }
 
