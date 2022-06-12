@@ -21,18 +21,27 @@
 \newcommand{\imp}{\Rightarrow}
 \newcommand{\equ}{\Leftrightarrow}
 
-\newcommand{\vectortwo}[3]{\begin{pmatrix}#1 \\ #2\end{pmatrix}}
-\newcommand{\vectorthree}[3]{\begin{pmatrix}#1 \\ #2 \\ #3\end{pmatrix}}
+\newcommand{\vectorTwo}[3]{\begin{pmatrix}#1 \\ #2\end{pmatrix}}
+\newcommand{\vectorThree}[3]{\begin{pmatrix}#1 \\ #2 \\ #3\end{pmatrix}}
 
-\usepackage[a5paper]{geometry}
-\usepackage[usenames,dvipsnames]{color}
-\definecolor{defaultGray}{gray}{0.9}
 \setlength{\parindent}{0px} 
+\usepackage{pagecolor}
+\usepackage[a5paper]{geometry}
+\usepackage[framemethod=tikz]{mdframed} % inludes the colors
+\definecolor{frameColorBright}{gray}{0.95}
+\definecolor{frameColorDark}{gray}{0.1}
 
 \begin{document}
 \pagenumbering{gobble}
-\color{defaultGray}
 
+%MIXED%BACKGROUND\begin{mdframed}
+%MIXED%BACKGROUND[linecolor=frameColorBright]
+    
+%BACKGROUND\pagecolor{white}
+%BACKGROUND\color{black}
+%TRANSPARENT\color{white}
+    
 #CONTENT
 
+%MIXED%BACKGROUND\end{mdframed}
 \end{document}

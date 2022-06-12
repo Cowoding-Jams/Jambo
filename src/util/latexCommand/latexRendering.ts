@@ -6,22 +6,34 @@ const pathToTemplate = "./src/util/latexCommand/template.tex";
 const apiUrl = "http://rtex.probablyaweb.site/api/v2";
 const templateCode = fs.readFileSync(pathToTemplate, "utf8");
 
-export async function latexMixed(input = "Welcome to \\LaTeX"): Promise<string | null> {
-	const code = templateCode.replace("#CONTENT", input.replaceAll("$", "$$$"));
-	return await requestRendering(code);
+export async function latexMixed(
+	input = "Welcome to \\LaTeX",
+	transparent: boolean,
+	paper: string
+): Promise<string | null> {
+	const code = templateCode
+		.replace("#CONTENT", input.replaceAll("$", "$$$"))
+		.replaceAll("%MIXED", "")
+		.replace("a5", paper);
+	return await requestRendering(code, transparent);
 }
 
-export async function latexEquation(input = "\\pi = 3.14") {
-	const code = templateCode.replace("#CONTENT", "$$$" + input + "$$$");
-	return await requestRendering(code);
+export async function latexEquation(input = "\\pi = 3.14", transparent: boolean): Promise<string | null> {
+	const code = templateCode.replace(
+		"#CONTENT",
+		transparent ? `$$$ ${input} $$$` : `$$$\\color{frameColorBright}\\boxed{\\color{black} ${input} }$$$`
+	);
+	return await requestRendering(code, transparent);
 }
 
-async function requestRendering(code: string): Promise<string | null> {
+async function requestRendering(code: string, transparent: boolean): Promise<string | null> {
+	code = transparent ? code.replaceAll("%TRANSPARENT", "") : code.replaceAll("%BACKGROUND", "");
+
 	const body = {
 		code: code,
 		format: "png",
-		quality: 85,
-		density: 200,
+		quality: 100,
+		density: 250,
 	};
 
 	type res = { filename: string; description: string };
@@ -39,9 +51,3 @@ async function requestRendering(code: string): Promise<string | null> {
 
 	return apiUrl + "/" + response.filename;
 }
-
-/* async function getImage(url: string, path: string) {
-    fetch(url).then((res: any) =>
-		res.body.pipe(fs.createWriteStream(path))
-	)
-} */
