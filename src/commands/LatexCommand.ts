@@ -1,6 +1,10 @@
 import { Command } from "../Command";
 import { CommandInteraction, MessageActionRow, MessageButton } from "discord.js";
-import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
+import {
+	SlashCommandBooleanOption,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "@discordjs/builders";
 import { unknownSubcommandEdit } from "../util/unknownSubcommand";
 import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
 import { latexDb } from "../db";
@@ -17,15 +21,17 @@ class Latex extends Command {
 
 		const subcommand = interaction.options.getSubcommand();
 		const input = interaction.options.getString("input", true);
+		const transparent = interaction.options.getBoolean("transparent") ?? true;
+		const paper = interaction.options.getString("paper-size") ?? "a5";
 
 		await latexDb.set(id, input);
 
 		let urlToFile: string | null;
 		if (subcommand === "equation") {
-			urlToFile = await latexEquation(input);
+			urlToFile = await latexEquation(input, transparent);
 			this.answerWithImage(interaction, urlToFile);
-		} else if (subcommand === "inline") {
-			urlToFile = await latexMixed(input);
+		} else if (subcommand === "mixed") {
+			urlToFile = await latexMixed(input, transparent, paper);
 			this.answerWithImage(interaction, urlToFile);
 		} else {
 			unknownSubcommandEdit(interaction);
@@ -55,18 +61,34 @@ class Latex extends Command {
 					.addStringOption((option) =>
 						option.setName("input").setDescription("Your equation in LaTeX notation.").setRequired(true)
 					)
+					.addBooleanOption(transparencyOption)
 			)
 			.addSubcommand((option) =>
 				option
-					.setName("inline")
+					.setName("mixed")
 					.setDescription(
 						"Lets you write mixed LaTeX code with text, inline equations ($x^2$) and block equations ($$x^2$$)."
 					)
 					.addStringOption((option) =>
 						option.setName("input").setDescription("Your LaTeX input to render.").setRequired(true)
 					)
+					.addBooleanOption(transparencyOption)
+					.addStringOption((option) =>
+						option
+							.setName("paper-size")
+							.setDescription("Sets the paper size from a few options.")
+							.addChoices([
+								["a5", "a5"],
+								["a4", "a4"],
+							])
+					)
 			);
 	}
 }
+
+const transparencyOption = new SlashCommandBooleanOption()
+	.setName("transparent")
+	.setDescription("Whether or not the image is a png with no background or a jpg with a white background.")
+	.setRequired(false);
 
 export default new Latex();
