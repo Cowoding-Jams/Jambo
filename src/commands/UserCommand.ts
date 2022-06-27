@@ -7,18 +7,14 @@ const toUnix = (timestamp: number | Date) => {
 	return Math.floor(timestamp / 1000);
 };
 
-// set the class name, the export at the bottom and the file name to your desired command name (same as the one in the register function)
-class CommandName extends Command {
+class UserCommand extends Command {
 	constructor() {
-		super("user"); // the name under which the bot internally stores your command (should be the same as the named set in `register`, must be unique)
+		super("user");
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
-		// put the logic of your command here
-		// for example:
-		const user = interaction.options.getUser("user");
-		if (!user) return interaction.reply("Please provide a user.");
-		const member = interaction.guild?.members.cache.get(user.id);
+		const user = interaction.options.getUser("user", true);
+		const member = await interaction.guild?.members.fetch(user.id).catch(() => null);
 		const embed = new MessageEmbed()
 			.setTitle(`${user.tag} ${user.system ? "| system" : user.bot ? "| bot" : ""}`)
 			.setThumbnail(user.displayAvatarURL({ dynamic: true }))
@@ -54,7 +50,7 @@ class CommandName extends Command {
 				);
 			embed.addField("Boosting", boosting, true).addField("Roles", roles);
 		}
-		interaction.reply({ embeds: [embed] });
+		await interaction.reply({ embeds: [embed] });
 	}
 
 	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
@@ -71,4 +67,4 @@ class CommandName extends Command {
 	}
 }
 
-export default new CommandName();
+export default new UserCommand();
