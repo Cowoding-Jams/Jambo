@@ -13,7 +13,6 @@ class CommandName extends Command {
 		super("user"); // the name under which the bot internally stores your command (should be the same as the named set in `register`, must be unique)
 	}
 
-
 	async execute(interaction: CommandInteraction): Promise<void> {
 		// put the logic of your command here
 		// for example:
@@ -21,14 +20,7 @@ class CommandName extends Command {
 		if (!user) return interaction.reply("Please provide a user.");
 		const member = interaction.guild?.members.cache.get(user.id);
 		const embed = new MessageEmbed()
-			.setTitle(
-				`${user.tag} ${user.system
-					? "| system"
-					: user.bot
-						? "| bot"
-						: ""
-				}`
-			)
+			.setTitle(`${user.tag} ${user.system ? "| system" : user.bot ? "| bot" : ""}`)
 			.setThumbnail(user.displayAvatarURL({ dynamic: true }))
 			.setDescription(`Ping: ${user.toString()}`);
 		if (user.flags?.toArray().length) {
@@ -42,12 +34,7 @@ class CommandName extends Command {
 			);
 		}
 		embed.addField("Id", user.id, true);
-		embed.addField(
-			"Created",
-			`<t:${toUnix(user.createdTimestamp)}> (<t:${toUnix(
-				user.createdTimestamp
-			)}:R>)`
-		);
+		embed.addField("Created", `<t:${toUnix(user.createdTimestamp)}> (<t:${toUnix(user.createdTimestamp)}:R>)`);
 		embed.setTimestamp();
 		if (member) {
 			let roles = "‎";
@@ -57,22 +44,15 @@ class CommandName extends Command {
 			});
 
 			const boosting = member.premiumSince
-				? `Since <t:${toUnix(member.premiumSince)}> (<t:${toUnix(
-					member.premiumSince
-				)}:R>)`
+				? `Since <t:${toUnix(member.premiumSince)}> (<t:${toUnix(member.premiumSince)}:R>)`
 				: "Not boosting :(";
 			if (member.joinedTimestamp)
-				embed
-					.addField(
-						"Joined",
-						`<t:${toUnix(member.joinedTimestamp)}>\n(<t:${toUnix(
-							member.joinedTimestamp
-						)}:R>)`,
-						true
-					);
-			embed
-				.addField("Boosting", boosting, true)
-				.addField("Roles", roles);
+				embed.addField(
+					"Joined",
+					`<t:${toUnix(member.joinedTimestamp)}>\n(<t:${toUnix(member.joinedTimestamp)}:R>)`,
+					true
+				);
+			embed.addField("Boosting", boosting, true).addField("Roles", roles);
 		}
 		interaction.reply({ embeds: [embed] });
 	}
@@ -85,7 +65,9 @@ class CommandName extends Command {
 		return new SlashCommandBuilder()
 			.setName("user")
 			.setDescription("Get information about a user")
-			.addUserOption((option) => option.setName("user").setDescription("The user to get information about.").setRequired(true));
+			.addUserOption((option) =>
+				option.setName("user").setDescription("The user to get information about.").setRequired(true)
+			);
 	}
 }
 
