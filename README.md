@@ -18,4 +18,4 @@ To see how to use this bot on your own visit our [wiki](https://github.com/Cowod
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Anti-Capitalist Software License](https://anticapitalist.software/). See [LICENSE](LICENSE).
