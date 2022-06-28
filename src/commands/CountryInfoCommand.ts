@@ -7,9 +7,9 @@ import { specificCommand } from "../util/countryCommand/specificSubcommand";
 import { querySubcommand } from "../util/countryCommand/querySubcommand";
 import { unknownSubcommandReply } from "../util/unknownSubcommand";
 
-class CountryCommand extends Command {
+class CountryInfoCommand extends Command {
 	constructor() {
-		super("country");
+		super("country-info");
 		initializeCountryData();
 	}
 
@@ -51,7 +51,7 @@ class CountryCommand extends Command {
 		| SlashCommandSubcommandsOnlyBuilder
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
-			.setName("country")
+			.setName("country-info")
 			.setDescription("Accessing country data.")
 			.addSubcommand((option) =>
 				option
@@ -161,4 +161,4 @@ const defaultCountryInformationChoices: [string, string][] = [
 	["area", "area"],
 ];
 
-export default new CountryCommand();
+export default new CountryInfoCommand();
