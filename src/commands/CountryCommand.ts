@@ -9,7 +9,7 @@ import { unknownSubcommandReply } from "../util/unknownSubcommand";
 
 class CountryCommand extends Command {
 	constructor() {
-		super("country");
+		super("country-info");
 		initializeCountryData();
 	}
 
@@ -51,7 +51,7 @@ class CountryCommand extends Command {
 		| SlashCommandSubcommandsOnlyBuilder
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
-			.setName("country")
+			.setName("country-info")
 			.setDescription("Accessing country data.")
 			.addSubcommand((option) =>
 				option

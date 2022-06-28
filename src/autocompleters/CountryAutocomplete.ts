@@ -8,7 +8,7 @@ import { returnChoiceWithSameValues } from "../util/countryCommand/generalCountr
 
 class CountryAutocompleter extends Autocompleter {
 	constructor() {
-		super("country");
+		super("country-info");
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
