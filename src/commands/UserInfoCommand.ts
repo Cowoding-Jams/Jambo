@@ -3,7 +3,7 @@ import { CommandInteraction, GuildMember, MessageEmbed, User } from "discord.js"
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { addDefaultEmbedFooter } from "../util/embeds";
 
-class UserCommand extends Command {
+class UserInfoCommand extends Command {
 	constructor() {
 		super("user-info");
 	}
@@ -76,4 +76,4 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Messa
 	return addDefaultEmbedFooter(embed);
 }
 
-export default new UserCommand();
+export default new UserInfoCommand();

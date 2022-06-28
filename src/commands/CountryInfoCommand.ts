@@ -7,7 +7,7 @@ import { specificCommand } from "../util/countryCommand/specificSubcommand";
 import { querySubcommand } from "../util/countryCommand/querySubcommand";
 import { unknownSubcommandReply } from "../util/unknownSubcommand";
 
-class CountryCommand extends Command {
+class CountryInfoCommand extends Command {
 	constructor() {
 		super("country-info");
 		initializeCountryData();
@@ -161,4 +161,4 @@ const defaultCountryInformationChoices: [string, string][] = [
 	["area", "area"],
 ];
 
-export default new CountryCommand();
+export default new CountryInfoCommand();
