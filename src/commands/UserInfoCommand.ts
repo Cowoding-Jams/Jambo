@@ -35,7 +35,7 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Messa
 		.setTitle(
 			`${user.tag} ${member ? "aka. " + member.displayName : ""} ${user.system ? "| System" : user.bot ? "| Bot" : ""}`
 		)
-		.setThumbnail(user.displayAvatarURL({ dynamic: true }))
+		.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
 		.setDescription(user.toString());
 
 	embed.addField("User Id", user.id, true);
