@@ -1,9 +1,10 @@
 import { Command } from "../Command";
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, GuildMember } from "discord.js";
 import {
 	SlashCommandBooleanOption,
 	SlashCommandBuilder,
 	SlashCommandIntegerOption,
+	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
 
@@ -12,52 +13,93 @@ class Reminder extends Command {
 		super("reminder");
 	}
 
-	elapse(interaction: CommandInteraction, callAll: boolean, caller: string): void {
+	elapse(interaction: CommandInteraction, callAll: boolean, caller: string, message = ""): void {
 		if (callAll) {
 			interaction.followUp("@everyone, Time's up!");
 		} else {
-			interaction.followUp("<@" + caller + ">! Time's up!");
+			interaction.followUp("<@!" + caller + "> Time's up!");
+		}
+		if (message != "") {
+			interaction.followUp("Message: " + message);
 		}
 		this.m_id -= 1;
 	}
 
-	public rmdDatabase: NodeJS.Timeout[] = [];
-	public timeList: boolean[] = [];
-	public m_id = 0;
+	private rmdDatabase: {
+		id: number;
+		timeout: NodeJS.Timeout;
+		destination: number;
+		message: string;
+		active: boolean;
+	}[] = [];
+	private m_id = 0;
 
 	async execute(interaction: CommandInteraction): Promise<void> {
 		const subcommand = interaction.options.getSubcommand();
-
-		//variables
-		const second = interaction.options.getInteger("second") || 0;
-		const minute = interaction.options.getInteger("minute") || 0;
-		const hour = interaction.options.getInteger("hour") || 0;
-		const callAll = interaction.options.getBoolean("callall") || false;
-		const millisecond = (second + 60 * minute + 60 * 60 * hour) * 1000;
-		const caller = interaction.user.id;
-		const c_id = interaction.options.getInteger("id") || this.m_id - 1;
-
 		switch (subcommand) {
-			case "set":
+			case "set": {
+				//variables
+				const second = interaction.options.getInteger("second") || 0;
+				const minute = interaction.options.getInteger("minute") || 0;
+				const hour = interaction.options.getInteger("hour") || 0;
+				const message = interaction.options.getString("message") || "";
+				const callAll = interaction.options.getBoolean("callall") || false;
+				const millisecond = (second + 60 * minute + 60 * 60 * hour) * 1000;
+				const d = Date.now() + millisecond;
+				const member = interaction.member as GuildMember;
+				if (callAll) {
+					if (!member.permissions.has("ADMINISTRATOR")) {
+						await interaction.reply("You don't have the permission, sorry~");
+						break;
+					}
+				}
 				//call setTimeout
-				this.rmdDatabase[this.m_id] = setTimeout(() => this.elapse(interaction, callAll, caller), millisecond);
+				this.rmdDatabase[this.m_id] = {
+					id: this.m_id,
+					timeout: setTimeout(() => this.elapse(interaction, callAll, interaction.user.id, message), millisecond),
+					destination: d,
+					message: message,
+					active: true,
+				};
 				await interaction.reply(
-					"Okay, I'll remind you soon~\nIn the event that you wish to no longer be reminded of this timer, use /reminder delete " +
-						this.m_id.toString()
+					"Okay, I'll remind you soon~\nIn the event that you wish to no longer be reminded of this timer, use /reminder " +
+						this.rmdDatabase[this.m_id].id
 				);
-				this.timeList[this.m_id] = true;
 				this.m_id += 1;
 				break;
-			case "delete":
+			}
+			case "delete": {
+				//variable
+				const c_id = interaction.options.getInteger("id") || this.m_id - 1;
 				//clear the reminder
 				if (c_id >= this.m_id || c_id < 0) {
 					await interaction.reply("The id does not exist.");
 				} else {
-					clearTimeout(this.rmdDatabase[c_id]);
-					this.timeList[c_id] = false;
+					clearTimeout(this.rmdDatabase[c_id].timeout);
 					await interaction.reply("I've removed the reminder :))");
-					break;
+					this.rmdDatabase[c_id].active = false;
 				}
+				break;
+			}
+			case "list": {
+				let output = "";
+				for (const i of this.rmdDatabase) {
+					if (i.active) {
+						const t = i.destination / 1000;
+						output =
+							output +
+							"ID = " +
+							i.id.toString() +
+							" | Time left = <t:" +
+							t.toFixed(0).toString() +
+							":R> | Message: " +
+							i.message +
+							"\n";
+					}
+				}
+				await interaction.reply(output);
+				break;
+			}
 		}
 	}
 
@@ -72,6 +114,7 @@ class Reminder extends Command {
 					.addIntegerOption(setSecond)
 					.addIntegerOption(setMinute)
 					.addIntegerOption(setHour)
+					.addStringOption(message)
 					.addBooleanOption(callAll)
 			)
 			.addSubcommand((option) =>
@@ -79,6 +122,9 @@ class Reminder extends Command {
 					.setName("delete")
 					.setDescription("Delete a reminder (with id).")
 					.addIntegerOption((option) => option.setName("id").setDescription("ID of the reminder").setRequired(true))
+			)
+			.addSubcommand((option) =>
+				option.setName("list").setDescription("Show the current list of available reminders.")
 			);
 	}
 }
@@ -100,7 +146,12 @@ const setHour = new SlashCommandIntegerOption()
 
 const callAll = new SlashCommandBooleanOption()
 	.setName("callall")
-	.setDescription("whether or not to remind everyone")
+	.setDescription("Whether or not to remind everyone")
+	.setRequired(false);
+
+const message = new SlashCommandStringOption()
+	.setName("message")
+	.setDescription("The reminder's message")
 	.setRequired(false);
 
 export default new Reminder();
