@@ -48,7 +48,7 @@ class Reminder extends Command {
 				const d = Date.now() + millisecond;
 				const member = interaction.member as GuildMember;
 				if (callAll) {
-					if (!member.permissions.has("MENTION_EVERYONE")) {
+					if (!member.permissions.has("ADMINISTRATOR") && !member.permissions.has("MENTION_EVERYONE")) {
 						await interaction.reply("You don't have the permission, sorry~");
 						break;
 					}
