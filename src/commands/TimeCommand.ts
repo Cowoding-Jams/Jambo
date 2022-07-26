@@ -72,6 +72,7 @@ class Reminder extends Command {
 					return;
 				}
 				clearTimeout(item.timeout);
+				timeDb.delete(c_id);
 				await interaction.reply("I've removed the reminder :))");
 				break;
 			}
