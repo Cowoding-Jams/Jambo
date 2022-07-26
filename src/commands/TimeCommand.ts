@@ -1,5 +1,5 @@
 import { Command } from "../Command";
-import { CommandInteraction, GuildMember } from "discord.js";
+import { CommandInteraction, TextBasedChannel } from "discord.js";
 import {
 	SlashCommandBooleanOption,
 	SlashCommandBuilder,
@@ -7,32 +7,22 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
+import { timeDb } from "../db"
 
 class Reminder extends Command {
 	constructor() {
 		super("reminder");
 	}
 
-	elapse(interaction: CommandInteraction, callAll: boolean, caller: string, message = ""): void {
-		if (callAll) {
-			interaction.followUp("@everyone, Time's up!");
-		} else {
-			interaction.followUp("<@!" + caller + "> Time's up!");
-		}
-		if (message != "") {
-			interaction.followUp("Message: " + message);
-		}
+	private m_id = 0;
+
+	async elapse(interaction: CommandInteraction, caller: string, message = ""): Promise<void> {
+		const ch = await interaction.client.channels.fetch(interaction.channelId) as TextBasedChannel;
+		await ch.send({
+			content: `${(caller == "-1") ? "@everyone" : `<@${caller}>`}, Time's up! Message: ${message}`
+		});
 		this.m_id -= 1;
 	}
-
-	private rmdDatabase: {
-		id: number;
-		timeout: NodeJS.Timeout;
-		destination: number;
-		message: string;
-		active: boolean;
-	}[] = [];
-	private m_id = 0;
 
 	async execute(interaction: CommandInteraction): Promise<void> {
 		const subcommand = interaction.options.getSubcommand();
@@ -46,24 +36,28 @@ class Reminder extends Command {
 				const callAll = interaction.options.getBoolean("callall") || false;
 				const millisecond = (second + 60 * minute + 60 * 60 * hour) * 1000;
 				const d = Date.now() + millisecond;
-				const member = interaction.member as GuildMember;
+				if (!interaction.guild){
+					await interaction.reply("This command can only be used inside a guild.")
+					return;
+				}
+				const member = await interaction.guild.members.fetch(interaction.user)
+				let i = interaction.user.id;
 				if (callAll) {
 					if (!member.permissions.has("MENTION_EVERYONE")) {
 						await interaction.reply("You don't have the permission, sorry~");
-						break;
+						return;
 					}
+					i = (-1).toString()
 				}
 				//call setTimeout
-				this.rmdDatabase[this.m_id] = {
-					id: this.m_id,
-					timeout: setTimeout(() => this.elapse(interaction, callAll, interaction.user.id, message), millisecond),
+				timeDb.set(this.m_id, {
+					timeout: setTimeout(() => this.elapse(interaction, i, message), millisecond),
 					destination: d,
 					message: message,
-					active: true,
-				};
+				});
 				await interaction.reply(
 					"Okay, I'll remind you soon~\nIn the event that you wish to no longer be reminded of this timer, use /reminder " +
-						this.rmdDatabase[this.m_id].id
+						this.m_id.toString()
 				);
 				this.m_id += 1;
 				break;
@@ -72,31 +66,29 @@ class Reminder extends Command {
 				//variable
 				const c_id = interaction.options.getInteger("id") || this.m_id - 1;
 				//clear the reminder
-				if (c_id >= this.m_id || c_id < 0) {
+				const item = timeDb.get(c_id);
+				if (!item) {
 					await interaction.reply("The id does not exist.");
-				} else {
-					clearTimeout(this.rmdDatabase[c_id].timeout);
-					await interaction.reply("I've removed the reminder :))");
-					this.rmdDatabase[c_id].active = false;
+					return;
 				}
+				clearTimeout(item.timeout);
+				await interaction.reply("I've removed the reminder :))");
 				break;
 			}
 			case "list": {
 				let output = "";
-				for (const i of this.rmdDatabase) {
-					if (i.active) {
-						const t = i.destination / 1000;
-						output =
-							output +
-							"ID = " +
-							i.id.toString() +
-							" | Time left = <t:" +
-							t.toFixed(0).toString() +
-							":R> | Message: " +
-							i.message +
-							"\n";
-					}
-				}
+				timeDb.forEach((value, key) => {
+					const t = value.destination / 1000;
+					output =
+						output +
+						"ID = " +
+						key.toString() +
+						" | Time left = <t:" +
+						t.toFixed(0).toString() +
+						":R> | Message: " +
+						value.message +
+						"\n";
+				})
 				await interaction.reply(output);
 				break;
 			}
