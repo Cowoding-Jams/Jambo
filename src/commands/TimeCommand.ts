@@ -7,7 +7,7 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "@discordjs/builders";
-import { timeDb } from "../db"
+import { timeDb } from "../db";
 
 class Reminder extends Command {
 	constructor() {
@@ -16,12 +16,11 @@ class Reminder extends Command {
 
 	private m_id = 0;
 
-	async elapse(interaction: CommandInteraction, caller: string, message = ""): Promise<void> {
-		const ch = await interaction.client.channels.fetch(interaction.channelId) as TextBasedChannel;
+	async elapse(interaction: CommandInteraction, caller: string, message = "", id: number): Promise<void> {
+		const ch = (await interaction.client.channels.fetch(interaction.channelId)) as TextBasedChannel;
 		await ch.send({
-			content: `${(caller == "-1") ? "@everyone" : `<@${caller}>`}, Time's up! Message: ${message}`
+			content: `${caller == "-1" ? "@everyone" : `<@${caller}>`}, Time's up! Message: ${message}`,
 		});
-		this.m_id -= 1;
 	}
 
 	async execute(interaction: CommandInteraction): Promise<void> {
@@ -36,27 +35,27 @@ class Reminder extends Command {
 				const callAll = interaction.options.getBoolean("callall") || false;
 				const millisecond = (second + 60 * minute + 60 * 60 * hour) * 1000;
 				const d = Date.now() + millisecond;
-				if (!interaction.guild){
-					await interaction.reply("This command can only be used inside a guild.")
+				if (!interaction.guild) {
+					await interaction.reply("This command can only be used inside a guild.");
 					return;
 				}
-				const member = await interaction.guild.members.fetch(interaction.user)
+				const member = await interaction.guild.members.fetch(interaction.user);
 				let i = interaction.user.id;
 				if (callAll) {
 					if (!member.permissions.has("MENTION_EVERYONE")) {
 						await interaction.reply("You don't have the permission, sorry~");
 						return;
 					}
-					i = (-1).toString()
+					i = (-1).toString();
 				}
 				//call setTimeout
 				timeDb.set(this.m_id, {
-					timeout: setTimeout(() => this.elapse(interaction, i, message), millisecond),
+					timeout: setTimeout(() => this.elapse(interaction, i, message, this.m_id), millisecond),
 					destination: d,
 					message: message,
 				});
 				await interaction.reply(
-					"Okay, I'll remind you soon~\nIn the event that you wish to no longer be reminded of this timer, use /reminder " +
+					"Okay, I'll remind you soon~\nIn the event that you wish to no longer be reminded of this timer, use /reminder delete " +
 						this.m_id.toString()
 				);
 				this.m_id += 1;
@@ -72,25 +71,44 @@ class Reminder extends Command {
 					return;
 				}
 				clearTimeout(item.timeout);
-				timeDb.delete(c_id);
+				if (timeDb.delete(c_id)) {
+					console.log("delete successful.");
+				} else {
+					console.log("something is wrong.");
+				}
 				await interaction.reply("I've removed the reminder :))");
 				break;
 			}
 			case "list": {
 				let output = "";
+				let have = false;
 				timeDb.forEach((value, key) => {
-					const t = value.destination / 1000;
-					output =
-						output +
-						"ID = " +
-						key.toString() +
-						" | Time left = <t:" +
-						t.toFixed(0).toString() +
-						":R> | Message: " +
-						value.message +
-						"\n";
-				})
-				await interaction.reply(output);
+					let t = value.destination;
+					if (t >= Date.now()) {
+						t /= 1000;
+						output =
+							output +
+							"ID = " +
+							key.toString() +
+							" | Time left = <t:" +
+							t.toFixed(0).toString() +
+							":R> | Message: " +
+							value.message +
+							"\n";
+						have = true;
+					} else {
+						if (timeDb.delete(key)) {
+							console.log("delete successful.");
+						} else {
+							console.log("something is wrong.");
+						}
+					}
+				});
+				if (!have) {
+					await interaction.reply("The list is empty.");
+				} else {
+					await interaction.reply(output);
+				}
 				break;
 			}
 		}
