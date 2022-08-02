@@ -1,6 +1,7 @@
 import { Command } from "../Command";
 import { CommandInteraction, TextBasedChannel } from "discord.js";
 import {
+	inlineCode,
 	SlashCommandBooleanOption,
 	SlashCommandBuilder,
 	SlashCommandIntegerOption,
@@ -9,14 +10,14 @@ import {
 } from "@discordjs/builders";
 import { timeDb } from "../db";
 
-class Reminder extends Command {
+class ReminderCommand extends Command {
 	constructor() {
 		super("reminder");
 	}
 
 	private m_id = 0;
 
-	async elapse(interaction: CommandInteraction, caller: string, message = "", id: number): Promise<void> {
+	async elapse(interaction: CommandInteraction, caller: string, message = ""): Promise<void> {
 		const ch = (await interaction.client.channels.fetch(interaction.channelId)) as TextBasedChannel;
 		await ch.send({
 			content: `${caller == "-1" ? "@everyone" : `<@${caller}>`}, Time's up! Message: ${message}`,
@@ -50,13 +51,15 @@ class Reminder extends Command {
 				}
 				//call setTimeout
 				timeDb.set(this.m_id, {
-					timeout: setTimeout(() => this.elapse(interaction, i, message, this.m_id), millisecond),
+					timeout: setTimeout(() => this.elapse(interaction, i, message), millisecond),
 					destination: d,
 					message: message,
 				});
+
 				await interaction.reply(
-					"Okay, I'll remind you soon~\nIn the event that you wish to no longer be reminded of this timer, use /reminder delete " +
-						this.m_id.toString()
+					`Okay, I'll remind you soon~~\nIn the event that you wish to no longer be reminded of this timer, use ${inlineCode(
+						`/reminder delete ${this.m_id}`
+					)}`
 				);
 				this.m_id += 1;
 				break;
@@ -76,7 +79,7 @@ class Reminder extends Command {
 				} else {
 					console.log("something is wrong.");
 				}
-				await interaction.reply("I've removed the reminder :))");
+				await interaction.reply("I've removed the reminder :)");
 				break;
 			}
 			case "list": {
@@ -107,7 +110,10 @@ class Reminder extends Command {
 				if (!have) {
 					await interaction.reply("The list is empty.");
 				} else {
-					await interaction.reply(output);
+					await interaction.reply({
+						content: output,
+						allowedMentions: { users: [], roles: [] },
+					});
 				}
 				break;
 			}
@@ -165,4 +171,4 @@ const message = new SlashCommandStringOption()
 	.setDescription("The reminder's message")
 	.setRequired(false);
 
-export default new Reminder();
+export default new ReminderCommand();
