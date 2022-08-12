@@ -109,14 +109,14 @@ class Reminder extends Command {
 					if (t >= Date.now() && (value.caller_id == member.id || value.notify_all)) {
 						t /= 1000;
 						const st = t.toFixed(0).toString();
-						output = output + 
-						`ID = ${key.toString()} | Time left = <t:${st}:R>` + 
-						(value.message == "" ? `` : ` | Message: ${value.message}`) + 
-						`\n`; 
+						output =
+							output +
+							`ID = ${key.toString()} | Time left = <t:${st}:R>` +
+							(value.message == "" ? "" : ` | Message: ${value.message}`) +
+							"\n";
 						have = true;
 					} else {
 						if (t < Date.now()) {
-							console.log("deleted for whatever reason");
 							timeDb.delete(key);
 						}
 					}
