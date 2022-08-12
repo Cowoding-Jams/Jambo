@@ -89,11 +89,9 @@ class ReminderCommand extends Command {
 					await interaction.reply("The id does not exist.");
 					return;
 				}
-				clearTimeout(item.timeout);
-				if (timeDb.delete(c_id)) {
-					console.log("delete successful.");
-				} else {
-					console.log("something is wrong.");
+				if (member.id == item.caller_id) {
+					clearTimeout(item.timeout);
+					timeDb.delete(c_id);
 				}
 				await interaction.reply("I've removed the reminder :))");
 				break;
