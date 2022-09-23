@@ -1,8 +1,8 @@
 import winston from "winston";
-import { ctx } from "./ctx";
+import { config } from "./config";
 
 export const logger = winston.createLogger({
-	level: ctx.logLevel,
+	level: config.logLevel,
 	format: winston.format.combine(
 		winston.format.splat(),
 		winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
