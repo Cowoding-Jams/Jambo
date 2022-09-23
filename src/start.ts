@@ -12,6 +12,7 @@ function shutdown(info: number | unknown | Error) {
 	}
 	client.destroy();
 	//ctx.db.shutdown()
+	process.exit(1);
 }
 
 async function start(): Promise<Client> {
