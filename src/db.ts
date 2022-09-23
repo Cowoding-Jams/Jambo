@@ -1,3 +1,12 @@
 import Enmap from "enmap";
 
+interface rmdDb {
+	timeout: NodeJS.Timeout;
+	destination: number;
+	message: string;
+	caller_id: string;
+	notify_all: boolean;
+}
+
+export const timeDb = new Map<number, rmdDb>();
 export const latexDb = new Enmap<string, string>("latex");
