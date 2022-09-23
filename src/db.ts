@@ -9,5 +9,4 @@ interface rmdDb {
 }
 
 export const timeDb = new Map<number, rmdDb>();
-
 export const latexDb = new Enmap<string, string>("latex");
