@@ -71,14 +71,13 @@ class ReminderCommand extends Command {
 					notify_all: callAll,
 				});
 
-				await interaction.reply({
-					content: `Okay, I'll remind you in${hour == 0 ? "" : ` ${hour} hours`}${
-						minute == 0 ? "" : ` ${minute} minutes`
-					}${second == 0 ? "" : ` ${second} seconds`} :) \nYou can always delete this reminder with ${inlineCode(
-						`/reminder delete ${this.m_id}`
-					)}`,
-					ephemeral: true,
-				});
+				await interaction.reply(
+					`Okay, I'll remind you in${hour == 0 ? "" : ` ${hour} hours`}${minute == 0 ? "" : ` ${minute} minutes`}${
+						second == 0 ? "" : ` ${second} seconds`
+					}${
+						message == "" ? "" : ` with the following message: ${message}`
+					} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${this.m_id}`)}`
+				);
 				this.m_id += 1;
 				break;
 			}
