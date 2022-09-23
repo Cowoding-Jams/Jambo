@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import {config} from "../config";
+import { config } from "../config";
 
 export function addDefaultEmbedFooter(embed: MessageEmbed): MessageEmbed {
 	return embed
