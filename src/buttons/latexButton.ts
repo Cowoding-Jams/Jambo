@@ -1,6 +1,5 @@
 import { ButtonHandler } from "../ButtonHandler";
-import { ButtonInteraction, Message } from "discord.js";
-import { inlineCode } from "@discordjs/builders";
+import { ButtonInteraction, inlineCode, Message } from "discord.js";
 import { latexDb } from "../db";
 
 class LatexButton extends ButtonHandler {

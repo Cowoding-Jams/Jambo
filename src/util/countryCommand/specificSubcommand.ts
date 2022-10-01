@@ -1,10 +1,10 @@
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import { handleUndefinedCountry } from "./generalCountryCommandUtil";
 import { Country } from "./typesCountryCommand";
 import { getCountryByName } from "./countryDataManager";
 import { formatNumber } from "../numbers";
 
-export function specificCommand(interaction: CommandInteraction) {
+export function specificCommand(interaction: ChatInputCommandInteraction) {
 	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
 
 	const info: string = interaction.options.getString("info") ?? "population";
