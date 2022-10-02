@@ -10,7 +10,7 @@ export default async function guildMemberAdd(member: GuildMember) {
 		.setDescription(`You are the ${member.guild.memberCount}th member of this server!`)
 		.addFields(
 			{
-				name: `Welcome on ${member.guild.name}!`,
+				name: `Welcome to ${member.guild.name}!`,
 				value: config.serverDescription,
 			},
 			{
