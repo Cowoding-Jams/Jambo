@@ -1,13 +1,12 @@
 import { Command } from "../Command";
-import { CommandInteraction } from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 class PingCommand extends Command {
 	constructor() {
 		super("ping");
 	}
 
-	async execute(interaction: CommandInteraction): Promise<void> {
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const botping: number = Math.round(interaction.client.ws.ping);
 		await interaction.reply(`Pong! (Bot ping: ${botping}ms)`);
 	}

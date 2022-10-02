@@ -1,10 +1,10 @@
-import { AutocompleteInteraction, ButtonInteraction, CommandInteraction, Interaction } from "discord.js";
-import { ctx } from "../ctx";
+import { AutocompleteInteraction, ButtonInteraction, ChatInputCommandInteraction, Interaction } from "discord.js";
 import { logger } from "../logger";
+import { ctx } from "../ctx";
 
 export default async function interactionCreate(interaction: Interaction) {
 	try {
-		if (interaction.isCommand()) {
+		if (interaction.isChatInputCommand()) {
 			await handleCommandInteractions(interaction);
 		} else if (interaction.isButton()) {
 			await handleButtonInteractions(interaction);
@@ -22,7 +22,7 @@ export default async function interactionCreate(interaction: Interaction) {
 	}
 }
 
-async function handleCommandInteractions(interaction: CommandInteraction) {
+async function handleCommandInteractions(interaction: ChatInputCommandInteraction) {
 	const command = ctx.commands.get(interaction.commandName);
 	if (command) {
 		await command.execute(interaction);

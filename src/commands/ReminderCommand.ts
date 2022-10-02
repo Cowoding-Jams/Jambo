@@ -1,14 +1,16 @@
 import { Command } from "../Command";
-import { CommandInteraction, TextBasedChannel } from "discord.js";
 import {
+	ChatInputCommandInteraction,
 	inlineCode,
 	SlashCommandBooleanOption,
 	SlashCommandBuilder,
 	SlashCommandIntegerOption,
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
-} from "@discordjs/builders";
+	TextBasedChannel,
+} from "discord.js";
 import { timeDb } from "../db";
+import { hasMentionEveryonePerms } from "../util/permissions";
 
 class ReminderCommand extends Command {
 	constructor() {
@@ -17,13 +19,13 @@ class ReminderCommand extends Command {
 
 	private m_id = 0;
 
-	async elapse(interaction: CommandInteraction, toCall: string, message: string, id: number): Promise<void> {
+	async elapse(interaction: ChatInputCommandInteraction, toCall: string, message: string, id: number): Promise<void> {
 		const ch = (await interaction.client.channels.fetch(interaction.channelId)) as TextBasedChannel;
 		await ch.send({ content: `${toCall} Time's up! ${message}` });
 		timeDb.delete(id);
 	}
 
-	async execute(interaction: CommandInteraction): Promise<void> {
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const subcommand = interaction.options.getSubcommand();
 
 		if (!interaction.guild) {
@@ -52,11 +54,7 @@ class ReminderCommand extends Command {
 				let toCall = `<@${interaction.user.id}>`;
 
 				if (callAll) {
-					if (!member.permissions.has("MENTION_EVERYONE")) {
-						await interaction.reply({
-							content: "You don't have the permission to ping everyone, sorry~",
-							ephemeral: true,
-						});
+					if (!(await hasMentionEveryonePerms(interaction))) {
 						return;
 					}
 					toCall = "<@everyone>";
