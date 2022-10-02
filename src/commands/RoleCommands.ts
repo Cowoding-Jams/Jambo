@@ -133,9 +133,10 @@ class RoleCommand extends Command {
 				}
 			}
 
-			const canvas = createCanvas(10, 20 + actionRows.length * 25);
+			const fontSize = 40;
+			const canvas = createCanvas(10, 20 + actionRows.length * (fontSize + 5));
 			const ctx = canvas.getContext("2d");
-			ctx.font = "sans-serif bold 20px";
+			ctx.font = `sans-serif bold ${fontSize}px`;
 
 			const canvasWidth: number =
 				actionRows.reduce(
@@ -153,14 +154,18 @@ class RoleCommand extends Command {
 				) + 20;
 
 			canvas.width = canvasWidth;
-			ctx.font = "sans-serif bold 20px";
+			ctx.lineWidth = 4;
+			ctx.strokeStyle = "#000000";
+			ctx.font = `sans-serif bold ${fontSize}px`;
 
 			for (let i = 0; i < actionRows.length; i++) {
 				let x = 10;
 				for (let j = 0; j < actionRows[i].components.length; j++) {
 					const [colorName, color] = config.colorRoles[i * 5 + j];
-					ctx.fillStyle = color as string; // d.js ColorResolvable not compatible with canvas
-					ctx.fillText(colorName, x, 30 + i * 25);
+					if (typeof color !== "string") throw new Error("We only support strings for this");
+					ctx.fillStyle = color;
+					ctx.strokeText(colorName, x, fontSize + 10 + i * (fontSize + 5));
+					ctx.fillText(colorName, x, fontSize + 10 + i * (fontSize + 5));
 					x += ctx.measureText(colorName).width + ctx.measureText("  ").width;
 				}
 			}
