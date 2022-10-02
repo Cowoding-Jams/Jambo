@@ -135,7 +135,7 @@ class RoleCommand extends Command {
 
 			const fontSize = 30;
 			const textPadding = 10;
-			const columns = 2;
+			const columns = interaction.options.getInteger("columns") ?? 2;
 			const rows = Math.ceil(config.colorRoles.length / columns);
 			const colorRoles: string[] = config.colorRoles.map((r) => r[0]);
 
@@ -196,7 +196,7 @@ class RoleCommand extends Command {
 				option.setName("pronoun-prompt").setDescription("Creates the pronoun role prompt to select the roles.")
 			)
 			.addSubcommand((option) =>
-				option.setName("color-prompt").setDescription("Creates the color role prompt to select the roles.")
+				option.setName("color-prompt").setDescription("Creates the color role prompt to select the roles.").addIntegerOption((option) => option.setName("columns").setDescription("The number of columns to use for the color roles. (Default: 2)").setRequired(false).setMinValue(1).setMaxValue(4))
 			);
 	}
 }
