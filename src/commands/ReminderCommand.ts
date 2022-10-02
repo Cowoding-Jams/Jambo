@@ -10,6 +10,7 @@ import {
 	TextBasedChannel,
 } from "discord.js";
 import { timeDb } from "../db";
+import { hasMentionEveryonePerms } from "../util/permissions";
 
 class ReminderCommand extends Command {
 	constructor() {
@@ -53,11 +54,7 @@ class ReminderCommand extends Command {
 				let toCall = `<@${interaction.user.id}>`;
 
 				if (callAll) {
-					if (!member.permissions.has("MentionEveryone")) {
-						await interaction.reply({
-							content: "You don't have the permission to ping everyone, sorry~",
-							ephemeral: true,
-						});
+					if (!(await hasMentionEveryonePerms(interaction))) {
 						return;
 					}
 					toCall = "<@everyone>";
