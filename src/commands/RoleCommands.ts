@@ -139,9 +139,9 @@ class RoleCommand extends Command {
 			const rows = Math.ceil(config.colorRoles.length / columns);
 			const colorRoles: string[] = config.colorRoles.map((r) => r[0]);
 
-			let colorRolesByColumn: string[][] = [];
+			const colorRolesByColumn: string[][] = [];
 			for (let i = 0; i < columns; i++) {
-				colorRolesByColumn.push(colorRoles.slice(i * rows, (i+1) * rows));
+				colorRolesByColumn.push(colorRoles.slice(i * rows, (i + 1) * rows));
 			}
 
 			const canvas = createCanvas(10, rows * (fontSize + 2 * textPadding));
@@ -150,9 +150,13 @@ class RoleCommand extends Command {
 			ctx.lineWidth = 4;
 			ctx.lineJoin = "round";
 			ctx.strokeStyle = "#000000";
-			
-			const columnWidths = colorRolesByColumn.map((c) => Math.max(...c.map((r) => ctx.measureText(r).width)) + 2 * textPadding);
-			const columnOffsets: number[] = [textPadding].concat(columnWidths.map((w, i, a) => a.slice(0,i+1).reduce((p, a) => p + a, 0) + textPadding)).slice(0,-1);
+
+			const columnWidths = colorRolesByColumn.map(
+				(c) => Math.max(...c.map((r) => ctx.measureText(r).width)) + 2 * textPadding
+			);
+			const columnOffsets: number[] = [textPadding]
+				.concat(columnWidths.map((w, i, a) => a.slice(0, i + 1).reduce((p, a) => p + a, 0) + textPadding))
+				.slice(0, -1);
 
 			canvas.width = columnWidths.reduce((partialSum, a) => partialSum + a, 0);
 			ctx.font = `sans-serif bold ${fontSize}px`;
@@ -165,9 +169,8 @@ class RoleCommand extends Command {
 					ctx.fillStyle = color;
 					const y = fontSize + textPadding + r * (fontSize + 2 * textPadding);
 					ctx.strokeText(colorName, offset, y);
-					ctx.fillText(colorName, offset, y);			
+					ctx.fillText(colorName, offset, y);
 				}
-
 			}
 
 			if (await this.setUpRoles(interaction.guild, config.colorRoles, "- ColorRoles -", "- EndColorRoles -")) {
@@ -196,7 +199,17 @@ class RoleCommand extends Command {
 				option.setName("pronoun-prompt").setDescription("Creates the pronoun role prompt to select the roles.")
 			)
 			.addSubcommand((option) =>
-				option.setName("color-prompt").setDescription("Creates the color role prompt to select the roles.").addIntegerOption((option) => option.setName("columns").setDescription("The number of columns to use for the color roles. (Default: 2)").setRequired(false).setMinValue(1).setMaxValue(4))
+				option
+					.setName("color-prompt")
+					.setDescription("Creates the color role prompt to select the roles.")
+					.addIntegerOption((option) =>
+						option
+							.setName("columns")
+							.setDescription("The number of columns to use for the color roles. (Default: 2)")
+							.setRequired(false)
+							.setMinValue(1)
+							.setMaxValue(4)
+					)
 			);
 	}
 }
