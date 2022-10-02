@@ -133,41 +133,41 @@ class RoleCommand extends Command {
 				}
 			}
 
-			const fontSize = 40;
-			const canvas = createCanvas(10, 20 + actionRows.length * (fontSize + 5));
+			const fontSize = 30;
+			const textPadding = 10;
+			const columns = 2;
+			const rows = Math.ceil(config.colorRoles.length / columns);
+			const colorRoles: string[] = config.colorRoles.map((r) => r[0]);
+
+			let colorRolesByColumn: string[][] = [];
+			for (let i = 0; i < columns; i++) {
+				colorRolesByColumn.push(colorRoles.slice(i * rows, (i+1) * rows));
+			}
+
+			const canvas = createCanvas(10, rows * (fontSize + 2 * textPadding));
 			const ctx = canvas.getContext("2d");
 			ctx.font = `sans-serif bold ${fontSize}px`;
-
-			const canvasWidth: number =
-				actionRows.reduce(
-					(a, c) =>
-						Math.max(
-							a,
-							ctx.measureText(
-								c.components
-									.map((b) => b.data.label?.trim())
-									.join("  ")
-									.trim()
-							).width
-						),
-					0
-				) + 20;
-
-			canvas.width = canvasWidth;
 			ctx.lineWidth = 4;
+			ctx.lineJoin = "round";
 			ctx.strokeStyle = "#000000";
+			
+			const columnWidths = colorRolesByColumn.map((c) => Math.max(...c.map((r) => ctx.measureText(r).width)) + 2 * textPadding);
+			const columnOffsets: number[] = [textPadding].concat(columnWidths.map((w, i, a) => a.slice(0,i+1).reduce((p, a) => p + a, 0) + textPadding)).slice(0,-1);
+
+			canvas.width = columnWidths.reduce((partialSum, a) => partialSum + a, 0);
 			ctx.font = `sans-serif bold ${fontSize}px`;
 
-			for (let i = 0; i < actionRows.length; i++) {
-				let x = 10;
-				for (let j = 0; j < actionRows[i].components.length; j++) {
-					const [colorName, color] = config.colorRoles[i * 5 + j];
+			for (let c = 0; c < columns; c++) {
+				const offset = columnOffsets[c];
+				for (let r = 0; r < rows && c * rows + r < colorRoles.length; r++) {
+					const [colorName, color] = config.colorRoles[c * rows + r];
 					if (typeof color !== "string") throw new Error("We only support strings for this");
 					ctx.fillStyle = color;
-					ctx.strokeText(colorName, x, fontSize + 10 + i * (fontSize + 5));
-					ctx.fillText(colorName, x, fontSize + 10 + i * (fontSize + 5));
-					x += ctx.measureText(colorName).width + ctx.measureText("  ").width;
+					const y = fontSize + textPadding + r * (fontSize + 2 * textPadding);
+					ctx.strokeText(colorName, offset, y);
+					ctx.fillText(colorName, offset, y);			
 				}
+
 			}
 
 			if (await this.setUpRoles(interaction.guild, config.colorRoles, "- ColorRoles -", "- EndColorRoles -")) {
