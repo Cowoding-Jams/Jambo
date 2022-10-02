@@ -22,7 +22,6 @@ export default async function guildMemberAdd(member: GuildMember) {
 		);
 	embed = addDefaultEmbedFooter(embed);
 
-	logger.debug("Someone new joined the guild");
 	if (member.guild.systemChannel) {
 		member.guild.systemChannel.send({ embeds: [embed] });
 	} else {
