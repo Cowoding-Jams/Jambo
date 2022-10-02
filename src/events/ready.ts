@@ -1,5 +1,4 @@
-import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "@discordjs/builders";
-import { ApplicationCommand, Client } from "discord.js";
+import { ApplicationCommand, Client, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 

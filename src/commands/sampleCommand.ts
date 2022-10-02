@@ -1,6 +1,5 @@
 import { Command } from "../Command";
-import { CommandInteraction } from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 // set the class name, the export at the bottom and the file name to your desired command name (same as the one in the register function)
 class CommandName extends Command {
@@ -8,7 +7,7 @@ class CommandName extends Command {
 		super("bunny"); // the name under which the bot internally stores your command (should be the same as the named set in `register`, must be unique)
 	}
 
-	async execute(interaction: CommandInteraction): Promise<void> {
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		// put the logic of your command here
 		// for example:
 		const num = interaction.options.getInteger("amount") || 1;

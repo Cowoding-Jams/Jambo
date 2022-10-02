@@ -1,14 +1,13 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import { inlineCode } from "@discordjs/builders";
-import { getCountryByName } from "./countryDataManager";
-import { Country } from "./typesCountryCommand";
+import { ChatInputCommandInteraction, EmbedBuilder, inlineCode } from "discord.js";
 import { handleUndefinedCountry } from "./generalCountryCommandUtil";
 import { addDefaultEmbedFooter } from "../embeds";
-import { formatNumber } from "../numbers";
+import { getCountryByName } from "./countryDataManager";
 import { pickRandomFromList } from "../random";
+import { formatNumber } from "../numbers";
+import { Country } from "./typesCountryCommand";
 import { countryData } from "./countryDataLoader";
 
-export function overviewSubcommand(interaction: CommandInteraction) {
+export function overviewSubcommand(interaction: ChatInputCommandInteraction) {
 	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
 
 	if (country) {
@@ -18,12 +17,12 @@ export function overviewSubcommand(interaction: CommandInteraction) {
 	}
 }
 
-export function randomOverviewSubcommand(interaction: CommandInteraction) {
+export function randomOverviewSubcommand(interaction: ChatInputCommandInteraction) {
 	interaction.reply({ embeds: [getOverviewEmbed(pickRandomFromList(countryData), interaction.locale)] });
 }
 
-function getOverviewEmbed(country: Country, locale: string): MessageEmbed {
-	const embed = new MessageEmbed()
+function getOverviewEmbed(country: Country, locale: string): EmbedBuilder {
+	const embed = new EmbedBuilder()
 		.setTitle(country.name)
 		.setThumbnail(country.flags.png)
 		.setDescription(`(officially: ${country.official_name}, code: ${country.cca2})`)
