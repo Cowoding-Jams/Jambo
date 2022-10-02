@@ -14,6 +14,7 @@ import { addDefaultEmbedFooter } from "../util/embeds";
 import { hasAdminPerms } from "../util/permissions";
 import { config } from "../config";
 import { logger } from "../logger";
+import { createCanvas } from "@napi-rs/canvas";
 
 class RoleCommand extends Command {
 	constructor() {
@@ -118,9 +119,9 @@ class RoleCommand extends Command {
 		} else if (subcommand === "color-prompt") {
 			const prompt: EmbedBuilder = new EmbedBuilder()
 				.setTitle("Color roles 🌈")
-				.setDescription("Select the color you want your nickname to have :)");
+				.setDescription("Select the color you want your nickname to have :)")
+				.setImage("attachment://roles.png");
 			const actionRows: ActionRowBuilder<ButtonBuilder>[] = [];
-			console.log(Math.ceil(config.colorRoles.length / 5));
 
 			for (let i = 0; i < Math.ceil(config.colorRoles.length / 5); i++) {
 				actionRows.push(new ActionRowBuilder());
@@ -132,8 +133,49 @@ class RoleCommand extends Command {
 				}
 			}
 
+			const canvas = createCanvas(10, 20 + actionRows.length * 25);
+			const ctx = canvas.getContext("2d");
+			ctx.font = "sans-serif bold 20px";
+
+			const canvasWidth: number =
+				actionRows.reduce(
+					(a, c) =>
+						Math.max(
+							a,
+							ctx.measureText(
+								c.components
+									.map((b) => b.data.label?.trim())
+									.join("  ")
+									.trim()
+							).width
+						),
+					0
+				) + 20;
+
+			canvas.width = canvasWidth;
+			ctx.font = "sans-serif bold 20px";
+
+			for (let i = 0; i < actionRows.length; i++) {
+				let x = 10;
+				for (let j = 0; j < actionRows[i].components.length; j++) {
+					const [colorName, color] = config.colorRoles[i * 5 + j];
+					ctx.fillStyle = color as string; // d.js ColorResolvable not compatible with canvas
+					ctx.fillText(colorName, x, 30 + i * 25);
+					x += ctx.measureText(colorName).width + ctx.measureText("  ").width;
+				}
+			}
+
 			if (await this.setUpRoles(interaction.guild, config.colorRoles, "- ColorRoles -", "- EndColorRoles -")) {
-				await interaction.editReply({ embeds: [addDefaultEmbedFooter(prompt)], components: actionRows });
+				await interaction.editReply({
+					embeds: [addDefaultEmbedFooter(prompt)],
+					components: actionRows,
+					files: [
+						{
+							name: "roles.png",
+							attachment: canvas.toBuffer("image/png"),
+						},
+					],
+				});
 			} else {
 				await interaction.editReply({ content: "Couldn't set up the roles..." });
 				logger.error("Failed to set up color roles.");
