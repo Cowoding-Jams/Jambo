@@ -1,7 +1,7 @@
-import { MessageEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { config } from "../config";
 
-export function addDefaultEmbedFooter(embed: MessageEmbed): MessageEmbed {
+export function addDefaultEmbedFooter(embed: EmbedBuilder): EmbedBuilder {
 	return embed
 		.setAuthor({
 			name: `Made by me, ${config.botName} :)`,

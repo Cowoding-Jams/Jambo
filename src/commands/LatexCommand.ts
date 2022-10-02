@@ -1,10 +1,13 @@
 import { Command } from "../Command";
-import { CommandInteraction, MessageActionRow, MessageButton } from "discord.js";
 import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction,
 	SlashCommandBooleanOption,
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
-} from "@discordjs/builders";
+} from "discord.js";
 import { unknownSubcommandEdit } from "../util/unknownSubcommand";
 import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
 import { latexDb } from "../db";
@@ -14,7 +17,7 @@ class Latex extends Command {
 		super("latex");
 	}
 
-	async execute(interaction: CommandInteraction): Promise<void> {
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		await interaction.deferReply();
 
 		const id = (await interaction.fetchReply()).id;
@@ -38,10 +41,14 @@ class Latex extends Command {
 		}
 	}
 
-	answerWithImage(interaction: CommandInteraction, urlToFile: string | null = null): void {
-		const row = new MessageActionRow().addComponents(
-			new MessageButton().setCustomId("latex.delete").setLabel("Retry/Delete").setStyle("SECONDARY").setEmoji("🔁")
-		);
+	answerWithImage(interaction: ChatInputCommandInteraction, urlToFile: string | null = null): void {
+		const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setCustomId("latex.delete")
+				.setLabel("Retry/Delete")
+				.setStyle(ButtonStyle.Secondary)
+				.setEmoji("🔁")
+		) as ActionRowBuilder<ButtonBuilder>;
 
 		if (urlToFile === null) {
 			interaction.editReply({ content: "LaTeX compiling error...\nPlease double check your code.", components: [row] });
@@ -77,10 +84,7 @@ class Latex extends Command {
 						option
 							.setName("paper-size")
 							.setDescription("Sets the paper size from a few options.")
-							.addChoices([
-								["a5", "a5"],
-								["a4", "a4"],
-							])
+							.addChoices({ name: "a5", value: "a5" }, { name: "a4", value: "a4" })
 					)
 			);
 	}

@@ -1,6 +1,5 @@
 import { Command } from "../Command";
-import { CommandInteraction, GuildMember, MessageEmbed, User } from "discord.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder, User } from "discord.js";
 import { addDefaultEmbedFooter } from "../util/embeds";
 
 class UserInfoCommand extends Command {
@@ -8,7 +7,7 @@ class UserInfoCommand extends Command {
 		super("user-info");
 	}
 
-	async execute(interaction: CommandInteraction): Promise<void> {
+	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const user: User = interaction.options.getUser("user", true);
 		const member: GuildMember | null | undefined = await interaction.guild?.members.fetch(user.id).catch(() => null);
 
@@ -30,28 +29,31 @@ const toUnix = (timestamp: number | Date) => {
 	return Math.floor(timestamp / 1000);
 };
 
-function getUserEmbed(user: User, member: GuildMember | null | undefined): MessageEmbed {
-	const embed = new MessageEmbed()
+function getUserEmbed(user: User, member: GuildMember | null | undefined): EmbedBuilder {
+	const embed = new EmbedBuilder()
 		.setTitle(
 			`${user.tag} ${member ? "aka. " + member.displayName : ""} ${user.system ? "| System" : user.bot ? "| Bot" : ""}`
 		)
-		.setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
+		.setThumbnail(user.displayAvatarURL({ size: 1024 }))
 		.setDescription(user.toString());
 
-	embed.addField("User Id", user.id, true);
+	embed.addFields({ name: "User Id", value: user.id, inline: true });
 
 	if (user.flags?.toArray().length) {
-		embed.addField(
-			"Discord Badges",
-			user.flags
+		embed.addFields({
+			name: "Discord Badges",
+			value: user.flags
 				.toArray()
 				.map((v) => v.toLowerCase().replace(/_/g, " "))
 				.join(", ")
-				.replace(/\b(.)/g, (c) => c.toUpperCase())
-		);
+				.replace(/\b(.)/g, (c) => c.toUpperCase()),
+		});
 	}
 
-	embed.addField("Account created", `<t:${toUnix(user.createdTimestamp)}> ⁘ <t:${toUnix(user.createdTimestamp)}:R>`);
+	embed.addFields({
+		name: "Account created",
+		value: `<t:${toUnix(user.createdTimestamp)}> ⁘ <t:${toUnix(user.createdTimestamp)}:R>`,
+	});
 
 	if (member) {
 		let roles = "";
@@ -65,13 +67,13 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Messa
 			: "Not boosting :(";
 
 		if (member.joinedTimestamp)
-			embed.addField(
-				"Joined server",
-				`<t:${toUnix(member.joinedTimestamp)}> ⁘ <t:${toUnix(member.joinedTimestamp)}:R>`,
-				true
-			);
+			embed.addFields({
+				name: "Joined server",
+				value: `<t:${toUnix(member.joinedTimestamp)}> ⁘ <t:${toUnix(member.joinedTimestamp)}:R>`,
+				inline: true,
+			});
 
-		embed.addField("Boosting", boosting, true).addField("Roles", roles);
+		embed.addFields({ name: "Boosting", value: boosting, inline: true }, { name: "Roles", value: roles });
 	}
 	return addDefaultEmbedFooter(embed);
 }

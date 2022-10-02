@@ -1,9 +1,9 @@
 import { Client, Collection } from "discord.js";
-import { Command } from "./Command";
 import { Autocompleter } from "./Autocompleter";
-import fs from "fs";
 import { ButtonHandler } from "./ButtonHandler";
+import { Command } from "./Command";
 import { logger } from "./logger";
+import fs from "fs";
 
 export async function loadCommands(): Promise<Collection<string, Command>> {
 	logger.debug("Loading commands...");

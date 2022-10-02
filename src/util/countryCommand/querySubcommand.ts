@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { addDefaultEmbedFooter } from "../embeds";
 import { formatNumber } from "../numbers";
 import { shuffleList } from "../random";
@@ -6,7 +6,7 @@ import { countryData } from "./countryDataLoader";
 import { getFilteredCountryDataBy, sortCountryDataBy, typeOfCountryProperty } from "./countryDataManager";
 import { Country, CountryKey } from "./typesCountryCommand";
 
-export function querySubcommand(interaction: CommandInteraction) {
+export function querySubcommand(interaction: ChatInputCommandInteraction) {
 	const sortCriteria: CountryKey = (interaction.options.getString("sort-criteria") ?? "none") as CountryKey;
 	const order = interaction.options.getString("order") ?? "ascending";
 	const scale = interaction.options.getInteger("scale") ?? 10;
@@ -71,7 +71,7 @@ export function querySubcommand(interaction: CommandInteraction) {
 	});
 }
 
-function filterValueTypeDoesNotMatchCriteriaType(interaction: CommandInteraction) {
+function filterValueTypeDoesNotMatchCriteriaType(interaction: ChatInputCommandInteraction) {
 	interaction.reply({
 		content:
 			"Now I don't want to call you dumb infront of everyone but that just makes no sense...\nThat filter value just doesn't match the type of the criteria you wanted to filter by.",
@@ -79,7 +79,7 @@ function filterValueTypeDoesNotMatchCriteriaType(interaction: CommandInteraction
 	});
 }
 
-function getListEmbed(data: string[][], title: string, numbered: boolean): MessageEmbed {
+function getListEmbed(data: string[][], title: string, numbered: boolean): EmbedBuilder {
 	let des: string;
 	const dataSymbol: string = (data[0].length ?? 0) > 1 ? " ⁘ " : " ";
 	if (numbered) {
@@ -88,7 +88,7 @@ function getListEmbed(data: string[][], title: string, numbered: boolean): Messa
 		des = data.map((c) => `- ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
 	}
 
-	return addDefaultEmbedFooter(new MessageEmbed().setTitle(title).setDescription(des));
+	return addDefaultEmbedFooter(new EmbedBuilder().setTitle(title).setDescription(des));
 }
 
 const filteringTitles: { [id: string]: (value: string, criteria: CountryKey) => string } = {
