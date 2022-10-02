@@ -1,4 +1,4 @@
-import { GuildMember, EmbedBuilder, inlineCode } from "discord.js";
+import { EmbedBuilder, GuildMember, inlineCode } from "discord.js";
 import { addDefaultEmbedFooter } from "../util/embeds";
 import { logger } from "../logger";
 import { config } from "../config";
