@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { loadAutocompleters, loadButtonHandlers, loadCommands, loadEvents } from "./loader";
+import { loadAutocompleters, loadButtonHandlers, loadCommands, loadEvents, loadSelectMenuHandlers } from "./loader";
 import { Client } from "discord.js";
 import { ctx } from "./ctx";
 import { logger } from "./logger";
@@ -20,8 +20,12 @@ async function start(): Promise<Client> {
 	const client = new Client({ intents: ["Guilds", "GuildMembers"] });
 
 	logger.debug("Loading context...");
-	ctx.update(await loadCommands(), await loadButtonHandlers(), await loadAutocompleters());
-	logger.debug("Loading events...");
+	ctx.update(
+		await loadCommands(),
+		await loadButtonHandlers(),
+		await loadSelectMenuHandlers(),
+		await loadAutocompleters()
+	);
 	await loadEvents(client);
 	logger.debug("Attempting login");
 	await client.login(process.env.TOKEN);

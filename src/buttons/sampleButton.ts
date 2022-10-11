@@ -1,4 +1,4 @@
-import { ButtonHandler } from "../ButtonHandler";
+import { ButtonHandler } from "../handler";
 import { ButtonInteraction } from "discord.js";
 
 class ExampleButton extends ButtonHandler {

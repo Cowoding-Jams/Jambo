@@ -1,4 +1,4 @@
-import { ButtonHandler } from "../ButtonHandler";
+import { ButtonHandler } from "../handler";
 import { ButtonInteraction, inlineCode } from "discord.js";
 import { logger } from "../logger";
 
