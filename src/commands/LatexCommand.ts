@@ -1,4 +1,4 @@
-import { Command } from "../Command";
+import { Command } from "../handler";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -42,13 +42,13 @@ class Latex extends Command {
 	}
 
 	answerWithImage(interaction: ChatInputCommandInteraction, urlToFile: string | null = null): void {
-		const row: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder().addComponents(
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder()
 				.setCustomId("latex.delete")
 				.setLabel("Retry/Delete")
 				.setStyle(ButtonStyle.Secondary)
 				.setEmoji("🔁")
-		) as ActionRowBuilder<ButtonBuilder>;
+		);
 
 		if (urlToFile === null) {
 			interaction.editReply({ content: "LaTeX compiling error...\nPlease double check your code.", components: [row] });

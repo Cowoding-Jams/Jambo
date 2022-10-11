@@ -1,4 +1,10 @@
-import { AutocompleteInteraction, ButtonInteraction, ChatInputCommandInteraction, Interaction } from "discord.js";
+import {
+	AutocompleteInteraction,
+	ButtonInteraction,
+	ChatInputCommandInteraction,
+	Interaction,
+	SelectMenuInteraction,
+} from "discord.js";
 import { logger } from "../logger";
 import { ctx } from "../ctx";
 
@@ -10,6 +16,8 @@ export default async function interactionCreate(interaction: Interaction) {
 			await handleButtonInteractions(interaction);
 		} else if (interaction.isAutocomplete()) {
 			await handleAutocompleteInteraction(interaction);
+		} else if (interaction.isSelectMenu()) {
+			await handleSelectMenuInteractions(interaction);
 		}
 	} catch (err: unknown) {
 		if (err instanceof Error) {
@@ -40,6 +48,18 @@ async function handleButtonInteractions(interaction: ButtonInteraction) {
 		await clickedButton.execute(interaction, args);
 	} else {
 		logger.error(`Error resolving clicked button ${buttonName}`);
+		await interaction.reply("An error occurred. Please contact a developer");
+	}
+}
+
+async function handleSelectMenuInteractions(interaction: SelectMenuInteraction) {
+	const args = interaction.customId.split(".");
+	const menuName = args.shift() || "";
+	const selected = ctx.selectMenus.get(menuName);
+	if (selected) {
+		await selected.execute(interaction, args);
+	} else {
+		logger.error(`Error resolving select menu for: ${menuName}`);
 		await interaction.reply("An error occurred. Please contact a developer");
 	}
 }
