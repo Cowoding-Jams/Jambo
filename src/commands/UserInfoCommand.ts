@@ -1,4 +1,4 @@
-import { Command } from "../Command";
+import { Command } from "../handler";
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder, User } from "discord.js";
 import { addDefaultEmbedFooter } from "../util/embeds";
 
