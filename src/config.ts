@@ -1,4 +1,4 @@
-import { ColorResolvable } from "discord.js";
+import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 
 // Configure your bot here.
 export const config: BotConfig = {
@@ -43,7 +43,7 @@ interface BotConfig {
 	// URL to the github repository of the bot. Please share your code!
 	githubURL: string;
 	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.
-	pronounRoles: [string, string | null][];
+	pronounRoles: [string, ComponentEmojiResolvable | null][];
 	// Max 25 color roles to pick from. First argument is the name of the role, second argument is the color.
 	colorRoles: [string, ColorResolvable][];
 	// The main color the bot will use.
