@@ -70,7 +70,10 @@ class CountryAutocompleter extends Autocompleter {
 
 			await interaction.respond(options.map(returnChoiceWithSameValues).slice(0, 25));
 		} else if (criteriaType === "boolean") {
-			await interaction.respond([returnChoiceWithSameValues("true"), returnChoiceWithSameValues("false")]);
+			await interaction.respond([
+				returnChoiceWithSameValues("true"),
+				returnChoiceWithSameValues("false"),
+			]);
 		}
 	}
 }

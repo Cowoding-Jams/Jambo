@@ -21,10 +21,16 @@ class RoleButton extends ButtonHandler {
 
 		if (member.roles.cache.map((r) => r.name).includes(roleName)) {
 			member.roles.remove(role);
-			await interaction.reply({ content: `Removed your ${inlineCode(roleName)} role.`, ephemeral: true });
+			await interaction.reply({
+				content: `Removed your ${inlineCode(roleName)} role.`,
+				ephemeral: true,
+			});
 		} else {
 			member.roles.add(role);
-			await interaction.reply({ content: `Gave you the ${inlineCode(roleName)} role.`, ephemeral: true });
+			await interaction.reply({
+				content: `Gave you the ${inlineCode(roleName)} role.`,
+				ephemeral: true,
+			});
 		}
 	}
 }

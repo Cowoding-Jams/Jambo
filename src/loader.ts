@@ -41,7 +41,8 @@ export async function loadSelectMenuHandlers(): Promise<Collection<string, Selec
 			.readdirSync("./dist/selectMenus")
 			.filter(isActive)
 			.map(async (filename) => {
-				const selectMenuHandler = (await import(`./selectMenus/${filename}`)).default as SelectMenuHandler;
+				const selectMenuHandler = (await import(`./selectMenus/${filename}`))
+					.default as SelectMenuHandler;
 				loadedSelectMenus.set(selectMenuHandler.name, selectMenuHandler);
 			})
 	);
@@ -69,7 +70,8 @@ export async function loadAutocompleters(): Promise<Collection<string, Autocompl
 			.readdirSync("./dist/autocompleters")
 			.filter(isActive)
 			.map(async (filename) => {
-				const autocompleter = (await import(`./autocompleters/${filename}`)).default as Autocompleter;
+				const autocompleter = (await import(`./autocompleters/${filename}`))
+					.default as Autocompleter;
 				loadedAutocompleters.set(autocompleter.command, autocompleter);
 			})
 	);

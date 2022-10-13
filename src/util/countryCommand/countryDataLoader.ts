@@ -59,7 +59,9 @@ const defaultCountryData: Country = {
 	flags: { png: "", svg: "" },
 };
 
-const extractData: { [id: string]: (c: CountryImport) => MainCountryDataTypes | object | undefined } = {
+const extractData: {
+	[id: string]: (c: CountryImport) => MainCountryDataTypes | object | undefined;
+} = {
 	name: (c) => c.name.common,
 	official_name: (c) => c.name.official,
 	cca2: (c) => c.cca2,

@@ -37,7 +37,9 @@ export async function setUpRoles(
 
 	const separatorPos = guildRoles.find((r) => r.name === startSeparator)?.position ?? 2;
 	const endSeparatorPos = guildRoles.find((r) => r.name === endSeparator)?.position ?? 1;
-	const existingRoles = guildRoles.filter((r) => r.position > endSeparatorPos && r.position < separatorPos);
+	const existingRoles = guildRoles.filter(
+		(r) => r.position > endSeparatorPos && r.position < separatorPos
+	);
 
 	// Delete roles that are no longer in the config
 	for (const role of existingRoles) {
@@ -94,7 +96,10 @@ export async function pronounPrompt(interaction: ChatInputCommandInteraction): P
 			"- EndPronounRoles -"
 		)
 	) {
-		await interaction.editReply({ embeds: [addDefaultEmbedFooter(prompt)], components: actionRows });
+		await interaction.editReply({
+			embeds: [addDefaultEmbedFooter(prompt)],
+			components: actionRows,
+		});
 	} else {
 		await interaction.editReply({ content: "Couldn't set up the roles..." });
 		logger.error("Failed to set up pronoun roles.");
@@ -114,7 +119,10 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 		actionRows.push(new ActionRowBuilder());
 		for (const role of row) {
 			actionRows[actionRows.length - 1].addComponents(
-				new ButtonBuilder().setCustomId(`role.${role[0]}`).setLabel(role[0]).setStyle(ButtonStyle.Secondary)
+				new ButtonBuilder()
+					.setCustomId(`role.${role[0]}`)
+					.setLabel(role[0])
+					.setStyle(ButtonStyle.Secondary)
 			);
 		}
 	}
@@ -142,7 +150,9 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 		(c) => Math.max(...c.map((r) => ctx.measureText(r).width)) + 2 * textPadding
 	);
 	const columnOffsets: number[] = [textPadding]
-		.concat(columnWidths.map((w, i, a) => a.slice(0, i + 1).reduce((p, a) => p + a, 0) + textPadding))
+		.concat(
+			columnWidths.map((w, i, a) => a.slice(0, i + 1).reduce((p, a) => p + a, 0) + textPadding)
+		)
 		.slice(0, -1);
 
 	canvas.width = columnWidths.reduce((partialSum, a) => partialSum + a, 0);
@@ -160,7 +170,9 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 		}
 	}
 
-	if (await setUpRoles(interaction.guild, config.colorRoles, "- ColorRoles -", "- EndColorRoles -")) {
+	if (
+		await setUpRoles(interaction.guild, config.colorRoles, "- ColorRoles -", "- EndColorRoles -")
+	) {
 		await interaction.editReply({
 			embeds: [addDefaultEmbedFooter(prompt)],
 			components: actionRows,

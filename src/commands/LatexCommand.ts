@@ -69,7 +69,10 @@ class Latex extends Command {
 					.setName("equation")
 					.setDescription("Lets you render a single LaTeX equation.")
 					.addStringOption((option) =>
-						option.setName("input").setDescription("Your equation in LaTeX notation.").setRequired(true)
+						option
+							.setName("input")
+							.setDescription("Your equation in LaTeX notation.")
+							.setRequired(true)
 					)
 					.addBooleanOption(transparencyOption)
 			)
@@ -95,7 +98,9 @@ class Latex extends Command {
 
 const transparencyOption = new SlashCommandBooleanOption()
 	.setName("transparent")
-	.setDescription("Whether or not the image is a png with no background or a jpg with a white background.")
+	.setDescription(
+		"Whether or not the image is a png with no background or a jpg with a white background."
+	)
 	.setRequired(false);
 
 export default new Latex();

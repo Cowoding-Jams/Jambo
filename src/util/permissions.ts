@@ -1,9 +1,14 @@
 import { ChatInputCommandInteraction } from "discord.js";
 
-export async function hasMentionEveryonePerms(interaction: ChatInputCommandInteraction): Promise<boolean> {
+export async function hasMentionEveryonePerms(
+	interaction: ChatInputCommandInteraction
+): Promise<boolean> {
 	const member = await interaction.guild?.members.fetch(interaction.user);
 	if (!member?.permissions.has("MentionEveryone")) {
-		await interaction.reply({ content: "You don't have the permission to ping everyone.", ephemeral: true });
+		await interaction.reply({
+			content: "You don't have the permission to ping everyone.",
+			ephemeral: true,
+		});
 		return false;
 	}
 	return true;

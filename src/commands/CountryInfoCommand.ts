@@ -6,7 +6,10 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { countryData, initializeCountryData } from "../util/countryCommand/countryDataLoader";
-import { overviewSubcommand, randomOverviewSubcommand } from "../util/countryCommand/overviewSubcommand";
+import {
+	overviewSubcommand,
+	randomOverviewSubcommand,
+} from "../util/countryCommand/overviewSubcommand";
 import { specificCommand } from "../util/countryCommand/specificSubcommand";
 import { querySubcommand } from "../util/countryCommand/querySubcommand";
 import { unknownSubcommandReply } from "../util/unknownSubcommand";
@@ -150,7 +153,9 @@ class CountryInfoCommand extends Command {
 							.setAutocomplete(true)
 					)
 					.addBooleanOption((option) =>
-						option.setName("include-data").setDescription("Set whether or not the list includes the data.")
+						option
+							.setName("include-data")
+							.setDescription("Set whether or not the list includes the data.")
 					)
 			);
 	}

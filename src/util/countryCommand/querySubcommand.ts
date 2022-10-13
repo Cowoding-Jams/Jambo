@@ -3,11 +3,16 @@ import { addDefaultEmbedFooter } from "../embeds";
 import { formatNumber } from "../numbers";
 import { shuffleList } from "../random";
 import { countryData } from "./countryDataLoader";
-import { getFilteredCountryDataBy, sortCountryDataBy, typeOfCountryProperty } from "./countryDataManager";
+import {
+	getFilteredCountryDataBy,
+	sortCountryDataBy,
+	typeOfCountryProperty,
+} from "./countryDataManager";
 import { Country, CountryKey } from "./typesCountryCommand";
 
 export function querySubcommand(interaction: ChatInputCommandInteraction) {
-	const sortCriteria: CountryKey = (interaction.options.getString("sort-criteria") ?? "none") as CountryKey;
+	const sortCriteria: CountryKey = (interaction.options.getString("sort-criteria") ??
+		"none") as CountryKey;
 	const order = interaction.options.getString("order") ?? "ascending";
 	const scale = interaction.options.getInteger("scale") ?? 10;
 	const filterCriteria: CountryKey = (interaction.options.getString("filter-criteria") ??
@@ -58,7 +63,9 @@ export function querySubcommand(interaction: ChatInputCommandInteraction) {
 	// output
 	const titleStart = scale > countryData.length ? "All" : `Top ${scale}`;
 	const titleSort =
-		(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled";
+		(sortCriteria as string) !== "none"
+			? `listed by ${sortCriteria} in ${order} order`
+			: "shuffeled";
 	const titleFilter =
 		(filterCriteria as string) !== "none"
 			? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}`
@@ -67,7 +74,12 @@ export function querySubcommand(interaction: ChatInputCommandInteraction) {
 	interaction.reply({
 		embeds: [
 			getListEmbed(
-				countriesToEmbedForm(data.slice(0, scale), embedDataCriteria, interaction.locale, includeData),
+				countriesToEmbedForm(
+					data.slice(0, scale),
+					embedDataCriteria,
+					interaction.locale,
+					includeData
+				),
 				title,
 				numbered
 			),
@@ -87,7 +99,9 @@ function getListEmbed(data: string[][], title: string, numbered: boolean): Embed
 	let des: string;
 	const dataSymbol: string = (data[0].length ?? 0) > 1 ? " ⁘ " : " ";
 	if (numbered) {
-		des = data.map((c, index) => `${index + 1}. ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
+		des = data
+			.map((c, index) => `${index + 1}. ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`)
+			.join("\n");
 	} else {
 		des = data.map((c) => `- ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
 	}

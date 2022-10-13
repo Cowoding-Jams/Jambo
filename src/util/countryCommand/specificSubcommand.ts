@@ -5,7 +5,9 @@ import { getCountryByName } from "./countryDataManager";
 import { formatNumber } from "../numbers";
 
 export function specificCommand(interaction: ChatInputCommandInteraction) {
-	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
+	const country: Country | undefined = getCountryByName(
+		interaction.options.getString("country", true)
+	);
 
 	const info: string = interaction.options.getString("info") ?? "population";
 
@@ -16,7 +18,9 @@ export function specificCommand(interaction: ChatInputCommandInteraction) {
 	}
 }
 
-const specificRequestReplies: { [id: string]: (country: Country, locale: string) => string | object } = {
+const specificRequestReplies: {
+	[id: string]: (country: Country, locale: string) => string | object;
+} = {
 	official_name: (country) => `The official name of ${country.name} is: ${country.official_name}`,
 	flag: (country) => {
 		return { content: `${country.name}'s flag:`, files: [country.flags.png] };
@@ -30,11 +34,14 @@ const specificRequestReplies: { [id: string]: (country: Country, locale: string)
 	capital: (country) => `The capital of ${country.name} is ${country.capital}`,
 	languages: (country) =>
 		`In ${country.name} these following languages are spoken: ${country.languages.join(", ")}`,
-	currencies: (country) => `In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
-	timezones: (country) => `${country.name} includes these timezones: ${country.timezones.join(", ")}`,
+	currencies: (country) =>
+		`In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
+	timezones: (country) =>
+		`${country.name} includes these timezones: ${country.timezones.join(", ")}`,
 	region: (country) => `${country.name} is part of ${country.region}`,
 	subregion: (country) => `${country.name} is part of ${country.subregion}`,
 	latitude: (country) => `The latitude of ${country.name} is ${country.latitude}° N/S`,
 	longitude: (country) => `The longitude of ${country.name} is ${country.longitude}° E/W`,
-	area: (country, locale) => `The area of ${country.name} is: ${formatNumber(country.area, locale)} km²`,
+	area: (country, locale) =>
+		`The area of ${country.name} is: ${formatNumber(country.area, locale)} km²`,
 };

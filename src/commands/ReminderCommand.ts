@@ -79,7 +79,9 @@ class ReminderCommand extends Command {
 						minute == 0 ? "" : ` ${minute} minutes`
 					}${second == 0 ? "" : ` ${second} seconds`}${
 						message == "" ? "" : ` with the following message: ${message}`
-					} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${this.m_id}`)}`
+					} \nYou can always delete this reminder with ${inlineCode(
+						`/reminder delete ${this.m_id}`
+					)}`
 				);
 				this.m_id += 1;
 				break;
@@ -100,7 +102,10 @@ class ReminderCommand extends Command {
 					timeDb.delete(c_id);
 					await interaction.reply({ content: "I've removed the reminder :)", ephemeral: true });
 				} else {
-					await interaction.reply({ content: "You can only delete your own reminders.", ephemeral: true });
+					await interaction.reply({
+						content: "You can only delete your own reminders.",
+						ephemeral: true,
+					});
 				}
 				break;
 			}

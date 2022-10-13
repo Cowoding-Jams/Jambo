@@ -4,12 +4,18 @@ import { Collection } from "discord.js";
 class Ctx {
 	public readonly defaultGuild;
 	public readonly commands: Collection<string, Command> = new Collection<string, Command>();
-	public readonly buttons: Collection<string, ButtonHandler> = new Collection<string, ButtonHandler>();
+	public readonly buttons: Collection<string, ButtonHandler> = new Collection<
+		string,
+		ButtonHandler
+	>();
 	public readonly selectMenus: Collection<string, SelectMenuHandler> = new Collection<
 		string,
 		SelectMenuHandler
 	>();
-	public readonly autocompleters: Collection<string, Autocompleter> = new Collection<string, Autocompleter>();
+	public readonly autocompleters: Collection<string, Autocompleter> = new Collection<
+		string,
+		Autocompleter
+	>();
 	public readonly logLevel: string;
 
 	constructor() {

@@ -26,7 +26,9 @@ export function sortCountryDataBy(criteria: CountryKey) {
 	);
 }
 
-const sortingComparators: { [id: string]: (a: MainCountryDataTypes, b: MainCountryDataTypes) => number } = {
+const sortingComparators: {
+	[id: string]: (a: MainCountryDataTypes, b: MainCountryDataTypes) => number;
+} = {
 	number: (a, b) => (a as number) - (b as number),
 	string: (a, b) => ((a as string).toLowerCase() <= (b as string).toLowerCase() ? -1 : 1),
 	boolean: (a, b) => ((!a as boolean) && (b as boolean) ? -1 : 0),
@@ -60,9 +62,11 @@ const filteringComparators: {
 	) => boolean;
 } = {
 	number: (a, rel, b) => dataRelations[rel](a as number, b as number),
-	string: (a, rel, b) => dataRelations[rel]((a as string).toLowerCase(), (b as string).toLowerCase()),
+	string: (a, rel, b) =>
+		dataRelations[rel]((a as string).toLowerCase(), (b as string).toLowerCase()),
 	boolean: (a, rel, b) => dataRelations[rel](a as boolean, b as boolean),
-	object: (a, rel, b) => (a as string[]).map((s) => filteringComparators["string"](s, rel, b)).some((e) => e),
+	object: (a, rel, b) =>
+		(a as string[]).map((s) => filteringComparators["string"](s, rel, b)).some((e) => e),
 };
 
 const dataRelations: {
