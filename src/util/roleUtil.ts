@@ -10,7 +10,7 @@ import {
     EmbedBuilder,
     Guild,
 } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/embeds";
+import { addDefaultEmbedFooter } from "./embeds";
 import { createCanvas } from "@napi-rs/canvas";
 
 export async function setUpRoles(
@@ -72,11 +72,11 @@ export async function pronounPrompt(interaction: ChatInputCommandInteraction): P
     for (const row of roles) {
         actionRows.push(new ActionRowBuilder());
         for (const role of row) {
-            actionRows[-1].addComponents(
+            actionRows[actionRows.length - 1].addComponents(
                 new ButtonBuilder().setCustomId(`role.${role[0]}`).setLabel(role[0]).setStyle(actionRows.length == 1 ? ButtonStyle.Primary : ButtonStyle.Secondary)
             );
             if (role[1]) {
-                actionRows[-1].components[-1].setEmoji(role[1]);
+                actionRows[actionRows.length - 1].components[actionRows[actionRows.length - 1].components.length - 1].setEmoji(role[1]);
             }
         }
     }
@@ -97,6 +97,7 @@ export async function pronounPrompt(interaction: ChatInputCommandInteraction): P
 }
 
 export async function colorPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
+    // Embed and Buttons
     const prompt: EmbedBuilder = new EmbedBuilder()
         .setTitle("Color roles 🌈")
         .setDescription("Select the color you want your nickname to have :)")
@@ -107,12 +108,13 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
     for (const row of roles) {
         actionRows.push(new ActionRowBuilder());
         for (const role of row) {
-            actionRows[-1].addComponents(
+            actionRows[actionRows.length - 1].addComponents(
                 new ButtonBuilder().setCustomId(`role.${role[0]}`).setLabel(role[0]).setStyle(ButtonStyle.Secondary)
             );
         }
     }
 
+    // Image
     const fontSize = 30;
     const textPadding = 10;
     const columns = interaction.options.getInteger("columns") ?? 2;
