@@ -7,7 +7,9 @@ class ExampleSelectMenu extends SelectMenuHandler {
 	}
 
 	async execute(interaction: SelectMenuInteraction, subcommand: string[]): Promise<void> {
-		await interaction.reply(`You used ${subcommand} and selected the following options: ${interaction.values}`);
+		await interaction.reply(
+			`You used ${subcommand} and selected the following options: ${interaction.values}`
+		);
 	}
 }
 

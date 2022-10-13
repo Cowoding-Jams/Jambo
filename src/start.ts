@@ -1,5 +1,11 @@
 import "dotenv/config";
-import { loadAutocompleters, loadButtonHandlers, loadCommands, loadEvents, loadSelectMenuHandlers } from "./loader";
+import {
+	loadAutocompleters,
+	loadButtonHandlers,
+	loadCommands,
+	loadEvents,
+	loadSelectMenuHandlers,
+} from "./loader";
 import { Client } from "discord.js";
 import { ctx } from "./ctx";
 import { logger } from "./logger";

@@ -1,4 +1,9 @@
-import { ApplicationCommand, Client, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
+import {
+	ApplicationCommand,
+	Client,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 
@@ -17,7 +22,9 @@ async function updateRegisteredCommands(client: Client) {
 		logger.error("Client has no application");
 		throw new Error("Client must have an application");
 	}
-	const registeredCommands = await client.application.commands.fetch(undefined, { guildId: ctx.defaultGuild });
+	const registeredCommands = await client.application.commands.fetch(undefined, {
+		guildId: ctx.defaultGuild,
+	});
 
 	await Promise.all(
 		ctx.commands.map(async (cmd) => {

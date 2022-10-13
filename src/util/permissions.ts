@@ -12,7 +12,10 @@ export async function hasMentionEveryonePerms(interaction: ChatInputCommandInter
 export async function hasAdminPerms(interaction: ChatInputCommandInteraction): Promise<boolean> {
 	const member = await interaction.guild?.members.fetch(interaction.user);
 	if (!member?.permissions.has("Administrator")) {
-		await interaction.reply({ content: "You don't have the admin permission to use that command.", ephemeral: true });
+		await interaction.reply({
+			content: "You don't have the admin permission to use that command.",
+			ephemeral: true,
+		});
 		return false;
 	}
 	return true;

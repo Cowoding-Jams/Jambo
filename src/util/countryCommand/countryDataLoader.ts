@@ -68,7 +68,8 @@ const extractData: { [id: string]: (c: CountryImport) => MainCountryDataTypes | 
 	population: (c) => c.population,
 	capital: (c) => c.capital,
 	languages: (c) => (c.languages ? Object.values(c.languages) : undefined),
-	currencies: (c) => (c.currencies ? Object.values(c.currencies ?? { "-": "-" }).map((co) => co.name) : undefined),
+	currencies: (c) =>
+		c.currencies ? Object.values(c.currencies ?? { "-": "-" }).map((co) => co.name) : undefined,
 	timezones: (c) => c.timezones,
 	region: (c) => c.region,
 	subregion: (c) => c.subregion,

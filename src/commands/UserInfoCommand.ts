@@ -1,5 +1,11 @@
 import { Command } from "../handler";
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder, User } from "discord.js";
+import {
+	ChatInputCommandInteraction,
+	EmbedBuilder,
+	GuildMember,
+	SlashCommandBuilder,
+	User,
+} from "discord.js";
 import { addDefaultEmbedFooter } from "../util/embeds";
 
 class UserInfoCommand extends Command {
@@ -9,17 +15,22 @@ class UserInfoCommand extends Command {
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const user: User = interaction.options.getUser("user", true);
-		const member: GuildMember | null | undefined = await interaction.guild?.members.fetch(user.id).catch(() => null);
+		const member: GuildMember | null | undefined = await interaction.guild?.members
+			.fetch(user.id)
+			.catch(() => null);
 
 		await interaction.reply({ embeds: [getUserEmbed(user, member)] });
 	}
 
-	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
 			.setName("user-info")
 			.setDescription("Get information about a user")
 			.addUserOption((option) =>
-				option.setName("user").setDescription("The user to get information about.").setRequired(true)
+				option
+					.setName("user")
+					.setDescription("The user to get information about.")
+					.setRequired(true)
 			);
 	}
 }
@@ -32,7 +43,9 @@ const toUnix = (timestamp: number | Date) => {
 function getUserEmbed(user: User, member: GuildMember | null | undefined): EmbedBuilder {
 	const embed = new EmbedBuilder()
 		.setTitle(
-			`${user.tag} ${member ? "aka. " + member.displayName : ""} ${user.system ? "| System" : user.bot ? "| Bot" : ""}`
+			`${user.tag} ${member ? "aka. " + member.displayName : ""} ${
+				user.system ? "| System" : user.bot ? "| Bot" : ""
+			}`
 		)
 		.setThumbnail(user.displayAvatarURL({ size: 1024 }))
 		.setDescription(user.toString());
@@ -73,7 +86,10 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 				inline: true,
 			});
 
-		embed.addFields({ name: "Boosting", value: boosting, inline: true }, { name: "Roles", value: roles });
+		embed.addFields(
+			{ name: "Boosting", value: boosting, inline: true },
+			{ name: "Roles", value: roles }
+		);
 	}
 	return addDefaultEmbedFooter(embed);
 }
