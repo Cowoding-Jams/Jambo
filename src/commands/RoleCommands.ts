@@ -18,9 +18,9 @@ class RoleCommand extends Command {
 		const subcommand = interaction.options.getSubcommand();
 
 		if (subcommand === "pronoun-prompt") {
-			pronounPrompt(interaction);
+			await pronounPrompt(interaction);
 		} else if (subcommand === "color-prompt") {
-			colorPrompt(interaction);
+			await colorPrompt(interaction);
 		}
 	}
 
