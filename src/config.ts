@@ -1,4 +1,4 @@
-import { ColorResolvable } from "discord.js";
+import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 
 // Configure your bot here.
 export const config: BotConfig = {
@@ -6,12 +6,12 @@ export const config: BotConfig = {
 	iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
 	githubURL: "https://github.com/Cowoding-Jams/Jambo",
 	pronounRoles: [
-		["They/Them", "590660390187302912"],
-		["She/Her", "541000113410015245"],
-		["He/Him", "590631286666952704"],
-		["Any Pronouns", null],
-		["No Pronouns", null],
-		["Ask Me (Pronouns)", null],
+		["she/her", "541000113410015245"],
+		["he/him", "590631286666952704"],
+		["they/them", "590660390187302912"],
+		["any pronouns", null],
+		["no pronouns", null],
+		["ask me (pronouns)", null],
 	],
 	colorRoles: [
 		//https://www.schemecolor.com/strong-rainbow.php
@@ -43,7 +43,7 @@ interface BotConfig {
 	// URL to the github repository of the bot. Please share your code!
 	githubURL: string;
 	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.
-	pronounRoles: [string, string | null][];
+	pronounRoles: [string, ComponentEmojiResolvable | null][];
 	// Max 25 color roles to pick from. First argument is the name of the role, second argument is the color.
 	colorRoles: [string, ColorResolvable][];
 	// The main color the bot will use.
