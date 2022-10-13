@@ -1,7 +1,7 @@
 import { Command } from "../handler";
 import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import { hasAdminPerms } from "../util/permissions";
-import { colorPrompt, pronounPrompt, deleteAllRoles } from "../util/roleUtil";
+import { colorPrompt, deleteAllRoles, pronounPrompt } from "../util/roleUtil";
 
 class RoleCommand extends Command {
 	constructor() {
