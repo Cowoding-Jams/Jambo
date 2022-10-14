@@ -16,7 +16,7 @@ export default async function ready(client: Client) {
 	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
 	logger.info("Restoring reminders...");
-	reminderCommand.restoreReminders();
+	reminderCommand.restoreReminders(client);
 
 	logger.info("Setup successfully");
 }

@@ -31,7 +31,6 @@ process.on("uncaughtException", shutdown);
 
 logger.debug("Loading context...");
 ctx.update(
-	client,
 	await loadCommands(),
 	await loadButtons(),
 	await loadSelectMenus(),

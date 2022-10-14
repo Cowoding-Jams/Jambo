@@ -1,6 +1,7 @@
 import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
+	Client,
 	inlineCode,
 	SlashCommandBooleanOption,
 	SlashCommandBuilder,
@@ -11,17 +12,16 @@ import {
 } from "discord.js";
 import { reminderDb, reminderTimeoutCache } from "../db";
 import { hasMentionEveryonePerms } from "../util/misc/permissions";
-import { ctx } from "../ctx";
 
 class ReminderCommand extends Command {
 	constructor() {
 		super("reminder");
 	}
 
-	async elapse(id: number): Promise<void> {
+	async elapse(client: Client, id: number): Promise<void> {
 		const reminder = reminderDb.get(id);
 		if (!reminder) return;
-		const ch = (await ctx.client.channels.fetch(reminder.channel)) as TextBasedChannel;
+		const ch = (await client.channels.fetch(reminder.channel)) as TextBasedChannel;
 		await ch.send({
 			content: `${reminder.callAll ? "<@everyone>" : `<@${reminder.user}>`} Time's up! ${reminder.message}`,
 		});
@@ -29,11 +29,11 @@ class ReminderCommand extends Command {
 		reminderTimeoutCache.delete(id);
 	}
 
-	restoreReminders() {
+	restoreReminders(client: Client) {
 		reminderDb.forEach((reminder, id) => {
 			reminderTimeoutCache.set(
 				id,
-				setTimeout(() => this.elapse(id), reminder.timestamp - Date.now())
+				setTimeout(() => this.elapse(client, id), reminder.timestamp - Date.now())
 			);
 		});
 	}
@@ -77,7 +77,7 @@ class ReminderCommand extends Command {
 				});
 				reminderTimeoutCache.set(
 					id,
-					setTimeout(() => this.elapse(id), millisecond)
+					setTimeout(() => this.elapse(interaction.client, id), millisecond)
 				);
 
 				await interaction.reply(
