@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, ColorResolvable, ComponentEmojiResolvable, Guild } from "discord.js";
-import { logger } from "logger";
+import { logger } from "../../logger";
 
 export async function setUpRoles(
 	guild: Guild | null,
