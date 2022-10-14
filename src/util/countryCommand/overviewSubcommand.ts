@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder, inlineCode } from "discord.js";
 import { handleUndefinedCountry } from "./generalCountryCommandUtil";
-import { addDefaultEmbedFooter } from "../embeds";
+import { addDefaultEmbedFooter } from "../misc/embeds";
 import { getCountryByName } from "./countryDataManager";
-import { pickRandomFromList } from "../random";
-import { formatNumber } from "../numbers";
+import { pickRandomFromList } from "../misc/random";
+import { formatNumber } from "../misc/numbers";
 import { Country } from "./typesCountryCommand";
 import { countryData } from "./countryDataLoader";
 
@@ -29,7 +29,9 @@ function getOverviewEmbed(country: Country, locale: string): EmbedBuilder {
 		.addFields(
 			{
 				name: "Demographics",
-				value: `- Population size: ${formatNumber(country.population, locale)} (${countryData.indexOf(country) + 1}.)
+				value: `- Population size: ${formatNumber(country.population, locale)} (${
+					countryData.indexOf(country) + 1
+				}.)
 			 - Is ${!country.unMember ? "not" : ""} a member of the UN
 			 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
 			 - Currencie(s): ${country.currencies.join(", ")}

@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction } from "discord.js";
 import { handleUndefinedCountry } from "./generalCountryCommandUtil";
 import { Country } from "./typesCountryCommand";
 import { getCountryByName } from "./countryDataManager";
-import { formatNumber } from "../numbers";
+import { formatNumber } from "../misc/numbers";
 
 export function specificCommand(interaction: ChatInputCommandInteraction) {
 	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
@@ -28,7 +28,8 @@ const specificRequestReplies: { [id: string]: (country: Country, locale: string)
 	population: (country, locale) =>
 		`The population size of ${country.name} is: ${formatNumber(country.population, locale)}`,
 	capital: (country) => `The capital of ${country.name} is ${country.capital}`,
-	languages: (country) => `In ${country.name} these following languages are spoken: ${country.languages.join(", ")}`,
+	languages: (country) =>
+		`In ${country.name} these following languages are spoken: ${country.languages.join(", ")}`,
 	currencies: (country) => `In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
 	timezones: (country) => `${country.name} includes these timezones: ${country.timezones.join(", ")}`,
 	region: (country) => `${country.name} is part of ${country.region}`,

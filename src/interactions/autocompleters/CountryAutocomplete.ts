@@ -1,10 +1,10 @@
-import { Autocompleter } from "../handler";
+import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { typeOfCountryProperty } from "../util/countryCommand/countryDataManager";
-import { countryData } from "../util/countryCommand/countryDataLoader";
-import { CountryKey } from "../util/countryCommand/typesCountryCommand";
-import { logger } from "../logger";
-import { returnChoiceWithSameValues } from "../util/countryCommand/generalCountryCommandUtil";
+import { typeOfCountryProperty } from "../../util/countryCommand/countryDataManager";
+import { countryData } from "../../util/countryCommand/countryDataLoader";
+import { CountryKey } from "../../util/countryCommand/typesCountryCommand";
+import { logger } from "../../logger";
+import { returnChoiceWithSameValues } from "../../util/countryCommand/generalCountryCommandUtil";
 
 class CountryAutocompleter extends Autocompleter {
 	constructor() {
@@ -37,7 +37,8 @@ class CountryAutocompleter extends Autocompleter {
 
 	async queryAutocompletion(interaction: AutocompleteInteraction, input: string) {
 		// autocomplete the choices for the filtering
-		const criteria: CountryKey = (interaction.options.getString("filter-criteria") ?? "population") as CountryKey;
+		const criteria: CountryKey = (interaction.options.getString("filter-criteria") ??
+			"population") as CountryKey;
 
 		if ((criteria as string) === "none") {
 			await interaction.respond([returnChoiceWithSameValues("none")]);

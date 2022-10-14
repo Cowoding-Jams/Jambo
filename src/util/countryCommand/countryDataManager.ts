@@ -5,7 +5,10 @@ export function getCountryByName(name: string): Country | undefined {
 	return countryData.find((c) => c.name === name);
 }
 
-export function getCountryByCriteriaAndValue(criteria: CountryKey, value: MainCountryDataTypes): Country | undefined {
+export function getCountryByCriteriaAndValue(
+	criteria: CountryKey,
+	value: MainCountryDataTypes
+): Country | undefined {
 	return countryData.find((c) => c[criteria] === value);
 }
 
@@ -41,7 +44,11 @@ export function getFilteredCountryDataBy(
 	value: number | string | boolean
 ): Country[] {
 	return countryData.filter((c) =>
-		filteringComparators[typeOfCountryProperty(criteria)](c[criteria] as MainCountryDataTypes, relation, value)
+		filteringComparators[typeOfCountryProperty(criteria)](
+			c[criteria] as MainCountryDataTypes,
+			relation,
+			value
+		)
 	);
 }
 
@@ -58,7 +65,9 @@ const filteringComparators: {
 	object: (a, rel, b) => (a as string[]).map((s) => filteringComparators["string"](s, rel, b)).some((e) => e),
 };
 
-const dataRelations: { [id: string]: (a: number | string | boolean, b: number | string | boolean) => boolean } = {
+const dataRelations: {
+	[id: string]: (a: number | string | boolean, b: number | string | boolean) => boolean;
+} = {
 	eq: (a, b) => a === b,
 	l: (a, b) => a < b,
 	g: (a, b) => a > b,

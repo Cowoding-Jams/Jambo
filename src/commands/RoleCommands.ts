@@ -1,7 +1,12 @@
-import { Command } from "../handler";
-import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
-import { hasAdminPerms } from "../util/permissions";
-import { colorPrompt, deleteAllRoles, pronounPrompt } from "../util/roleUtil";
+import { Command } from "../interactions/interactionClasses";
+import {
+	ChatInputCommandInteraction,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
+import { hasAdminPerms } from "../util/misc/permissions";
+import { colorPrompt, pronounPrompt } from "../util/roleCommand/rolePrompts";
+import { deleteAllRoles } from "../util/roleCommand/rolePrompts";
 
 class RoleCommand extends Command {
 	constructor() {
@@ -33,7 +38,9 @@ class RoleCommand extends Command {
 			.setName("roles")
 			.setDescription("Manages the roles on the server.")
 			.addSubcommand((option) =>
-				option.setName("pronoun-prompt").setDescription("Creates the pronoun role prompt to select the roles.")
+				option
+					.setName("pronoun-prompt")
+					.setDescription("Creates the pronoun role prompt to select the roles.")
 			)
 			.addSubcommand((option) =>
 				option
@@ -49,7 +56,9 @@ class RoleCommand extends Command {
 					)
 			)
 			.addSubcommand((option) =>
-				option.setName("delete-all").setDescription("Deletes all the generated roles (Using the '- ... -' indicators).")
+				option
+					.setName("delete-all")
+					.setDescription("Deletes all the generated roles (Using the '- ... -' indicators).")
 			);
 	}
 }

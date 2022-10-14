@@ -1,6 +1,12 @@
-import { Command } from "../handler";
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder, User } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/embeds";
+import { Command } from "../interactions/interactionClasses";
+import {
+	ChatInputCommandInteraction,
+	EmbedBuilder,
+	GuildMember,
+	SlashCommandBuilder,
+	User,
+} from "discord.js";
+import { addDefaultEmbedFooter } from "../util/misc/embeds";
 
 class UserInfoCommand extends Command {
 	constructor() {
@@ -9,7 +15,9 @@ class UserInfoCommand extends Command {
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const user: User = interaction.options.getUser("user", true);
-		const member: GuildMember | null | undefined = await interaction.guild?.members.fetch(user.id).catch(() => null);
+		const member: GuildMember | null | undefined = await interaction.guild?.members
+			.fetch(user.id)
+			.catch(() => null);
 
 		await interaction.reply({ embeds: [getUserEmbed(user, member)] });
 	}
@@ -32,7 +40,9 @@ const toUnix = (timestamp: number | Date) => {
 function getUserEmbed(user: User, member: GuildMember | null | undefined): EmbedBuilder {
 	const embed = new EmbedBuilder()
 		.setTitle(
-			`${user.tag} ${member ? "aka. " + member.displayName : ""} ${user.system ? "| System" : user.bot ? "| Bot" : ""}`
+			`${user.tag} ${member ? "aka. " + member.displayName : ""} ${
+				user.system ? "| System" : user.bot ? "| Bot" : ""
+			}`
 		)
 		.setThumbnail(user.displayAvatarURL({ size: 1024 }))
 		.setDescription(user.toString());

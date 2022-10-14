@@ -1,8 +1,8 @@
-import { ButtonHandler } from "../handler";
+import { Button } from "../interactionClasses";
 import { ButtonInteraction, inlineCode, Message } from "discord.js";
-import { latexDb } from "../db";
+import { latexDb } from "../../db";
 
-class LatexButton extends ButtonHandler {
+class LatexButton extends Button {
 	constructor() {
 		super("latex");
 	}
@@ -21,7 +21,9 @@ class LatexButton extends ButtonHandler {
 				interaction.reply({ content: "Code: " + input, ephemeral: true });
 			} else {
 				const content =
-					"Only the author of the command can delete this message... \nHere is the code though: " + input + " :)";
+					"Only the author of the command can delete this message... \nHere is the code though: " +
+					input +
+					" :)";
 				interaction.reply({ content: content, ephemeral: true });
 			}
 		}
