@@ -54,9 +54,9 @@ export async function handleSelectMenuInteractions(interaction: SelectMenuIntera
 export async function handleModalInteractions(interaction: ModalSubmitInteraction) {
 	const args = interaction.customId.split(".");
 	const modalName = args.shift() || "";
-	const selected = ctx.modals.get(modalName);
-	if (selected) {
-		await selected.execute(interaction, args);
+	const modal = ctx.modals.get(modalName);
+	if (modal) {
+		await modal.execute(interaction, args);
 	} else {
 		logger.error(`Error resolving submitted modal for: ${modalName}`);
 		await interaction.reply({

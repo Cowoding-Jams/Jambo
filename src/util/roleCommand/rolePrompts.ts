@@ -11,6 +11,29 @@ import { addDefaultEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
 import { bringIntoButtonGrid, setUpRoles } from "./roleUtil";
 
+export async function deleteAllRoles(interaction: ChatInputCommandInteraction): Promise<void> {
+	const guildRoles = await interaction.guild?.roles.fetch();
+	if (!guildRoles) {
+		logger.error("Could not fetch guild roles");
+		await interaction.editReply("Couldn't fetch the roles...");
+		return;
+	}
+
+	const roles = guildRoles.map((r) => r).sort((a, b) => b.position - a.position);
+	let deleteRoles = false;
+
+	for (const role of roles) {
+		if (role.name.startsWith("-") && role.name.endsWith("-")) {
+			deleteRoles = !deleteRoles;
+			role.delete();
+		} else if (deleteRoles) {
+			role.delete();
+		}
+	}
+
+	await interaction.editReply({ content: "Deleted all roles!" });
+}
+
 export async function pronounPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
 	const prompt: EmbedBuilder = new EmbedBuilder()
 		.setTitle("Pronoun roles 🌈🏳‍⚧️⚧️")
@@ -41,7 +64,7 @@ export async function pronounPrompt(interaction: ChatInputCommandInteraction): P
 		await setUpRoles(
 			interaction.guild,
 			config.pronounRoles.map((r) => [r[0]]),
-			"- PronounRoles -",
+			"- StartPronounRoles -",
 			"- EndPronounRoles -"
 		)
 	) {
@@ -111,7 +134,7 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 		}
 	}
 
-	if (await setUpRoles(interaction.guild, config.colorRoles, "- ColorRoles -", "- EndColorRoles -")) {
+	if (await setUpRoles(interaction.guild, config.colorRoles, "- StartColorRoles -", "- EndColorRoles -")) {
 		await interaction.editReply({
 			embeds: [addDefaultEmbedFooter(prompt)],
 			components: actionRows,
