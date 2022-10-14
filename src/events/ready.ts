@@ -35,11 +35,7 @@ async function updateRegisteredCommands(client: Client) {
 				return client.application?.commands.create(cmdBuilder.toJSON(), ctx.defaultGuild);
 			} else if (!commandsEqual(existingCmd, cmdBuilder)) {
 				logger.debug(`Updating command: ${cmdBuilder.name}`);
-				return client.application?.commands.edit(
-					existingCmd.id,
-					cmdBuilder.toJSON(),
-					ctx.defaultGuild
-				);
+				return client.application?.commands.edit(existingCmd.id, cmdBuilder.toJSON(), ctx.defaultGuild);
 			}
 		})
 	);

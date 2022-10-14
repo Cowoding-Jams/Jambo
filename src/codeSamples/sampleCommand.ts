@@ -14,9 +14,7 @@ class CommandName extends Command {
 		await interaction.reply("🐇".repeat(num));
 	}
 
-	register():
-		| SlashCommandBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		// set the name and description shown in discord here (these are necessary)
 		// (name: string.length = 1-32, description string.length = 1-100)(the name has to be lowercase!)
 		// here you can also add things like options to your command

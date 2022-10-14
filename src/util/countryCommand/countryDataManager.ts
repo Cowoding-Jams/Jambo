@@ -62,11 +62,9 @@ const filteringComparators: {
 	) => boolean;
 } = {
 	number: (a, rel, b) => dataRelations[rel](a as number, b as number),
-	string: (a, rel, b) =>
-		dataRelations[rel]((a as string).toLowerCase(), (b as string).toLowerCase()),
+	string: (a, rel, b) => dataRelations[rel]((a as string).toLowerCase(), (b as string).toLowerCase()),
 	boolean: (a, rel, b) => dataRelations[rel](a as boolean, b as boolean),
-	object: (a, rel, b) =>
-		(a as string[]).map((s) => filteringComparators["string"](s, rel, b)).some((e) => e),
+	object: (a, rel, b) => (a as string[]).map((s) => filteringComparators["string"](s, rel, b)).some((e) => e),
 };
 
 const dataRelations: {

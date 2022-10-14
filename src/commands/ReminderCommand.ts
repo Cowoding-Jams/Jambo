@@ -79,9 +79,7 @@ class ReminderCommand extends Command {
 						minute == 0 ? "" : ` ${minute} minutes`
 					}${second == 0 ? "" : ` ${second} seconds`}${
 						message == "" ? "" : ` with the following message: ${message}`
-					} \nYou can always delete this reminder with ${inlineCode(
-						`/reminder delete ${this.m_id}`
-					)}`
+					} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${this.m_id}`)}`
 				);
 				this.m_id += 1;
 				break;

@@ -8,9 +8,7 @@ import { Country } from "./typesCountryCommand";
 import { countryData } from "./countryDataLoader";
 
 export function overviewSubcommand(interaction: ChatInputCommandInteraction) {
-	const country: Country | undefined = getCountryByName(
-		interaction.options.getString("country", true)
-	);
+	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
 
 	if (country) {
 		interaction.reply({ embeds: [getOverviewEmbed(country, interaction.locale)] });

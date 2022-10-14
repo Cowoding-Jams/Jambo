@@ -92,10 +92,7 @@ const proposalTitleStringOption = (option: SlashCommandStringOption) =>
 	option.setName("title").setDescription("The title of the proposal.").setRequired(true);
 
 const proposalDescriptionStringOption = (option: SlashCommandStringOption) =>
-	option
-		.setName("description")
-		.setDescription("The description of the proposal.")
-		.setRequired(true);
+	option.setName("description").setDescription("The description of the proposal.").setRequired(true);
 
 const proposalTimePeriodStringOption = (option: SlashCommandStringOption) =>
 	option
@@ -115,16 +112,10 @@ const proposalNewTitleStringOption = (option: SlashCommandStringOption) =>
 	option.setName("new-title").setDescription("The new title of the proposal.").setRequired(false);
 
 const proposalNewDescriptionStringOption = (option: SlashCommandStringOption) =>
-	option
-		.setName("new-description")
-		.setDescription("The new description of the proposal.")
-		.setRequired(false);
+	option.setName("new-description").setDescription("The new description of the proposal.").setRequired(false);
 
 const proposalNewTimePeriodStringOption = (option: SlashCommandStringOption) =>
-	option
-		.setName("new-time-period")
-		.setDescription("The new time period of the proposal.")
-		.setRequired(false);
+	option.setName("new-time-period").setDescription("The new time period of the proposal.").setRequired(false);
 
 // Poll creation
 const pollNameStringOption = (option: SlashCommandStringOption) =>
@@ -134,7 +125,4 @@ const pollTemplateNameStringOption = (option: SlashCommandStringOption) =>
 	option.setName("template-name").setDescription("The name of the template for future reference.");
 
 const pollTemplateSelectStringOption = (option: SlashCommandStringOption) =>
-	option
-		.setName("template-name")
-		.setDescription("The name of the template to use.")
-		.setRequired(true);
+	option.setName("template-name").setDescription("The name of the template to use.").setRequired(true);

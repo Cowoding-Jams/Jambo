@@ -27,10 +27,7 @@ class UserInfoCommand extends Command {
 			.setName("user-info")
 			.setDescription("Get information about a user")
 			.addUserOption((option) =>
-				option
-					.setName("user")
-					.setDescription("The user to get information about.")
-					.setRequired(true)
+				option.setName("user").setDescription("The user to get information about.").setRequired(true)
 			);
 	}
 }
@@ -86,10 +83,7 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 				inline: true,
 			});
 
-		embed.addFields(
-			{ name: "Boosting", value: boosting, inline: true },
-			{ name: "Roles", value: roles }
-		);
+		embed.addFields({ name: "Boosting", value: boosting, inline: true }, { name: "Roles", value: roles });
 	}
 	return addDefaultEmbedFooter(embed);
 }

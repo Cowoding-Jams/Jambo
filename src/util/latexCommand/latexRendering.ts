@@ -18,15 +18,10 @@ export async function latexMixed(
 	return await requestRendering(code, transparent);
 }
 
-export async function latexEquation(
-	input = "\\pi = 3.14",
-	transparent: boolean
-): Promise<string | null> {
+export async function latexEquation(input = "\\pi = 3.14", transparent: boolean): Promise<string | null> {
 	const code = templateCode.replace(
 		"#CONTENT",
-		transparent
-			? `$$$ ${input} $$$`
-			: `$$$\\color{frameColorBright}\\boxed{\\color{black} ${input} }$$$`
+		transparent ? `$$$ ${input} $$$` : `$$$\\color{frameColorBright}\\boxed{\\color{black} ${input} }$$$`
 	);
 	return await requestRendering(code, transparent);
 }

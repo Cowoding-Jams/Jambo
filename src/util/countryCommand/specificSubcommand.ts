@@ -5,9 +5,7 @@ import { getCountryByName } from "./countryDataManager";
 import { formatNumber } from "../misc/numbers";
 
 export function specificCommand(interaction: ChatInputCommandInteraction) {
-	const country: Country | undefined = getCountryByName(
-		interaction.options.getString("country", true)
-	);
+	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
 
 	const info: string = interaction.options.getString("info") ?? "population";
 
@@ -34,19 +32,11 @@ const specificRequestReplies: {
 	capital: (country) => `The capital of ${country.name} is ${country.capital}`,
 	languages: (country) =>
 		`In ${country.name} these following languages are spoken: ${country.languages.join(", ")}`,
-<<<<<<< HEAD
-	currencies: (country) =>
-		`In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
-	timezones: (country) =>
-		`${country.name} includes these timezones: ${country.timezones.join(", ")}`,
-=======
 	currencies: (country) => `In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
 	timezones: (country) => `${country.name} includes these timezones: ${country.timezones.join(", ")}`,
->>>>>>> e8a9c558d0c85a09e0e1a4c838f5605038f9f737
 	region: (country) => `${country.name} is part of ${country.region}`,
 	subregion: (country) => `${country.name} is part of ${country.subregion}`,
 	latitude: (country) => `The latitude of ${country.name} is ${country.latitude}° N/S`,
 	longitude: (country) => `The longitude of ${country.name} is ${country.longitude}° E/W`,
-	area: (country, locale) =>
-		`The area of ${country.name} is: ${formatNumber(country.area, locale)} km²`,
+	area: (country, locale) => `The area of ${country.name} is: ${formatNumber(country.area, locale)} km²`,
 };

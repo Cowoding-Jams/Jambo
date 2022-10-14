@@ -5,25 +5,10 @@ import { config } from "./config";
 class Ctx {
 	public readonly defaultGuild;
 	public readonly commands: Collection<string, Command> = new Collection<string, Command>();
-<<<<<<< HEAD
-	public readonly buttons: Collection<string, ButtonHandler> = new Collection<
-		string,
-		ButtonHandler
-	>();
-	public readonly selectMenus: Collection<string, SelectMenuHandler> = new Collection<
-		string,
-		SelectMenuHandler
-	>();
-	public readonly autocompleters: Collection<string, Autocompleter> = new Collection<
-		string,
-		Autocompleter
-	>();
-=======
 	public readonly buttons: Collection<string, Button> = new Collection<string, Button>();
 	public readonly selectMenus: Collection<string, SelectMenu> = new Collection<string, SelectMenu>();
 	public readonly modals: Collection<string, Modal> = new Collection<string, Modal>();
 	public readonly autocompleters: Collection<string, Autocompleter> = new Collection<string, Autocompleter>();
->>>>>>> e8a9c558d0c85a09e0e1a4c838f5605038f9f737
 	public readonly logLevel: string;
 
 	constructor() {

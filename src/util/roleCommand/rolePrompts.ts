@@ -68,10 +68,7 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 		actionRows.push(new ActionRowBuilder());
 		for (const role of row) {
 			actionRows[actionRows.length - 1].addComponents(
-				new ButtonBuilder()
-					.setCustomId(`role.${role[0]}`)
-					.setLabel(role[0])
-					.setStyle(ButtonStyle.Secondary)
+				new ButtonBuilder().setCustomId(`role.${role[0]}`).setLabel(role[0]).setStyle(ButtonStyle.Secondary)
 			);
 		}
 	}
@@ -99,9 +96,7 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 		(c) => Math.max(...c.map((r) => ctx.measureText(r).width)) + 2 * textPadding
 	);
 	const columnOffsets: number[] = [textPadding]
-		.concat(
-			columnWidths.map((w, i, a) => a.slice(0, i + 1).reduce((p, a) => p + a, 0) + textPadding)
-		)
+		.concat(columnWidths.map((w, i, a) => a.slice(0, i + 1).reduce((p, a) => p + a, 0) + textPadding))
 		.slice(0, -1);
 
 	canvas.width = columnWidths.reduce((partialSum, a) => partialSum + a, 0);
@@ -118,7 +113,6 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 			ctx.fillText(colorName, offset, y);
 		}
 	}
-
 
 	if (await setUpRoles(interaction.guild, config.colorRoles, "- StartColorRoles -", "- EndColorRoles -")) {
 		await interaction.editReply({
