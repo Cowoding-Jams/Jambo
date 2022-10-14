@@ -10,7 +10,7 @@ import {
 	TextBasedChannel,
 } from "discord.js";
 import { timeDb } from "../db";
-import { hasMentionEveryonePerms } from "../util/permissions";
+import { hasMentionEveryonePerms } from "../util/misc/permissions";
 
 class ReminderCommand extends Command {
 	constructor() {
@@ -19,7 +19,12 @@ class ReminderCommand extends Command {
 
 	private m_id = 0;
 
-	async elapse(interaction: ChatInputCommandInteraction, toCall: string, message: string, id: number): Promise<void> {
+	async elapse(
+		interaction: ChatInputCommandInteraction,
+		toCall: string,
+		message: string,
+		id: number
+	): Promise<void> {
 		const ch = (await interaction.client.channels.fetch(interaction.channelId)) as TextBasedChannel;
 		await ch.send({ content: `${toCall} Time's up! ${message}` });
 		timeDb.delete(id);
@@ -70,9 +75,9 @@ class ReminderCommand extends Command {
 				});
 
 				await interaction.reply(
-					`Okay, I'll remind you in${hour == 0 ? "" : ` ${hour} hours`}${minute == 0 ? "" : ` ${minute} minutes`}${
-						second == 0 ? "" : ` ${second} seconds`
-					}${
+					`Okay, I'll remind you in${hour == 0 ? "" : ` ${hour} hours`}${
+						minute == 0 ? "" : ` ${minute} minutes`
+					}${second == 0 ? "" : ` ${second} seconds`}${
 						message == "" ? "" : ` with the following message: ${message}`
 					} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${this.m_id}`)}`
 				);
@@ -148,9 +153,13 @@ class ReminderCommand extends Command {
 				option
 					.setName("delete")
 					.setDescription("Delete a reminder with its id.")
-					.addIntegerOption((option) => option.setName("id").setDescription("ID of the reminder").setRequired(true))
+					.addIntegerOption((option) =>
+						option.setName("id").setDescription("ID of the reminder").setRequired(true)
+					)
 			)
-			.addSubcommand((option) => option.setName("list").setDescription("Shows the list of active reminders."));
+			.addSubcommand((option) =>
+				option.setName("list").setDescription("Shows the list of active reminders.")
+			);
 	}
 }
 
@@ -164,7 +173,10 @@ const setMinute = new SlashCommandIntegerOption()
 	.setDescription("Set the minutes.")
 	.setRequired(false);
 
-const setHour = new SlashCommandIntegerOption().setName("hours").setDescription("Set the hours.").setRequired(false);
+const setHour = new SlashCommandIntegerOption()
+	.setName("hours")
+	.setDescription("Set the hours.")
+	.setRequired(false);
 
 const callAll = new SlashCommandBooleanOption()
 	.setName("callall")

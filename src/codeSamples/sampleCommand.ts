@@ -22,7 +22,9 @@ class CommandName extends Command {
 		return new SlashCommandBuilder()
 			.setName("bunny")
 			.setDescription("shows you a cute bunny")
-			.addIntegerOption((option) => option.setName("amount").setDescription("number of bunnies").setRequired(false));
+			.addIntegerOption((option) =>
+				option.setName("amount").setDescription("number of bunnies").setRequired(false)
+			);
 	}
 }
 

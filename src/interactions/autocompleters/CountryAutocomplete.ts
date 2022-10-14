@@ -37,7 +37,8 @@ class CountryAutocompleter extends Autocompleter {
 
 	async queryAutocompletion(interaction: AutocompleteInteraction, input: string) {
 		// autocomplete the choices for the filtering
-		const criteria: CountryKey = (interaction.options.getString("filter-criteria") ?? "population") as CountryKey;
+		const criteria: CountryKey = (interaction.options.getString("filter-criteria") ??
+			"population") as CountryKey;
 
 		if ((criteria as string) === "none") {
 			await interaction.respond([returnChoiceWithSameValues("none")]);

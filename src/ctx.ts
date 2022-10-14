@@ -5,14 +5,9 @@ import { config } from "./config";
 class Ctx {
 	public readonly defaultGuild;
 	public readonly commands: Collection<string, Command> = new Collection<string, Command>();
-<<<<<<< HEAD
-	public readonly buttons: Collection<string, ButtonHandler> = new Collection<string, ButtonHandler>();
-	public readonly selectMenus: Collection<string, SelectMenuHandler> = new Collection<string, SelectMenuHandler>();
-=======
 	public readonly buttons: Collection<string, Button> = new Collection<string, Button>();
 	public readonly selectMenus: Collection<string, SelectMenu> = new Collection<string, SelectMenu>();
 	public readonly modals: Collection<string, Modal> = new Collection<string, Modal>();
->>>>>>> ae3e1f7 (init)
 	public readonly autocompleters: Collection<string, Autocompleter> = new Collection<string, Autocompleter>();
 	public readonly logLevel: string;
 

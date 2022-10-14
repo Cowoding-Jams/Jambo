@@ -19,7 +19,9 @@ export default async function guildMemberAdd(member: GuildMember) {
 		.setTitle(`Hey ${member.displayName} 😊`)
 		.setThumbnail(member.guild.iconURL({ size: 1024 }) || "")
 		.setDescription(
-			`You are the ${member.guild.memberCount}${getOrdinalSuffix(member.guild.memberCount)} member of this server!`
+			`You are the ${member.guild.memberCount}${getOrdinalSuffix(
+				member.guild.memberCount
+			)} member of this server!`
 		)
 		.addFields(
 			{

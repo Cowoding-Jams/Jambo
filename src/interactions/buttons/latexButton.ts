@@ -21,7 +21,9 @@ class LatexButton extends Button {
 				interaction.reply({ content: "Code: " + input, ephemeral: true });
 			} else {
 				const content =
-					"Only the author of the command can delete this message... \nHere is the code though: " + input + " :)";
+					"Only the author of the command can delete this message... \nHere is the code though: " +
+					input +
+					" :)";
 				interaction.reply({ content: content, ephemeral: true });
 			}
 		}

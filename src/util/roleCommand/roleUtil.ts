@@ -1,5 +1,5 @@
-import { config } from "../config";
-import { logger } from "../logger";
+import { config } from "../../config";
+import { logger } from "../../logger";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -10,7 +10,7 @@ import {
 	EmbedBuilder,
 	Guild,
 } from "discord.js";
-import { addDefaultEmbedFooter } from "./misc/embeds";
+import { addDefaultEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
 
 export async function setUpRoles(
@@ -79,9 +79,9 @@ export async function pronounPrompt(interaction: ChatInputCommandInteraction): P
 					.setStyle(actionRows.length == 1 ? ButtonStyle.Primary : ButtonStyle.Secondary)
 			);
 			if (role[1]) {
-				actionRows[actionRows.length - 1].components[actionRows[actionRows.length - 1].components.length - 1].setEmoji(
-					role[1]
-				);
+				actionRows[actionRows.length - 1].components[
+					actionRows[actionRows.length - 1].components.length - 1
+				].setEmoji(role[1]);
 			}
 		}
 	}

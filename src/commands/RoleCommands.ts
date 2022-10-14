@@ -1,9 +1,3 @@
-<<<<<<< HEAD:src/commands/RoleCommands.ts
-import { Command } from "../handler";
-import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
-import { hasAdminPerms } from "../util/permissions";
-import { colorPrompt, pronounPrompt } from "../util/roleUtil";
-=======
 import { Command } from "../interactionClasses";
 import {
 	ChatInputCommandInteraction,
@@ -12,7 +6,6 @@ import {
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
 import { colorPrompt, pronounPrompt } from "../util/roleCommand/role";
->>>>>>> ae3e1f7 (init):src/commands/RoleCommand.ts
 
 class RoleCommand extends Command {
 	constructor() {
@@ -40,7 +33,9 @@ class RoleCommand extends Command {
 			.setName("roles")
 			.setDescription("Manages the roles on the server.")
 			.addSubcommand((option) =>
-				option.setName("pronoun-prompt").setDescription("Creates the pronoun role prompt to select the roles.")
+				option
+					.setName("pronoun-prompt")
+					.setDescription("Creates the pronoun role prompt to select the roles.")
 			)
 			.addSubcommand((option) =>
 				option

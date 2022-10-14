@@ -51,7 +51,10 @@ class Latex extends Command {
 		);
 
 		if (urlToFile === null) {
-			interaction.editReply({ content: "LaTeX compiling error...\nPlease double check your code.", components: [row] });
+			interaction.editReply({
+				content: "LaTeX compiling error...\nPlease double check your code.",
+				components: [row],
+			});
 		} else {
 			interaction.editReply({ files: [urlToFile], components: [row] });
 		}
