@@ -6,7 +6,7 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js";
-import { Command } from "../interactionClasses";
+import { Command } from "../interactions/interactionClasses";
 
 class PingCommand extends Command {
 	constructor() {

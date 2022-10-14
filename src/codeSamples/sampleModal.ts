@@ -1,4 +1,4 @@
-import { Modal } from "../interactionClasses";
+import { Modal } from "../interactions/interactionClasses";
 import { ModalSubmitInteraction } from "discord.js";
 
 class ExampleModal extends Modal {

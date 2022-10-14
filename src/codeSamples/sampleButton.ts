@@ -1,4 +1,4 @@
-import { Button } from "../interactionClasses";
+import { Button } from "../interactions/interactionClasses";
 import { ButtonInteraction } from "discord.js";
 
 class ExampleButton extends Button {

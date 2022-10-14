@@ -1,4 +1,4 @@
-import { Button } from "../../interactionClasses";
+import { Button } from "../interactionClasses";
 import { ButtonInteraction, inlineCode } from "discord.js";
 import { logger } from "../../logger";
 

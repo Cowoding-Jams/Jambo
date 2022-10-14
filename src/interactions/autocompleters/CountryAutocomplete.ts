@@ -1,4 +1,4 @@
-import { Autocompleter } from "../../interactionClasses";
+import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import { typeOfCountryProperty } from "../../util/countryCommand/countryDataManager";
 import { countryData } from "../../util/countryCommand/countryDataLoader";

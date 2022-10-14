@@ -6,7 +6,7 @@ import {
 	loadEvents,
 	loadModals,
 	loadSelectMenus,
-} from "./interactionLoader";
+} from "./interactions/interactionLoader";
 import { Client } from "discord.js";
 import { ctx } from "./ctx";
 import { logger } from "./logger";

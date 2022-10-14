@@ -1,4 +1,4 @@
-import { SelectMenu } from "../interactionClasses";
+import { SelectMenu } from "../interactions/interactionClasses";
 import { SelectMenuInteraction } from "discord.js";
 
 class ExampleSelectMenu extends SelectMenu {

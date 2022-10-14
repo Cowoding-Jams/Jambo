@@ -1,4 +1,4 @@
-import { Button } from "../../interactionClasses";
+import { Button } from "../interactionClasses";
 import { ButtonInteraction, inlineCode, Message } from "discord.js";
 import { latexDb } from "../../db";
 

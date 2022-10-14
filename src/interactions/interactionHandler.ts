@@ -1,5 +1,5 @@
-import { ctx } from "./ctx";
-import { logger } from "./logger";
+import { ctx } from "../ctx";
+import { logger } from "../logger";
 import {
 	AutocompleteInteraction,
 	ButtonInteraction,

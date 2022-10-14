@@ -1,4 +1,4 @@
-import { Command } from "../interactionClasses";
+import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,

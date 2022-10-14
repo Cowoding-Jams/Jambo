@@ -1,4 +1,4 @@
-import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactionClasses";
+import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactions/interactionClasses";
 import { Collection } from "discord.js";
 import { config } from "./config";
 

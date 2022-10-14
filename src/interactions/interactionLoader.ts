@@ -1,5 +1,5 @@
 import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactionClasses";
-import { logger } from "./logger";
+import { logger } from "../logger";
 import { Client, Collection } from "discord.js";
 import fs from "fs";
 

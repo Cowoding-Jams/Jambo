@@ -6,7 +6,7 @@ import {
 	handleCommandInteractions,
 	handleModalInteractions,
 	handleSelectMenuInteractions,
-} from "../interactionHandler";
+} from "../interactions/interactionHandler";
 
 export default async function interactionCreate(interaction: Interaction) {
 	try {
