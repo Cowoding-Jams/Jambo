@@ -1,5 +1,5 @@
 import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactions/interactionClasses";
-import { Collection } from "discord.js";
+import { Client, Collection } from "discord.js";
 import { config } from "./config";
 
 class Ctx {
@@ -10,6 +10,7 @@ class Ctx {
 	public readonly modals: Collection<string, Modal> = new Collection<string, Modal>();
 	public readonly autocompleters: Collection<string, Autocompleter> = new Collection<string, Autocompleter>();
 	public readonly logLevel: string;
+	public client!: Client;
 
 	constructor() {
 		if (!process.env.DEFAULT_GUILD) throw new Error("Default guild not defined!");
@@ -19,12 +20,14 @@ class Ctx {
 	}
 
 	update(
+		client: Client,
 		commands: Collection<string, Command>,
 		buttons: Collection<string, Button>,
 		selectMenus: Collection<string, SelectMenu>,
 		modals: Collection<string, Modal>,
 		autocompleters: Collection<string, Autocompleter>
 	) {
+		this.client = client;
 		commands.forEach((v, k) => this.commands.set(k, v));
 		buttons.forEach((v, k) => this.buttons.set(k, v));
 		selectMenus.forEach((v, k) => this.selectMenus.set(k, v));
