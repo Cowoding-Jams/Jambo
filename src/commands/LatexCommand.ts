@@ -8,7 +8,7 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { unknownSubcommandEdit } from "../util/unknownSubcommand";
+import { unknownSubcommandEdit } from "../util/misc/unknownSubcommand";
 import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
 import { latexDb } from "../db";
 

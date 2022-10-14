@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildMember, inlineCode } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/embeds";
+import { addDefaultEmbedFooter } from "../util/misc/embeds";
 import { config } from "../config";
 
 const ordinalRules = new Intl.PluralRules("en-US", { type: "ordinal" });

@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder, inlineCode } from "discord.js";
 import { handleUndefinedCountry } from "./generalCountryCommandUtil";
-import { addDefaultEmbedFooter } from "../embeds";
+import { addDefaultEmbedFooter } from "../misc/embeds";
 import { getCountryByName } from "./countryDataManager";
-import { pickRandomFromList } from "../random";
-import { formatNumber } from "../numbers";
+import { pickRandomFromList } from "../misc/random";
+import { formatNumber } from "../misc/numbers";
 import { Country } from "./typesCountryCommand";
 import { countryData } from "./countryDataLoader";
 

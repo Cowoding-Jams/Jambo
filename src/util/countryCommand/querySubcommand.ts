@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addDefaultEmbedFooter } from "../embeds";
-import { formatNumber } from "../numbers";
-import { shuffleList } from "../random";
+import { addDefaultEmbedFooter } from "../misc/embeds";
+import { formatNumber } from "../misc/numbers";
+import { shuffleList } from "../misc/random";
 import { countryData } from "./countryDataLoader";
 import {
 	getFilteredCountryDataBy,

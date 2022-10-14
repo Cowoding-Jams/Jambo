@@ -10,7 +10,7 @@ import {
 	TextBasedChannel,
 } from "discord.js";
 import { timeDb } from "../db";
-import { hasMentionEveryonePerms } from "../util/permissions";
+import { hasMentionEveryonePerms } from "../util/misc/permissions";
 
 class ReminderCommand extends Command {
 	constructor() {

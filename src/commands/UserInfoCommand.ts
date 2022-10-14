@@ -6,7 +6,7 @@ import {
 	SlashCommandBuilder,
 	User,
 } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/embeds";
+import { addDefaultEmbedFooter } from "../util/misc/embeds";
 
 class UserInfoCommand extends Command {
 	constructor() {
