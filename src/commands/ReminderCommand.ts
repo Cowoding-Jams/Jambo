@@ -1,4 +1,4 @@
-import { Command } from "../handler";
+import { Command } from "../interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	inlineCode,

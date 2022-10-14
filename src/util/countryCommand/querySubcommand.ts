@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addDefaultEmbedFooter } from "../embeds";
-import { formatNumber } from "../numbers";
-import { shuffleList } from "../random";
+import { addDefaultEmbedFooter } from "../misc/embeds";
+import { formatNumber } from "../misc/numbers";
+import { shuffleList } from "../misc/random";
 import { countryData } from "./countryDataLoader";
 import { getFilteredCountryDataBy, sortCountryDataBy, typeOfCountryProperty } from "./countryDataManager";
 import { Country, CountryKey } from "./typesCountryCommand";
@@ -56,7 +56,8 @@ export function querySubcommand(interaction: ChatInputCommandInteraction) {
 
 	// output
 	const titleStart = scale > countryData.length ? "All" : `Top ${scale}`;
-	const titleSort = (sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled";
+	const titleSort =
+		(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled";
 	const titleFilter =
 		(filterCriteria as string) !== "none" ? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}` : "";
 	const title = `${titleStart} countries ${titleSort}${titleFilter}`;

@@ -1,7 +1,18 @@
+<<<<<<< HEAD:src/commands/RoleCommands.ts
 import { Command } from "../handler";
 import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import { hasAdminPerms } from "../util/permissions";
 import { colorPrompt, pronounPrompt } from "../util/roleUtil";
+=======
+import { Command } from "../interactionClasses";
+import {
+	ChatInputCommandInteraction,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
+import { hasAdminPerms } from "../util/misc/permissions";
+import { colorPrompt, pronounPrompt } from "../util/roleCommand/role";
+>>>>>>> ae3e1f7 (init):src/commands/RoleCommand.ts
 
 class RoleCommand extends Command {
 	constructor() {

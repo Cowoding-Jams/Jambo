@@ -1,7 +1,7 @@
-import { SelectMenuHandler } from "../handler";
+import { SelectMenu } from "../interactionClasses";
 import { SelectMenuInteraction } from "discord.js";
 
-class ExampleSelectMenu extends SelectMenuHandler {
+class ExampleSelectMenu extends SelectMenu {
 	constructor() {
 		super("exampleSelectMenu");
 	}

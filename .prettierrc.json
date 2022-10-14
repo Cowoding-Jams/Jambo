@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
 	"printWidth": 120,
+=======
+	"printWidth": 110,
+>>>>>>> ae3e1f7 (init)
 	"useTabs": true,
 	"bracketSameLine": true,
 	"semi": true,

@@ -1,5 +1,16 @@
 import "dotenv/config";
+<<<<<<< HEAD
 import { loadAutocompleters, loadButtonHandlers, loadCommands, loadEvents, loadSelectMenuHandlers } from "./loader";
+=======
+import {
+	loadAutocompleters,
+	loadButtons,
+	loadCommands,
+	loadEvents,
+	loadModals,
+	loadSelectMenus,
+} from "./interactionLoader";
+>>>>>>> ae3e1f7 (init)
 import { Client } from "discord.js";
 import { ctx } from "./ctx";
 import { logger } from "./logger";
@@ -22,8 +33,9 @@ async function start(): Promise<Client> {
 	logger.debug("Loading context...");
 	ctx.update(
 		await loadCommands(),
-		await loadButtonHandlers(),
-		await loadSelectMenuHandlers(),
+		await loadButtons(),
+		await loadSelectMenus(),
+		await loadModals(),
 		await loadAutocompleters()
 	);
 	await loadEvents(client);

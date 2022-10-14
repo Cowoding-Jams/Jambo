@@ -1,6 +1,12 @@
-import { Command } from "../handler";
-import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, SlashCommandBuilder, User } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/embeds";
+import { Command } from "../interactionClasses";
+import {
+	ChatInputCommandInteraction,
+	EmbedBuilder,
+	GuildMember,
+	SlashCommandBuilder,
+	User,
+} from "discord.js";
+import { addDefaultEmbedFooter } from "../util/misc/embeds";
 
 class UserInfoCommand extends Command {
 	constructor() {

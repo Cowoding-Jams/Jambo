@@ -1,4 +1,4 @@
-import { Autocompleter, ButtonHandler, Command, SelectMenuHandler } from "./handler";
+import { Autocompleter, Button, Command, SelectMenu } from "././interactionClasses";
 import { logger } from "./logger";
 import { Client, Collection } from "discord.js";
 import fs from "fs";
@@ -18,31 +18,31 @@ export async function loadCommands(): Promise<Collection<string, Command>> {
 	return loadedCommands;
 }
 
-export async function loadButtonHandlers(): Promise<Collection<string, ButtonHandler>> {
+export async function loadButtons(): Promise<Collection<string, Button>> {
 	logger.debug("Loading buttons...");
-	const loadedButtons = new Collection<string, ButtonHandler>();
+	const loadedButtons = new Collection<string, Button>();
 	await Promise.all(
 		fs
 			.readdirSync("./dist/buttons")
 			.filter(isActive)
 			.map(async (filename) => {
-				const buttonHandler = (await import(`./buttons/${filename}`)).default as ButtonHandler;
-				loadedButtons.set(buttonHandler.name, buttonHandler);
+				const button = (await import(`./buttons/${filename}`)).default as Button;
+				loadedButtons.set(button.name, button);
 			})
 	);
 	return loadedButtons;
 }
 
-export async function loadSelectMenuHandlers(): Promise<Collection<string, SelectMenuHandler>> {
+export async function loadSelectMenus(): Promise<Collection<string, SelectMenu>> {
 	logger.debug("Loading select menus...");
-	const loadedSelectMenus = new Collection<string, SelectMenuHandler>();
+	const loadedSelectMenus = new Collection<string, SelectMenu>();
 	await Promise.all(
 		fs
 			.readdirSync("./dist/selectMenus")
 			.filter(isActive)
 			.map(async (filename) => {
-				const selectMenuHandler = (await import(`./selectMenus/${filename}`)).default as SelectMenuHandler;
-				loadedSelectMenus.set(selectMenuHandler.name, selectMenuHandler);
+				const selectMenu = (await import(`./selectMenus/${filename}`)).default as SelectMenu;
+				loadedSelectMenus.set(selectMenu.name, selectMenu);
 			})
 	);
 	return loadedSelectMenus;

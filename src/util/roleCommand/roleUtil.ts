@@ -10,7 +10,7 @@ import {
 	EmbedBuilder,
 	Guild,
 } from "discord.js";
-import { addDefaultEmbedFooter } from "./embeds";
+import { addDefaultEmbedFooter } from "./misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
 
 export async function setUpRoles(
