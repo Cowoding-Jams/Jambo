@@ -63,9 +63,13 @@ export function querySubcommand(interaction: ChatInputCommandInteraction) {
 	// output
 	const titleStart = scale > countryData.length ? "All" : `Top ${scale}`;
 	const titleSort =
+<<<<<<< HEAD
 		(sortCriteria as string) !== "none"
 			? `listed by ${sortCriteria} in ${order} order`
 			: "shuffeled";
+=======
+		(sortCriteria as string) !== "none" ? `listed by ${sortCriteria} in ${order} order` : "shuffeled";
+>>>>>>> e8a9c558d0c85a09e0e1a4c838f5605038f9f737
 	const titleFilter =
 		(filterCriteria as string) !== "none"
 			? `, ${filteringTitles[relation](String(filterValue), filterCriteria)}`

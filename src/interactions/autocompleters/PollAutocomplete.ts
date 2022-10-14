@@ -1,4 +1,4 @@
-import { Autocompleter } from "../handler";
+import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 
 class PollAutocompleter extends Autocompleter {

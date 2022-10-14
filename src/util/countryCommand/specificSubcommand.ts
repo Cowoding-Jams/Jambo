@@ -34,10 +34,15 @@ const specificRequestReplies: {
 	capital: (country) => `The capital of ${country.name} is ${country.capital}`,
 	languages: (country) =>
 		`In ${country.name} these following languages are spoken: ${country.languages.join(", ")}`,
+<<<<<<< HEAD
 	currencies: (country) =>
 		`In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
 	timezones: (country) =>
 		`${country.name} includes these timezones: ${country.timezones.join(", ")}`,
+=======
+	currencies: (country) => `In ${country.name} these currencies are used: ${country.currencies.join(", ")}`,
+	timezones: (country) => `${country.name} includes these timezones: ${country.timezones.join(", ")}`,
+>>>>>>> e8a9c558d0c85a09e0e1a4c838f5605038f9f737
 	region: (country) => `${country.name} is part of ${country.region}`,
 	subregion: (country) => `${country.name} is part of ${country.subregion}`,
 	latitude: (country) => `The latitude of ${country.name} is ${country.latitude}° N/S`,

@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Command } from "../handler";
+import { Command } from "../interactions/interactionClasses";
 
 class PingCommand extends Command {
 	constructor() {

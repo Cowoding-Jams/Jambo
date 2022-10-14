@@ -1,4 +1,4 @@
-import { Command } from "../handler";
+import { Command } from "../interactions/interactionClasses";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 // set the class name, the export at the bottom and the file name to your desired command name (same as the one in the register function)

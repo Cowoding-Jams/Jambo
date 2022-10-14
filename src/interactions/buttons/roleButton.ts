@@ -1,8 +1,8 @@
-import { ButtonHandler } from "../handler";
+import { Button } from "../interactionClasses";
 import { ButtonInteraction, inlineCode } from "discord.js";
-import { logger } from "../logger";
+import { logger } from "../../logger";
 
-class RoleButton extends ButtonHandler {
+class RoleButton extends Button {
 	constructor() {
 		super("role");
 	}
@@ -13,9 +13,8 @@ class RoleButton extends ButtonHandler {
 		const member = await interaction.guild?.members.fetch(interaction.user.id);
 		const role = guildRoles?.find((r) => r.name === roleName);
 		if (!role || !member) {
-			await interaction.reply("Can't find the role or member...");
-			logger.error(role);
-			logger.error(member);
+			await interaction.reply({ content: "Can't find the role or member...", ephemeral: true });
+			logger.error(`Can't find the role ${role} or member ${member}`);
 			return;
 		}
 
