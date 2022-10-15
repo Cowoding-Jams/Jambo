@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
 import { colorPrompt, pronounPrompt } from "../util/roleCommand/rolePrompts";
-import { deleteAllRoles } from "../util/roleCommand/rolePrompts";
+import { deleteAllRoles } from "../util/roleCommand/roleUtil";
 
 class RoleCommand extends Command {
 	constructor() {

@@ -1,4 +1,5 @@
-import { ColorResolvable, ComponentEmojiResolvable, Guild } from "discord.js";
+import { ChatInputCommandInteraction, ColorResolvable, ComponentEmojiResolvable, Guild } from "discord.js";
+import { logger } from "../../logger";
 
 export async function setUpRoles(
 	guild: Guild | null,
@@ -45,6 +46,29 @@ export async function setUpRoles(
 	}
 
 	return true;
+}
+
+export async function deleteAllRoles(interaction: ChatInputCommandInteraction): Promise<void> {
+	const guildRoles = await interaction.guild?.roles.fetch();
+	if (!guildRoles) {
+		logger.error("Could not fetch guild roles");
+		await interaction.editReply("Couldn't fetch the roles...");
+		return;
+	}
+
+	const roles = guildRoles.map((r) => r).sort((a, b) => b.position - a.position);
+	let deleteRoles = false;
+
+	for (const role of roles) {
+		if (role.name.startsWith("-") && role.name.endsWith("-")) {
+			deleteRoles = !deleteRoles;
+			role.delete();
+		} else if (deleteRoles) {
+			role.delete();
+		}
+	}
+
+	await interaction.editReply({ content: "Deleted all roles!" });
 }
 
 export function bringIntoButtonGrid(
