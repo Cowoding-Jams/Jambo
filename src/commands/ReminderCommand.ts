@@ -49,19 +49,19 @@ class ReminderCommand extends Command {
 		switch (subcommand) {
 			case "set": {
 				//default 10 minutes
-				const second = interaction.options.getInteger("seconds") || 0;
-				let minute = interaction.options.getInteger("minutes") || 0;
-				const hour = interaction.options.getInteger("hours") || 0;
+				let minutes = interaction.options.getInteger("minutes") || 0;
+				const hours = interaction.options.getInteger("hours") || 0;
+				const days = interaction.options.getInteger("days") || 0;
 				const message = interaction.options.getString("message") || "";
 				const callAll = interaction.options.getBoolean("callall") || false;
-				let millisecond = (second + 60 * minute + 60 * 60 * hour) * 1000;
-				if (millisecond == 0) {
+				let milliseconds = (60 * minutes + 60 * 60 * hours + 60 * 60 * 24 * days) * 1000;
+				if (milliseconds == 0) {
 					// defaults to 10 minutes
-					millisecond = 10 * 60 * 1000;
-					minute = 10;
+					milliseconds = 10 * 60 * 1000;
+					minutes = 10;
 				}
 
-				const timestamp = Date.now() + millisecond;
+				const timestamp = Date.now() + milliseconds;
 
 				const member = await interaction.guild.members.fetch(interaction.user);
 
@@ -77,13 +77,13 @@ class ReminderCommand extends Command {
 				});
 				reminderTimeoutCache.set(
 					id,
-					setTimeout(() => this.elapse(interaction.client, id), millisecond)
+					setTimeout(() => this.elapse(interaction.client, id), milliseconds)
 				);
 
 				await interaction.reply(
-					`Okay, I'll remind you in${hour == 0 ? "" : ` ${hour} hours`}${
-						minute == 0 ? "" : ` ${minute} minutes`
-					}${second == 0 ? "" : ` ${second} seconds`}${
+					`Okay, I'll remind you in${hours == 0 ? "" : ` ${hours} hours`}${
+						minutes == 0 ? "" : ` ${minutes} minutes`
+					}${
 						message == "" ? "" : ` with the following message: ${message}`
 					} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${id}`)}`
 				);
@@ -144,15 +144,15 @@ class ReminderCommand extends Command {
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("reminder")
-			.setDescription("Reminds you after a certain amount of time has passed.")
+			.setDescription("Reminds you after a certain amount of time has passed. (maximum are 24 days)")
 			.addSubcommand((option) =>
 				option
 					.setName("set")
 					.setDescription("Set a new reminder.")
 					.addStringOption(message)
-					.addIntegerOption(setSecond)
-					.addIntegerOption(setMinute)
-					.addIntegerOption(setHour)
+					.addIntegerOption(setMinutes)
+					.addIntegerOption(setHours)
+					.addIntegerOption(setDays)
 					.addBooleanOption(callAll)
 			)
 			.addSubcommand((option) =>
@@ -169,19 +169,25 @@ class ReminderCommand extends Command {
 	}
 }
 
-const setSecond = new SlashCommandIntegerOption()
-	.setName("seconds")
-	.setDescription("Set the seconds.")
-	.setRequired(false);
-
-const setMinute = new SlashCommandIntegerOption()
+const setMinutes = new SlashCommandIntegerOption()
 	.setName("minutes")
 	.setDescription("Set the minutes.")
+	.setMinValue(0)
+	.setMaxValue(60)
 	.setRequired(false);
 
-const setHour = new SlashCommandIntegerOption()
+const setHours = new SlashCommandIntegerOption()
 	.setName("hours")
 	.setDescription("Set the hours.")
+	.setMinValue(0)
+	.setMaxValue(24)
+	.setRequired(false);
+
+const setDays = new SlashCommandIntegerOption()
+	.setName("days")
+	.setDescription("Set the days.")
+	.setMinValue(0)
+	.setMaxValue(23)
 	.setRequired(false);
 
 const callAll = new SlashCommandBooleanOption()
