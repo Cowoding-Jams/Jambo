@@ -11,29 +11,6 @@ import { addDefaultEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
 import { bringIntoButtonGrid, setUpRoles } from "./roleUtil";
 
-export async function deleteAllRoles(interaction: ChatInputCommandInteraction): Promise<void> {
-	const guildRoles = await interaction.guild?.roles.fetch();
-	if (!guildRoles) {
-		logger.error("Could not fetch guild roles");
-		await interaction.editReply("Couldn't fetch the roles...");
-		return;
-	}
-
-	const roles = guildRoles.map((r) => r).sort((a, b) => b.position - a.position);
-	let deleteRoles = false;
-
-	for (const role of roles) {
-		if (role.name.startsWith("-") && role.name.endsWith("-")) {
-			deleteRoles = !deleteRoles;
-			role.delete();
-		} else if (deleteRoles) {
-			role.delete();
-		}
-	}
-
-	await interaction.editReply({ content: "Deleted all roles!" });
-}
-
 export async function pronounPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
 	const prompt: EmbedBuilder = new EmbedBuilder()
 		.setTitle("Pronoun roles 🌈🏳‍⚧️⚧️")
