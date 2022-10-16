@@ -1,4 +1,4 @@
-import { Autocompleter } from "../handler";
+import { Autocompleter } from "../interactions/interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 
 class CountryAutocompleter extends Autocompleter {
@@ -26,7 +26,7 @@ class CountryAutocompleter extends Autocompleter {
 		if (filterdoptions.length > 25) filterdoptions = filterdoptions.slice(0, 25);
 
 		// map filtered options
-		let map = filterdoptions.map((c) => ({ name: c, value: c }));
+		const map = filterdoptions.map((c) => ({ name: c, value: c }));
 
 		// send map back to the user
 		await interaction.respond(map);

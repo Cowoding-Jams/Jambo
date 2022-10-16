@@ -1,4 +1,4 @@
-import { Command } from "../handler";
+import { Command } from "../interactions/interactionClasses";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -8,7 +8,7 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { unknownSubcommandEdit } from "../util/unknownSubcommand";
+import { unknownSubcommandEdit } from "../util/misc/unknownSubcommand";
 import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
 import { latexDb } from "../db";
 
@@ -51,7 +51,10 @@ class Latex extends Command {
 		);
 
 		if (urlToFile === null) {
-			interaction.editReply({ content: "LaTeX compiling error...\nPlease double check your code.", components: [row] });
+			interaction.editReply({
+				content: "LaTeX compiling error...\nPlease double check your code.",
+				components: [row],
+			});
 		} else {
 			interaction.editReply({ files: [urlToFile], components: [row] });
 		}

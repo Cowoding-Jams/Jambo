@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildMember, inlineCode } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/embeds";
+import { addDefaultEmbedFooter } from "../util/misc/embeds";
 import { config } from "../config";
 
 const ordinalRules = new Intl.PluralRules("en-US", { type: "ordinal" });
@@ -19,7 +19,9 @@ export default async function guildMemberAdd(member: GuildMember) {
 		.setTitle(`Hey ${member.displayName} 😊`)
 		.setThumbnail(member.guild.iconURL({ size: 1024 }) || "")
 		.setDescription(
-			`You are the ${member.guild.memberCount}${getOrdinalSuffix(member.guild.memberCount)} member of this server!`
+			`You are the ${member.guild.memberCount}${getOrdinalSuffix(
+				member.guild.memberCount
+			)} member of this server!`
 		)
 		.addFields(
 			{

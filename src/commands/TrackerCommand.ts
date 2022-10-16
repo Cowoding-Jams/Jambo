@@ -5,10 +5,10 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { Command } from "../handler";
-import { hasAdminPerms } from "../util/permissions";
-import { addDefaultEmbedFooter } from "../util/embeds";
-import { activityTrackerLogDb, activityTrackerBlacklistDb } from "../db";
+import { Command } from "../interactions/interactionClasses";
+import { hasAdminPerms } from "../util/misc/permissions";
+import { addDefaultEmbedFooter } from "../util/misc/embeds";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../db";
 import { config } from "../config";
 
 class TrackerCommand extends Command {
@@ -79,7 +79,9 @@ class TrackerCommand extends Command {
 							.setName("add")
 							.setDescription("add a game to your blacklist")
 							.addStringOption((opt) =>
-								opt.setName("game").setDescription("Enter game or dont enter anything to disable your logging")
+								opt
+									.setName("game")
+									.setDescription("Enter game or dont enter anything to disable your logging")
 							)
 					)
 					.addSubcommand((sub) =>
@@ -105,7 +107,10 @@ class TrackerCommand extends Command {
 							.setName("mystats")
 							.setDescription("Show your activity statistics")
 							.addStringOption((opt) =>
-								opt.setName("game").setDescription("Show statistics for a specific game").setAutocomplete(true)
+								opt
+									.setName("game")
+									.setDescription("Show statistics for a specific game")
+									.setAutocomplete(true)
 							)
 					)
 					.addSubcommand((sub) =>
@@ -132,7 +137,9 @@ class TrackerCommand extends Command {
 						sub
 							.setName("reset")
 							.setDescription("Reset every log and blacklist entry")
-							.addBooleanOption((opt) => opt.setName("sure").setDescription("Are you really sure?").setRequired(true))
+							.addBooleanOption((opt) =>
+								opt.setName("sure").setDescription("Are you really sure?").setRequired(true)
+							)
 							.addStringOption((opt) =>
 								opt
 									.setName("really")
@@ -149,7 +156,10 @@ class TrackerCommand extends Command {
 							.setName("blacklistgame")
 							.setDescription("Blacklist a game for all users.")
 							.addStringOption((opt) =>
-								opt.setName("game").setDescription("The game which should get blacklisted globaly").setRequired(true)
+								opt
+									.setName("game")
+									.setDescription("The game which should get blacklisted globaly")
+									.setRequired(true)
 							)
 					)
 					.addSubcommand((sub) =>
@@ -169,7 +179,10 @@ class TrackerCommand extends Command {
 							.setName("look")
 							.setDescription("take a look into the blacklist of someone else")
 							.addUserOption((opt) =>
-								opt.setName("user").setDescription("the user of whos blacklist should get shown").setRequired(true)
+								opt
+									.setName("user")
+									.setDescription("the user of whos blacklist should get shown")
+									.setRequired(true)
 							)
 					)
 			);
@@ -180,12 +193,14 @@ export default new TrackerCommand();
 // commands
 
 async function blacklistAdd(interaction: ChatInputCommandInteraction): Promise<void> {
-	let game = interaction.options.getString("game", false);
+	const game = interaction.options.getString("game", false);
 	if (game == null) {
 		activityTrackerBlacklistDb.push("general-user", interaction.user.id);
 		let embed = new EmbedBuilder()
 			.setTitle("Your game activity wont get logged anymore")
-			.setDescription("Tracking is now disabled for you. To activate it again use `/tracking blacklist remove`");
+			.setDescription(
+				"Tracking is now disabled for you. To activate it again use `/tracking blacklist remove`"
+			);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
 		return;
@@ -203,10 +218,10 @@ async function blacklistAdd(interaction: ChatInputCommandInteraction): Promise<v
 }
 
 async function blacklistRemove(interaction: ChatInputCommandInteraction): Promise<void> {
-	let game = interaction.options.getString("game", true);
+	const game = interaction.options.getString("game", true);
 
 	if (game === "Please activate my tracking again") {
-		let blacklistedUser = activityTrackerBlacklistDb.get("general-user");
+		const blacklistedUser = activityTrackerBlacklistDb.get("general-user");
 		if (blacklistedUser === undefined) {
 			let embed = new EmbedBuilder().setTitle("Something went wrong");
 			embed = addDefaultEmbedFooter(embed);
@@ -241,14 +256,16 @@ async function blacklistRemove(interaction: ChatInputCommandInteraction): Promis
 }
 
 async function blacklistShow(interaction: ChatInputCommandInteraction): Promise<void> {
-	let blacklist = await getBlacklist(interaction.user.id);
+	const blacklist = await getBlacklist(interaction.user.id);
 
 	if (blacklist?.length == 0 || blacklist == undefined) {
 		let embed = new EmbedBuilder()
-			.setTitle(`Your Blacklist`)
+			.setTitle("Your Blacklist")
 			.setDescription(
 				"Tracking status: `" +
-					(activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id) ? "disabled" : "enabled") +
+					(activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)
+						? "disabled"
+						: "enabled") +
 					"`\nBlacklisted games: No game is blacklisted. Every game gets logged"
 			);
 
@@ -257,13 +274,15 @@ async function blacklistShow(interaction: ChatInputCommandInteraction): Promise<
 		return;
 	}
 
-	let str = "`" + blacklist.join("`, `") + "`";
+	const str = "`" + blacklist.join("`, `") + "`";
 
 	let embed = new EmbedBuilder()
 		.setTitle("Your blacklist")
 		.setDescription(
 			"Trackstatus: `" +
-				(activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id) ? "disabled" : "enabled") +
+				(activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)
+					? "disabled"
+					: "enabled") +
 				"`\nBlacklisted games: " +
 				str
 		);
@@ -273,8 +292,8 @@ async function blacklistShow(interaction: ChatInputCommandInteraction): Promise<
 }
 
 async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
-	let game = interaction.options.getString("game")?.toLowerCase();
-	let fields = await makeStats(await getEntrys(interaction.user.id, game));
+	const game = interaction.options.getString("game")?.toLowerCase();
+	const fields = await makeStats(await getEntrys(interaction.user.id, game));
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(game === null ? "No logs found" : `No logs found for ${game}`);
@@ -284,8 +303,8 @@ async function statisticsMystats(interaction: ChatInputCommandInteraction): Prom
 	}
 
 	if (game === null) {
-		let allEntrys = activityTrackerLogDb.keyArray();
-		let games = allEntrys.filter((e) => e.split("-")[0] === interaction.user.id).length;
+		const allEntrys = activityTrackerLogDb.keyArray();
+		const games = allEntrys.filter((e) => e.split("-")[0] === interaction.user.id).length;
 
 		let embed = new EmbedBuilder()
 			.setTitle("Your stats across all games")
@@ -302,8 +321,8 @@ async function statisticsMystats(interaction: ChatInputCommandInteraction): Prom
 }
 
 async function statisticsGamestats(interaction: ChatInputCommandInteraction): Promise<void> {
-	let game = interaction.options.getString("game", true).toLowerCase();
-	let fields = await makeStats(await getEntrys(undefined, game));
+	const game = interaction.options.getString("game", true).toLowerCase();
+	const fields = await makeStats(await getEntrys(undefined, game));
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(`No logs found for ${game}`);
@@ -312,8 +331,8 @@ async function statisticsGamestats(interaction: ChatInputCommandInteraction): Pr
 		return;
 	}
 
-	let allEntrys = activityTrackerLogDb.keyArray();
-	let users = allEntrys.filter((e) => e.split("-")[1] === game).length;
+	const allEntrys = activityTrackerLogDb.keyArray();
+	const users = allEntrys.filter((e) => e.split("-")[1] === game).length;
 
 	let embed = new EmbedBuilder()
 		.setTitle(`Stats across all users for ${game}`)
@@ -325,22 +344,22 @@ async function statisticsGamestats(interaction: ChatInputCommandInteraction): Pr
 }
 
 async function statisticsAllstats(interaction: ChatInputCommandInteraction): Promise<void> {
-	let fields = await makeStats(await getEntrys(undefined, undefined));
+	const fields = await makeStats(await getEntrys(undefined, undefined));
 
 	if (fields.length == 0) {
-		let embed = new EmbedBuilder().setTitle(`No logs found`);
+		let embed = new EmbedBuilder().setTitle("No logs found");
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	}
 
-	let allEntrys = activityTrackerLogDb.keyArray();
-	let users: string[] = [];
-	let games: string[] = [];
+	const allEntrys = activityTrackerLogDb.keyArray();
+	const users: string[] = [];
+	const games: string[] = [];
 	allEntrys.forEach((e) => {
-		let split = e.split("-");
-		let user = split[0];
-		let game = split[1];
+		const split = e.split("-");
+		const user = split[0];
+		const game = split[1];
 		if (!users.includes(user)) users.push(user);
 		if (!games.includes(game)) games.push(game);
 	});
@@ -358,8 +377,8 @@ async function statisticsAllstats(interaction: ChatInputCommandInteraction): Pro
 }
 
 async function adminReset(interaction: ChatInputCommandInteraction): Promise<void> {
-	let sure: boolean = interaction.options.getBoolean("sure", true);
-	let really: string = interaction.options.getString("really", true);
+	const sure: boolean = interaction.options.getBoolean("sure", true);
+	const really: string = interaction.options.getString("really", true);
 
 	if (!(sure && really == "yes")) {
 		let embed = new EmbedBuilder()
@@ -388,7 +407,7 @@ async function adminReset(interaction: ChatInputCommandInteraction): Promise<voi
 }
 
 async function adminBlacklistgame(interaction: ChatInputCommandInteraction): Promise<void> {
-	let game = interaction.options.getString("game", true);
+	const game = interaction.options.getString("game", true);
 	activityTrackerBlacklistDb.push("general-game", game);
 
 	let embed = new EmbedBuilder()
@@ -399,7 +418,7 @@ async function adminBlacklistgame(interaction: ChatInputCommandInteraction): Pro
 }
 
 async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Promise<void> {
-	let game = interaction.options.getString("game", true);
+	const game = interaction.options.getString("game", true);
 
 	if (game == "No games are currently blacklisted globaly") {
 		let embed = new EmbedBuilder().setTitle("No games are blacklisted");
@@ -430,8 +449,8 @@ async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Pro
 }
 
 async function adminLook(interaction: ChatInputCommandInteraction): Promise<void> {
-	let user = interaction.options.getUser("user", true);
-	let blacklist = await getBlacklist(user.id);
+	const user = interaction.options.getUser("user", true);
+	const blacklist = await getBlacklist(user.id);
 
 	if (blacklist?.length == 0 || blacklist == undefined) {
 		let embed = new EmbedBuilder()
@@ -446,7 +465,7 @@ async function adminLook(interaction: ChatInputCommandInteraction): Promise<void
 		return;
 	}
 
-	let str = "`" + blacklist.join("`, `") + "`";
+	const str = "`" + blacklist.join("`, `") + "`";
 
 	let embed = new EmbedBuilder()
 		.setTitle(`${user.tag}'s Blacklist`)
@@ -467,29 +486,32 @@ async function getBlacklist(userid: string): Promise<string[] | undefined> {
 	return activityTrackerBlacklistDb.get(userid);
 }
 
-async function getEntrys(user: string | undefined | null, game: string | undefined | null): Promise<string[]> {
-	let allEntrys = activityTrackerLogDb.keyArray();
-	let found: string[] = [];
-	let userCheck: boolean = user == null || user == undefined;
-	let gameCheck: boolean = game == null || game == undefined;
+async function getEntrys(
+	user: string | undefined | null,
+	game: string | undefined | null
+): Promise<string[]> {
+	const allEntrys = activityTrackerLogDb.keyArray();
+	const found: string[] = [];
+	const userCheck: boolean = user == null || user == undefined;
+	const gameCheck: boolean = game == null || game == undefined;
 	allEntrys.forEach((element) => {
 		if (userCheck && gameCheck) {
-			let entry = activityTrackerLogDb.get(element);
+			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		} else if (userCheck && !gameCheck) {
-			let gameEntry = element.split("-")[1].toLowerCase();
+			const gameEntry = element.split("-")[1].toLowerCase();
 			if (gameEntry !== game) return;
-			let entry = activityTrackerLogDb.get(element);
+			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		} else if (!userCheck && gameCheck) {
-			let userEntry = element.split("-")[0];
+			const userEntry = element.split("-")[0];
 			if (userEntry !== user) return;
-			let entry = activityTrackerLogDb.get(element);
+			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		} else if (!userCheck && !gameCheck) {
-			let split = element.split("-");
+			const split = element.split("-");
 			if (split[0] !== user || split[1].toLowerCase() !== game) return;
-			let entry = activityTrackerLogDb.get(element);
+			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		}
 	});
@@ -508,7 +530,7 @@ async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
 	let totalRecords = 0;
 
 	entrys.forEach((game) => {
-		let logs = activityTrackerLogDb.get(game);
+		const logs = activityTrackerLogDb.get(game);
 		logs?.forEach((log) => {
 			totalRecords += 1;
 			playTime += log.t;
@@ -521,9 +543,9 @@ async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
 	let dayDifference = Math.floor(lastEntry / 86400000) - Math.floor(firstEntry / 86400000);
 	dayDifference = dayDifference == 0 ? 1 : dayDifference;
 
-	let average = Math.floor(playTime / dayDifference);
+	const average = Math.floor(playTime / dayDifference);
 
-	let fields = [
+	const fields = [
 		{ name: "Record Range", value: `${dayDifference} Days`, inline: true },
 		{ name: "Total Playtime", value: await makeTimestamp(playTime, true), inline: true },
 		{ name: "Playtime/Day", value: await makeTimestamp(average, false), inline: true },
@@ -546,12 +568,12 @@ async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
 
 async function makeTimestamp(ms: number, day: boolean): Promise<string> {
 	let totalSeconds = ms / 1000;
-	let days = Math.floor(totalSeconds / 86400);
+	const days = Math.floor(totalSeconds / 86400);
 	totalSeconds %= 86400;
-	let hours = Math.floor(totalSeconds / 3600);
+	const hours = Math.floor(totalSeconds / 3600);
 	totalSeconds %= 3600;
-	let minutes = Math.floor(totalSeconds / 60);
-	let seconds = Math.floor(totalSeconds % 60);
+	const minutes = Math.floor(totalSeconds / 60);
+	const seconds = Math.floor(totalSeconds % 60);
 
 	if (day) return `${days} day(s), ${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;
 	return `${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;

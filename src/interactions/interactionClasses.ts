@@ -2,6 +2,7 @@ import {
 	AutocompleteInteraction,
 	ButtonInteraction,
 	ChatInputCommandInteraction,
+	ModalSubmitInteraction,
 	SelectMenuInteraction,
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
@@ -15,12 +16,11 @@ export abstract class Command {
 	public readonly name: string;
 	abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 	abstract register():
-		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
 }
 
-export abstract class ButtonHandler {
+export abstract class Button {
 	public readonly name: string;
 
 	protected constructor(name: string) {
@@ -30,7 +30,7 @@ export abstract class ButtonHandler {
 	abstract execute(interaction: ButtonInteraction, args: string[]): Promise<void>;
 }
 
-export abstract class SelectMenuHandler {
+export abstract class SelectMenu {
 	public readonly name: string;
 
 	protected constructor(name: string) {
@@ -38,6 +38,16 @@ export abstract class SelectMenuHandler {
 	}
 
 	abstract execute(interaction: SelectMenuInteraction, args: string[]): Promise<void>;
+}
+
+export abstract class Modal {
+	public readonly name: string;
+
+	protected constructor(name: string) {
+		this.name = name;
+	}
+
+	abstract execute(interaction: ModalSubmitInteraction, args: string[]): Promise<void>;
 }
 
 export abstract class Autocompleter {

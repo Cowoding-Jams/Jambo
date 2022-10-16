@@ -1,7 +1,12 @@
-import { Command } from "../handler";
-import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
-import { hasAdminPerms } from "../util/permissions";
-import { colorPrompt, pronounPrompt } from "../util/roleUtil";
+import { Command } from "../interactions/interactionClasses";
+import {
+	ChatInputCommandInteraction,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
+import { hasAdminPerms } from "../util/misc/permissions";
+import { colorPrompt, pronounPrompt } from "../util/roleCommand/rolePrompts";
+import { deleteAllRoles } from "../util/roleCommand/roleUtil";
 
 class RoleCommand extends Command {
 	constructor() {
@@ -10,17 +15,21 @@ class RoleCommand extends Command {
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (!(await hasAdminPerms(interaction))) {
-			// color promps are only available to admins
+			// color role commands are only available to admins
 			return;
 		}
 
-		await interaction.deferReply();
 		const subcommand = interaction.options.getSubcommand();
 
 		if (subcommand === "pronoun-prompt") {
+			await interaction.deferReply();
 			await pronounPrompt(interaction);
 		} else if (subcommand === "color-prompt") {
+			await interaction.deferReply();
 			await colorPrompt(interaction);
+		} else if (subcommand === "delete-all") {
+			await interaction.deferReply({ ephemeral: true });
+			await deleteAllRoles(interaction);
 		}
 	}
 
@@ -29,7 +38,9 @@ class RoleCommand extends Command {
 			.setName("roles")
 			.setDescription("Manages the roles on the server.")
 			.addSubcommand((option) =>
-				option.setName("pronoun-prompt").setDescription("Creates the pronoun role prompt to select the roles.")
+				option
+					.setName("pronoun-prompt")
+					.setDescription("Creates the pronoun role prompt to select the roles.")
 			)
 			.addSubcommand((option) =>
 				option
@@ -43,6 +54,11 @@ class RoleCommand extends Command {
 							.setMinValue(1)
 							.setMaxValue(4)
 					)
+			)
+			.addSubcommand((option) =>
+				option
+					.setName("delete-all")
+					.setDescription("Deletes all the generated roles (Using the '- ... -' indicators).")
 			);
 	}
 }

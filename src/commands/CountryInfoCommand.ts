@@ -1,4 +1,4 @@
-import { Command } from "../handler";
+import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
@@ -9,7 +9,7 @@ import { countryData, initializeCountryData } from "../util/countryCommand/count
 import { overviewSubcommand, randomOverviewSubcommand } from "../util/countryCommand/overviewSubcommand";
 import { specificCommand } from "../util/countryCommand/specificSubcommand";
 import { querySubcommand } from "../util/countryCommand/querySubcommand";
-import { unknownSubcommandReply } from "../util/unknownSubcommand";
+import { unknownSubcommandReply } from "../util/misc/unknownSubcommand";
 
 class CountryInfoCommand extends Command {
 	constructor() {
@@ -63,7 +63,9 @@ class CountryInfoCommand extends Command {
 					.setDescription("Lists all the data from a country.")
 					.addStringOption(getCountryOption)
 			)
-			.addSubcommand((option) => option.setName("random").setDescription("Lists all the data from a random country."))
+			.addSubcommand((option) =>
+				option.setName("random").setDescription("Lists all the data from a random country.")
+			)
 			.addSubcommand((option) =>
 				option
 					.setName("specific")
@@ -100,7 +102,10 @@ class CountryInfoCommand extends Command {
 						option
 							.setName("order")
 							.setDescription("Determines the order.")
-							.addChoices({ name: "ascending", value: "ascending" }, { name: "descending", value: "descending" })
+							.addChoices(
+								{ name: "ascending", value: "ascending" },
+								{ name: "descending", value: "descending" }
+							)
 							.setRequired(true)
 					)
 					.addIntegerOption((option) =>
@@ -155,7 +160,11 @@ class CountryInfoCommand extends Command {
 }
 
 function getCountryOption(option: SlashCommandStringOption) {
-	return option.setName("country").setDescription("Name of the country.").setRequired(true).setAutocomplete(true);
+	return option
+		.setName("country")
+		.setDescription("Name of the country.")
+		.setRequired(true)
+		.setAutocomplete(true);
 }
 
 const defaultCountryInformationChoices: { name: string; value: string }[] = [

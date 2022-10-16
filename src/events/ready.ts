@@ -1,4 +1,10 @@
-import { ApplicationCommand, Client, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
+import reminderCommand from "../commands/ReminderCommand";
+import {
+	ApplicationCommand,
+	Client,
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 
@@ -9,6 +15,9 @@ export default async function ready(client: Client) {
 	logger.info("Publishing commands...");
 	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
+	logger.info("Starting reminder scheduler...");
+	reminderCommand.startScheduler(client);
+
 	logger.info("Setup successfully");
 }
 
@@ -17,7 +26,9 @@ async function updateRegisteredCommands(client: Client) {
 		logger.error("Client has no application");
 		throw new Error("Client must have an application");
 	}
-	const registeredCommands = await client.application.commands.fetch(undefined, { guildId: ctx.defaultGuild });
+	const registeredCommands = await client.application.commands.fetch(undefined, {
+		guildId: ctx.defaultGuild,
+	});
 
 	await Promise.all(
 		ctx.commands.map(async (cmd) => {

@@ -1,4 +1,4 @@
-import { Autocompleter } from "../handler";
+import { Autocompleter } from "../interactions/interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import { /*activityTrackerLogDb,*/ activityTrackerBlacklistDb, activityTrackerLogDb } from "../db";
 class TrackerAutocompleter extends Autocompleter {
@@ -23,16 +23,22 @@ export default new TrackerAutocompleter();
 async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 	if (!interaction.memberPermissions?.has("Administrator")) {
 		await interaction.respond([
-			{ name: "You dont have permissions to use this command", value: "You dont have permissions to use this command" },
+			{
+				name: "You dont have permissions to use this command",
+				value: "You dont have permissions to use this command",
+			},
 		]);
 		return;
 	}
 
-	let options: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
+	const options: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
 
 	if (options?.length === 0 || !options) {
 		await interaction.respond([
-			{ name: "No games are currently blacklisted globaly", value: "No games are currently blacklisted globaly" },
+			{
+				name: "No games are currently blacklisted globaly",
+				value: "No games are currently blacklisted globaly",
+			},
 		]);
 		return;
 	}
@@ -49,16 +55,18 @@ async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 }
 
 async function statisticsMystats(interaction: AutocompleteInteraction) {
-	let allKeys = activityTrackerLogDb.keyArray();
-	let games: string[] = [];
+	const allKeys = activityTrackerLogDb.keyArray();
+	const games: string[] = [];
 	allKeys.forEach((e) => {
-		let split = e.split("-");
+		const split = e.split("-");
 		if (split[0] !== interaction.user.id) return;
 		games.push(split[1]);
 	});
 
 	if (games.length == 0) {
-		await interaction.respond([{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" }]);
+		await interaction.respond([
+			{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" },
+		]);
 		return;
 	}
 
@@ -74,15 +82,17 @@ async function statisticsMystats(interaction: AutocompleteInteraction) {
 }
 
 async function statisticsGamestats(interaction: AutocompleteInteraction) {
-	let allKeys = activityTrackerLogDb.keyArray();
-	let games: string[] = [];
+	const allKeys = activityTrackerLogDb.keyArray();
+	const games: string[] = [];
 	allKeys.forEach((e) => {
-		let split = e.split("-");
+		const split = e.split("-");
 		games.push(split[1]);
 	});
 
 	if (games.length == 0) {
-		await interaction.respond([{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" }]);
+		await interaction.respond([
+			{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" },
+		]);
 		return;
 	}
 
@@ -98,7 +108,7 @@ async function statisticsGamestats(interaction: AutocompleteInteraction) {
 }
 
 async function blacklistRemove(interaction: AutocompleteInteraction) {
-	let options: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
+	const options: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
 
 	if (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)) {
 		await interaction.respond([
@@ -108,7 +118,9 @@ async function blacklistRemove(interaction: AutocompleteInteraction) {
 	}
 
 	if (options?.length === 0 || !options) {
-		await interaction.respond([{ name: "No games are on your blacklist", value: "No games are on your blacklist" }]);
+		await interaction.respond([
+			{ name: "No games are on your blacklist", value: "No games are on your blacklist" },
+		]);
 		return;
 	}
 

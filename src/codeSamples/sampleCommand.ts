@@ -1,4 +1,4 @@
-import { Command } from "../handler";
+import { Command } from "../interactions/interactionClasses";
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 
 // set the class name, the export at the bottom and the file name to your desired command name (same as the one in the register function)
@@ -22,7 +22,9 @@ class CommandName extends Command {
 		return new SlashCommandBuilder()
 			.setName("bunny")
 			.setDescription("shows you a cute bunny")
-			.addIntegerOption((option) => option.setName("amount").setDescription("number of bunnies").setRequired(false));
+			.addIntegerOption((option) =>
+				option.setName("amount").setDescription("number of bunnies").setRequired(false)
+			);
 	}
 }
 
