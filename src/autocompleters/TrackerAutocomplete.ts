@@ -43,15 +43,44 @@ async function adminWhitelistgame(interaction: AutocompleteInteraction) {
         return
     }
 
+    let map = options
+        .filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
+        .map((c) => ({ name: c, value: c }))
+
+    if (map.length > 25) {
+        map = map.slice(0, 25)
+    }
+
     await interaction.respond(
-        options
-            .filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
-            .map((c) => ({ name: c, value: c }))
+        map
     );
 }
 async function statisticsMystats(interaction: AutocompleteInteraction) {
     
 }
 async function blacklistRemove(interaction: AutocompleteInteraction) {
+    let options: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id)
     
+    if (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)) {
+        await interaction.respond([{name:"Please activate my tracking again", value: "Please activate my tracking again"}])
+        return
+    }
+    
+    if (options?.length === 0 || !options) {
+        await interaction.respond([{name:"No games are on your blacklist", value: "No games are on your blacklist"}])
+        return
+    }
+
+    let map = options
+        .filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
+        .map((c) => ({ name: c, value: c }))
+
+    if (map.length > 25) {
+        map = map.slice(0, 25)
+    }
+
+    await interaction.respond(
+        map
+    );
+
 }
