@@ -12,6 +12,8 @@ import {
 } from "discord.js";
 import { reminderDb, reminderTimeoutCache } from "../db";
 import { hasMentionEveryonePerms } from "../util/misc/permissions";
+import cron from "node-cron";
+import { logger } from "../logger";
 
 class ReminderCommand extends Command {
 	constructor() {
@@ -29,13 +31,24 @@ class ReminderCommand extends Command {
 		reminderTimeoutCache.delete(id);
 	}
 
-	restoreReminders(client: Client) {
-		reminderDb.forEach((reminder, id) => {
-			reminderTimeoutCache.set(
-				id,
-				setTimeout(() => this.elapse(client, id), reminder.timestamp - Date.now())
-			);
-		});
+	schedulerTick(client: Client) {
+		try {
+			reminderDb.forEach((reminder, id) => {
+				if (!reminderTimeoutCache.has(id) && reminder.timestamp <= Date.now() + 30 * 60 * 1000) {
+					reminderTimeoutCache.set(
+						id,
+						setTimeout(() => this.elapse(client, id), reminder.timestamp - Date.now())
+					);
+				}
+			});
+		} catch (e) {
+			logger.error("Error in reminder scheduler tick", e);
+		}
+	}
+
+	startScheduler(client: Client) {
+		this.schedulerTick(client);
+		cron.schedule("*/30 * * * *", this.schedulerTick.bind(this, client));
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -75,10 +88,12 @@ class ReminderCommand extends Command {
 					user: member.id,
 					callAll,
 				});
-				reminderTimeoutCache.set(
-					id,
-					setTimeout(() => this.elapse(interaction.client, id), milliseconds)
-				);
+
+				if (timestamp <= Date.now() + 30 * 60 * 1000)
+					reminderTimeoutCache.set(
+						id,
+						setTimeout(() => this.elapse(interaction.client, id), milliseconds)
+					);
 
 				await interaction.reply(
 					`Okay, I'll remind you in${hours == 0 ? "" : ` ${hours} hours`}${
@@ -101,9 +116,11 @@ class ReminderCommand extends Command {
 				}
 
 				if (member.id == item.user) {
-					clearTimeout(reminderTimeoutCache.get(c_id));
 					reminderDb.delete(c_id);
-					reminderTimeoutCache.delete(c_id);
+					if (reminderTimeoutCache.has(c_id)) {
+						clearTimeout(reminderTimeoutCache.get(c_id));
+						reminderTimeoutCache.delete(c_id);
+					}
 					await interaction.reply({ content: "I've removed the reminder :)", ephemeral: true });
 				} else {
 					await interaction.reply({ content: "You can only delete your own reminders.", ephemeral: true });
