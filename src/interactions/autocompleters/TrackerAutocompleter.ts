@@ -1,6 +1,6 @@
-import { Autocompleter } from "../interactions/interactionClasses";
+import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { /*activityTrackerLogDb,*/ activityTrackerBlacklistDb, activityTrackerLogDb } from "../db";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 class TrackerAutocompleter extends Autocompleter {
 	constructor() {
 		super("tracker"); // command which this autocompleter is for
