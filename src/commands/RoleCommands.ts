@@ -16,6 +16,10 @@ class RoleCommand extends Command {
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (!(await hasAdminPerms(interaction))) {
 			// color role commands are only available to admins
+			await interaction.reply({
+				content: "You don't have the admin permission to use that command.",
+				ephemeral: true,
+			});
 			return;
 		}
 
