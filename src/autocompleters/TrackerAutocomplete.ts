@@ -1,6 +1,6 @@
 import { Autocompleter } from "../handler";
 import { AutocompleteInteraction } from "discord.js";
-import { /*activityTrackerLogDb,*/ activityTrackerBlacklistDb } from "../db";
+import { /*activityTrackerLogDb,*/ activityTrackerBlacklistDb, activityTrackerLogDb } from "../db";
 class TrackerAutocompleter extends Autocompleter {
 	constructor() {
 		super("tracker"); // command which this autocompleter is for
@@ -11,7 +11,8 @@ class TrackerAutocompleter extends Autocompleter {
         if (interaction.options.getSubcommandGroup() === "admin") {
             await adminWhitelistgame(interaction);
         } else if (interaction.options.getSubcommandGroup() === "statistics") {
-            await statisticsMystats(interaction);
+            if (interaction.options.getSubcommand() == "mystats") await statisticsMystats(interaction);
+            else if (interaction.options.getSubcommand() == "gamestats") await statisticsGamestats(interaction)
         } else if (interaction.options.getSubcommandGroup() === "blacklist") {
             await blacklistRemove(interaction);
         }
@@ -55,9 +56,54 @@ async function adminWhitelistgame(interaction: AutocompleteInteraction) {
         map
     );
 }
+
 async function statisticsMystats(interaction: AutocompleteInteraction) {
-    
+    let allKeys = activityTrackerLogDb.keyArray()
+    let games: string[] = []
+    allKeys.forEach(e => {
+        let split = e.split("-")
+        if (split[0] !== interaction.user.id) return
+        games.push(split[1])
+    })
+
+    if (games.length == 0) {
+        await interaction.respond([{name:"Nothing has been logged yet", value: "Nothing has been logged yet"}])
+        return    
+    }
+
+    let map = games
+        .filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
+        .map((c) => ({ name: c, value: c }))
+
+    if (map.length > 25) {map = map.slice(0, 25)}
+
+    await interaction.respond(map);
+
+
 }
+
+async function statisticsGamestats(interaction: AutocompleteInteraction) {
+    let allKeys = activityTrackerLogDb.keyArray()
+    let games: string[] = []
+    allKeys.forEach(e => {
+        let split = e.split("-")
+        games.push(split[1])
+    })
+
+    if (games.length == 0) {
+        await interaction.respond([{name:"Nothing has been logged yet", value: "Nothing has been logged yet"}])
+        return    
+    }
+
+    let map = games
+        .filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
+        .map((c) => ({ name: c, value: c }))
+
+    if (map.length > 25) {map = map.slice(0, 25)}
+
+    await interaction.respond(map);
+}
+
 async function blacklistRemove(interaction: AutocompleteInteraction) {
     let options: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id)
     
