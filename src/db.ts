@@ -11,7 +11,12 @@ interface rmdDb {
 export const timeDb = new Map<number, rmdDb>();
 export const latexDb = new Enmap<string, string>("latex");
 
-export const activityTrackerLogDb = new Enmap<string, Object[]>("TrackerLog");
+
+interface ActivityLogEntry {
+    t: number;
+    w: number;
+}
+export const activityTrackerLogDb = new Enmap<string, ActivityLogEntry[]>("TrackerLog");
 export const activityTrackerBlacklistDb = new Enmap<string, string[]>("TrackerBlacklist");
 activityTrackerBlacklistDb.ensure("general-user", []);
 activityTrackerBlacklistDb.ensure("general-game", []);
