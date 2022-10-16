@@ -58,5 +58,4 @@ interface BotConfig {
 	logActivity: boolean;
 	// ID of the channel where User Activity gets Logged
 	logChannel: string;
-
 }
