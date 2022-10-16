@@ -43,7 +43,7 @@ class TrackerCommand extends Command {
                 await adminLook(interaction)
             }
         } else if (sub === "disabled") {
-            interaction.reply({content:"The activity logging is disabled.\nIf feature gets activated you can find the commands which come with the feature.", ephemeral:true})
+          await interaction.reply({content:"The activity logging is disabled.\nIf feature gets activated you can find the commands which come with the feature.", ephemeral:true})
         }
     }
 
@@ -82,6 +82,7 @@ class TrackerCommand extends Command {
                         .setName("game")
                         .setDescription("Enter game or dont enter anything to enable your logging")
                         .setAutocomplete(true)
+                        .setRequired(true)
                     )
                     
                 )
@@ -172,14 +173,104 @@ export default new TrackerCommand();
 
 // commands
 
+//done
 async function blacklistAdd(interaction: ChatInputCommandInteraction): Promise<void> {
-    
+    let game = interaction.options.getString('game', false)
+    if (game == null) {
+        activityTrackerBlacklistDb.push('general-user', interaction.user.id)
+        let embed = new EmbedBuilder()
+            .setTitle("Your game activity wont get logged anymore")
+            .setDescription("Tracking is now disabled for you. To activate it again use `/tracking blacklist remove`")
+        embed = addDefaultEmbedFooter(embed)
+        await interaction.reply({embeds:[embed], ephemeral:true})
+        return
+    }
+
+    if (!activityTrackerBlacklistDb.has(interaction.user.id)) {
+        activityTrackerBlacklistDb.set(interaction.user.id, [])
+    }
+    activityTrackerBlacklistDb.push(interaction.user.id, game)
+
+    let embed = new EmbedBuilder()
+        .setTitle(`"${game}" is now on your blacklist`)
+
+    embed = addDefaultEmbedFooter(embed)
+    await interaction.reply({embeds:[embed], ephemeral:true})
 }
+//done
 async function blacklistRemove(interaction: ChatInputCommandInteraction): Promise<void> {
-    
+    let game = interaction.options.getString('game', true)
+
+    if (game === "Please activate my tracking again") {
+        let blacklistedUser = activityTrackerBlacklistDb.get("general-user")
+        if (blacklistedUser === undefined) {
+            let embed = new EmbedBuilder()
+            .setTitle("Something went wrong")
+            embed = addDefaultEmbedFooter(embed)
+            await interaction.reply({embeds:[embed], ephemeral:true})
+            return
+        }
+        blacklistedUser?.filter(e => e != interaction.user.id)
+        activityTrackerBlacklistDb.set("general-user", blacklistedUser)
+
+        let embed = new EmbedBuilder()
+            .setTitle("Your tracking is activated again!")
+        embed = addDefaultEmbedFooter(embed)
+        interaction.reply({embeds:[embed], ephemeral:true})
+        return
+    }
+
+    let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id)
+
+    if (blacklistedGames === undefined) {
+        let embed = new EmbedBuilder()
+            .setTitle("Something went wrong")
+        embed = addDefaultEmbedFooter(embed)
+        await interaction.reply({embeds:[embed], ephemeral:true})
+        return
+    }
+
+    blacklistedGames = blacklistedGames?.filter(e => e !== game)
+
+    activityTrackerBlacklistDb.set(interaction.user.id, blacklistedGames)
+
+
+    let embed = new EmbedBuilder()
+        .setTitle(`"${game}" is now removed from the blacklist`)
+    embed = addDefaultEmbedFooter(embed)
+    await interaction.reply({embeds:[embed], ephemeral:true})
 }
+//done
 async function blacklistShow(interaction: ChatInputCommandInteraction): Promise<void> {
-    
+    let blacklist = await getBlacklist(interaction.user.id)
+
+    if (blacklist?.length == 0 || blacklist == undefined) {
+        let embed = new EmbedBuilder()
+            .setTitle(`Your Blacklist`)
+            .setDescription(
+                "Tracking status: `" +
+                (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id) ? "disabled" : "enabled") +
+                "`\nBlacklisted games: No game is blacklisted. Every game gets logged"
+            )
+        
+        embed = addDefaultEmbedFooter(embed)
+        await interaction.reply({embeds:[embed], ephemeral:true})
+        return
+    }
+
+    let str = "`" + blacklist.join("`, `") + "`" 
+
+    let embed = new EmbedBuilder()
+        .setTitle("Your blacklist")
+        .setDescription(
+            "Trackstatus: `" +
+            (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id) ? "disabled" : "enabled") +
+            "`\nBlacklisted games: " +
+            str
+        )
+    embed = addDefaultEmbedFooter(embed)
+
+    await interaction.reply({embeds: [embed], ephemeral:true})
 }
 
 async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -239,6 +330,14 @@ async function adminBlacklistgame(interaction: ChatInputCommandInteraction): Pro
 async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Promise<void> {
     let game = interaction.options.getString('game', true)
     
+    if (game == "No games are currently blacklisted globaly") {
+        let embed = new EmbedBuilder()
+            .setTitle("No games are blacklisted")
+        
+        embed = addDefaultEmbedFooter(embed)
+        interaction.reply({embeds:[embed], ephemeral:true})
+    }
+
     let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get('general-game')
     
     if (blacklistedGames === undefined) {
@@ -262,10 +361,42 @@ async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Pro
     return
 
 }
+//done
 async function adminLook(interaction: ChatInputCommandInteraction): Promise<void> {
+    let user = interaction.options.getUser('user', true)
+    let blacklist = await getBlacklist(user.id)
 
+    if (blacklist?.length == 0 || blacklist == undefined) {
+        let embed = new EmbedBuilder()
+            .setTitle(`${user.tag}'s Blacklist`)
+            .setDescription(
+                "Tracking status: `" +
+                (activityTrackerBlacklistDb.get("general-user")?.includes(user.id) ? "disabled" : "enabled") +
+                "`\nBlacklisted games: No game is blacklisted. Every game gets logged"
+            )
+        embed = addDefaultEmbedFooter(embed)
+        await interaction.reply({embeds:[embed], ephemeral:true})
+        return
+    }
+
+    let str = "`" + blacklist.join("`, `") + "`" 
+
+    let embed = new EmbedBuilder()
+        .setTitle(`${user.tag}'s Blacklist`)
+        .setDescription(
+            "Trackstatus: `" +
+            (activityTrackerBlacklistDb.get("general-user")?.includes(user.id) ? "disabled" : "enabled") +
+            "`\nBlacklisted games: " +
+            str
+        )
+    embed = addDefaultEmbedFooter(embed)
+    await interaction.reply({embeds: [embed], ephemeral:true})
 }
 
 
 // helper functions
 
+async function getBlacklist(userid: string): Promise<string[] | undefined> {
+    if (!activityTrackerBlacklistDb.has(userid)) return []
+    return activityTrackerBlacklistDb.get(userid)
+}
