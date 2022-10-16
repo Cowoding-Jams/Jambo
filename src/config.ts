@@ -33,7 +33,7 @@ export const config: BotConfig = {
 	serverDescription:
 		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
 	logLevel: "debug",
-	logActivity: false,
+	logActivity: true,
 	logChannel: "953319866289516554",
 };
 
