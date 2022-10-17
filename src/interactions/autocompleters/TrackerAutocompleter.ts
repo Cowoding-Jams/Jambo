@@ -3,7 +3,7 @@ import { AutocompleteInteraction } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 class TrackerAutocompleter extends Autocompleter {
 	constructor() {
-		super("tracker"); // command which this autocompleter is for
+		super("tracker");
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
@@ -36,8 +36,8 @@ async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 	if (options?.length === 0 || !options) {
 		await interaction.respond([
 			{
-				name: "No games are currently blacklisted globaly",
-				value: "No games are currently blacklisted globaly",
+				name: "Global blacklist is empty",
+				value: "Global blacklist is empty",
 			},
 		]);
 		return;
@@ -112,7 +112,7 @@ async function blacklistRemove(interaction: AutocompleteInteraction) {
 
 	if (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)) {
 		await interaction.respond([
-			{ name: "Please activate my tracking again", value: "Please activate my tracking again" },
+			{ name: "Tracking is disabled, select this to activate it again", value: "Tracking is disabled, select this to activate it again" },
 		]);
 		return;
 	}

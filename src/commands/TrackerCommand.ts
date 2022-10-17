@@ -47,11 +47,13 @@ class TrackerCommand extends Command {
 				await adminWhitelistgame(interaction);
 			} else if (sub === "look") {
 				await adminLook(interaction);
+			} else if (sub == "show") {
+				await adminShow(interaction)
 			}
 		} else if (sub === "disabled") {
 			await interaction.reply({
 				content:
-					"The activity logging is disabled.\nIf feature gets activated you can find the commands which come with the feature.",
+					"Activity Logging is Disabled for this bot.\nIf it gets activated again you can find more commands which start with `/tracker`",
 				ephemeral: true,
 			});
 		}
@@ -185,6 +187,11 @@ class TrackerCommand extends Command {
 									.setRequired(true)
 							)
 					)
+					.addSubcommand((sub) => 
+						sub
+							.setName("show")
+							.setDescription("Show global blacklist")
+					)
 			);
 	}
 }
@@ -220,15 +227,19 @@ async function blacklistAdd(interaction: ChatInputCommandInteraction): Promise<v
 async function blacklistRemove(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true);
 
-	if (game === "Please activate my tracking again") {
-		const blacklistedUser = activityTrackerBlacklistDb.get("general-user");
-		if (blacklistedUser === undefined) {
+	if (game === "Tracking is disabled, select this to activate it again") {
+		let blacklistedUser = activityTrackerBlacklistDb.get("general-user");
+		if (!blacklistedUser) {
 			let embed = new EmbedBuilder().setTitle("Something went wrong");
 			embed = addDefaultEmbedFooter(embed);
 			await interaction.reply({ embeds: [embed], ephemeral: true });
 			return;
 		}
-		blacklistedUser?.filter((e) => e != interaction.user.id);
+
+		blacklistedUser = blacklistedUser.filter(e => e !== interaction.user.id)
+
+
+
 		activityTrackerBlacklistDb.set("general-user", blacklistedUser);
 
 		let embed = new EmbedBuilder().setTitle("Your tracking is activated again!");
@@ -239,7 +250,7 @@ async function blacklistRemove(interaction: ChatInputCommandInteraction): Promis
 
 	let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
 
-	if (blacklistedGames === undefined) {
+	if (!blacklistedGames) {
 		let embed = new EmbedBuilder().setTitle("Something went wrong");
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -332,12 +343,26 @@ async function statisticsGamestats(interaction: ChatInputCommandInteraction): Pr
 	}
 
 	const allEntrys = activityTrackerLogDb.keyArray();
-	const users = allEntrys.filter((e) => e.split("-")[1] === game).length;
+	let users:string[] = [];
+	allEntrys.forEach(e => {
+		if (e.split("-")[1].toLowerCase() === game && !users.includes(e)) users.push(e)
+	})
+
+	if (users.length === 0) {
+		let embed = new EmbedBuilder()
+			.setTitle("No records found")
+			embed = addDefaultEmbedFooter(embed);
+			await interaction.reply({ embeds: [embed] });
+			return
+	}
+
+
+
 
 	let embed = new EmbedBuilder()
 		.setTitle(`Stats across all users for ${game}`)
 		.addFields(fields)
-		.addFields({ name: "Users", value: `${users} unique users`, inline: true });
+		.addFields({ name: "Users", value: `${users.length} unique users`, inline: true });
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed] });
 	return;
@@ -420,8 +445,8 @@ async function adminBlacklistgame(interaction: ChatInputCommandInteraction): Pro
 async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true);
 
-	if (game == "No games are currently blacklisted globaly") {
-		let embed = new EmbedBuilder().setTitle("No games are blacklisted");
+	if (game == "Global blacklist is empty") {
+		let embed = new EmbedBuilder().setTitle("Global blacklist is empty");
 
 		embed = addDefaultEmbedFooter(embed);
 		interaction.reply({ embeds: [embed], ephemeral: true });
@@ -429,7 +454,7 @@ async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Pro
 
 	let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
 
-	if (blacklistedGames === undefined) {
+	if (!blacklistedGames) {
 		let embed = new EmbedBuilder().setTitle("Something went wrong");
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
@@ -477,6 +502,25 @@ async function adminLook(interaction: ChatInputCommandInteraction): Promise<void
 		);
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed], ephemeral: true });
+}
+
+async function adminShow(interaction:ChatInputCommandInteraction) {
+	let blacklist: string[] | undefined = activityTrackerBlacklistDb.get("general-game")	
+	
+	if (!blacklist || blacklist.length == 0) {
+		let embed = new EmbedBuilder()
+			.setTitle("Global Blacklist is empty")
+		embed = addDefaultEmbedFooter(embed)
+		await interaction.reply({embeds:[embed]})
+		return
+	}
+
+	let str = "`" + blacklist?.join("`, `") + "`"
+	let embed = new EmbedBuilder()
+		.setTitle("Global Blacklist")
+		.setDescription(str)
+	embed = addDefaultEmbedFooter(embed)
+	await interaction.reply({embeds:[embed]})
 }
 
 // helper functions
@@ -572,9 +616,8 @@ async function makeTimestamp(ms: number, day: boolean): Promise<string> {
 	totalSeconds %= 86400;
 	const hours = Math.floor(totalSeconds / 3600);
 	totalSeconds %= 3600;
-	const minutes = Math.floor(totalSeconds / 60);
-	const seconds = Math.floor(totalSeconds % 60);
+	const minute = Math.floor(totalSeconds / 60);
+	const second = Math.floor(totalSeconds % 60);
 
-	if (day) return `${days} day(s), ${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;
-	return `${hours} hour(s), ${minutes} minute(s) and ${seconds} second(s)`;
+	return `${days > 0 && day ? days + "day(s)" : ""}${hours > 0 ? hours + " hour(s)": ""}${hours > 0 && minute > 0 ? ", " : " "}${minute > 0 ? minute + " minute(s)": ""}${(hours > 0 || minute > 0) && second > 0 ? " and " : ""} ${second > 0 ? second + " second(s)" : ""}`;
 }
