@@ -32,9 +32,7 @@ class ReminderCommand extends Command {
 			content: reminder.pings.join(" "),
 			embeds: [
 				addDefaultEmbedFooter(
-					new EmbedBuilder()
-						.setTitle(`${reminder.pings.join(" ")} Time is up!`)
-						.setDescription(reminder.message)
+					new EmbedBuilder().setTitle("Time is up!").setDescription(reminder.message || "I believe in you!")
 				),
 			],
 		});
@@ -76,11 +74,19 @@ class ReminderCommand extends Command {
 				const hours = interaction.options.getInteger("hours") || 0;
 				const days = interaction.options.getInteger("days") || 0;
 				const months = interaction.options.getInteger("months") || 0;
+				const dateIsoString = interaction.options.getString("date-iso") || "error";
+				const dateIso = Date.parse(dateIsoString);
+				const dateUnixString = interaction.options.getString("date-unix") || "error";
+				const dateUnix = new Date(parseInt(dateUnixString) * 1000).getTime();
 
-				const dateIso = Date.parse(interaction.options.getString("date-iso") || "error");
-				const dateUnix = new Date(
-					parseInt(interaction.options.getString("date-unix") || "error") * 1000
-				).getTime();
+				if ((dateIsoString != "error" && !dateIso) || (dateUnixString != "error" && !dateUnix)) {
+					await interaction.reply({
+						content:
+							"Couldn't interpret that date. Invalid date format... Please use the ISO 8601 or an Unix timestamp.",
+						ephemeral: true,
+					});
+					return;
+				}
 
 				const message = interaction.options.getString("message") || "";
 				const additionalPing = interaction.options.getMentionable("additional-ping") as
@@ -90,6 +96,7 @@ class ReminderCommand extends Command {
 
 				const milliseconds = (minutes + 60 * hours + 60 * 24 * days + 60 * 24 * 30 * months) * 1000 * 60;
 				let timestamp: number;
+
 				if (dateIso) {
 					timestamp = dateIso;
 				} else if (dateUnix) {
@@ -98,6 +105,14 @@ class ReminderCommand extends Command {
 					timestamp = Date.now() + milliseconds;
 				} else {
 					timestamp = Date.now() + 20 * 60 * 1000; // defaults to 10 minutes
+				}
+
+				if (timestamp <= Date.now()) {
+					await interaction.reply({
+						content: "Dummy... The timestamp must be in the future.",
+						ephemeral: true,
+					});
+					return;
 				}
 
 				if (additionalPing instanceof Role && !(await hasRoleMentionPerms(interaction, additionalPing))) {
@@ -148,10 +163,16 @@ class ReminderCommand extends Command {
 							new EmbedBuilder()
 								.setTitle("Reminder set!")
 								.setDescription(
-									`I will remind you in ${_months == 0 ? "" : ` ${_months} months`}${
-										_days == 0 ? "" : ` ${_days} days`
-									}${_hours == 0 ? "" : ` ${_hours} hours`}${_minutes == 0 ? "" : ` ${_minutes} minutes`}!${
-										message == "" ? "" : `\nWith the message: ${message}`
+									`I will remind you${additionalPing ? " and " + additionalPing.toString() : " "}in ${
+										_months == 0 ? "" : ` ${_months} months`
+									}${_days == 0 ? "" : ` ${_days} days`}${_hours == 0 ? "" : ` ${_hours} hours`}${
+										_minutes == 0 ? "" : ` ${_minutes} minutes`
+									}!${
+										message == ""
+											? ""
+											: `\nYour message to yourself${
+													additionalPing ? " and " + additionalPing.toString() : ""
+											  }: ${message}`
 									} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${id}`)}`
 								)
 						),
@@ -204,7 +225,9 @@ class ReminderCommand extends Command {
 					});
 				} else {
 					await interaction.reply({
-						content: output,
+						embeds: [
+							addDefaultEmbedFooter(new EmbedBuilder().setTitle("Your reminders").setDescription(output)),
+						],
 						ephemeral: true,
 					});
 				}
@@ -275,13 +298,13 @@ const setMonths = new SlashCommandIntegerOption()
 const setDateIso = new SlashCommandStringOption()
 	.setName("date-iso")
 	.setDescription(
-		"Set the absolute date in the ISO 8601 format. (e.g. '2003-05-26T04:48:33+02' but others may also work: '26 May 2003 04:48:33 UTC+2')"
+		"The date in ISO-8601. (e.g. '2003-05-26T04:48:33+02:00' or try '26 May 2003 04:48:33 UTC+2')"
 	)
 	.setRequired(false);
 
 const setDateUnix = new SlashCommandStringOption()
 	.setName("date-unix")
-	.setDescription("Set the absolute date with a unix timestamp. (e.g. '1053917313000')")
+	.setDescription("The date with a unix timestamp. (e.g. '1053917313000')")
 	.setRequired(false);
 
 const additionalPing = new SlashCommandMentionableOption()
