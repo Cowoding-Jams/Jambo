@@ -112,7 +112,10 @@ async function blacklistRemove(interaction: AutocompleteInteraction) {
 
 	if (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)) {
 		await interaction.respond([
-			{ name: "Tracking is disabled, select this to activate it again", value: "Tracking is disabled, select this to activate it again" },
+			{
+				name: "Tracking is disabled, select this to activate it again",
+				value: "Tracking is disabled, select this to activate it again",
+			},
 		]);
 		return;
 	}

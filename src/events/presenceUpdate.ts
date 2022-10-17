@@ -32,7 +32,6 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 
 		await logTime(userid, element.name, timePlayed);
 
-
 		let embed = new EmbedBuilder()
 			.setTitle("Game Activity log")
 			.setDescription(
@@ -78,7 +77,9 @@ async function msToTimeString(ms: number): Promise<string> {
 	const minute = Math.floor(totalSeconds / 60);
 	const second = Math.floor(totalSeconds % 60);
 
-	return `${hours > 0 ? hours + " hour(s)": ""}${hours > 0 && minute > 0 ? ", " : " "}${minute > 0 ? minute + " minute(s)": ""}${(hours > 0 || minute > 0) && second > 0 ? " and " : ""} ${second > 0 ? second + " second(s)" : ""}`;
+	return `${hours > 0 ? hours + " hour(s)" : ""}${hours > 0 && minute > 0 ? ", " : " "}${
+		minute > 0 ? minute + " minute(s)" : ""
+	}${(hours > 0 || minute > 0) && second > 0 ? " and " : ""} ${second > 0 ? second + " second(s)" : ""}`;
 }
 
 async function logTime(userid: string, elementName: string, timePlayed: number): Promise<void> {

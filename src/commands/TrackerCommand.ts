@@ -48,7 +48,7 @@ class TrackerCommand extends Command {
 			} else if (sub === "look") {
 				await adminLook(interaction);
 			} else if (sub == "show") {
-				await adminShow(interaction)
+				await adminShow(interaction);
 			}
 		} else if (sub === "disabled") {
 			await interaction.reply({
@@ -187,11 +187,7 @@ class TrackerCommand extends Command {
 									.setRequired(true)
 							)
 					)
-					.addSubcommand((sub) => 
-						sub
-							.setName("show")
-							.setDescription("Show global blacklist")
-					)
+					.addSubcommand((sub) => sub.setName("show").setDescription("Show global blacklist"))
 			);
 	}
 }
@@ -236,9 +232,7 @@ async function blacklistRemove(interaction: ChatInputCommandInteraction): Promis
 			return;
 		}
 
-		blacklistedUser = blacklistedUser.filter(e => e !== interaction.user.id)
-
-
+		blacklistedUser = blacklistedUser.filter((e) => e !== interaction.user.id);
 
 		activityTrackerBlacklistDb.set("general-user", blacklistedUser);
 
@@ -343,21 +337,17 @@ async function statisticsGamestats(interaction: ChatInputCommandInteraction): Pr
 	}
 
 	const allEntrys = activityTrackerLogDb.keyArray();
-	let users:string[] = [];
-	allEntrys.forEach(e => {
-		if (e.split("-")[1].toLowerCase() === game && !users.includes(e)) users.push(e)
-	})
+	let users: string[] = [];
+	allEntrys.forEach((e) => {
+		if (e.split("-")[1].toLowerCase() === game && !users.includes(e)) users.push(e);
+	});
 
 	if (users.length === 0) {
-		let embed = new EmbedBuilder()
-			.setTitle("No records found")
-			embed = addDefaultEmbedFooter(embed);
-			await interaction.reply({ embeds: [embed] });
-			return
+		let embed = new EmbedBuilder().setTitle("No records found");
+		embed = addDefaultEmbedFooter(embed);
+		await interaction.reply({ embeds: [embed] });
+		return;
 	}
-
-
-
 
 	let embed = new EmbedBuilder()
 		.setTitle(`Stats across all users for ${game}`)
@@ -504,23 +494,20 @@ async function adminLook(interaction: ChatInputCommandInteraction): Promise<void
 	await interaction.reply({ embeds: [embed], ephemeral: true });
 }
 
-async function adminShow(interaction:ChatInputCommandInteraction) {
-	let blacklist: string[] | undefined = activityTrackerBlacklistDb.get("general-game")	
-	
+async function adminShow(interaction: ChatInputCommandInteraction) {
+	let blacklist: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
+
 	if (!blacklist || blacklist.length == 0) {
-		let embed = new EmbedBuilder()
-			.setTitle("Global Blacklist is empty")
-		embed = addDefaultEmbedFooter(embed)
-		await interaction.reply({embeds:[embed]})
-		return
+		let embed = new EmbedBuilder().setTitle("Global Blacklist is empty");
+		embed = addDefaultEmbedFooter(embed);
+		await interaction.reply({ embeds: [embed] });
+		return;
 	}
 
-	let str = "`" + blacklist?.join("`, `") + "`"
-	let embed = new EmbedBuilder()
-		.setTitle("Global Blacklist")
-		.setDescription(str)
-	embed = addDefaultEmbedFooter(embed)
-	await interaction.reply({embeds:[embed]})
+	let str = "`" + blacklist?.join("`, `") + "`";
+	let embed = new EmbedBuilder().setTitle("Global Blacklist").setDescription(str);
+	embed = addDefaultEmbedFooter(embed);
+	await interaction.reply({ embeds: [embed] });
 }
 
 // helper functions
@@ -619,5 +606,9 @@ async function makeTimestamp(ms: number, day: boolean): Promise<string> {
 	const minute = Math.floor(totalSeconds / 60);
 	const second = Math.floor(totalSeconds % 60);
 
-	return `${days > 0 && day ? days + "day(s)" : ""}${hours > 0 ? hours + " hour(s)": ""}${hours > 0 && minute > 0 ? ", " : " "}${minute > 0 ? minute + " minute(s)": ""}${(hours > 0 || minute > 0) && second > 0 ? " and " : ""} ${second > 0 ? second + " second(s)" : ""}`;
+	return `${days > 0 && day ? days + "day(s)" : ""}${hours > 0 ? hours + " hour(s)" : ""}${
+		hours > 0 && minute > 0 ? ", " : " "
+	}${minute > 0 ? minute + " minute(s)" : ""}${(hours > 0 || minute > 0) && second > 0 ? " and " : ""} ${
+		second > 0 ? second + " second(s)" : ""
+	}`;
 }
