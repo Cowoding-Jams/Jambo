@@ -274,7 +274,7 @@ const setMonths = new SlashCommandIntegerOption()
 
 const setDateIso = new SlashCommandStringOption()
 	.setName("date-iso")
-	.setDescription("Set the absolute date in the ISO 8601 format. (e.g. '26 May 2003 04:48:33 UTC+2')")
+	.setDescription("Set the absolute date in the ISO 8601 format. (e.g. '2003-05-26T04:48:33+02' but others may also work: '26 May 2003 04:48:33 UTC+2')")
 	.setRequired(false);
 
 const setDateUnix = new SlashCommandStringOption()
