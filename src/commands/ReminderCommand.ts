@@ -129,7 +129,7 @@ class ReminderCommand extends Command {
 				if (timestamp <= Date.now() + 30 * 60 * 1000)
 					reminderTimeoutCache.set(
 						id,
-						setTimeout(() => this.elapse(interaction.client, id), milliseconds)
+						setTimeout(() => this.elapse(interaction.client, id), timestamp - Date.now())
 					);
 
 				timestamp -= Date.now();
