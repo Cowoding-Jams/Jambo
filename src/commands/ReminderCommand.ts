@@ -2,17 +2,21 @@ import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	Client,
+	EmbedBuilder,
+	GuildMember,
 	inlineCode,
-	SlashCommandBooleanOption,
+	Role,
 	SlashCommandBuilder,
 	SlashCommandIntegerOption,
+	SlashCommandMentionableOption,
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 	TextBasedChannel,
 } from "discord.js";
-import { reminderDb, reminderTimeoutCache } from "../db";
-import { hasMentionEveryonePerms } from "../util/misc/permissions";
 import cron from "node-cron";
+import { hasRoleMentionPerms } from "../util/misc/permissions";
+import { addDefaultEmbedFooter } from "../util/misc/embeds";
+import { reminderDb, reminderTimeoutCache } from "../db";
 import { logger } from "../logger";
 
 class ReminderCommand extends Command {
@@ -23,9 +27,14 @@ class ReminderCommand extends Command {
 	async elapse(client: Client, id: number): Promise<void> {
 		const reminder = reminderDb.get(id);
 		if (!reminder) return;
-		const ch = (await client.channels.fetch(reminder.channel)) as TextBasedChannel;
-		await ch.send({
-			content: `${reminder.callAll ? "<@everyone>" : `<@${reminder.user}>`} Time's up! ${reminder.message}`,
+		const channel = (await client.channels.fetch(reminder.channelID)) as TextBasedChannel;
+		await channel?.send({
+			content: reminder.pings.join(" "),
+			embeds: [
+				addDefaultEmbedFooter(
+					new EmbedBuilder().setTitle("Time is up!").setDescription(reminder.message || "I believe in you!")
+				),
+			],
 		});
 		reminderDb.delete(id);
 		reminderTimeoutCache.delete(id);
@@ -61,47 +70,114 @@ class ReminderCommand extends Command {
 
 		switch (subcommand) {
 			case "set": {
-				//default 10 minutes
-				let minutes = interaction.options.getInteger("minutes") || 0;
+				const minutes = interaction.options.getInteger("minutes") || 0;
 				const hours = interaction.options.getInteger("hours") || 0;
 				const days = interaction.options.getInteger("days") || 0;
-				const message = interaction.options.getString("message") || "";
-				const callAll = interaction.options.getBoolean("callall") || false;
-				let milliseconds = (60 * minutes + 60 * 60 * hours + 60 * 60 * 24 * days) * 1000;
-				if (milliseconds == 0) {
-					// defaults to 10 minutes
-					milliseconds = 10 * 60 * 1000;
-					minutes = 10;
+				const months = interaction.options.getInteger("months") || 0;
+				const dateIsoString = interaction.options.getString("date-iso") || "error";
+				const dateIso = Date.parse(dateIsoString);
+				const dateUnixString = interaction.options.getString("date-unix") || "error";
+				const dateUnix = new Date(parseInt(dateUnixString) * 1000).getTime();
+
+				if ((dateIsoString != "error" && !dateIso) || (dateUnixString != "error" && !dateUnix)) {
+					await interaction.reply({
+						content:
+							"Couldn't interpret that date. Invalid date format... Please use the ISO 8601 or an Unix timestamp.",
+						ephemeral: true,
+					});
+					return;
 				}
 
-				const timestamp = Date.now() + milliseconds;
+				const message = interaction.options.getString("message") || "";
+				const additionalPing = interaction.options.getMentionable("additional-ping") as
+					| GuildMember
+					| Role
+					| null;
+
+				const milliseconds = (minutes + 60 * hours + 60 * 24 * days + 60 * 24 * 30 * months) * 1000 * 60;
+				let timestamp: number;
+
+				if (dateIso) {
+					timestamp = dateIso;
+				} else if (dateUnix) {
+					timestamp = dateUnix;
+				} else if (milliseconds != 0) {
+					timestamp = Date.now() + milliseconds;
+				} else {
+					timestamp = Date.now() + 20 * 60 * 1000; // defaults to 10 minutes
+				}
+
+				if (timestamp <= Date.now()) {
+					await interaction.reply({
+						content: "Dummy... The timestamp must be in the future.",
+						ephemeral: true,
+					});
+					return;
+				}
+
+				if (additionalPing instanceof Role && !(await hasRoleMentionPerms(interaction, additionalPing))) {
+					await interaction.reply({
+						content: "You don't have the permission to ping that role.",
+						ephemeral: true,
+					});
+					return;
+				}
+
+				if (!interaction.channel) {
+					await interaction.reply({
+						content: "You can only use this command in a text channel.",
+						ephemeral: true,
+					});
+					return;
+				}
 
 				const member = await interaction.guild.members.fetch(interaction.user);
 
-				if (callAll && !(await hasMentionEveryonePerms(interaction))) return;
-
 				const id = reminderDb.autonum;
 				reminderDb.set(id, {
-					timestamp,
+					timestamp: timestamp,
 					message: message,
-					channel: interaction.channelId,
-					user: member.id,
-					callAll,
+					channelID: interaction.channel.id,
+					pings: [member.toString(), additionalPing?.toString() ?? ""],
 				});
 
 				if (timestamp <= Date.now() + 30 * 60 * 1000)
 					reminderTimeoutCache.set(
 						id,
-						setTimeout(() => this.elapse(interaction.client, id), milliseconds)
+						setTimeout(() => this.elapse(interaction.client, id), timestamp - Date.now())
 					);
 
-				await interaction.reply(
-					`Okay, I'll remind you in${hours == 0 ? "" : ` ${hours} hours`}${
-						minutes == 0 ? "" : ` ${minutes} minutes`
-					}${
-						message == "" ? "" : ` with the following message: ${message}`
-					} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${id}`)}`
-				);
+				timestamp -= Date.now();
+				timestamp /= 1000 * 60; // relative time in minutes
+				const _months = Math.floor(timestamp / (60 * 24 * 30));
+				timestamp = timestamp % (60 * 24 * 30);
+				const _days = Math.floor(timestamp / (60 * 24));
+				timestamp = timestamp % (60 * 24);
+				const _hours = Math.floor(timestamp / 60);
+				timestamp = timestamp % 60;
+				const _minutes = Math.round(timestamp * 100) / 100;
+
+				await interaction.reply({
+					embeds: [
+						addDefaultEmbedFooter(
+							new EmbedBuilder()
+								.setTitle("Reminder set!")
+								.setDescription(
+									`I will remind you${additionalPing ? " and " + additionalPing.toString() : " "}in ${
+										_months == 0 ? "" : ` ${_months} months`
+									}${_days == 0 ? "" : ` ${_days} days`}${_hours == 0 ? "" : ` ${_hours} hours`}${
+										_minutes == 0 ? "" : ` ${_minutes} minutes`
+									}!${
+										message == ""
+											? ""
+											: `\nYour message to yourself${
+													additionalPing ? " and " + additionalPing.toString() : ""
+											  }: ${message}`
+									} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${id}`)}`
+								)
+						),
+					],
+				});
 				break;
 			}
 
@@ -115,7 +191,7 @@ class ReminderCommand extends Command {
 					return;
 				}
 
-				if (member.id == item.user) {
+				if (member.toString() === item.pings[0]) {
 					reminderDb.delete(c_id);
 					if (reminderTimeoutCache.has(c_id)) {
 						clearTimeout(reminderTimeoutCache.get(c_id));
@@ -135,7 +211,7 @@ class ReminderCommand extends Command {
 				reminderDb.forEach((value, key) => {
 					const time = (value.timestamp / 1000).toFixed(0);
 
-					if (value.user == member.id || value.callAll) {
+					if (value.pings[0] === member.toString()) {
 						output += `ID: ${key} | Time left: <t:${time}:R> ${
 							value.message == "" ? "" : `| ${value.message}`
 						}\n`;
@@ -149,7 +225,9 @@ class ReminderCommand extends Command {
 					});
 				} else {
 					await interaction.reply({
-						content: output,
+						embeds: [
+							addDefaultEmbedFooter(new EmbedBuilder().setTitle("Your reminders").setDescription(output)),
+						],
 						ephemeral: true,
 					});
 				}
@@ -161,16 +239,19 @@ class ReminderCommand extends Command {
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("reminder")
-			.setDescription("Reminds you after a certain amount of time has passed. (maximum are 24 days)")
+			.setDescription("Reminds you after a certain amount of time has passed. (default: 20 minutes)")
 			.addSubcommand((option) =>
 				option
 					.setName("set")
 					.setDescription("Set a new reminder.")
 					.addStringOption(message)
+					.addStringOption(setDateIso)
 					.addIntegerOption(setMinutes)
 					.addIntegerOption(setHours)
 					.addIntegerOption(setDays)
-					.addBooleanOption(callAll)
+					.addIntegerOption(setMonths)
+					.addStringOption(setDateUnix)
+					.addMentionableOption(additionalPing)
 			)
 			.addSubcommand((option) =>
 				option
@@ -188,33 +269,52 @@ class ReminderCommand extends Command {
 
 const setMinutes = new SlashCommandIntegerOption()
 	.setName("minutes")
-	.setDescription("Set the minutes.")
+	.setDescription("Set the minutes. (60 seconds)")
 	.setMinValue(0)
-	.setMaxValue(60)
+	.setMaxValue(1440)
 	.setRequired(false);
 
 const setHours = new SlashCommandIntegerOption()
 	.setName("hours")
-	.setDescription("Set the hours.")
+	.setDescription("Set the hours. (60 minutes)")
 	.setMinValue(0)
-	.setMaxValue(24)
+	.setMaxValue(720)
 	.setRequired(false);
 
 const setDays = new SlashCommandIntegerOption()
 	.setName("days")
-	.setDescription("Set the days.")
+	.setDescription("Set the days. (24 hours)")
 	.setMinValue(0)
-	.setMaxValue(23)
+	.setMaxValue(365)
 	.setRequired(false);
 
-const callAll = new SlashCommandBooleanOption()
-	.setName("callall")
-	.setDescription("Whether or not to remind everyone.")
+const setMonths = new SlashCommandIntegerOption()
+	.setName("months")
+	.setDescription("Set the months. (30 days)")
+	.setMinValue(0)
+	.setMaxValue(24)
+	.setRequired(false);
+
+const setDateIso = new SlashCommandStringOption()
+	.setName("date-iso")
+	.setDescription(
+		"The date in ISO-8601. (e.g. '2003-05-26T04:48:33+02:00' or try '26 May 2003 04:48:33 UTC+2')"
+	)
+	.setRequired(false);
+
+const setDateUnix = new SlashCommandStringOption()
+	.setName("date-unix")
+	.setDescription("The date with a unix timestamp. (e.g. '1053917313000')")
+	.setRequired(false);
+
+const additionalPing = new SlashCommandMentionableOption()
+	.setName("additional-ping")
+	.setDescription("Additional people or roles to ping.")
 	.setRequired(false);
 
 const message = new SlashCommandStringOption()
 	.setName("message")
-	.setDescription("The reminder's message.")
+	.setDescription("The message to remind you.")
 	.setRequired(false);
 
 export default new ReminderCommand();
