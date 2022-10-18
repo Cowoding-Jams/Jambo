@@ -41,7 +41,6 @@
 		"discord-api-types": "^0.37.14",
 		"eslint": "^8.11.0",
 		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.0.0",
 		"husky": "^8.0.1",
 		"prettier": "^2.6.0",
 		"typescript": "^4.6.2"

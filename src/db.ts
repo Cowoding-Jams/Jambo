@@ -3,9 +3,8 @@ import Enmap from "enmap";
 interface Reminder {
 	timestamp: number;
 	message: string;
-	channel: string;
-	user: string;
-	callAll: boolean;
+	channelID: string;
+	pings: string[];
 }
 
 export const reminderTimeoutCache = new Map<number, NodeJS.Timeout>();
