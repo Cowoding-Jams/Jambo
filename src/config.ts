@@ -34,7 +34,7 @@ export const config: BotConfig = {
 		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
 	logLevel: "debug",
 	logActivity: true,
-	logChannel: "1032360866009587743"
+	logChannel: "1032360866009587743",
 };
 
 interface BotConfig {
