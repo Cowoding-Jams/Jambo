@@ -13,7 +13,7 @@ class LatexButton extends Button {
 		let input = await latexDb.get(interaction.message.id);
 		latexDb.delete(interaction.message.id);
 
-		input = input ? inlineCode(input) : "No data availabe...";
+		input = input ? inlineCode(input) : "- No data availabe... -";
 
 		if (id == "delete") {
 			if (interaction.message.interaction?.user.id == interaction.user.id) {

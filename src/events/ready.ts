@@ -1,4 +1,4 @@
-import reminderCommand from "../commands/ReminderCommand";
+import ReminderCommand from "../commands/ReminderCommand";
 import {
 	ApplicationCommand,
 	Client,
@@ -16,7 +16,7 @@ export default async function ready(client: Client) {
 	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
 	logger.info("Starting reminder scheduler...");
-	reminderCommand.startScheduler(client);
+	ReminderCommand.startScheduler(client);
 
 	logger.info("Setup successfully");
 }
