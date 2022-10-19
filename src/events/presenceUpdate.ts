@@ -77,9 +77,9 @@ async function msToTimeString(ms: number): Promise<string> {
 	const minute = Math.floor(totalSeconds / 60);
 	const second = Math.floor(totalSeconds % 60);
 
-	return `${hours > 0 ? hours + " hour(s)" : ""}${hours > 0 && minute > 0 ? ", " : " "}${
-		minute > 0 ? minute + " minute(s)" : ""
-	}${(hours > 0 || minute > 0) && second > 0 ? " and " : ""} ${second > 0 ? second + " second(s)" : ""}`;
+	return `${hours > 0 ? hours + "hour(s) " : ""}${hours > 0 && minute > 0 ? ", " : " "}${
+		minute > 0 ? minute + "minute(s) " : ""
+	}${(hours > 0 || minute > 0) && second > 0 ? "and " : ""}${second > 0 ? second + " second(s) " : ""}`.trim();
 }
 
 async function logTime(userid: string, elementName: string, timePlayed: number): Promise<void> {

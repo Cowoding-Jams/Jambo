@@ -605,9 +605,9 @@ async function makeTimestamp(ms: number, day: boolean): Promise<string> {
 	const minute = Math.floor(totalSeconds / 60);
 	const second = Math.floor(totalSeconds % 60);
 
-	return `${days > 0 && day ? days + "day(s)" : ""}${hours > 0 ? hours + " hour(s)" : ""}${
+	return `${days > 0 && day ? days + "day(s) " : ""}${hours > 0 ? hours + "hour(s) " : ""}${
 		hours > 0 && minute > 0 ? ", " : " "
-	}${minute > 0 ? minute + " minute(s)" : ""}${(hours > 0 || minute > 0) && second > 0 ? " and " : ""} ${
-		second > 0 ? second + " second(s)" : ""
-	}`;
+	}${minute > 0 ? minute + "minute(s) " : ""}${(hours > 0 || minute > 0) && second > 0 ? "and " : ""}${
+		second > 0 ? second + "second(s) " : ""
+	}`.trim();
 }
