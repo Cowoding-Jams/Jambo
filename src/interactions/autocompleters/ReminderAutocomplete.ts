@@ -16,18 +16,25 @@ class ReminderAutocompleter extends Autocompleter {
 				const id = value.pings[1].replace(/\D/g, "");
 				const role = await interaction.guild?.roles.fetch(id);
 				const member = await interaction.guild?.members.fetch(id).catch(() => null);
+				let name = `ID: ${key} - ${timestampToReadable(value.timestamp, true)} ${
+					role || member ? `- @${role ? role.name : member?.displayName} -` : "-"
+				} ${value.message == "" ? "No message." : `${value.message}`}`;
+
+				if (name.length > 100) {
+					name = name.slice(0, 97) + "...";
+				}
 
 				options.push({
-					name: `ID: ${key} - ${timestampToReadable(value.timestamp, true)} ${
-						role || member ? `- @${role ? role.name : member?.displayName} -` : "-"
-					} ${value.message == "" ? "No message." : `${value.message}`}`,
+					name: name,
 					value: parseInt(key.toString()),
 				});
 			}
 		}
 
 		await interaction.respond(
-			options.filter((c) => c.value.toString().startsWith(interaction.options.getFocused() as string))
+			options
+				.filter((c) => c.value.toString().startsWith(interaction.options.getFocused() as string))
+				.slice(25)
 		);
 	}
 }
