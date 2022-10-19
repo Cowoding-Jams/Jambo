@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
 import { colorPrompt, pronounPrompt } from "../util/roleCommand/rolePrompts";
-import { deleteAllRoles } from "../util/roleCommand/roleUtil";
+import { deleteRoles as deleteRoles } from "../util/roleCommand/roleUtil";
 
 class RoleCommand extends Command {
 	constructor() {
@@ -31,9 +31,9 @@ class RoleCommand extends Command {
 		} else if (subcommand === "color-prompt") {
 			await interaction.deferReply();
 			await colorPrompt(interaction);
-		} else if (subcommand === "delete-all") {
+		} else if (subcommand === "delete") {
 			await interaction.deferReply({ ephemeral: true });
-			await deleteAllRoles(interaction);
+			await deleteRoles(interaction);
 		}
 	}
 
@@ -61,8 +61,26 @@ class RoleCommand extends Command {
 			)
 			.addSubcommand((option) =>
 				option
-					.setName("delete-all")
-					.setDescription("Deletes all the generated roles (Using the '- ... -' indicators).")
+					.setName("delete")
+					.setDescription("Deletes generated roles.")
+					.addBooleanOption((option) =>
+						option
+							.setName("all")
+							.setDescription("Delete all generated roles. (Using the '- ... -' indicators)")
+							.setRequired(true)
+					)
+					.addRoleOption((option) =>
+						option
+							.setName("start")
+							.setDescription("Delete all roles between start and end and starting with this role.")
+							.setRequired(false)
+					)
+					.addRoleOption((option) =>
+						option
+							.setName("end")
+							.setDescription("Delete all roles between start and end and ending with this role.")
+							.setRequired(false)
+					)
 			);
 	}
 }
