@@ -337,7 +337,7 @@ async function statisticsGamestats(interaction: ChatInputCommandInteraction): Pr
 	}
 
 	const allEntrys = activityTrackerLogDb.keyArray();
-	let users: string[] = [];
+	const users: string[] = [];
 	allEntrys.forEach((e) => {
 		if (e.split("-")[1].toLowerCase() === game && !users.includes(e)) users.push(e);
 	});
@@ -495,7 +495,7 @@ async function adminLook(interaction: ChatInputCommandInteraction): Promise<void
 }
 
 async function adminShow(interaction: ChatInputCommandInteraction) {
-	let blacklist: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
+	const blacklist: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
 
 	if (!blacklist || blacklist.length == 0) {
 		let embed = new EmbedBuilder().setTitle("Global Blacklist is empty");
@@ -504,7 +504,7 @@ async function adminShow(interaction: ChatInputCommandInteraction) {
 		return;
 	}
 
-	let str = "`" + blacklist?.join("`, `") + "`";
+	const str = "`" + blacklist?.join("`, `") + "`";
 	let embed = new EmbedBuilder().setTitle("Global Blacklist").setDescription(str);
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed] });
