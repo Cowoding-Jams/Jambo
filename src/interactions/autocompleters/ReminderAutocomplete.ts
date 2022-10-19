@@ -34,7 +34,7 @@ class ReminderAutocompleter extends Autocompleter {
 		await interaction.respond(
 			options
 				.filter((c) => c.value.toString().startsWith(interaction.options.getFocused() as string))
-				.slice(25)
+				.slice(0, 25)
 		);
 	}
 }
