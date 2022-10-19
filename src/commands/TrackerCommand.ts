@@ -460,7 +460,6 @@ async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Pro
 		.setDescription(`Removed "${game}" from global blacklist.`);
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed] });
-	return;
 }
 
 async function adminLook(interaction: ChatInputCommandInteraction): Promise<void> {
