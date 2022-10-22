@@ -1,12 +1,4 @@
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	Channel,
-	EmbedBuilder,
-	Presence,
-	TextChannel,
-} from "discord.js";
+import { Channel, EmbedBuilder, Presence, TextChannel } from "discord.js";
 import { addDefaultEmbedFooter } from "../util/misc/embeds";
 import { config } from "../config";
 import { getStopedActivities, blacklistCheck, logTime, msToTimeString } from "../util/tracker/presence";
@@ -39,7 +31,7 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 			);
 		embed = addDefaultEmbedFooter(embed);
 
-		const row = deleteButtonAsRow(userid, true)
+		const row = deleteButtonAsRow(userid, true);
 
 		await (channel as TextChannel)?.send({ embeds: [embed], components: [row] });
 	});
