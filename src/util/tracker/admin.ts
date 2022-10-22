@@ -41,7 +41,7 @@ export async function adminBlacklistgame(interaction: ChatInputCommandInteractio
 		.setTitle("added a game to blacklist")
 		.setDescription(`No activity about "${game}" will be logged anymore.`);
 	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed] });
+	await interaction.reply({ embeds: [embed], ephemeral: true  });
 }
 
 export async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -59,7 +59,7 @@ export async function adminWhitelistgame(interaction: ChatInputCommandInteractio
 	if (!blacklistedGames) {
 		let embed = new EmbedBuilder().setTitle("Something went wrong");
 		embed = addDefaultEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed] });
+		await interaction.reply({ embeds: [embed], ephemeral: true  });
 		return;
 	}
 
@@ -71,7 +71,7 @@ export async function adminWhitelistgame(interaction: ChatInputCommandInteractio
 		.setTitle("Removed a game from global blacklist")
 		.setDescription(`Removed "${game}" from global blacklist.`);
 	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed] });
+	await interaction.reply({ embeds: [embed], ephemeral: true });
 }
 
 export async function adminLook(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -111,12 +111,12 @@ export async function adminShow(interaction: ChatInputCommandInteraction) {
 	if (!blacklist || blacklist.length == 0) {
 		let embed = new EmbedBuilder().setTitle("Global Blacklist is empty");
 		embed = addDefaultEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed] });
+		await interaction.reply({ embeds: [embed], ephemeral: true });
 		return;
 	}
 
 	const str = "`" + blacklist?.join("`, `") + "`";
 	let embed = new EmbedBuilder().setTitle("Global Blacklist").setDescription(str);
 	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed] });
+	await interaction.reply({ embeds: [embed], ephemeral: true });
 }

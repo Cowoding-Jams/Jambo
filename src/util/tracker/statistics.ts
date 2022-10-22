@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { makeStats, getEntrys } from "./help";
 import { addDefaultEmbedFooter } from "../misc/embeds";
 import { activityTrackerLogDb } from "../../db";
+import { deleteButtonAsRow } from "../misc/buttons";
 
 export async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game")?.toLowerCase();
@@ -29,7 +30,8 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 
 	let embed = new EmbedBuilder().setTitle(`Your stats about ${game}`).addFields(fields);
 	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed] });
+	const row = deleteButtonAsRow(interaction.user.id, true);
+	await interaction.reply({ embeds: [embed], components: [row] });
 }
 
 export async function statisticsGamestats(interaction: ChatInputCommandInteraction): Promise<void> {
