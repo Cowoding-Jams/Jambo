@@ -2,9 +2,9 @@ import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import {
 	adminWhitelistgame,
+	blacklistRemove,
 	statisticsGamestats,
 	statisticsMystats,
-	blacklistRemove,
 } from "../../util/tracker/autocompletes";
 class TrackerAutocompleter extends Autocompleter {
 	constructor() {

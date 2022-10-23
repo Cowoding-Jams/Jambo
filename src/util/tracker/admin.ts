@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { addDefaultEmbedFooter } from "../misc/embeds";
-import { activityTrackerLogDb, activityTrackerBlacklistDb } from "../../db";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { getBlacklist } from "./help";
 
 export async function adminReset(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -41,7 +41,7 @@ export async function adminBlacklistgame(interaction: ChatInputCommandInteractio
 		.setTitle("added a game to blacklist")
 		.setDescription(`No activity about "${game}" will be logged anymore.`);
 	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed], ephemeral: true  });
+	await interaction.reply({ embeds: [embed], ephemeral: true });
 }
 
 export async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -59,7 +59,7 @@ export async function adminWhitelistgame(interaction: ChatInputCommandInteractio
 	if (!blacklistedGames) {
 		let embed = new EmbedBuilder().setTitle("Something went wrong");
 		embed = addDefaultEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed], ephemeral: true  });
+		await interaction.reply({ embeds: [embed], ephemeral: true });
 		return;
 	}
 

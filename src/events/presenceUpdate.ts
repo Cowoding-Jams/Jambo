@@ -1,7 +1,7 @@
 import { Channel, EmbedBuilder, Presence, TextChannel } from "discord.js";
 import { addDefaultEmbedFooter } from "../util/misc/embeds";
 import { config } from "../config";
-import { getStopedActivities, blacklistCheck, logTime, msToTimeString } from "../util/tracker/presence";
+import { blacklistCheck, getStopedActivities, logTime, msToTimeString } from "../util/tracker/presence";
 import { deleteButtonAsRow } from "../util/misc/buttons";
 
 export default async function presenceUpdate(oldPresence: Presence | null, newPresence: Presence) {

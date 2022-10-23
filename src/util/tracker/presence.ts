@@ -1,4 +1,4 @@
-import { Presence, Activity } from "discord.js";
+import { Activity, Presence } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 
 export async function getStopedActivities(

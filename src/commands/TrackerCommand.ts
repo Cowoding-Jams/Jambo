@@ -7,13 +7,13 @@ import { Command } from "../interactions/interactionClasses";
 import { hasAdminPerms } from "../util/misc/permissions";
 import { config } from "../config";
 import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/tracker/blacklist";
-import { statisticsMystats, statisticsGamestats, statisticsAllstats } from "../util/tracker/statistics";
+import { statisticsAllstats, statisticsGamestats, statisticsMystats } from "../util/tracker/statistics";
 import {
-	adminReset,
 	adminBlacklistgame,
-	adminWhitelistgame,
-	adminShow,
 	adminLook,
+	adminReset,
+	adminShow,
+	adminWhitelistgame,
 } from "../util/tracker/admin";
 
 class TrackerCommand extends Command {

@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { makeStats, getEntrys } from "./help";
+import { getEntrys, makeStats } from "./help";
 import { addDefaultEmbedFooter } from "../misc/embeds";
 import { activityTrackerLogDb } from "../../db";
 import { deleteButtonAsRow } from "../misc/buttons";
