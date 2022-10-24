@@ -1,17 +1,12 @@
-import { Channel, EmbedBuilder, Presence, TextChannel } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/misc/embeds";
+import { Presence } from "discord.js";
 import { config } from "../config";
-import { blacklistCheck, getStopedActivities, logTime, msToTimeString } from "../util/tracker/presence";
-import { deleteButtonAsRow } from "../util/misc/buttons";
+import { blacklistCheck, getStopedActivities, logTime } from "../util/tracker/presence";
 
 export default async function presenceUpdate(oldPresence: Presence | null, newPresence: Presence) {
 	if (!config.logActivity) return;
 
 	const stopedActivities = await getStopedActivities(oldPresence, newPresence);
 	if (stopedActivities.length == 0) return;
-
-	const channel: Channel | null = await newPresence.client.channels.fetch(config.logChannel);
-	if (channel == null) return;
 
 	const userid = newPresence.userId;
 
@@ -23,16 +18,5 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 		if (await blacklistCheck(userid, element.name)) return;
 
 		await logTime(userid, element.name, timePlayed);
-
-		let embed = new EmbedBuilder()
-			.setTitle("Game Activity log")
-			.setDescription(
-				`<@!${userid}> just played \`${element.name}\` for \`${await msToTimeString(timePlayed)}\``
-			);
-		embed = addDefaultEmbedFooter(embed);
-
-		const row = deleteButtonAsRow(userid, true);
-
-		await (channel as TextChannel)?.send({ embeds: [embed], components: [row] });
 	});
 }
