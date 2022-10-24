@@ -133,7 +133,7 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 	const prompt: EmbedBuilder = new EmbedBuilder()
 		.setTitle("Timezone roles 🌍")
 		.setDescription(
-			"Select the timezone you life in so we can schedule events at a time that works for most of us :)"
+			"Select the timezone you life in. That way we can schedule events at times that work for most of us :)"
 		);
 
 	const actionRow: ActionRowBuilder<SelectMenuBuilder> =
@@ -148,7 +148,7 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 	if (
 		await setUpRoles(
 			interaction.guild,
-			config.pronounRoles.map((r) => [r[0]]),
+			config.timezoneRoles.map((r) => [r]),
 			"- StartTimezoneRoles -",
 			"- EndTimezoneRoles -"
 		)
