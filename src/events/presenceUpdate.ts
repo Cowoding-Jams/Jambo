@@ -15,8 +15,8 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 		const timePlayed = Date.now() - start;
 		if (timePlayed < 20000) return;
 
-		if (await blacklistCheck(userid, element.name)) return;
+		if (await blacklistCheck(userid, element.name.toLowerCase())) return;
 
-		await logTime(userid, element.name, timePlayed);
+		await logTime(userid, element.name.toLowerCase(), timePlayed);
 	});
 }

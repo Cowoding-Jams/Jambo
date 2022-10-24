@@ -35,7 +35,7 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 
 export async function adminBlacklistgame(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true);
-	activityTrackerBlacklistDb.push("general-game", game);
+	activityTrackerBlacklistDb.push("general-game", game.toLowerCase());
 
 	let embed = new EmbedBuilder()
 		.setTitle("added a game to blacklist")
@@ -45,9 +45,9 @@ export async function adminBlacklistgame(interaction: ChatInputCommandInteractio
 }
 
 export async function adminWhitelistgame(interaction: ChatInputCommandInteraction): Promise<void> {
-	const game = interaction.options.getString("game", true);
+	const game = interaction.options.getString("game", true).toLowerCase();
 
-	if (game == "Global blacklist is empty") {
+	if (game == "global blacklist is empty") {
 		let embed = new EmbedBuilder().setTitle("Global blacklist is empty");
 
 		embed = addDefaultEmbedFooter(embed);
