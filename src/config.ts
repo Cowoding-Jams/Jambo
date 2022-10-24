@@ -29,6 +29,33 @@ export const config: BotConfig = {
 		["Medium Aquamarine", "#6cd9a9"],
 		["Sea Serpent", "#5db9cf"],
 	],
+	timezoneRoles: [
+		"UTC-12",
+		"UTC-11",
+		"UTC-10",
+		"UTC-9",
+		"UTC-8",
+		"UTC-7",
+		"UTC-6",
+		"UTC-5",
+		"UTC-4",
+		"UTC-3",
+		"UTC-2",
+		"UTC-1",
+		"UTC",
+		"UTC+1",
+		"UTC+2",
+		"UTC+3",
+		"UTC+4",
+		"UTC+5",
+		"UTC+6",
+		"UTC+7",
+		"UTC+8",
+		"UTC+9",
+		"UTC+10",
+		"UTC+11",
+		"UTC+12",
+	],
 	color: "#F0A5AC",
 	serverDescription:
 		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
@@ -46,6 +73,8 @@ interface BotConfig {
 	pronounRoles: [string, ComponentEmojiResolvable | null][];
 	// Max 25 color roles to pick from. First argument is the name of the role, second argument is the color.
 	colorRoles: [string, ColorResolvable][];
+	// Timezones users can pick from.
+	timezoneRoles: string[];
 	// The main color the bot will use.
 	color: ColorResolvable;
 	// A description of the server that will be displayed in the welcome message.
