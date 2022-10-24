@@ -12,7 +12,9 @@ export async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 		return;
 	}
 
-	const options: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
+	let options: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
+
+	options = [...new Set(options)];
 
 	if (options?.length === 0 || !options) {
 		await interaction.respond([
@@ -37,12 +39,14 @@ export async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 
 export async function statisticsMystats(interaction: AutocompleteInteraction) {
 	const allKeys = activityTrackerLogDb.keyArray();
-	const games: string[] = [];
+	let games: string[] = [];
 	allKeys.forEach((e) => {
 		const split = e.split("-");
 		if (split[0] !== interaction.user.id) return;
 		games.push(split[1]);
 	});
+
+	games = [...new Set(games)];
 
 	if (games.length == 0) {
 		await interaction.respond([
@@ -64,11 +68,13 @@ export async function statisticsMystats(interaction: AutocompleteInteraction) {
 
 export async function statisticsGamestats(interaction: AutocompleteInteraction) {
 	const allKeys = activityTrackerLogDb.keyArray();
-	const games: string[] = [];
+	let games: string[] = [];
 	allKeys.forEach((e) => {
 		const split = e.split("-");
 		games.push(split[1]);
 	});
+
+	games = [...new Set(games)];
 
 	if (games.length == 0) {
 		await interaction.respond([
@@ -89,7 +95,9 @@ export async function statisticsGamestats(interaction: AutocompleteInteraction) 
 }
 
 export async function blacklistRemove(interaction: AutocompleteInteraction) {
-	const options: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
+	let options: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
+
+	options = [...new Set(options)];
 
 	if (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)) {
 		await interaction.respond([
