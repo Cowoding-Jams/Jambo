@@ -15,10 +15,11 @@ import {
 	adminShow,
 	adminWhitelistgame,
 } from "../util/tracker/admin";
+import { list } from "../util/tracker/list";
 
 class TrackerCommand extends Command {
 	constructor() {
-		super("tracker");
+		super("game-activity-tracker");
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -55,10 +56,13 @@ class TrackerCommand extends Command {
 			} else if (sub == "show") {
 				await adminShow(interaction);
 			}
-		} else if (sub === "disabled") {
+		} else if (sub == "list") {
+			await list(interaction)
+		} 
+		else if (sub === "disabled") {
 			await interaction.reply({
 				content:
-					"Activity Logging is Disabled for this bot.\nIf it gets activated again you can find more commands which start with `/tracker`",
+					"Activity Logging is Disabled for this bot.\nIf it gets activated again you can find more commands which start with `/game-activity-tracker`",
 				ephemeral: true,
 			});
 		}
@@ -70,7 +74,7 @@ class TrackerCommand extends Command {
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		if (!config.logActivity) {
 			return new SlashCommandBuilder()
-				.setName("tracker")
+				.setName("game-activity-tracker")
 				.setDescription("Tracking is disabled")
 				.addSubcommand((sub) => sub.setName("disabled").setDescription("Tracking is disabled"));
 		}
@@ -210,10 +214,10 @@ class TrackerCommand extends Command {
 							.addChoices(
 								{name: "max -> min -- Playtime", value: "0"},
 								{name: "max <- min -- Playtime", value: "1"},
-								{name: "max -> min -- Amount of Log", value: "2"},
-								{name: "max <- min -- Amount of Low", value: "3"},
-								{name: "max -> min -- Last Played", value: "4"},
-								{name: "max <- min -- First Played", value: "5"}
+								{name: "max -> min -- Amount of Logs", value: "2"},
+								{name: "max <- min -- Amount of Logs", value: "3"},
+								{name: "Last Played", value: "4"},
+								{name: "First Played", value: "5"}
 							)
 							.setRequired(true)
 					)

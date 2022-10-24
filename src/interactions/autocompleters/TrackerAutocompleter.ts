@@ -9,7 +9,7 @@ import {
 } from "../../util/tracker/autocompletes";
 class TrackerAutocompleter extends Autocompleter {
 	constructor() {
-		super("tracker");
+		super("game-activity-tracker");
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
