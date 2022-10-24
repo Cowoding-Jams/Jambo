@@ -26,7 +26,7 @@ export async function blacklistCheck(userid: string, elementName: string): Promi
 	return false;
 }
 
-export async function msToTimeString(ms: number): Promise<string> {
+export function msToTimeString(ms: number) {
 	let totalSeconds = ms / 1000;
 	totalSeconds %= 86400;
 	const hours = Math.floor(totalSeconds / 3600);
@@ -43,4 +43,5 @@ export async function logTime(userid: string, elementName: string, timePlayed: n
 	if (!activityTrackerLogDb.has(`${userid}-${elementName}`))
 		activityTrackerLogDb.set(`${userid}-${elementName}`, []);
 	activityTrackerLogDb.push(`${userid}-${elementName}`, { t: timePlayed, w: Date.now() });
+
 }
