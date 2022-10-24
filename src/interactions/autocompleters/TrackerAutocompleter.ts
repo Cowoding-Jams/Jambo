@@ -5,6 +5,7 @@ import {
 	blacklistRemove,
 	statisticsGamestats,
 	statisticsMystats,
+	blacklistAdd,
 } from "../../util/tracker/autocompletes";
 class TrackerAutocompleter extends Autocompleter {
 	constructor() {
@@ -21,7 +22,8 @@ class TrackerAutocompleter extends Autocompleter {
 			if (sub == "mystats") await statisticsMystats(interaction);
 			else if (sub == "gamestats") await statisticsGamestats(interaction);
 		} else if (group === "blacklist") {
-			await blacklistRemove(interaction);
+			if (sub == "remove") await blacklistRemove(interaction);
+			else if (sub == "add") await blacklistAdd(interaction)
 		}
 	}
 }

@@ -4,8 +4,8 @@ import { activityTrackerBlacklistDb } from "../../db";
 import { getBlacklist } from "./help";
 
 export async function blacklistAdd(interaction: ChatInputCommandInteraction): Promise<void> {
-	const game = interaction.options.getString("game", false);
-	if (game == null) {
+	const game = interaction.options.getString("game", true);
+	if (game == "Disable Tracking") {
 		activityTrackerBlacklistDb.push("general-user", interaction.user.id);
 		let embed = new EmbedBuilder()
 			.setTitle("Your game activity wont get logged anymore")

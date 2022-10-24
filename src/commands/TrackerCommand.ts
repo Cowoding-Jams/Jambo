@@ -75,30 +75,32 @@ class TrackerCommand extends Command {
 				.addSubcommand((sub) => sub.setName("disabled").setDescription("Tracking is disabled"));
 		}
 		return new SlashCommandBuilder()
-			.setName("tracker")
+			.setName("game-activity-tracker")
 			.setDescription("All commands associated with the Game activity tracker!")
 			.addSubcommandGroup((group) =>
 				group
 					.setName("blacklist")
-					.setDescription("Tracking blacklist")
+					.setDescription("Manage your blacklist - if a game is on blacklist no activity will be tracked")
 					.addSubcommand((sub) =>
 						sub
 							.setName("add")
-							.setDescription("add a game to your blacklist")
+							.setDescription("Add a game to your blacklist")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("Enter game or dont enter anything to disable your logging")
+									.setDescription("Enter game here - (Capitalization doesnt matter)")
+									.setAutocomplete(true)
+									.setRequired(true)
 							)
 					)
 					.addSubcommand((sub) =>
 						sub
 							.setName("remove")
-							.setDescription("remove a game from your blacklist")
+							.setDescription("Remove a game from your blacklist")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("Enter game or dont enter anything to enable your logging")
+									.setDescription("Enter game here - (Capitalization doesnt matter)")
 									.setAutocomplete(true)
 									.setRequired(true)
 							)
@@ -108,38 +110,40 @@ class TrackerCommand extends Command {
 			.addSubcommandGroup((group) =>
 				group
 					.setName("statistics")
-					.setDescription("Show statistics")
+					.setDescription("Statistics")
 					.addSubcommand((sub) =>
 						sub
 							.setName("mystats")
-							.setDescription("Show your activity statistics")
+							.setDescription("Show statistics about your own logs")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("Show statistics for a specific game")
+									.setDescription("Filter stats for the given name")
 									.setAutocomplete(true)
 							)
 					)
 					.addSubcommand((sub) =>
 						sub
 							.setName("gamestats")
-							.setDescription("Show statistics for a specific game across all users")
+							.setDescription("Show statistics about a given game across all logs")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("Show statistics for a specific game")
+									.setDescription("Filter stats for the given game")
 									.setAutocomplete(true)
 									.setRequired(true)
 							)
 					)
 					.addSubcommand((sub) =>
-						sub.setName("allstats").setDescription("Show statistics about all games across all users")
+						sub
+							.setName("allstats")
+							.setDescription("Show statistics across all logs")
 					)
 			)
 			.addSubcommandGroup((group) =>
 				group
 					.setName("admin")
-					.setDescription("admin only commands")
+					.setDescription("Commands which only users with admin permissions can use")
 					.addSubcommand((sub) =>
 						sub
 							.setName("reset")
@@ -161,11 +165,11 @@ class TrackerCommand extends Command {
 					.addSubcommand((sub) =>
 						sub
 							.setName("blacklistgame")
-							.setDescription("Blacklist a game for all users.")
+							.setDescription("Add a game on the global blacklist - dont log anything for this game")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("The game which should get blacklisted globaly")
+									.setDescription("Enter game which should get blacklisted. (Capitalization doesnt matter)")
 									.setRequired(true)
 									.setAutocomplete(true)
 							)
@@ -173,11 +177,11 @@ class TrackerCommand extends Command {
 					.addSubcommand((sub) =>
 						sub
 							.setName("whitelistgame")
-							.setDescription("Remove a game from the global blacklist")
+							.setDescription("Remove a game from the global blacklist - log this game again")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("The game which should get removed from the global blacklist")
+									.setDescription("Enter game which should get removed from the blacklisted . (Capitalization doesnt matter)")
 									.setRequired(true)
 									.setAutocomplete(true)
 							)
@@ -185,16 +189,35 @@ class TrackerCommand extends Command {
 					.addSubcommand((sub) =>
 						sub
 							.setName("look")
-							.setDescription("take a look into the blacklist of someone else")
+							.setDescription("See which games a given user have on their blacklist")
 							.addUserOption((opt) =>
 								opt
 									.setName("user")
-									.setDescription("the user of whos blacklist should get shown")
+									.setDescription("Take a look into this users blacklist")
 									.setRequired(true)
 							)
 					)
 					.addSubcommand((sub) => sub.setName("show").setDescription("Show global blacklist"))
-			);
+			)
+			.addSubcommand((sub) => 
+				sub
+					.setName("list")
+					.setDescription("Returns a list of top 10 played games")
+					.addStringOption((opt) =>
+						opt
+							.setName("filter")
+							.setDescription("Filted for ...")
+							.addChoices(
+								{name: "max -> min -- Playtime", value: "0"},
+								{name: "max <- min -- Playtime", value: "1"},
+								{name: "max -> min -- Amount of Log", value: "2"},
+								{name: "max <- min -- Amount of Low", value: "3"},
+								{name: "max -> min -- Last Played", value: "4"},
+								{name: "max <- min -- First Played", value: "5"}
+							)
+							.setRequired(true)
+					)
+			)
 	}
 }
 

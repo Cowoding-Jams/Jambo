@@ -126,3 +126,34 @@ export async function blacklistRemove(interaction: AutocompleteInteraction) {
 
 	await interaction.respond(map);
 }
+
+export async function blacklistAdd(interaction: AutocompleteInteraction) {
+	const allKeys = activityTrackerLogDb.keyArray();
+	let games: string[] = [];
+	allKeys.forEach((e) => {
+		const split = e.split("-");
+		if (split[0] !== interaction.user.id) return;
+		games.push(split[1]);
+	});
+
+	games = [...new Set(games)];
+
+	if (games.length == 0) {
+		await interaction.respond([
+			{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" },
+		]);
+		return;
+	}
+
+	let map = games
+		.filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
+		.map((c) => ({ name: c, value: c }));
+
+	if (map.length > 24) {
+		map = map.slice(0, 24);
+	}
+
+	map.push({name:"Disable Tracking", value:"Disable Tracking"})
+
+	await interaction.respond(map);
+}
