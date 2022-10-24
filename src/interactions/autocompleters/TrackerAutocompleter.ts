@@ -12,12 +12,15 @@ class TrackerAutocompleter extends Autocompleter {
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
-		if (interaction.options.getSubcommandGroup() === "admin") {
-			await adminWhitelistgame(interaction);
-		} else if (interaction.options.getSubcommandGroup() === "statistics") {
-			if (interaction.options.getSubcommand() == "mystats") await statisticsMystats(interaction);
-			else if (interaction.options.getSubcommand() == "gamestats") await statisticsGamestats(interaction);
-		} else if (interaction.options.getSubcommandGroup() === "blacklist") {
+		let group = interaction.options.getSubcommandGroup()
+		let sub = interaction.options.getSubcommand()
+		if (group === "admin") {
+			if (sub == "whitelistgame")	await adminWhitelistgame(interaction);
+			else if (sub == "blacklistgame") await statisticsGamestats(interaction)
+		} else if (group === "statistics") {
+			if (sub == "mystats") await statisticsMystats(interaction);
+			else if (sub == "gamestats") await statisticsGamestats(interaction);
+		} else if (group === "blacklist") {
 			await blacklistRemove(interaction);
 		}
 	}
