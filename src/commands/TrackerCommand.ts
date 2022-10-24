@@ -57,9 +57,8 @@ class TrackerCommand extends Command {
 				await adminShow(interaction);
 			}
 		} else if (sub == "list") {
-			await list(interaction)
-		} 
-		else if (sub === "disabled") {
+			await list(interaction);
+		} else if (sub === "disabled") {
 			await interaction.reply({
 				content:
 					"Activity Logging is Disabled for this bot.\nIf it gets activated again you can find more commands which start with `/game-activity-tracker`",
@@ -120,10 +119,7 @@ class TrackerCommand extends Command {
 							.setName("mystats")
 							.setDescription("Show statistics about your own logs")
 							.addStringOption((opt) =>
-								opt
-									.setName("game")
-									.setDescription("Filter stats for the given name")
-									.setAutocomplete(true)
+								opt.setName("game").setDescription("Filter stats for the given name").setAutocomplete(true)
 							)
 					)
 					.addSubcommand((sub) =>
@@ -138,11 +134,7 @@ class TrackerCommand extends Command {
 									.setRequired(true)
 							)
 					)
-					.addSubcommand((sub) =>
-						sub
-							.setName("allstats")
-							.setDescription("Show statistics across all logs")
-					)
+					.addSubcommand((sub) => sub.setName("allstats").setDescription("Show statistics across all logs"))
 			)
 			.addSubcommandGroup((group) =>
 				group
@@ -185,7 +177,9 @@ class TrackerCommand extends Command {
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("Enter game which should get removed from the blacklisted . (Capitalization doesnt matter)")
+									.setDescription(
+										"Enter game which should get removed from the blacklisted . (Capitalization doesnt matter)"
+									)
 									.setRequired(true)
 									.setAutocomplete(true)
 							)
@@ -195,15 +189,12 @@ class TrackerCommand extends Command {
 							.setName("look")
 							.setDescription("See which games a given user have on their blacklist")
 							.addUserOption((opt) =>
-								opt
-									.setName("user")
-									.setDescription("Take a look into this users blacklist")
-									.setRequired(true)
+								opt.setName("user").setDescription("Take a look into this users blacklist").setRequired(true)
 							)
 					)
 					.addSubcommand((sub) => sub.setName("show").setDescription("Show global blacklist"))
 			)
-			.addSubcommand((sub) => 
+			.addSubcommand((sub) =>
 				sub
 					.setName("list")
 					.setDescription("Returns a list of top 10 played games")
@@ -212,16 +203,16 @@ class TrackerCommand extends Command {
 							.setName("filter")
 							.setDescription("Filted for ...")
 							.addChoices(
-								{name: "max -> min -- Playtime", value: "0"},
-								{name: "max <- min -- Playtime", value: "1"},
-								{name: "max -> min -- Amount of Logs", value: "2"},
-								{name: "max <- min -- Amount of Logs", value: "3"},
-								{name: "Last Played", value: "4"},
-								{name: "First Played", value: "5"}
+								{ name: "max -> min -- Playtime", value: "0" },
+								{ name: "max <- min -- Playtime", value: "1" },
+								{ name: "max -> min -- Amount of Logs", value: "2" },
+								{ name: "max <- min -- Amount of Logs", value: "3" },
+								{ name: "Last Played", value: "4" },
+								{ name: "First Played", value: "5" }
 							)
 							.setRequired(true)
 					)
-			)
+			);
 	}
 }
 
