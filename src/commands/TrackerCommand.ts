@@ -167,6 +167,7 @@ class TrackerCommand extends Command {
 									.setName("game")
 									.setDescription("The game which should get blacklisted globaly")
 									.setRequired(true)
+									.setAutocomplete(true)
 							)
 					)
 					.addSubcommand((sub) =>
