@@ -32,7 +32,7 @@ class RoleCommand extends Command {
 			await interaction.deferReply();
 			await colorPrompt(interaction);
 		} else if (subcommand === "timezone-prompt") {
-			await interaction.deleteReply();
+			await interaction.deferReply();
 			await timezonePrompt(interaction);
 		} else if (subcommand === "delete") {
 			await interaction.deferReply({ ephemeral: true });

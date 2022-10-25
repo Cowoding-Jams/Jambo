@@ -140,6 +140,7 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 		new ActionRowBuilder<SelectMenuBuilder>().setComponents(
 			new SelectMenuBuilder()
 				.setCustomId("role.timezone")
+				.setPlaceholder("Select your timezone!")
 				.setMinValues(1)
 				.setMaxValues(1)
 				.setOptions(...config.timezoneRoles.map((t) => ({ label: t, value: t })))
