@@ -153,7 +153,7 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 		map = map.slice(0, 24);
 	}
 
-	map.push({name:"Disable Tracking", value:"Disable Tracking"})
+	map.push({ name: "Disable Tracking", value: "Disable Tracking" });
 
 	await interaction.respond(map);
 }

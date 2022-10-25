@@ -43,5 +43,4 @@ export async function logTime(userid: string, elementName: string, timePlayed: n
 	if (!activityTrackerLogDb.has(`${userid}-${elementName}`))
 		activityTrackerLogDb.set(`${userid}-${elementName}`, []);
 	activityTrackerLogDb.push(`${userid}-${elementName}`, { t: timePlayed, w: Date.now() });
-
 }

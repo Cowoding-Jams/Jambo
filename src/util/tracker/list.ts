@@ -1,29 +1,29 @@
 import { activityTrackerLogDb } from "../../db";
 import {
-	EmbedBuilder,
-	ChatInputCommandInteraction,
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
+	ChatInputCommandInteraction,
+	EmbedBuilder,
 } from "discord.js";
 import { addDefaultEmbedFooter } from "../misc/embeds";
 import { msToTimeString } from "./presence";
 
 export async function createList(filter: string, offset: number) {
 	offset *= 10;
-	let keys = activityTrackerLogDb.keyArray();
-	let final = new Map<string, number>();
+	const keys = activityTrackerLogDb.keyArray();
+	const final = new Map<string, number>();
 
 	keys.forEach((e) => {
 		const log = activityTrackerLogDb.get(e);
 		if (!log) return;
 
-		let game = e.split("-")[1];
+		const game = e.split("-")[1];
 
-		let logs = log.length;
-		let playtime: number = 0;
-		let lastplayed: number = 0;
-		let firstplayed: number = Infinity;
+		const logs = log.length;
+		let playtime = 0;
+		let lastplayed = 0;
+		let firstplayed = Infinity;
 
 		if (logs == 0) return;
 
@@ -60,7 +60,7 @@ export async function createList(filter: string, offset: number) {
 				if (!final.has(game)) {
 					final.set(game, lastplayed);
 				} else {
-					let time = final.get(game);
+					const time = final.get(game);
 					if (!time) return;
 					if (lastplayed > time) {
 						final.set(game, lastplayed);
@@ -71,7 +71,7 @@ export async function createList(filter: string, offset: number) {
 				if (!final.has(game)) {
 					final.set(game, firstplayed);
 				} else {
-					let time = final.get(game);
+					const time = final.get(game);
 					if (!time) return;
 					if (lastplayed < time) {
 						final.set(game, firstplayed);
@@ -81,15 +81,15 @@ export async function createList(filter: string, offset: number) {
 		}
 	});
 
-	if (filter == "0" || filter == "2" || filter == "4") {
-		var sorted = new Map([...final.entries()].sort((a, b) => b[1] - a[1]));
-	} else {
-		var sorted = new Map([...final.entries()].sort((a, b) => a[1] - b[1]));
-	}
+	const sorted = new Map(
+		[...final.entries()].sort((a, b) =>
+			filter == "0" || filter == "2" || filter == "4" ? b[1] - a[1] : a[1] - b[1]
+		)
+	);
 
-	let games: string[] = [];
-	let values: string[] = [];
-	let index: string[] = [];
+	const games: string[] = [];
+	const values: string[] = [];
+	const index: string[] = [];
 	let of = 0;
 	sorted.forEach(async (v, k) => {
 		of += 1;
@@ -124,9 +124,9 @@ export async function createList(filter: string, offset: number) {
 
 export async function list(interaction: ChatInputCommandInteraction) {
 	await interaction.deferReply();
-	let filter = interaction.options.getString("filter", true);
+	const filter = interaction.options.getString("filter", true);
 
-	let [left, right, left2, right2, index, games, values, pages] = await createList(filter, 0);
+	const [left, right, left2, right2, index, games, values, pages] = await createList(filter, 0);
 
 	if (!Array.isArray(values)) return;
 	if (!Array.isArray(index)) return;
@@ -138,7 +138,7 @@ export async function list(interaction: ChatInputCommandInteraction) {
 	if (typeof pages !== "number") return;
 
 	if (values.length == 0) {
-		let embed = new EmbedBuilder()
+		const embed = new EmbedBuilder()
 			.setTitle("Nothing to list...")
 			.setDescription("No activity has been logged yet.");
 		await interaction.reply({ embeds: [embed] });
@@ -157,7 +157,7 @@ export async function list(interaction: ChatInputCommandInteraction) {
 
 	embed = addDefaultEmbedFooter(embed);
 
-	let row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		new ButtonBuilder()
 			.setCustomId(`game-activity-tracker.left2.0.` + filter)
 			.setLabel("◀◀")

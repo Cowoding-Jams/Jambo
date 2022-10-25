@@ -14,8 +14,8 @@ class gameActivityTrackerButton extends Button {
 		else if (args[0] == "right") offset += 1;
 		else if (args[0] == "right2") offset += 10;
 
-		let filter = args[2];
-		let [left, right, left2, right2, index, games, values, pages] = await createList(filter, offset);
+		const filter = args[2];
+		const [left, right, left2, right2, index, games, values, pages] = await createList(filter, offset);
 
 		if (!Array.isArray(values)) return;
 		if (!Array.isArray(index)) return;
@@ -38,7 +38,7 @@ class gameActivityTrackerButton extends Button {
 
 		embed = addDefaultEmbedFooter(embed);
 
-		let row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder()
 				.setCustomId(`game-activity-tracker.left2.${offset}.` + filter)
 				.setLabel("◀◀")
