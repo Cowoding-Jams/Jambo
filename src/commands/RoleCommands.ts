@@ -5,7 +5,7 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
-import { colorPrompt, pronounPrompt } from "../util/roleCommand/rolePrompts";
+import { colorPrompt, pronounPrompt, timezonePrompt } from "../util/roleCommand/rolePrompts";
 import { deleteRoles } from "../util/roleCommand/roleUtil";
 
 class RoleCommand extends Command {
@@ -31,6 +31,9 @@ class RoleCommand extends Command {
 		} else if (subcommand === "color-prompt") {
 			await interaction.deferReply();
 			await colorPrompt(interaction);
+		} else if (subcommand === "timezone-prompt") {
+			await interaction.deferReply();
+			await timezonePrompt(interaction);
 		} else if (subcommand === "delete") {
 			await interaction.deferReply({ ephemeral: true });
 			await deleteRoles(interaction);
@@ -58,6 +61,9 @@ class RoleCommand extends Command {
 							.setMinValue(1)
 							.setMaxValue(4)
 					)
+			)
+			.addSubcommand((option) =>
+				option.setName("timezone-prompt").setDescription("Creates the timezone role prompt.")
 			)
 			.addSubcommand((option) =>
 				option
