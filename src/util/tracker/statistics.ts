@@ -1,15 +1,21 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { getEntrys, makeStats } from "./help";
+import { getEntrys, makeStats, splitId } from "./help";
 import { addDefaultEmbedFooter } from "../misc/embeds";
 import { activityTrackerLogDb } from "../../db";
 import { deleteButtonAsRow } from "../misc/buttons";
 
 export async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
-	const game = interaction.options.getString("game")?.toLowerCase();
+	let game = interaction.options.getString("game")?.toLowerCase();
 	const fields = await makeStats(await getEntrys(interaction.user.id, game));
 
 	if (fields.length == 0) {
-		let embed = new EmbedBuilder().setTitle(game === null ? "No logs found" : `No logs found for ${game}`);
+		let embed = new EmbedBuilder().setTitle(
+			game === null
+				? "No logs found"
+				: game == undefined
+				? `nothing has been loggged yet`
+				: `No logs found for ${game}`
+		);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
@@ -26,6 +32,12 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
+	}
+
+	if (game === undefined) {
+		game = "every logged game";
+	} else {
+		game = game.replace(/(\b\w)/g, (e) => e.toUpperCase());
 	}
 
 	let embed = new EmbedBuilder().setTitle(`Your stats about ${game}`).addFields(fields);
@@ -48,7 +60,8 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 	const allEntrys = activityTrackerLogDb.keyArray();
 	const users: string[] = [];
 	allEntrys.forEach((e) => {
-		if (e.split("-")[1].toLowerCase() === game && !users.includes(e)) users.push(e);
+		const game = splitId(e)[1];
+		if (game === game && !users.includes(e)) users.push(e);
 	});
 
 	if (users.length === 0) {
@@ -59,7 +72,7 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 	}
 
 	let embed = new EmbedBuilder()
-		.setTitle(`Stats across all users for ${game}`)
+		.setTitle(`Stats across all users for ${game.replace(/(\b\w)/g, (e) => e.toUpperCase())}`)
 		.addFields(fields)
 		.addFields({ name: "Users", value: `${users.length} unique users`, inline: true });
 	embed = addDefaultEmbedFooter(embed);
@@ -81,11 +94,9 @@ export async function statisticsAllstats(interaction: ChatInputCommandInteractio
 	const users: string[] = [];
 	const games: string[] = [];
 	allEntrys.forEach((e) => {
-		const split = e.split("-");
-		const user = split[0];
-		const game = split[1];
-		if (!users.includes(user)) users.push(user);
-		if (!games.includes(game)) games.push(game);
+		const [userEntry, gameEntry] = splitId(e);
+		if (!users.includes(userEntry)) users.push(userEntry);
+		if (!games.includes(gameEntry)) games.push(gameEntry);
 	});
 
 	let embed = new EmbedBuilder()

@@ -6,6 +6,11 @@ class DeleteButton extends Button {
 		super("delete");
 	}
 	async execute(interaction: ButtonInteraction, args: string[]): Promise<void> {
+		if (args[0] == "*") {
+			await interaction.message.delete();
+			return;
+		}
+
 		if (args[0] !== interaction.user.id)
 			interaction.reply({
 				content: "Only the original creator of this interactoin can delete this message",

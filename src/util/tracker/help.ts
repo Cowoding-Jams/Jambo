@@ -15,22 +15,20 @@ export async function getEntrys(
 	const userCheck: boolean = user == null || user == undefined;
 	const gameCheck: boolean = game == null || game == undefined;
 	allEntrys.forEach((element) => {
+		const [userEntry, gameEntry] = splitId(element);
 		if (userCheck && gameCheck) {
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		} else if (userCheck && !gameCheck) {
-			const gameEntry = element.split("-")[1].toLowerCase();
 			if (gameEntry !== game) return;
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		} else if (!userCheck && gameCheck) {
-			const userEntry = element.split("-")[0];
 			if (userEntry !== user) return;
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		} else if (!userCheck && !gameCheck) {
-			const split = element.split("-");
-			if (split[0] !== user || split[1].toLowerCase() !== game) return;
+			if (userEntry !== user || gameEntry !== game) return;
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
 		}
@@ -100,4 +98,10 @@ export async function makeTimestamp(ms: number, day: boolean): Promise<string> {
 	}${minute > 0 ? minute + "minute(s) " : ""}${(hours > 0 || minute > 0) && second > 0 ? "and " : ""}${
 		second > 0 ? second + "second(s) " : ""
 	}`.trim();
+}
+
+export function splitId(id: string): [string, string] {
+	const [user, ...gameParts] = id.split("-");
+	const game = gameParts.join("-");
+	return [user, game];
 }

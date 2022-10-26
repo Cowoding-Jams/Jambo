@@ -200,17 +200,19 @@ class TrackerCommand extends Command {
 					.setDescription("Returns a list of top 10 played games")
 					.addStringOption((opt) =>
 						opt
-							.setName("filter")
-							.setDescription("Filted for ...")
+							.setName("sort")
+							.setDescription("sort for ...")
 							.addChoices(
-								{ name: "max -> min -- Playtime", value: "0" },
-								{ name: "max <- min -- Playtime", value: "1" },
-								{ name: "max -> min -- Amount of Logs", value: "2" },
-								{ name: "max <- min -- Amount of Logs", value: "3" },
-								{ name: "Last Played", value: "4" },
-								{ name: "First Played", value: "5" }
+								{ name: "Playtime", value: "0" },
+								{ name: "Amount of Logs", value: "1" },
+								{ name: "Log date", value: "2" }
 							)
-							.setRequired(true)
+					)
+					.addStringOption((opt) =>
+						opt
+							.setName("order")
+							.setDescription("Order list")
+							.addChoices({ name: "decrease", value: "0" }, { name: "increase", value: "1" })
 					)
 			);
 	}

@@ -20,7 +20,7 @@ export async function blacklistAdd(interaction: ChatInputCommandInteraction): Pr
 	if (!activityTrackerBlacklistDb.has(interaction.user.id)) {
 		activityTrackerBlacklistDb.set(interaction.user.id, []);
 	}
-	activityTrackerBlacklistDb.push(interaction.user.id, game);
+	activityTrackerBlacklistDb.push(interaction.user.id, game.toLowerCase());
 
 	let embed = new EmbedBuilder().setTitle(`"${game}" is now on your blacklist`);
 
@@ -51,6 +51,13 @@ export async function blacklistRemove(interaction: ChatInputCommandInteraction):
 	}
 
 	let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
+
+	if (game === "No games are on your blacklist") {
+		let embed = new EmbedBuilder().setTitle("No games are on your blacklist");
+		embed = addDefaultEmbedFooter(embed);
+		interaction.reply({ embeds: [embed], ephemeral: true });
+		return;
+	}
 
 	if (!blacklistedGames) {
 		let embed = new EmbedBuilder().setTitle("Something went wrong");

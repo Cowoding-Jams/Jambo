@@ -1,5 +1,6 @@
 import { AutocompleteInteraction } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
+import { splitId } from "./help";
 
 export async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 	if (!interaction.memberPermissions?.has("Administrator")) {
@@ -27,12 +28,16 @@ export async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 	}
 
 	let map = options
-		.filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({ name: c, value: c }));
+		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
+		.map((c) => ({
+			name: c
+				.replace(/(\b\w)/g, (e) => e.toUpperCase())
+				.trim()
+				.slice(0, 100),
+			value: c.slice(0, 100),
+		}));
 
-	if (map.length > 25) {
-		map = map.slice(0, 25);
-	}
+	map = map.slice(0, 25);
 
 	await interaction.respond(map);
 }
@@ -41,9 +46,9 @@ export async function statisticsMystats(interaction: AutocompleteInteraction) {
 	const allKeys = activityTrackerLogDb.keyArray();
 	let games: string[] = [];
 	allKeys.forEach((e) => {
-		const split = e.split("-");
-		if (split[0] !== interaction.user.id) return;
-		games.push(split[1]);
+		const [userEntry, gameEntry] = splitId(e);
+		if (userEntry !== interaction.user.id) return;
+		games.push(gameEntry);
 	});
 
 	games = [...new Set(games)];
@@ -56,8 +61,14 @@ export async function statisticsMystats(interaction: AutocompleteInteraction) {
 	}
 
 	let map = games
-		.filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({ name: c, value: c }));
+		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
+		.map((c) => ({
+			name: c
+				.replace(/(\b\w)/g, (e) => e.toUpperCase())
+				.trim()
+				.slice(0, 100),
+			value: c.slice(0, 100),
+		}));
 
 	if (map.length > 25) {
 		map = map.slice(0, 25);
@@ -70,8 +81,8 @@ export async function statisticsGamestats(interaction: AutocompleteInteraction) 
 	const allKeys = activityTrackerLogDb.keyArray();
 	let games: string[] = [];
 	allKeys.forEach((e) => {
-		const split = e.split("-");
-		games.push(split[1]);
+		const gameEntry = splitId(e)[1];
+		games.push(gameEntry);
 	});
 
 	games = [...new Set(games)];
@@ -84,12 +95,16 @@ export async function statisticsGamestats(interaction: AutocompleteInteraction) 
 	}
 
 	let map = games
-		.filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({ name: c, value: c }));
+		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
+		.map((c) => ({
+			name: c
+				.replace(/(\b\w)/g, (e) => e.toUpperCase())
+				.trim()
+				.slice(0, 100),
+			value: c.slice(0, 100),
+		}));
 
-	if (map.length > 25) {
-		map = map.slice(0, 25);
-	}
+	map = map.slice(0, 25);
 
 	await interaction.respond(map);
 }
@@ -117,12 +132,16 @@ export async function blacklistRemove(interaction: AutocompleteInteraction) {
 	}
 
 	let map = options
-		.filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({ name: c, value: c }));
+		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
+		.map((c) => ({
+			name: c
+				.replace(/(\b\w)/g, (e) => e.toUpperCase())
+				.trim()
+				.slice(0, 100),
+			value: c.slice(0, 100),
+		}));
 
-	if (map.length > 25) {
-		map = map.slice(0, 25);
-	}
+	map = map.slice(0, 25);
 
 	await interaction.respond(map);
 }
@@ -131,9 +150,9 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 	const allKeys = activityTrackerLogDb.keyArray();
 	let games: string[] = [];
 	allKeys.forEach((e) => {
-		const split = e.split("-");
-		if (split[0] !== interaction.user.id) return;
-		games.push(split[1]);
+		const [userEntry, gameEntry] = splitId(e);
+		if (userEntry !== interaction.user.id) return;
+		games.push(gameEntry);
 	});
 
 	games = [...new Set(games)];
@@ -146,12 +165,16 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 	}
 
 	let map = games
-		.filter((c) => c.toLowerCase().startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({ name: c, value: c }));
+		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
+		.map((c) => ({
+			name: c
+				.replace(/(\b\w)/g, (e) => e.toUpperCase())
+				.trim()
+				.slice(0, 100),
+			value: c.slice(0, 100),
+		}));
 
-	if (map.length > 24) {
-		map = map.slice(0, 24);
-	}
+	map = map.slice(0, 24);
 
 	map.push({ name: "Disable Tracking", value: "Disable Tracking" });
 
