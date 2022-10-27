@@ -17,7 +17,7 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 		// TODO: UNCOMMENT!!! IF I FORGET, PLEASE REMIND ME!!!!!!!!!
 
 		if (await blacklistCheck(userid, element.name.toLowerCase())) return;
-
+		if (oldPresence?.user?.bot) return;
 		await logTime(userid, element.name.toLowerCase(), timePlayed);
 	});
 }
