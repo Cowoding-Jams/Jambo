@@ -61,7 +61,7 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 	const users: string[] = [];
 	allEntrys.forEach((e) => {
 		const game = splitId(e)[1];
-		if (game === game && !users.includes(e)) users.push(e);
+		if (game === game && !users.some(e => e == e)) users.push(e);
 	});
 
 	if (users.length === 0) {
@@ -95,8 +95,8 @@ export async function statisticsAllstats(interaction: ChatInputCommandInteractio
 	const games: string[] = [];
 	allEntrys.forEach((e) => {
 		const [userEntry, gameEntry] = splitId(e);
-		if (!users.includes(userEntry)) users.push(userEntry);
-		if (!games.includes(gameEntry)) games.push(gameEntry);
+		if (!users.some((e) => e === userEntry)) users.push(userEntry);
+		if (!games.some((e) => e === gameEntry)) games.push(gameEntry);
 	});
 
 	let embed = new EmbedBuilder()
