@@ -63,7 +63,7 @@ export async function nofilter(offset: number, order: string) {
 		games.length - offset > 100, // right 2
 		games.slice(offset, offset + 10), // games
 		users.slice(offset, offset + 10), // values
-		Math.floor(games.length / 10) + 1, // pages
+		Math.floor(games.length / 10), // pages
 		time.slice(offset, offset + 10),
 	];
 }
