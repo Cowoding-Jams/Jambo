@@ -11,7 +11,7 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 		let embed = new EmbedBuilder()
 			.setTitle("Seams like your are not really sure.")
 			.setDescription(
-				"Because you are not really sure if you should reset everything related to Tracking, the reset wasnt executed."
+				"Because you are not really sure if you should reset everything related to tracking, the reset wasn't executed."
 			)
 			.setColor("#9d4b4b");
 		embed = addDefaultEmbedFooter(embed);
