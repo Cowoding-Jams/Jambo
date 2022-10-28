@@ -4,7 +4,6 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { Command } from "../interactions/interactionClasses";
-import { hasAdminPerms } from "../util/misc/permissions";
 import { config } from "../config";
 import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/tracker/blacklist";
 import { statisticsAllstats, statisticsGamestats, statisticsMystats } from "../util/tracker/statistics";
@@ -43,7 +42,7 @@ class TrackerCommand extends Command {
 				await statisticsAllstats(interaction);
 			}
 		} else if (group === "admin") {
-			if (!hasAdminPerms(interaction)) {
+			if (interaction.memberPermissions?.bitfield == config.activityTrackerAdminCommandPermission) {
 				return;
 			} else if (sub === "reset") {
 				await adminReset(interaction);

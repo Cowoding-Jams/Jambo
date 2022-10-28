@@ -1,4 +1,4 @@
-import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
+import { ColorResolvable, ComponentEmojiResolvable, PermissionFlagsBits } from "discord.js";
 
 // Configure your bot here.
 export const config: BotConfig = {
@@ -34,6 +34,7 @@ export const config: BotConfig = {
 		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
 	logLevel: "debug",
 	logActivity: true,
+	activityTrackerAdminCommandPermission: PermissionFlagsBits.Administrator,
 };
 
 interface BotConfig {
@@ -55,4 +56,6 @@ interface BotConfig {
 	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
 	// If User Game Activity should get logged
 	logActivity: boolean;
+	// Which permissions are needed to user game-activity-tracker commands
+	activityTrackerAdminCommandPermission: bigint;
 }
