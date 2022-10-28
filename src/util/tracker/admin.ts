@@ -9,7 +9,7 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 
 	if (!(sure && really == "yes")) {
 		let embed = new EmbedBuilder()
-			.setTitle("Seams like your are not really sure.")
+			.setTitle("It seems like your are not really sure.")
 			.setDescription(
 				"Because you are not really sure if you should reset everything related to tracking, the reset wasn't executed."
 			)
