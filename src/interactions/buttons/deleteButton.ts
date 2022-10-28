@@ -13,7 +13,7 @@ class DeleteButton extends Button {
 
 		if (args[0] !== interaction.user.id)
 			interaction.reply({
-				content: "Only the original creator of this interactoin can delete this message",
+				content: "Only the original creator of this interaction can delete this message",
 				ephemeral: true,
 			});
 		else interaction.message.delete();
