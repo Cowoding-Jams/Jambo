@@ -13,8 +13,7 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 	stopedActivities.forEach(async (element) => {
 		const start = element.createdTimestamp;
 		const timePlayed = Date.now() - start;
-		// if (timePlayed < 20000) return;
-		// TODO: UNCOMMENT!!! IF I FORGET, PLEASE REMIND ME!!!!!!!!!
+		if (timePlayed < 20000) return;
 
 		if (await blacklistCheck(userid, element.name.toLowerCase())) return;
 		if (oldPresence?.user?.bot) return;
