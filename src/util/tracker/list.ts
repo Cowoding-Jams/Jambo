@@ -1,14 +1,8 @@
 import { activityTrackerLogDb } from "../../db";
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ButtonStyle,
-	ChatInputCommandInteraction,
-	EmbedBuilder,
-} from "discord.js";
-import { addDefaultEmbedFooter } from "../misc/embeds";
-import { msToTimeString } from "./presence";
+import { ChatInputCommandInteraction } from "discord.js";
 import { splitId } from "./help";
+import { gameActivityTrackerEmbed } from "./trackerEmbed";
+import { msToReadable } from "../misc/time";
 
 interface log {
 	u: string;
@@ -44,27 +38,18 @@ export async function nofilter(offset: number, order: string) {
 		logs = logs.sort((a, b) => a.w - b.w);
 	}
 
-	const users: string[] = [];
 	const games: string[] = [];
-	const time: string[] = [];
+	const timeAndUser: string[] = [];
 
-	let i = 0;
 	logs.forEach((e) => {
-		i++;
-		games.push(`\`${i}\` ${e.g.replace(/(\b\w)/g, (e) => e.toUpperCase())}`);
-		users.push(`${e.u}`);
-		time.push(`<t:${Math.floor(e.w / 1000)}:d>`);
+		games.push(e.g.replace(/(\b\w)/g, (e) => e.toUpperCase()));
+		timeAndUser.push(`<t:${Math.floor(e.w / 1000)}:d> ⁘ ${e.u}`);
 	});
 
 	return [
-		offset != 0, // left
-		games.length - offset > 10, // right
-		offset > 90, // left2
-		games.length - offset > 100, // right 2
 		games.slice(offset, offset + 10), // games
-		users.slice(offset, offset + 10), // values
+		timeAndUser.slice(offset, offset + 10), // values
 		Math.floor(games.length / 10), // pages
-		time.slice(offset, offset + 10),
 	];
 }
 
@@ -136,18 +121,16 @@ export async function createList(filter: string, offset: number, order: string) 
 
 	const games: string[] = [];
 	const values: string[] = [];
-	let of = 0;
 	sorted.forEach(async (v, k) => {
-		of += 1;
 		k = k.replace(/(\b\w)/g, (e) => e.toUpperCase());
 		if (k.length > 14) {
 			k = k.slice(0, 13);
 			k = k + "…";
 		}
 
-		games.push(`\`${of}\` ${k}`);
+		games.push(k);
 		if (filter == "0") {
-			values.push(msToTimeString(v, true));
+			values.push(msToReadable(v, true));
 		} else if (filter == "1") {
 			values.push(`${v}`);
 		} else if (filter == "2") {
@@ -156,14 +139,9 @@ export async function createList(filter: string, offset: number, order: string) 
 	});
 
 	return [
-		offset != 0, // left
-		values.length - offset > 10, // right
-		offset > 90, // left2
-		values.length - offset > 100, // right 2
 		games.slice(offset, offset + 10), // games
 		values.slice(offset, offset + 10), // values
 		Math.floor(values.length / 10) + 1, // pages
-		null,
 	];
 }
 
@@ -179,73 +157,8 @@ export async function list(interaction: ChatInputCommandInteraction) {
 		order = "0";
 	}
 
-	const [left, right, left2, right2, games, values, pages, extra] = await createList(filter, 0, order);
+	const [embed, row] = await gameActivityTrackerEmbed(filter, order);
+	if (!embed) return;
 
-	if (!Array.isArray(values)) return;
-	if (!Array.isArray(games)) return;
-	if (typeof left !== "boolean") return;
-	if (typeof right !== "boolean") return;
-	if (typeof left2 !== "boolean") return;
-	if (typeof right2 !== "boolean") return;
-	if (typeof pages !== "number") return;
-
-	if (values.length == 0) {
-		const embed = new EmbedBuilder()
-			.setTitle("Nothing to list...")
-			.setDescription("No activity has been logged yet.");
-		await interaction.editReply({ embeds: [embed] });
-		return;
-	}
-
-	let embed = new EmbedBuilder()
-		.setTitle("Listing/Ranking")
-		.setDescription(
-			`Logs sorted ${
-				filter == "-1"
-					? "in order they were logged"
-					: "for `" +
-					  (filter == "0" ? "Playtime" : filter == "1" ? "Amount of logs" : filter == "2" ? "Logdate" : "") +
-					  "`"
-			}.\nList order is \`${order == "1" ? "increasing" : "decreasing"}\`.`
-		)
-		.addFields(
-			{ name: "Game", value: games.join("\n"), inline: true },
-			{ name: "Value", value: values.join("\n"), inline: true }
-		)
-		.setFooter({ text: `page 1/${pages}` });
-
-	if (Array.isArray(extra)) {
-		embed.addFields({ name: "Date", value: extra.join("\n"), inline: true });
-	}
-
-	embed = addDefaultEmbedFooter(embed);
-
-	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.left2.0.` + filter + "." + order)
-			.setLabel("◀◀")
-			.setStyle(left2 ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(!left2),
-		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.left.0.` + filter + "." + order)
-			.setLabel("◀")
-			.setStyle(left ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(!left),
-		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.right.0.` + filter + "." + order)
-			.setLabel("▶")
-			.setStyle(right ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(!right),
-		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.right2.0.` + filter + "." + order)
-			.setLabel("▶▶")
-			.setStyle(right2 ? ButtonStyle.Primary : ButtonStyle.Danger)
-			.setDisabled(!right2),
-		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.reload.0.` + filter + "." + order)
-			.setLabel("↺")
-			.setStyle(ButtonStyle.Success)
-	);
-
-	await interaction.editReply({ embeds: [embed], components: [row] });
+	await interaction.editReply({ embeds: [embed], components: row ? [row] : [] });
 }

@@ -61,7 +61,7 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 	const users: string[] = [];
 	allEntrys.forEach((e) => {
 		const game = splitId(e)[1];
-		if (game === game && !users.some(e => e == e)) users.push(e);
+		if (game === game && !users.some((e) => e == e)) users.push(e);
 	});
 
 	if (users.length === 0) {
