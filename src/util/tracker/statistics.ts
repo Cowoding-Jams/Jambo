@@ -5,7 +5,7 @@ import { deleteButtonAsRow } from "../misc/buttons";
 
 export async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
 	let game = interaction.options.getString("game")?.toLowerCase();
-	const entrys = await getEntrys(interaction.user.id, game)
+	const entrys = await getEntrys(interaction.user.id, game);
 	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
@@ -22,10 +22,10 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 	}
 
 	if (game === null) {
-		const games: string[] = []
+		const games: string[] = [];
 		entrys.forEach((e) => {
-			games.push(splitId(e)[1])
-		})
+			games.push(splitId(e)[1]);
+		});
 
 		let embed = new EmbedBuilder()
 			.setTitle("Your stats across all games")
@@ -50,7 +50,7 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 
 export async function statisticsGamestats(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
-	const entrys = await getEntrys(undefined, game)
+	const entrys = await getEntrys(undefined, game);
 	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
@@ -60,10 +60,10 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 		return;
 	}
 
-	const users: string[] = []
+	const users: string[] = [];
 	entrys.forEach((e) => {
-		users.push(splitId(e)[0])
-	})
+		users.push(splitId(e)[0]);
+	});
 	if (users.length === 0) {
 		let embed = new EmbedBuilder().setTitle("No records found");
 		embed = addDefaultEmbedFooter(embed);
@@ -81,7 +81,7 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 }
 
 export async function statisticsAllstats(interaction: ChatInputCommandInteraction): Promise<void> {
-	const entrys = await getEntrys(undefined, undefined)
+	const entrys = await getEntrys(undefined, undefined);
 	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {

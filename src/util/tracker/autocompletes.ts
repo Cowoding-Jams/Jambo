@@ -1,7 +1,7 @@
 import { AutocompleteInteraction } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { splitId } from "./help";
-import { config } from "../../config"
+import { config } from "../../config";
 
 export async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 	if (interaction.memberPermissions?.bitfield == config.activityTrackerAdminCommandPermission) {

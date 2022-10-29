@@ -12,8 +12,12 @@ export async function getEntrys(
 ): Promise<string[]> {
 	const allEntrys = activityTrackerLogDb.keyArray();
 	const found: string[] = [];
-	const userCheck = (usr:string) => { return usr == user || user == undefined }
-	const gameCheck = (gae:string) => { return gae == game || game == undefined }
+	const userCheck = (usr: string) => {
+		return usr == user || user == undefined;
+	};
+	const gameCheck = (gae: string) => {
+		return gae == game || game == undefined;
+	};
 
 	allEntrys.forEach((element) => {
 		const [userEntry, gameEntry] = splitId(element);
