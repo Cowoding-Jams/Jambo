@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { getEntrys, makeStats, splitId } from "./help";
 import { addDefaultEmbedFooter } from "../misc/embeds";
-import { activityTrackerLogDb } from "../../db";
 import { deleteButtonAsRow } from "../misc/buttons";
 
 export async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
