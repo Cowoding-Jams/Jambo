@@ -6,7 +6,8 @@ import { deleteButtonAsRow } from "../misc/buttons";
 
 export async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
 	let game = interaction.options.getString("game")?.toLowerCase();
-	const fields = await makeStats(await getEntrys(interaction.user.id, game));
+	const entrys = await getEntrys(interaction.user.id, game)
+	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(
@@ -22,8 +23,10 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 	}
 
 	if (game === null) {
-		const allEntrys = activityTrackerLogDb.keyArray();
-		const games = allEntrys.filter((e) => e.split("-")[0] === interaction.user.id).length;
+		const games: string[] = []
+		entrys.forEach((e) => {
+			games.push(splitId(e)[1])
+		})
 
 		let embed = new EmbedBuilder()
 			.setTitle("Your stats across all games")
@@ -48,7 +51,8 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 
 export async function statisticsGamestats(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
-	const fields = await makeStats(await getEntrys(undefined, game));
+	const entrys = await getEntrys(undefined, game)
+	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(`No logs found for ${game}`);
@@ -57,13 +61,10 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 		return;
 	}
 
-	const allEntrys = activityTrackerLogDb.keyArray();
-	const users: string[] = [];
-	allEntrys.forEach((e) => {
-		const game = splitId(e)[1];
-		if (game === game && !users.some((e) => e == e)) users.push(e);
-	});
-
+	const users: string[] = []
+	entrys.forEach((e) => {
+		users.push(splitId(e)[0])
+	})
 	if (users.length === 0) {
 		let embed = new EmbedBuilder().setTitle("No records found");
 		embed = addDefaultEmbedFooter(embed);
@@ -81,7 +82,8 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 }
 
 export async function statisticsAllstats(interaction: ChatInputCommandInteraction): Promise<void> {
-	const fields = await makeStats(await getEntrys(undefined, undefined));
+	const entrys = await getEntrys(undefined, undefined)
+	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle("No logs found");
@@ -90,10 +92,9 @@ export async function statisticsAllstats(interaction: ChatInputCommandInteractio
 		return;
 	}
 
-	const allEntrys = activityTrackerLogDb.keyArray();
 	const users: string[] = [];
 	const games: string[] = [];
-	allEntrys.forEach((e) => {
+	entrys.forEach((e) => {
 		const [userEntry, gameEntry] = splitId(e);
 		if (!users.some((e) => e === userEntry)) users.push(userEntry);
 		if (!games.some((e) => e === gameEntry)) games.push(gameEntry);

@@ -12,22 +12,24 @@ export async function getEntrys(
 ): Promise<string[]> {
 	const allEntrys = activityTrackerLogDb.keyArray();
 	const found: string[] = [];
-	const userCheck: boolean = user == null || user == undefined;
-	const gameCheck: boolean = game == null || game == undefined;
+	const userCheck = (usr:string) => { return usr == user || user == undefined }
+	const gameCheck = (gae:string) => { return gae == game || game == undefined }
+
 	allEntrys.forEach((element) => {
 		const [userEntry, gameEntry] = splitId(element);
-		if (userCheck && gameCheck) {
+
+		if (userCheck(userEntry) && gameCheck(gameEntry)) {
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
-		} else if (userCheck && !gameCheck) {
+		} else if (userCheck(userEntry) && !gameCheck(gameEntry)) {
 			if (gameEntry !== game) return;
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
-		} else if (!userCheck && gameCheck) {
+		} else if (!userCheck(userEntry) && gameCheck(gameEntry)) {
 			if (userEntry !== user) return;
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
-		} else if (!userCheck && !gameCheck) {
+		} else if (!userCheck(userEntry) && !gameCheck(gameEntry)) {
 			if (userEntry !== user || gameEntry !== game) return;
 			const entry = activityTrackerLogDb.get(element);
 			if (entry !== undefined) found.push(element);
