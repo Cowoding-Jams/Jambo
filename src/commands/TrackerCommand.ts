@@ -69,10 +69,10 @@ class TrackerCommand extends Command {
 	register():
 		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> 
+		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
 		| boolean {
 		if (!config.logActivity) {
-			return false
+			return false;
 		}
 		return new SlashCommandBuilder()
 			.setName("game-activity-tracker")
