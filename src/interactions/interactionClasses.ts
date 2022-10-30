@@ -17,7 +17,8 @@ export abstract class Command {
 	abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 	abstract register():
 		| SlashCommandSubcommandsOnlyBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
+		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
+		| boolean;
 }
 
 export abstract class Button {
