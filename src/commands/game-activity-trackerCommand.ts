@@ -5,16 +5,16 @@ import {
 } from "discord.js";
 import { Command } from "../interactions/interactionClasses";
 import { config } from "../config";
-import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/tracker/blacklist";
-import { statisticsAllstats, statisticsGamestats, statisticsMystats } from "../util/tracker/statistics";
+import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/game-activity-tracker/blacklist";
+import { statisticsAllstats, statisticsGamestats, statisticsMystats } from "../util/game-activity-tracker/statistics";
 import {
 	adminBlacklistgame,
 	adminLook,
 	adminReset,
 	adminShow,
 	adminWhitelistgame,
-} from "../util/tracker/admin";
-import { list } from "../util/tracker/list";
+} from "../util/game-activity-tracker/admin";
+import { list } from "../util/game-activity-tracker/list";
 
 class TrackerCommand extends Command {
 	constructor() {
@@ -57,12 +57,6 @@ class TrackerCommand extends Command {
 			}
 		} else if (sub == "list") {
 			await list(interaction);
-		} else if (sub === "disabled") {
-			await interaction.reply({
-				content:
-					"Activity Logging is Disabled for this bot.\nIf it gets activated again you can find more commands which start with `/game-activity-tracker`",
-				ephemeral: true,
-			});
 		}
 	}
 

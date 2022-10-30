@@ -1,6 +1,6 @@
 import { Presence } from "discord.js";
 import { config } from "../config";
-import { blacklistCheck, getStopedActivities, logTime } from "../util/tracker/presence";
+import { blacklistCheck, getStopedActivities, logTime } from "../util/game-activity-tracker/presence";
 
 export default async function presenceUpdate(oldPresence: Presence | null, newPresence: Presence) {
 	if (!config.logActivity) return;
