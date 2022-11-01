@@ -6,6 +6,7 @@ import {
 	ButtonStyle,
 	ChatInputCommandInteraction,
 	EmbedBuilder,
+	SelectMenuBuilder,
 } from "discord.js";
 import { addDefaultEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
@@ -13,7 +14,7 @@ import { bringIntoButtonGrid, setUpRoles } from "./roleUtil";
 
 export async function pronounPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
 	const prompt: EmbedBuilder = new EmbedBuilder()
-		.setTitle("Pronoun roles 🌈🏳‍⚧️⚧️")
+		.setTitle("Pronoun roles 🏳‍⚧️⚧️")
 		.setDescription(
 			"Select the pronouns you want others to use when referring to you :)\nIf you don't understand why: https://pronouns.org/what-and-why"
 		);
@@ -125,5 +126,37 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 	} else {
 		await interaction.editReply({ content: "Couldn't set up the roles..." });
 		logger.error("Failed to set up color roles.");
+	}
+}
+
+export async function timezonePrompt(interaction: ChatInputCommandInteraction): Promise<void> {
+	const prompt: EmbedBuilder = new EmbedBuilder()
+		.setTitle("Timezone roles 🌍")
+		.setDescription(
+			"Select the timezone you life in. That way we can schedule events at times that work for most of us :)"
+		);
+
+	const actionRow: ActionRowBuilder<SelectMenuBuilder> =
+		new ActionRowBuilder<SelectMenuBuilder>().setComponents(
+			new SelectMenuBuilder()
+				.setCustomId("role.timezone")
+				.setPlaceholder("Select your timezone!")
+				.setMinValues(1)
+				.setMaxValues(1)
+				.setOptions(...config.timezoneRoles.map((t) => ({ label: t, value: t })))
+		);
+
+	if (
+		await setUpRoles(
+			interaction.guild,
+			config.timezoneRoles.map((r) => [r]),
+			"- StartTimezoneRoles -",
+			"- EndTimezoneRoles -"
+		)
+	) {
+		await interaction.editReply({ embeds: [addDefaultEmbedFooter(prompt)], components: [actionRow] });
+	} else {
+		await interaction.editReply({ content: "Couldn't set up the roles..." });
+		logger.error("Failed to set up timezone roles.");
 	}
 }
