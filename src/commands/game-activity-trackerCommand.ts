@@ -6,7 +6,11 @@ import {
 import { Command } from "../interactions/interactionClasses";
 import { config } from "../config";
 import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/game-activity-tracker/blacklist";
-import { statisticsAllstats, statisticsGamestats, statisticsMystats } from "../util/game-activity-tracker/statistics";
+import {
+	statisticsAllstats,
+	statisticsGamestats,
+	statisticsMystats,
+} from "../util/game-activity-tracker/statistics";
 import {
 	adminBlacklistgame,
 	adminLook,
