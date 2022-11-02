@@ -6,7 +6,7 @@ import {
 	blacklistRemove,
 	statisticsGamestats,
 	statisticsMystats,
-} from "../../util/game-activity-tracker/autocompletes";
+} from "../../util/trackerCommand/autocompletes";
 class TrackerAutocompleter extends Autocompleter {
 	constructor() {
 		super("game-activity-tracker");

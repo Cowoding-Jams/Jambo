@@ -5,20 +5,20 @@ import {
 } from "discord.js";
 import { Command } from "../interactions/interactionClasses";
 import { config } from "../config";
-import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/game-activity-tracker/blacklist";
+import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/trackerCommand/blacklist";
 import {
 	statisticsAllStats,
 	statisticsGameStats,
 	statisticsMyStats,
-} from "../util/game-activity-tracker/statistics";
+} from "../util/trackerCommand/statistics";
 import {
 	adminBlacklistGame,
 	adminLook,
 	adminReset,
 	adminShow,
 	adminWhitelistGame,
-} from "../util/game-activity-tracker/admin";
-import { list } from "../util/game-activity-tracker/list";
+} from "../util/trackerCommand/admin";
+import { list } from "../util/trackerCommand/list";
 
 class TrackerCommand extends Command {
 	constructor() {
