@@ -2,7 +2,8 @@ import { hasRoleMentionPerms } from "../misc/permissions";
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, inlineCode, Role } from "discord.js";
 import { reminderDb, reminderTimeoutCache } from "../../db";
 import { addDefaultEmbedFooter } from "../misc/embeds";
-import { elapse, timestampToReadable } from "./reminderUtil";
+import { msToReadable } from "../misc/time";
+import { elapse } from "./reminderUtil";
 
 export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const minutes = interaction.options.getInteger("minutes") || 0;
@@ -86,9 +87,9 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 				new EmbedBuilder()
 					.setTitle("Reminder set!")
 					.setDescription(
-						`I will remind you${
-							additionalPing ? " and " + additionalPing.toString() : ""
-						} in ${timestampToReadable(milliseconds)}!${
+						`I will remind you${additionalPing ? " and " + additionalPing.toString() : ""} in ${msToReadable(
+							milliseconds
+						)}!${
 							message == ""
 								? ""
 								: `\nYour message to yourself${

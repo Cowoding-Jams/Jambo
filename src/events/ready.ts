@@ -34,12 +34,14 @@ async function updateRegisteredCommands(client: Client) {
 		ctx.commands.map(async (cmd) => {
 			const cmdBuilder = cmd.register();
 			const existingCmd = registeredCommands.find((c) => c.name === cmd.name);
-			if (!existingCmd) {
-				logger.debug(`Creating new command: ${cmdBuilder.name}`);
-				return client.application?.commands.create(cmdBuilder.toJSON(), ctx.defaultGuild);
-			} else if (!commandsEqual(existingCmd, cmdBuilder)) {
-				logger.debug(`Updating command: ${cmdBuilder.name}`);
-				return client.application?.commands.edit(existingCmd.id, cmdBuilder.toJSON(), ctx.defaultGuild);
+			if (typeof cmdBuilder != "boolean") {
+				if (!existingCmd) {
+					logger.debug(`Creating new command: ${cmdBuilder.name}`);
+					return client.application?.commands.create(cmdBuilder.toJSON(), ctx.defaultGuild);
+				} else if (!commandsEqual(existingCmd, cmdBuilder)) {
+					logger.debug(`Updating command: ${cmdBuilder.name}`);
+					return client.application?.commands.edit(existingCmd.id, cmdBuilder.toJSON(), ctx.defaultGuild);
+				}
 			}
 		})
 	);

@@ -1,7 +1,7 @@
 import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import { reminderDb } from "../../db";
-import { timestampToReadable } from "../../util/reminderCommand/reminderUtil";
+import { msToReadable } from "../../util/misc/time";
 
 class ReminderAutocompleter extends Autocompleter {
 	constructor() {
@@ -16,7 +16,7 @@ class ReminderAutocompleter extends Autocompleter {
 				const id = value.pings[1].replace(/\D/g, "");
 				const role = await interaction.guild?.roles.fetch(id);
 				const member = await interaction.guild?.members.fetch(id).catch(() => null);
-				let name = `ID: ${key} - ${timestampToReadable(value.timestamp, true)} ${
+				let name = `ID: ${key} - ${msToReadable(value.timestamp, true)} ${
 					role || member ? `- @${role ? role.name : member?.displayName} -` : "-"
 				} ${value.message == "" ? "No message." : `${value.message}`}`;
 
