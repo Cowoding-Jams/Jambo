@@ -8,9 +8,9 @@ export async function blacklistAdd(interaction: ChatInputCommandInteraction): Pr
 	if (game == "Disable Tracking") {
 		activityTrackerBlacklistDb.push("general-user", interaction.user.id);
 		let embed = new EmbedBuilder()
-			.setTitle("Your game activity wont get logged anymore")
+			.setTitle("Your game activity won't get logged anymore!")
 			.setDescription(
-				"Tracking is now disabled for you. To activate it again use `/tracking blacklist remove`"
+				"Tracking is now disabled for you.\nTo activate it again use `/tracking blacklist remove`"
 			);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -22,7 +22,7 @@ export async function blacklistAdd(interaction: ChatInputCommandInteraction): Pr
 	}
 	activityTrackerBlacklistDb.push(interaction.user.id, game.toLowerCase());
 
-	let embed = new EmbedBuilder().setTitle(`"${game}" is now on your blacklist`);
+	let embed = new EmbedBuilder().setTitle(`"${game}" is now on your blacklist!`);
 
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed], ephemeral: true });

@@ -3,12 +3,12 @@ import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { splitId } from "./help";
 import { config } from "../../config";
 
-export async function adminWhitelistgame(interaction: AutocompleteInteraction) {
+export async function adminWhitelist(interaction: AutocompleteInteraction) {
 	if (interaction.memberPermissions?.bitfield == config.activityTrackerAdminCommandPermission) {
 		await interaction.respond([
 			{
-				name: "You dont have permissions to use this command",
-				value: "You dont have permissions to use this command",
+				name: "You don't have the permissions to use this command!",
+				value: "missing-permissions",
 			},
 		]);
 		return;
@@ -21,23 +21,14 @@ export async function adminWhitelistgame(interaction: AutocompleteInteraction) {
 	if (options?.length === 0 || !options) {
 		await interaction.respond([
 			{
-				name: "Global blacklist is empty",
-				value: "Global blacklist is empty",
+				name: "The global blacklist is empty...",
+				value: "empty-global-blacklist",
 			},
 		]);
 		return;
 	}
 
-	let map = options
-		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({
-			name: c
-				.replace(/(\b\w)/g, (e) => e.toUpperCase())
-				.trim()
-				.slice(0, 100),
-			value: c.slice(0, 100),
-		}));
-
+	let map = filterAndMapAutocompletion(interaction, options);
 	map = map.slice(0, 25);
 
 	await interaction.respond(map);
@@ -55,25 +46,12 @@ export async function statisticsMystats(interaction: AutocompleteInteraction) {
 	games = [...new Set(games)];
 
 	if (games.length == 0) {
-		await interaction.respond([
-			{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" },
-		]);
+		await interaction.respond(noLogsYet);
 		return;
 	}
 
-	let map = games
-		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({
-			name: c
-				.replace(/(\b\w)/g, (e) => e.toUpperCase())
-				.trim()
-				.slice(0, 100),
-			value: c.slice(0, 100),
-		}));
-
-	if (map.length > 25) {
-		map = map.slice(0, 25);
-	}
+	let map = filterAndMapAutocompletion(interaction, games);
+	map = map.slice(0, 25);
 
 	await interaction.respond(map);
 }
@@ -89,22 +67,11 @@ export async function statisticsGamestats(interaction: AutocompleteInteraction) 
 	games = [...new Set(games)];
 
 	if (games.length == 0) {
-		await interaction.respond([
-			{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" },
-		]);
+		await interaction.respond(noLogsYet);
 		return;
 	}
 
-	let map = games
-		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({
-			name: c
-				.replace(/(\b\w)/g, (e) => e.toUpperCase())
-				.trim()
-				.slice(0, 100),
-			value: c.slice(0, 100),
-		}));
-
+	let map = filterAndMapAutocompletion(interaction, games);
 	map = map.slice(0, 25);
 
 	await interaction.respond(map);
@@ -118,7 +85,7 @@ export async function blacklistRemove(interaction: AutocompleteInteraction) {
 	if (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)) {
 		await interaction.respond([
 			{
-				name: "Tracking is disabled, select this to activate it again",
+				name: "<Tracking is disabled, select this to activate it again>",
 				value: "Tracking is disabled, select this to activate it again",
 			},
 		]);
@@ -132,16 +99,7 @@ export async function blacklistRemove(interaction: AutocompleteInteraction) {
 		return;
 	}
 
-	let map = options
-		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
-		.map((c) => ({
-			name: c
-				.replace(/(\b\w)/g, (e) => e.toUpperCase())
-				.trim()
-				.slice(0, 100),
-			value: c.slice(0, 100),
-		}));
-
+	let map = filterAndMapAutocompletion(interaction, options);
 	map = map.slice(0, 25);
 
 	await interaction.respond(map);
@@ -159,13 +117,22 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 	games = [...new Set(games)];
 
 	if (games.length == 0) {
-		await interaction.respond([
-			{ name: "Nothing has been logged yet", value: "Nothing has been logged yet" },
-		]);
+		await interaction.respond(noLogsYet);
 		return;
 	}
 
-	let map = games
+	let map = filterAndMapAutocompletion(interaction, games);
+	map = map.slice(0, 24);
+
+	map.push({ name: "<Disable tracking for all games>", value: "Disable Tracking" });
+
+	await interaction.respond(map);
+}
+
+const noLogsYet = [{ name: "Nothing has been logged yet...", value: "Nothing has been logged yet..." }];
+
+function filterAndMapAutocompletion(interaction: AutocompleteInteraction, input: string[]) {
+	return input
 		.filter((c) => c.startsWith(interaction.options.getFocused().toLowerCase() as string))
 		.map((c) => ({
 			name: c
@@ -174,10 +141,4 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 				.slice(0, 100),
 			value: c.slice(0, 100),
 		}));
-
-	map = map.slice(0, 24);
-
-	map.push({ name: "Disable Tracking", value: "Disable Tracking" });
-
-	await interaction.respond(map);
 }

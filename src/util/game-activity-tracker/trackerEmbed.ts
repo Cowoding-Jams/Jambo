@@ -3,11 +3,11 @@ import { createList } from "./list";
 import { addDefaultEmbedFooter } from "../../util/misc/embeds";
 
 export async function gameActivityTrackerEmbed(
-	filter: string,
+	sort: string,
 	order: string,
 	offset = 0
 ): Promise<[EmbedBuilder | null, ActionRowBuilder<ButtonBuilder> | null]> {
-	const [games, values, pages] = await createList(filter, offset, order);
+	const [games, values, pages] = await createList(sort, offset, order);
 
 	if (!Array.isArray(values) || !Array.isArray(games) || typeof pages !== "number") return [null, null];
 
@@ -18,17 +18,16 @@ export async function gameActivityTrackerEmbed(
 		return [embed, null];
 	}
 
+	const text: { [key: string]: string } = {
+		"log-history": "in order they were logged",
+		"playtime-per-game": "by the playtime per game",
+		"logs-per-game": "by the number of logs per game",
+		"log-date-per-game": "last log date per game",
+	};
+
 	let embed = new EmbedBuilder()
 		.setTitle("Listing/Ranking")
-		.setDescription(
-			`Logs sorted ${
-				filter == "-1"
-					? "in order they were logged"
-					: "for `" +
-					  (filter == "0" ? "Playtime" : filter == "1" ? "Amount of logs" : filter == "2" ? "Logdate" : "") +
-					  "`"
-			}.\nList order is \`${order == "1" ? "increasing" : "decreasing"}\`.`
-		)
+		.setDescription(`Logs sorted ${text[sort]}.\nList order is ${order}.`)
 		.addFields(
 			{
 				name: "#",
@@ -48,23 +47,23 @@ export async function gameActivityTrackerEmbed(
 
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.left2.${offset}.${pages}.${filter}.${order}`)
+			.setCustomId(`game-activity-tracker.left2.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("◀◀")
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.left.${offset}.${pages}.${filter}.${order}`)
+			.setCustomId(`game-activity-tracker.left.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("◀")
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.right.${offset}.${pages}.${filter}.${order}`)
+			.setCustomId(`game-activity-tracker.right.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("▶")
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.right2.${offset}.${pages}.${filter}.${order}`)
+			.setCustomId(`game-activity-tracker.right2.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("▶▶")
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.reload.${offset}.${pages}.${filter}.${order}`)
+			.setCustomId(`game-activity-tracker.reload.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("↺")
 			.setStyle(ButtonStyle.Success)
 	);

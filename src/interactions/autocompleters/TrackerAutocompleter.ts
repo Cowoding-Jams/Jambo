@@ -1,7 +1,7 @@
 import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import {
-	adminWhitelistgame,
+	adminWhitelist,
 	blacklistAdd,
 	blacklistRemove,
 	statisticsGamestats,
@@ -15,12 +15,13 @@ class TrackerAutocompleter extends Autocompleter {
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
 		const group = interaction.options.getSubcommandGroup();
 		const sub = interaction.options.getSubcommand();
+
 		if (group === "admin") {
-			if (sub == "whitelistgame") await adminWhitelistgame(interaction);
-			else if (sub == "blacklistgame") await statisticsGamestats(interaction);
+			if (sub == "whitelist") await adminWhitelist(interaction);
+			else if (sub == "blacklist") await statisticsGamestats(interaction);
 		} else if (group === "statistics") {
-			if (sub == "mystats") await statisticsMystats(interaction);
-			else if (sub == "gamestats") await statisticsGamestats(interaction);
+			if (sub == "my-stats") await statisticsMystats(interaction);
+			else if (sub == "game-stats") await statisticsGamestats(interaction);
 		} else if (group === "blacklist") {
 			if (sub == "remove") await blacklistRemove(interaction);
 			else if (sub == "add") await blacklistAdd(interaction);

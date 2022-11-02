@@ -7,16 +7,16 @@ import { Command } from "../interactions/interactionClasses";
 import { config } from "../config";
 import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/game-activity-tracker/blacklist";
 import {
-	statisticsAllstats,
-	statisticsGamestats,
-	statisticsMystats,
+	statisticsAllStats,
+	statisticsGameStats,
+	statisticsMyStats,
 } from "../util/game-activity-tracker/statistics";
 import {
-	adminBlacklistgame,
+	adminBlacklistGame,
 	adminLook,
 	adminReset,
 	adminShow,
-	adminWhitelistgame,
+	adminWhitelistGame,
 } from "../util/game-activity-tracker/admin";
 import { list } from "../util/game-activity-tracker/list";
 
@@ -38,22 +38,22 @@ class TrackerCommand extends Command {
 				await blacklistShow(interaction);
 			}
 		} else if (group === "statistics") {
-			if (sub === "mystats") {
-				await statisticsMystats(interaction);
-			} else if (sub === "gamestats") {
-				await statisticsGamestats(interaction);
-			} else if (sub === "allstats") {
-				await statisticsAllstats(interaction);
+			if (sub === "my-stats") {
+				await statisticsMyStats(interaction);
+			} else if (sub === "game-stats") {
+				await statisticsGameStats(interaction);
+			} else if (sub === "all-stats") {
+				await statisticsAllStats(interaction);
 			}
 		} else if (group === "admin") {
 			if (interaction.memberPermissions?.bitfield == config.activityTrackerAdminCommandPermission) {
 				return;
 			} else if (sub === "reset") {
 				await adminReset(interaction);
-			} else if (sub === "blacklistgame") {
-				await adminBlacklistgame(interaction);
-			} else if (sub === "whitelistgame") {
-				await adminWhitelistgame(interaction);
+			} else if (sub === "blacklist") {
+				await adminBlacklistGame(interaction);
+			} else if (sub === "whitelist") {
+				await adminWhitelistGame(interaction);
 			} else if (sub === "look") {
 				await adminLook(interaction);
 			} else if (sub == "show") {
@@ -74,19 +74,70 @@ class TrackerCommand extends Command {
 		}
 		return new SlashCommandBuilder()
 			.setName("game-activity-tracker")
-			.setDescription("All commands associated with the Game activity tracker!")
+			.setDescription("All commands associated with the Game Activity Tracker!")
+			.addSubcommand((sub) =>
+				sub
+					.setName("list")
+					.setDescription("Returns a list of the played games based on a selected sorting method.")
+					.addStringOption((opt) =>
+						opt
+							.setName("sort")
+							.setDescription("Sort by the ...")
+							.addChoices(
+								{ name: "logs chronolocially and per person", value: "log-history" },
+								{ name: "playtime per game", value: "playtime-per-game" },
+								{ name: "number of logs per game", value: "logs-per-game" },
+								{ name: "last log date per game", value: "log-date-per-game" }
+							)
+					)
+					.addStringOption((opt) =>
+						opt
+							.setName("order")
+							.setDescription("Order the list ...")
+							.addChoices(
+								{ name: "decreasing", value: "decreasing" },
+								{ name: "increasing", value: "increasing" }
+							)
+					)
+			)
 			.addSubcommandGroup((group) =>
 				group
-					.setName("blacklist")
-					.setDescription("Manage your blacklist - if a game is on blacklist no activity will be tracked")
+					.setName("statistics")
+					.setDescription("Gives you statistics based on the game activity.")
 					.addSubcommand((sub) =>
 						sub
-							.setName("add")
-							.setDescription("Add a game to your blacklist")
+							.setName("my-stats")
+							.setDescription("Show statistics about your own logs.")
+							.addStringOption((opt) =>
+								opt.setName("game").setDescription("Filter stats for the given name.").setAutocomplete(true)
+							)
+					)
+					.addSubcommand((sub) =>
+						sub
+							.setName("game-stats")
+							.setDescription("Show statistics about a given game across all logs.")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("Enter game here - (Capitalization doesnt matter)")
+									.setDescription("Filter stats for the given game.")
+									.setAutocomplete(true)
+									.setRequired(true)
+							)
+					)
+					.addSubcommand((sub) => sub.setName("all-stats").setDescription("Show statistics across all logs."))
+			)
+			.addSubcommandGroup((group) =>
+				group
+					.setName("blacklist")
+					.setDescription("Manage your blacklist - if a game is on blacklist no activity will be tracked.")
+					.addSubcommand((sub) =>
+						sub
+							.setName("add")
+							.setDescription("Add a game to your blacklist.")
+							.addStringOption((opt) =>
+								opt
+									.setName("game")
+									.setDescription("The game to blacklist - (capitalization doesnt matter)")
 									.setAutocomplete(true)
 									.setRequired(true)
 							)
@@ -94,51 +145,25 @@ class TrackerCommand extends Command {
 					.addSubcommand((sub) =>
 						sub
 							.setName("remove")
-							.setDescription("Remove a game from your blacklist")
+							.setDescription("Remove a game from your blacklist.")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("Enter game here - (Capitalization doesnt matter)")
+									.setDescription("The game to whitelist - (capitalization doesnt matter)")
 									.setAutocomplete(true)
 									.setRequired(true)
 							)
 					)
-					.addSubcommand((sub) => sub.setName("show").setDescription("See what is on your blacklist"))
-			)
-			.addSubcommandGroup((group) =>
-				group
-					.setName("statistics")
-					.setDescription("Statistics")
-					.addSubcommand((sub) =>
-						sub
-							.setName("mystats")
-							.setDescription("Show statistics about your own logs")
-							.addStringOption((opt) =>
-								opt.setName("game").setDescription("Filter stats for the given name").setAutocomplete(true)
-							)
-					)
-					.addSubcommand((sub) =>
-						sub
-							.setName("gamestats")
-							.setDescription("Show statistics about a given game across all logs")
-							.addStringOption((opt) =>
-								opt
-									.setName("game")
-									.setDescription("Filter stats for the given game")
-									.setAutocomplete(true)
-									.setRequired(true)
-							)
-					)
-					.addSubcommand((sub) => sub.setName("allstats").setDescription("Show statistics across all logs"))
+					.addSubcommand((sub) => sub.setName("show").setDescription("See what is on your blacklist."))
 			)
 			.addSubcommandGroup((group) =>
 				group
 					.setName("admin")
-					.setDescription("Commands which only users with admin permissions can use")
+					.setDescription("Commands which only users with higher permissions can use.")
 					.addSubcommand((sub) =>
 						sub
 							.setName("reset")
-							.setDescription("Reset every log and blacklist entry")
+							.setDescription("Reset every log and blacklist entry.")
 							.addBooleanOption((opt) =>
 								opt.setName("sure").setDescription("Are you really sure?").setRequired(true)
 							)
@@ -155,8 +180,8 @@ class TrackerCommand extends Command {
 					)
 					.addSubcommand((sub) =>
 						sub
-							.setName("blacklistgame")
-							.setDescription("Add a game on the global blacklist - dont log anything for this game")
+							.setName("blacklist")
+							.setDescription("Add a game on the global blacklist - don't log anything for this game.")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
@@ -167,8 +192,8 @@ class TrackerCommand extends Command {
 					)
 					.addSubcommand((sub) =>
 						sub
-							.setName("whitelistgame")
-							.setDescription("Remove a game from the global blacklist - log this game again")
+							.setName("whitelist")
+							.setDescription("Remove a game from the global blacklist - log this game again.")
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
@@ -179,35 +204,14 @@ class TrackerCommand extends Command {
 									.setAutocomplete(true)
 							)
 					)
+					.addSubcommand((sub) => sub.setName("show").setDescription("Show the global blacklist."))
 					.addSubcommand((sub) =>
 						sub
 							.setName("look")
-							.setDescription("See which games a given user have on their blacklist")
+							.setDescription("Look into a users blacklist.")
 							.addUserOption((opt) =>
-								opt.setName("user").setDescription("Take a look into this users blacklist").setRequired(true)
+								opt.setName("user").setDescription("Take a look into this users blacklist.").setRequired(true)
 							)
-					)
-					.addSubcommand((sub) => sub.setName("show").setDescription("Show global blacklist"))
-			)
-			.addSubcommand((sub) =>
-				sub
-					.setName("list")
-					.setDescription("Returns a list of top 10 played games")
-					.addStringOption((opt) =>
-						opt
-							.setName("sort")
-							.setDescription("sort for ...")
-							.addChoices(
-								{ name: "Playtime", value: "0" },
-								{ name: "Amount of Logs", value: "1" },
-								{ name: "Log date", value: "2" }
-							)
-					)
-					.addStringOption((opt) =>
-						opt
-							.setName("order")
-							.setDescription("Order list")
-							.addChoices({ name: "decrease", value: "0" }, { name: "increase", value: "1" })
 					)
 			);
 	}

@@ -3,7 +3,7 @@ import { getEntrys, makeStats, splitId } from "./help";
 import { addDefaultEmbedFooter } from "../misc/embeds";
 import { deleteButtonAsRow } from "../misc/buttons";
 
-export async function statisticsMystats(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function statisticsMyStats(interaction: ChatInputCommandInteraction): Promise<void> {
 	let game = interaction.options.getString("game")?.toLowerCase();
 	const entrys = await getEntrys(interaction.user.id, game);
 	const fields = await makeStats(entrys);
@@ -11,10 +11,10 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(
 			game === null
-				? "No logs found"
+				? "No logs found!"
 				: game == undefined
-				? `nothing has been loggged yet`
-				: `No logs found for ${game}`
+				? `Nothing has been loggged yet.`
+				: `No logs found for ${game}...`
 		);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
@@ -48,13 +48,13 @@ export async function statisticsMystats(interaction: ChatInputCommandInteraction
 	await interaction.reply({ embeds: [embed], components: [row] });
 }
 
-export async function statisticsGamestats(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function statisticsGameStats(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
 	const entrys = await getEntrys(undefined, game);
 	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
-		let embed = new EmbedBuilder().setTitle(`No logs found for ${game}`);
+		let embed = new EmbedBuilder().setTitle(`No logs found for ${game}...`);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
@@ -65,22 +65,22 @@ export async function statisticsGamestats(interaction: ChatInputCommandInteracti
 		users.push(splitId(e)[0]);
 	});
 	if (users.length === 0) {
-		let embed = new EmbedBuilder().setTitle("No records found");
+		let embed = new EmbedBuilder().setTitle("No records found!");
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	}
 
 	let embed = new EmbedBuilder()
-		.setTitle(`Stats across all users for ${game.replace(/(\b\w)/g, (e) => e.toUpperCase())}`)
+		.setTitle(`Stats across all users for ${game.replace(/(\b\w)/g, (e) => e.toUpperCase())}!`)
 		.addFields(fields)
-		.addFields({ name: "Users", value: `${users.length} unique users`, inline: true });
+		.addFields({ name: "Users", value: `${users.length} unique gaymers :)`, inline: true });
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed] });
 	return;
 }
 
-export async function statisticsAllstats(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function statisticsAllStats(interaction: ChatInputCommandInteraction): Promise<void> {
 	const entrys = await getEntrys(undefined, undefined);
 	const fields = await makeStats(entrys);
 

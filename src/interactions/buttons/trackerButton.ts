@@ -18,10 +18,10 @@ class gameActivityTrackerButton extends Button {
 		if (offset < 0) offset = pages + (offset % pages);
 		else offset = offset % pages;
 
-		const filter = args[3];
+		const sort = args[3];
 		const order = args[4];
 
-		const [embed, row] = await gameActivityTrackerEmbed(filter, order, offset);
+		const [embed, row] = await gameActivityTrackerEmbed(sort, order, offset);
 		if (!embed) return;
 
 		await interaction.update({ embeds: [embed], components: row ? [row] : [] });

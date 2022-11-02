@@ -1,5 +1,6 @@
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { EmbedField } from "discord.js";
+import { msToReadable } from "../misc/time";
 
 export async function getBlacklist(userid: string): Promise<string[] | undefined> {
 	if (!activityTrackerBlacklistDb.has(userid)) return [];
@@ -70,40 +71,24 @@ export async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
 	const average = Math.floor(playTime / dayDifference);
 
 	const fields = [
-		{ name: "Record Range", value: `${dayDifference} Days`, inline: true },
-		{ name: "Total Playtime", value: await makeTimestamp(playTime, true), inline: true },
-		{ name: "Playtime/Day", value: await makeTimestamp(average, false), inline: true },
+		{ name: "Record Range", value: `${dayDifference} days`, inline: true },
+		{ name: "Total Playtime", value: msToReadable(playTime, true), inline: true },
+		{ name: "Playtime/Day", value: msToReadable(average, true), inline: true },
 		{
 			name: "First Record",
-			value: `<t:${Math.floor(firstEntry / 1000)}> ⁘ <t:${Math.floor(firstEntry / 1000)}:R>`,
+			value: `<t:${Math.floor(firstEntry / 1000)}:R>`,
 			inline: true,
 		},
 		{
 			name: "Last Record",
-			value: `<t:${Math.floor(lastEntry / 1000)}> ⁘ <t:${Math.floor(lastEntry / 1000)}:R>`,
+			value: `<t:${Math.floor(lastEntry / 1000)}:R>`,
 			inline: true,
 		},
-		{ name: "Longest Record", value: await makeTimestamp(longestRecord, false), inline: true },
+		{ name: "Longest Record", value: msToReadable(longestRecord, true), inline: true },
 		{ name: "Total Records", value: `${totalRecords}`, inline: true },
 	];
 
 	return fields;
-}
-
-export async function makeTimestamp(ms: number, day: boolean): Promise<string> {
-	let totalSeconds = ms / 1000;
-	const days = Math.floor(totalSeconds / 86400);
-	totalSeconds %= 86400;
-	const hours = Math.floor(totalSeconds / 3600);
-	totalSeconds %= 3600;
-	const minute = Math.floor(totalSeconds / 60);
-	const second = Math.floor(totalSeconds % 60);
-
-	return `${days > 0 && day ? days + "day(s) " : ""}${hours > 0 ? hours + "hour(s) " : ""}${
-		hours > 0 && minute > 0 ? ", " : " "
-	}${minute > 0 ? minute + "minute(s) " : ""}${(hours > 0 || minute > 0) && second > 0 ? "and " : ""}${
-		second > 0 ? second + "second(s) " : ""
-	}`.trim();
 }
 
 export function splitId(id: string): [string, string] {

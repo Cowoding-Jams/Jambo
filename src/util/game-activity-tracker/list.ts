@@ -32,9 +32,9 @@ export async function nofilter(offset: number, order: string) {
 		});
 	});
 
-	if (order == "0") {
+	if (order == "decreasing") {
 		logs = logs.sort((a, b) => b.w - a.w);
-	} else if (order == "1") {
+	} else if (order == "increasing") {
 		logs = logs.sort((a, b) => a.w - b.w);
 	}
 
@@ -53,10 +53,10 @@ export async function nofilter(offset: number, order: string) {
 	];
 }
 
-export async function createList(filter: string, offset: number, order: string) {
+export async function createList(sort: string, offset: number, order: string) {
 	offset *= 10;
 
-	if (filter == "-1") return await nofilter(offset, order);
+	if (sort == "log-history") return await nofilter(offset, order);
 
 	const keys = activityTrackerLogDb.keyArray();
 	const final = new Map<string, number>();
@@ -80,8 +80,8 @@ export async function createList(filter: string, offset: number, order: string) 
 			if (entry.w < firstplayed) firstplayed = entry.w;
 		});
 
-		switch (filter) {
-			case "0":
+		switch (sort) {
+			case "playtime-per-game":
 				if (!final.has(game)) {
 					final.set(game, playtime);
 				} else {
@@ -91,7 +91,7 @@ export async function createList(filter: string, offset: number, order: string) 
 					final.set(game, time);
 				}
 				return;
-			case "1":
+			case "logs-per-game":
 				if (!final.has(game)) {
 					final.set(game, logs);
 				} else {
@@ -101,7 +101,7 @@ export async function createList(filter: string, offset: number, order: string) 
 					final.set(game, time);
 				}
 				return;
-			case "2":
+			case "log-date-per-game":
 				if (!final.has(game)) {
 					final.set(game, lastplayed);
 				} else {
@@ -116,7 +116,7 @@ export async function createList(filter: string, offset: number, order: string) 
 	});
 
 	const sorted = new Map(
-		[...final.entries()].sort((a, b) => (order == (filter !== "2" ? "0" : "1") ? b[1] - a[1] : a[1] - b[1]))
+		[...final.entries()].sort((a, b) => (order == "decreasing" ? b[1] - a[1] : a[1] - b[1]))
 	);
 
 	const games: string[] = [];
@@ -129,11 +129,11 @@ export async function createList(filter: string, offset: number, order: string) 
 		}
 
 		games.push(k);
-		if (filter == "0") {
+		if (sort == "playtime-per-game") {
 			values.push(msToReadable(v, true));
-		} else if (filter == "1") {
+		} else if (sort == "logs-per-game") {
 			values.push(`${v}`);
-		} else if (filter == "2") {
+		} else if (sort == "log-date-per-game") {
 			values.push(`<t:${Math.floor(v / 1000)}> ⁘ <t:${Math.floor(v / 1000)}:R>`);
 		}
 	});
@@ -147,17 +147,10 @@ export async function createList(filter: string, offset: number, order: string) 
 
 export async function list(interaction: ChatInputCommandInteraction) {
 	await interaction.deferReply();
-	let filter = interaction.options.getString("sort");
-	let order = interaction.options.getString("order");
+	const sort = interaction.options.getString("sort") || "log-history";
+	const order = interaction.options.getString("order") || "decreasing";
 
-	if (filter == null) {
-		filter = "-1";
-	}
-	if (order == null) {
-		order = "0";
-	}
-
-	const [embed, row] = await gameActivityTrackerEmbed(filter, order);
+	const [embed, row] = await gameActivityTrackerEmbed(sort, order);
 	if (!embed) return;
 
 	await interaction.editReply({ embeds: [embed], components: row ? [row] : [] });
