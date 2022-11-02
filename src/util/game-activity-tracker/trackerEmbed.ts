@@ -47,7 +47,7 @@ export async function gameActivityTrackerEmbed(
 
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.left2.${offset}.${pages}.${sort}.${order}`)
+			.setCustomId(`game-activity-tracker.jump-left.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("◀◀")
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
@@ -59,7 +59,7 @@ export async function gameActivityTrackerEmbed(
 			.setLabel("▶")
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.right2.${offset}.${pages}.${sort}.${order}`)
+			.setCustomId(`game-activity-tracker.jump-right.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("▶▶")
 			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()

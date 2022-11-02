@@ -10,10 +10,12 @@ class gameActivityTrackerButton extends Button {
 		let offset = parseInt(args[1]);
 		const pages = parseInt(args[2]);
 
+		const jump = Math.round(pages / 4); // jump by a quarter of the pages
+
 		if (args[0] == "left") offset -= 1;
-		else if (args[0] == "left2") offset -= 10;
+		else if (args[0] == "jump-left") offset -= jump;
 		else if (args[0] == "right") offset += 1;
-		else if (args[0] == "right2") offset += 10;
+		else if (args[0] == "jump-right") offset += jump;
 
 		if (offset < 0) offset = pages + (offset % pages);
 		else offset = offset % pages;
