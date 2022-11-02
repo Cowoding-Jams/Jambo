@@ -1,4 +1,4 @@
-import reminderCommand from "../commands/ReminderCommand";
+import ReminderCommand from "../commands/ReminderCommand";
 import {
 	ApplicationCommand,
 	Client,
@@ -15,8 +15,8 @@ export default async function ready(client: Client) {
 	logger.info("Publishing commands...");
 	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
-	logger.info("Restoring reminders...");
-	reminderCommand.restoreReminders(client);
+	logger.info("Starting reminder scheduler...");
+	ReminderCommand.startScheduler(client);
 
 	logger.info("Setup successfully");
 }
@@ -34,12 +34,14 @@ async function updateRegisteredCommands(client: Client) {
 		ctx.commands.map(async (cmd) => {
 			const cmdBuilder = cmd.register();
 			const existingCmd = registeredCommands.find((c) => c.name === cmd.name);
-			if (!existingCmd) {
-				logger.debug(`Creating new command: ${cmdBuilder.name}`);
-				return client.application?.commands.create(cmdBuilder.toJSON(), ctx.defaultGuild);
-			} else if (!commandsEqual(existingCmd, cmdBuilder)) {
-				logger.debug(`Updating command: ${cmdBuilder.name}`);
-				return client.application?.commands.edit(existingCmd.id, cmdBuilder.toJSON(), ctx.defaultGuild);
+			if (typeof cmdBuilder != "boolean") {
+				if (!existingCmd) {
+					logger.debug(`Creating new command: ${cmdBuilder.name}`);
+					return client.application?.commands.create(cmdBuilder.toJSON(), ctx.defaultGuild);
+				} else if (!commandsEqual(existingCmd, cmdBuilder)) {
+					logger.debug(`Updating command: ${cmdBuilder.name}`);
+					return client.application?.commands.edit(existingCmd.id, cmdBuilder.toJSON(), ctx.defaultGuild);
+				}
 			}
 		})
 	);

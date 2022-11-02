@@ -4,9 +4,8 @@
 		"module": "esnext",
 		"rootDir": "./src/",
 		"moduleResolution": "node",
-		"baseUrl": "./src/",
 		"allowJs": false,
-		"declaration": true,
+		"declaration": false,
 		"outDir": "./dist/",
 		"removeComments": true,
 		"newLine": "lf",
@@ -24,10 +23,5 @@
 		"skipLibCheck": true,
 		"sourceMap": true
 	},
-	"include": ["src/**/*"],
-	"ts-node": {
-		"compilerOptions": {
-			"module": "CommonJS"
-		}
-	}
+	"include": ["src/**/*"]
 }

@@ -8,6 +8,5 @@ export function addDefaultEmbedFooter(embed: EmbedBuilder): EmbedBuilder {
 			iconURL: config.iconURL,
 			url: config.githubURL,
 		})
-		.setColor(config.color)
-		.setTimestamp();
+		.setColor(config.color);
 }

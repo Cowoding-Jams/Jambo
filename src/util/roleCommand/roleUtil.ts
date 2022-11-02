@@ -48,8 +48,13 @@ export async function setUpRoles(
 	return true;
 }
 
-export async function deleteAllRoles(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function deleteRoles(interaction: ChatInputCommandInteraction): Promise<void> {
+	const all = interaction.options.getBoolean("all");
+	const start = interaction.options.getRole("start");
+	const end = interaction.options.getRole("end");
+
 	const guildRoles = await interaction.guild?.roles.fetch();
+
 	if (!guildRoles) {
 		logger.error("Could not fetch guild roles");
 		await interaction.editReply("Couldn't fetch the roles...");
@@ -57,18 +62,39 @@ export async function deleteAllRoles(interaction: ChatInputCommandInteraction): 
 	}
 
 	const roles = guildRoles.map((r) => r).sort((a, b) => b.position - a.position);
-	let deleteRoles = false;
 
-	for (const role of roles) {
-		if (role.name.startsWith("-") && role.name.endsWith("-")) {
-			deleteRoles = !deleteRoles;
-			role.delete();
-		} else if (deleteRoles) {
-			role.delete();
+	if (all) {
+		let deleteRoles = false;
+
+		for (const role of roles) {
+			if (role.name.startsWith("-") && role.name.endsWith("-")) {
+				deleteRoles = !deleteRoles;
+				role.delete();
+			} else if (deleteRoles) {
+				role.delete();
+			}
 		}
+	} else if (start && end) {
+		let deleteRoles = false;
+
+		for (const role of roles) {
+			if (role.id === start.id) {
+				deleteRoles = true;
+				role.delete();
+			} else if (role.id === end.id) {
+				deleteRoles = false;
+				role.delete();
+			} else if (deleteRoles) {
+				role.delete();
+			}
+		}
+	} else {
+		await interaction.editReply({
+			content: "You have to select two roles if you don't want me to delete all generated roles...",
+		});
 	}
 
-	await interaction.editReply({ content: "Deleted all roles!" });
+	await interaction.editReply({ content: "Deleted the roles!" });
 }
 
 export function bringIntoButtonGrid(
