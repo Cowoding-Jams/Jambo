@@ -49,7 +49,7 @@ export async function nofilter(offset: number, order: string) {
 	return [
 		games.slice(offset, offset + 10), // games
 		timeAndUser.slice(offset, offset + 10), // values
-		Math.floor(games.length / 10), // pages
+		Math.ceil(games.length / 10), // pages
 	];
 }
 
@@ -141,7 +141,7 @@ export async function createList(sort: string, offset: number, order: string) {
 	return [
 		games.slice(offset, offset + 10), // games
 		values.slice(offset, offset + 10), // values
-		Math.floor(values.length / 10) + 1, // pages
+		Math.ceil(values.length / 10), // pages
 	];
 }
 
@@ -153,5 +153,8 @@ export async function list(interaction: ChatInputCommandInteraction) {
 	const [embed, row] = await gameActivityTrackerEmbed(sort, order);
 	if (!embed) return;
 
-	await interaction.editReply({ embeds: [embed], components: row ? [row] : [] });
+	await interaction.editReply({
+		embeds: [embed],
+		components: row ? [row] : [],
+	});
 }
