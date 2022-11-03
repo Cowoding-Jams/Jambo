@@ -70,7 +70,6 @@ export async function gameActivityTrackerEmbed(
 			.setCustomId(`game-activity-tracker.reload.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("↺")
 			.setStyle(ButtonStyle.Success)
-			.setDisabled(pages == 1),
 	);
 
 	return [embed, row];
