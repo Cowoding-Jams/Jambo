@@ -1,20 +1,24 @@
-import { Activity, Presence } from "discord.js";
+import { Activity, ActivityType, Presence } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 
-export async function getStopedActivities(
+export async function getChangedActivities(
 	oldPresence: Presence | null,
 	newPresence: Presence
-): Promise<Activity[]> {
-	// 0 = game activity
-	const oldActivities = oldPresence?.activities.filter((value) => value.type === 0);
-	const newActivities = newPresence.activities.filter((value) => value.type === 0);
+): Promise<{ started: Activity[]; stopped: Activity[] }> {
+	const oldActivities = oldPresence?.activities.filter((value) => value.type === ActivityType.Playing);
+	const newActivities = newPresence.activities.filter((value) => value.type === ActivityType.Playing);
 
-	const stopedActivities: Activity[] = [];
-	oldActivities?.forEach((element) => {
-		if (!newActivities.some((e) => e.name === element.name)) stopedActivities.push(element);
+	const stopped: Activity[] = [];
+	oldActivities?.forEach((activity) => {
+		if (!newActivities.some((newActivity) => newActivity.name === activity.name)) stopped.push(activity);
 	});
 
-	return stopedActivities;
+	const started: Activity[] = [];
+	newActivities.forEach((activity) => {
+		if (!oldActivities?.some((oldActivity) => oldActivity.name === activity.name)) started.push(activity);
+	});
+
+	return { started, stopped };
 }
 
 export async function blacklistCheck(userid: string, elementName: string): Promise<boolean> {
