@@ -74,7 +74,7 @@ class TrackerCommand extends Command {
 		}
 		return new SlashCommandBuilder()
 			.setName("game-activity-tracker")
-			.setDescription("All commands associated with the Game Activity Tracker!")
+			.setDescription("A game activity tracker to provide interesting insights in the people on this server.")
 			.addSubcommand((sub) =>
 				sub
 					.setName("list")

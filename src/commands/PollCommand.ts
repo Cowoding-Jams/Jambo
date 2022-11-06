@@ -16,72 +16,82 @@ class PollCommand extends Command {
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
-		return new SlashCommandBuilder()
-			.setName("poll")
-			.setDescription("A full featured poll system.")
-			.addSubcommandGroup((group) =>
-				group
-					.setName("proposal")
-					.setDescription("Manage proposals.")
-					.addSubcommand((subcommand) =>
-						subcommand
-							.setName("create")
-							.setDescription("Create a proposal.")
-							.addStringOption(proposalTitleStringOption)
-							.addStringOption(proposalDescriptionStringOption)
-							.addStringOption(proposalTimePeriodStringOption)
-					)
-					.addSubcommand((subcommand) =>
-						subcommand
-							.setName("delete")
-							.setDescription("Delete a proposal.")
-							.addStringOption(proposalSelectStringOption)
-					)
-					.addSubcommand((subcommand) =>
-						subcommand
-							.setName("edit-proposal")
-							.setDescription("Edit a proposals title, description or time period.")
-							.addStringOption(proposalSelectStringOption)
-							.addStringOption(proposalNewTitleStringOption)
-							.addStringOption(proposalNewDescriptionStringOption)
-							.addStringOption(proposalNewTimePeriodStringOption)
-					)
-			)
-			.addSubcommandGroup((group) =>
-				group
-					.setName("create")
-					.setDescription("Create polls.")
-					.addSubcommand((subcommand) =>
-						subcommand
-							.setName("new")
-							.setDescription("Create a new poll.")
-							.addStringOption(pollNameStringOption)
-					)
-					.addSubcommand((subcommand) =>
-						subcommand
-							.setName("from-template")
-							.setDescription("Create a poll from a template.")
-							.addStringOption(pollNameStringOption)
-							.addStringOption(pollTemplateSelectStringOption)
-					)
-					.addSubcommand((subcommand) =>
-						subcommand
-							.setName("new-template")
-							.setDescription("Create a new poll template.")
-							.addStringOption(pollTemplateNameStringOption)
-					)
-			)
-			.addSubcommandGroup((group) =>
-				group
-					.setName("list")
-					.setDescription("List proposals, polls, or templates.")
-					.addSubcommand((subcommand) =>
-						subcommand.setName("proposals").setDescription("Lists all the proposals.")
-					)
-					.addSubcommand((subcommand) =>
-						subcommand.setName("templates").setDescription("Lists all the poll templates.")
-					)
-			);
+		return (
+			new SlashCommandBuilder()
+				.setName("poll")
+				.setDescription("A full featured poll system.")
+				// proposals
+				.addSubcommandGroup((group) =>
+					group
+						.setName("proposal")
+						.setDescription("Manage proposals.")
+						.addSubcommand((subcommand) =>
+							subcommand
+								.setName("create")
+								.setDescription("Create a proposal.")
+								.addStringOption(proposalTitleStringOption)
+								.addStringOption(proposalDescriptionStringOption)
+								.addStringOption(proposalTimePeriodStringOption)
+						)
+						.addSubcommand((subcommand) =>
+							subcommand
+								.setName("delete")
+								.setDescription("Delete a proposal.")
+								.addStringOption(proposalSelectStringOption)
+						)
+						.addSubcommand((subcommand) =>
+							subcommand
+								.setName("edit-proposal")
+								.setDescription("Edit a proposals title, description or time period.")
+								.addStringOption(proposalSelectStringOption)
+								.addStringOption(proposalNewTitleStringOption)
+								.addStringOption(proposalNewDescriptionStringOption)
+								.addStringOption(proposalNewTimePeriodStringOption)
+						)
+				)
+				// manage polls
+				.addSubcommandGroup((group) =>
+					group
+						.setName("manage")
+						.setDescription("Manage polls.")
+						.addSubcommand((subcommand) =>
+							subcommand
+								.setName("new")
+								.setDescription("Create a new poll.")
+								.addStringOption(pollNameStringOption())
+						)
+						.addSubcommand((subcommand) =>
+							subcommand
+								.setName("from-template")
+								.setDescription("Create a poll from a template.")
+								.addStringOption(pollNameStringOption())
+								.addStringOption(pollTemplateSelectStringOption)
+						)
+						.addSubcommand((subcommand) =>
+							subcommand
+								.setName("new-template")
+								.setDescription("Create a new poll template.")
+								.addStringOption(pollTemplateNameStringOption)
+						)
+						.addSubcommand((subcommand) =>
+							subcommand
+								.setName("delete")
+								.setDescription("Delete an existing poll.")
+								.addStringOption(pollNameStringOption(true))
+						)
+				)
+				.addSubcommandGroup((group) =>
+					group
+						.setName("list")
+						.setDescription("List proposals, polls, or templates.")
+						.addSubcommand((subcommand) =>
+							subcommand.setName("proposals").setDescription("Lists all the proposals.")
+						)
+						.addSubcommand((subcommand) =>
+							subcommand.setName("templates").setDescription("Lists all the poll templates.")
+						)
+				)
+		);
 	}
 }
 
@@ -118,8 +128,10 @@ const proposalNewTimePeriodStringOption = (option: SlashCommandStringOption) =>
 	option.setName("new-time-period").setDescription("The new time period of the proposal.").setRequired(false);
 
 // Poll creation
-const pollNameStringOption = (option: SlashCommandStringOption) =>
-	option.setName("poll-name").setDescription("The name of the poll.").setRequired(true);
+const pollNameStringOption =
+	(required: boolean = false) =>
+	(option: SlashCommandStringOption) =>
+		option.setName("poll-name").setDescription("The name of the poll.").setRequired(required);
 
 const pollTemplateNameStringOption = (option: SlashCommandStringOption) =>
 	option.setName("template-name").setDescription("The name of the template for future reference.");
