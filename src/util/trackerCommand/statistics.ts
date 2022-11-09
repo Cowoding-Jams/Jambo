@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { getEntrys, makeStats, splitId } from "./help";
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedFooter } from "../misc/embeds";
 import { deleteButtonAsRow } from "../misc/buttons";
 
 export async function statisticsMyStats(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -16,7 +16,7 @@ export async function statisticsMyStats(interaction: ChatInputCommandInteraction
 				? `Nothing has been loggged yet.`
 				: `No logs found for ${game}...`
 		);
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	}
@@ -31,7 +31,7 @@ export async function statisticsMyStats(interaction: ChatInputCommandInteraction
 			.setTitle("Your stats across all games")
 			.addFields(fields)
 			.addFields({ name: "Games", value: `${games} unique games`, inline: true });
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	}
@@ -43,7 +43,7 @@ export async function statisticsMyStats(interaction: ChatInputCommandInteraction
 	}
 
 	let embed = new EmbedBuilder().setTitle(`Your stats about ${game}`).addFields(fields);
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedFooter(embed);
 	const row = deleteButtonAsRow(interaction.user.id, true);
 	await interaction.reply({ embeds: [embed], components: [row] });
 }
@@ -55,7 +55,7 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(`No logs found for ${game}...`);
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	}
@@ -66,7 +66,7 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 	});
 	if (users.length === 0) {
 		let embed = new EmbedBuilder().setTitle("No records found!");
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	}
@@ -75,7 +75,7 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 		.setTitle(`Stats across all users for ${game.replace(/(\b\w)/g, (e) => e.toUpperCase())}!`)
 		.addFields(fields)
 		.addFields({ name: "Users", value: `${users.length} unique gaymers :)`, inline: true });
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed] });
 	return;
 }
@@ -86,7 +86,7 @@ export async function statisticsAllStats(interaction: ChatInputCommandInteractio
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle("No logs found");
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	}
@@ -107,6 +107,6 @@ export async function statisticsAllStats(interaction: ChatInputCommandInteractio
 			{ name: "Games", value: `${games.length} unique games`, inline: true }
 		);
 
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed] });
 }

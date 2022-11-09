@@ -1,4 +1,4 @@
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedColor } from "../misc/embeds";
 import { reminderDb, reminderTimeoutCache } from "../../db";
 import { logger } from "../../logger";
 import { Client, EmbedBuilder, TextBasedChannel } from "discord.js";
@@ -10,7 +10,7 @@ export async function elapse(client: Client, id: number): Promise<void> {
 	await channel?.send({
 		content: reminder.pings.join(" "),
 		embeds: [
-			addDefaultEmbedFooter(
+			addEmbedColor(
 				new EmbedBuilder().setTitle("Time is up!").setDescription(reminder.message || "I believe in you!")
 			),
 		],

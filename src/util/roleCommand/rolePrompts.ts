@@ -8,7 +8,7 @@ import {
 	EmbedBuilder,
 	SelectMenuBuilder,
 } from "discord.js";
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
 import { bringIntoButtonGrid, setUpRoles } from "./roleUtil";
 
@@ -47,7 +47,7 @@ export async function pronounPrompt(interaction: ChatInputCommandInteraction): P
 		)
 	) {
 		await interaction.editReply({
-			embeds: [addDefaultEmbedFooter(prompt)],
+			embeds: [addEmbedFooter(prompt)],
 			components: actionRows,
 		});
 	} else {
@@ -117,7 +117,7 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 
 	if (await setUpRoles(interaction.guild, config.colorRoles, "- StartColorRoles -", "- EndColorRoles -")) {
 		await interaction.editReply({
-			embeds: [addDefaultEmbedFooter(prompt)],
+			embeds: [addEmbedFooter(prompt)],
 			components: actionRows,
 			files: [
 				{
@@ -157,7 +157,7 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 			"- EndTimezoneRoles -"
 		)
 	) {
-		await interaction.editReply({ embeds: [addDefaultEmbedFooter(prompt)], components: [actionRow] });
+		await interaction.editReply({ embeds: [addEmbedFooter(prompt)], components: [actionRow] });
 	} else {
 		await interaction.editReply({ content: "Couldn't set up the roles..." });
 		logger.error("Failed to set up timezone roles.");

@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
 import { createList } from "./list";
-import { addDefaultEmbedFooter } from "../../util/misc/embeds";
+import { addEmbedFooter } from "../../util/misc/embeds";
 
 export async function gameActivityTrackerEmbed(
 	sort: string,
@@ -43,7 +43,7 @@ export async function gameActivityTrackerEmbed(
 		)
 		.setFooter({ text: `Page ${offset + 1}/${pages}` });
 
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedFooter(embed);
 
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		new ButtonBuilder()

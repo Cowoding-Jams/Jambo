@@ -6,10 +6,8 @@ class ExampleSelectMenu extends SelectMenu {
 		super("exampleSelectMenu");
 	}
 
-	async execute(interaction: SelectMenuInteraction, subcommand: string[]): Promise<void> {
-		await interaction.reply(
-			`You used ${subcommand} and selected the following options: ${interaction.values}`
-		);
+	async execute(interaction: SelectMenuInteraction, customId: string[]): Promise<void> {
+		await interaction.reply(`You used ${customId} and selected the following options: ${interaction.values}`);
 	}
 }
 

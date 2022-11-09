@@ -1,7 +1,7 @@
 import { hasRoleMentionPerms } from "../misc/permissions";
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, inlineCode, Role } from "discord.js";
 import { reminderDb, reminderTimeoutCache } from "../../db";
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedColor } from "../misc/embeds";
 import { msToReadable } from "../misc/time";
 import { elapse } from "./reminderUtil";
 
@@ -83,7 +83,7 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 
 	await interaction.reply({
 		embeds: [
-			addDefaultEmbedFooter(
+			addEmbedColor(
 				new EmbedBuilder()
 					.setTitle("Reminder set!")
 					.setDescription(
@@ -145,7 +145,7 @@ export async function reminderList(interaction: ChatInputCommandInteraction) {
 		});
 	} else {
 		await interaction.reply({
-			embeds: [addDefaultEmbedFooter(new EmbedBuilder().setTitle("Your reminders").setDescription(output))],
+			embeds: [addEmbedColor(new EmbedBuilder().setTitle("Your reminders").setDescription(output))],
 			ephemeral: true,
 		});
 	}

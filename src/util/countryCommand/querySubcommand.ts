@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedFooter } from "../misc/embeds";
 import { formatNumber } from "../misc/numbers";
 import { shuffleList } from "../misc/random";
 import { countryData } from "./countryDataLoader";
@@ -92,7 +92,7 @@ function getListEmbed(data: string[][], title: string, numbered: boolean): Embed
 		des = data.map((c) => `- ${c[0]}${dataSymbol}${c.slice(1).join(", ")}`).join("\n");
 	}
 
-	return addDefaultEmbedFooter(new EmbedBuilder().setTitle(title).setDescription(des));
+	return addEmbedFooter(new EmbedBuilder().setTitle(title).setDescription(des));
 }
 
 const filteringTitles: { [id: string]: (value: string, criteria: CountryKey) => string } = {

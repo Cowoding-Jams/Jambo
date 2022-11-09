@@ -6,7 +6,7 @@ import {
 	SlashCommandBuilder,
 	User,
 } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/misc/embeds";
+import { addEmbedFooter } from "../util/misc/embeds";
 
 class UserInfoCommand extends Command {
 	constructor() {
@@ -85,7 +85,7 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 
 		embed.addFields({ name: "Boosting", value: boosting, inline: true }, { name: "Roles", value: roles });
 	}
-	return addDefaultEmbedFooter(embed);
+	return addEmbedFooter(embed);
 }
 
 export default new UserInfoCommand();

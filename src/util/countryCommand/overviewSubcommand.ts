@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder, inlineCode } from "discord.js";
 import { handleUndefinedCountry } from "./generalCountryCommandUtil";
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedFooter } from "../misc/embeds";
 import { getCountryByName } from "./countryDataManager";
 import { pickRandomFromList } from "../misc/random";
 import { formatNumber } from "../misc/numbers";
@@ -50,5 +50,5 @@ function getOverviewEmbed(country: Country, locale: string): EmbedBuilder {
 			}
 		);
 
-	return addDefaultEmbedFooter(embed);
+	return addEmbedFooter(embed);
 }

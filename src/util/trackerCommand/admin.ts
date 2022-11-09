@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { getBlacklist } from "./help";
 import { logger } from "../../logger";
@@ -15,12 +15,10 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 				"Because you are not really sure if you should reset everything related to tracking, the reset wasn't executed."
 			)
 			.setColor("#9d4b4b");
-		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 		return;
 	} else {
 		let embed = new EmbedBuilder().setTitle("Reseting Logs and Blacklist...").setColor("#9d9e4c");
-		embed = addDefaultEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed] });
 	}
 
@@ -30,7 +28,6 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 	activityTrackerBlacklistDb.ensure("general-game", []);
 
 	let embed = new EmbedBuilder().setTitle("Reset done!").setColor("#4c9e4f");
-	embed = addDefaultEmbedFooter(embed);
 	await interaction.editReply({ embeds: [embed] });
 }
 
@@ -38,29 +35,24 @@ export async function adminBlacklistGame(interaction: ChatInputCommandInteractio
 	const game = interaction.options.getString("game", true);
 	activityTrackerBlacklistDb.push("general-game", game.toLowerCase());
 
-	let embed = new EmbedBuilder()
+	const embed = new EmbedBuilder()
 		.setTitle("Added a game to blacklist!")
 		.setDescription(`No activity about "${game}" will be logged anymore.`);
-	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed], ephemeral: true });
+	await interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 }
 
 export async function adminWhitelistGame(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
 
 	if (game == "empty-global-blacklist") {
-		let embed = new EmbedBuilder().setTitle("The global blacklist is empty...");
-
-		embed = addDefaultEmbedFooter(embed);
-		interaction.reply({ embeds: [embed], ephemeral: true });
+		const embed = new EmbedBuilder().setTitle("The global blacklist is empty...");
+		interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 	}
 
 	let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get("general-game");
 
 	if (!blacklistedGames) {
-		let embed = new EmbedBuilder().setTitle("Something went wrong...");
-		embed = addDefaultEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed], ephemeral: true });
+		await interaction.reply({ content: "Something went wrong...", ephemeral: true });
 		logger.error(
 			"Something went wrong while trying to get the global blacklist. Couldn't get the 'general-game' key."
 		);
@@ -74,7 +66,7 @@ export async function adminWhitelistGame(interaction: ChatInputCommandInteractio
 	let embed = new EmbedBuilder()
 		.setTitle("Removed a game from the global blacklist!")
 		.setDescription(`Removed "${game}" from global blacklist.`);
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedColor(embed);
 	await interaction.reply({ embeds: [embed], ephemeral: true });
 }
 
@@ -90,14 +82,14 @@ export async function adminLook(interaction: ChatInputCommandInteraction): Promi
 					(activityTrackerBlacklistDb.get("general-user")?.includes(user.id) ? "disabled" : "enabled") +
 					"`\nBlacklisted games: No game is blacklisted. Every game gets logged"
 			);
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedColor(embed);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
 		return;
 	}
 
 	const str = "`" + blacklist.join("`, `") + "`";
 
-	let embed = new EmbedBuilder()
+	const embed = new EmbedBuilder()
 		.setTitle(`${user.tag}'s blacklist`)
 		.setDescription(
 			"Trackstatus: `" +
@@ -105,8 +97,7 @@ export async function adminLook(interaction: ChatInputCommandInteraction): Promi
 				"`\nBlacklisted games: " +
 				str
 		);
-	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed], ephemeral: true });
+	await interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 }
 
 export async function adminShow(interaction: ChatInputCommandInteraction) {
@@ -114,13 +105,12 @@ export async function adminShow(interaction: ChatInputCommandInteraction) {
 
 	if (!blacklist || blacklist.length == 0) {
 		let embed = new EmbedBuilder().setTitle("The global blacklist is empty...");
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
 		return;
 	}
 
 	const str = "`" + blacklist?.join("`, `") + "`";
-	let embed = new EmbedBuilder().setTitle("Global Blacklist").setDescription(str);
-	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed], ephemeral: true });
+	const embed = new EmbedBuilder().setTitle("Global Blacklist").setDescription(str);
+	await interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 }

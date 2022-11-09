@@ -6,8 +6,8 @@ class ExampleModal extends Modal {
 		super("exampleModal");
 	}
 
-	async execute(interaction: ModalSubmitInteraction, subcommand: string[]): Promise<void> {
-		await interaction.reply(`You submitted the ${subcommand} modal.`);
+	async execute(interaction: ModalSubmitInteraction, customId: string[]): Promise<void> {
+		await interaction.reply(`You submitted the ${customId} modal.`);
 	}
 }
 

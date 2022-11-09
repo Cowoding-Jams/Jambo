@@ -62,6 +62,7 @@ export const config: BotConfig = {
 	logLevel: "debug",
 	logActivity: true,
 	activityTrackerAdminCommandPermission: PermissionFlagsBits.Administrator,
+	moderatorRoleId: "855349314807922698", // cowoding-jams/moderator
 };
 
 interface BotConfig {
@@ -87,4 +88,6 @@ interface BotConfig {
 	logActivity: boolean;
 	// Which permissions are needed to user game-activity-tracker commands
 	activityTrackerAdminCommandPermission: bigint;
+	//
+	moderatorRoleId: string;
 }

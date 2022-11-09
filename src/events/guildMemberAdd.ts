@@ -1,5 +1,5 @@
 import { EmbedBuilder, GuildMember, inlineCode } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/misc/embeds";
+import { addEmbedFooter } from "../util/misc/embeds";
 import { config } from "../config";
 
 const ordinalRules = new Intl.PluralRules("en-US", { type: "ordinal" });
@@ -35,7 +35,7 @@ export default async function guildMemberAdd(member: GuildMember) {
 				)} in any channel. If I need something from you I'll ping you like this <@${member.user.id}> :)`,
 			}
 		);
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedFooter(embed);
 
 	if (member.guild.systemChannel) {
 		member.guild.systemChannel.send({ embeds: [embed] });

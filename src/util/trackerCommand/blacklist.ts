@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addDefaultEmbedFooter } from "../misc/embeds";
+import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
 import { activityTrackerBlacklistDb } from "../../db";
 import { getBlacklist } from "./help";
 
@@ -12,7 +12,7 @@ export async function blacklistAdd(interaction: ChatInputCommandInteraction): Pr
 			.setDescription(
 				"Tracking is now disabled for you.\nTo activate it again use `/tracking blacklist remove`"
 			);
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
 		return;
 	}
@@ -21,11 +21,7 @@ export async function blacklistAdd(interaction: ChatInputCommandInteraction): Pr
 		activityTrackerBlacklistDb.set(interaction.user.id, []);
 	}
 	activityTrackerBlacklistDb.push(interaction.user.id, game.toLowerCase());
-
-	let embed = new EmbedBuilder().setTitle(`"${game}" is now on your blacklist!`);
-
-	embed = addDefaultEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed], ephemeral: true });
+	await interaction.reply({ content: `"${game}" is now on your blacklist!`, ephemeral: true });
 }
 
 export async function blacklistRemove(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -34,35 +30,26 @@ export async function blacklistRemove(interaction: ChatInputCommandInteraction):
 	if (game === "Tracking is disabled, select this to activate it again") {
 		let blacklistedUser = activityTrackerBlacklistDb.get("general-user");
 		if (!blacklistedUser) {
-			let embed = new EmbedBuilder().setTitle("Something went wrong");
-			embed = addDefaultEmbedFooter(embed);
-			await interaction.reply({ embeds: [embed], ephemeral: true });
+			await interaction.reply({ content: "Something went wrong", ephemeral: true });
 			return;
 		}
 
 		blacklistedUser = blacklistedUser.filter((e) => e !== interaction.user.id);
 
 		activityTrackerBlacklistDb.set("general-user", blacklistedUser);
-
-		let embed = new EmbedBuilder().setTitle("Your tracking is activated again!");
-		embed = addDefaultEmbedFooter(embed);
-		interaction.reply({ embeds: [embed], ephemeral: true });
+		interaction.reply({ content: "Your tracking is activated again!", ephemeral: true });
 		return;
 	}
 
 	let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
 
 	if (game === "No games are on your blacklist") {
-		let embed = new EmbedBuilder().setTitle("No games are on your blacklist");
-		embed = addDefaultEmbedFooter(embed);
-		interaction.reply({ embeds: [embed], ephemeral: true });
+		interaction.reply({ content: "No games are on your blacklist.", ephemeral: true });
 		return;
 	}
 
 	if (!blacklistedGames) {
-		let embed = new EmbedBuilder().setTitle("Something went wrong");
-		embed = addDefaultEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed], ephemeral: true });
+		await interaction.reply({ content: "Something went wrong", ephemeral: true });
 		return;
 	}
 
@@ -71,7 +58,7 @@ export async function blacklistRemove(interaction: ChatInputCommandInteraction):
 	activityTrackerBlacklistDb.set(interaction.user.id, blacklistedGames);
 
 	let embed = new EmbedBuilder().setTitle(`"${game}" is now removed from the blacklist`);
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedColor(embed);
 	await interaction.reply({ embeds: [embed], ephemeral: true });
 }
 
@@ -89,7 +76,7 @@ export async function blacklistShow(interaction: ChatInputCommandInteraction): P
 					"`\nBlacklisted games: No game is blacklisted. Every game gets logged"
 			);
 
-		embed = addDefaultEmbedFooter(embed);
+		embed = addEmbedFooter(embed);
 		await interaction.reply({ embeds: [embed], ephemeral: true });
 		return;
 	}
@@ -106,7 +93,7 @@ export async function blacklistShow(interaction: ChatInputCommandInteraction): P
 				"`\nBlacklisted games: " +
 				str
 		);
-	embed = addDefaultEmbedFooter(embed);
+	embed = addEmbedFooter(embed);
 
 	await interaction.reply({ embeds: [embed], ephemeral: true });
 }
