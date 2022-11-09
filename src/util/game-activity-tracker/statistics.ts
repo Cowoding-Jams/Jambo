@@ -93,8 +93,7 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 			);
 		});
 
-		playtime = new Map([...playtime.entries()].sort((a, b) => b[1] - a[1]));
-		playtime = new Map([...playtime.entries()].slice(0, 10));
+		playtime = new Map([...playtime.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10));
 
 		embed.addFields({
 			name: "Playtime top 10",
