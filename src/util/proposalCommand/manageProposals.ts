@@ -1,10 +1,10 @@
 import {
+	ActionRowBuilder,
 	ChatInputCommandInteraction,
+	GuildMember,
+	ModalBuilder,
 	TextInputBuilder,
 	TextInputStyle,
-	ActionRowBuilder,
-	ModalBuilder,
-	GuildMember,
 } from "discord.js";
 import { config } from "../../config";
 import { proposalDb } from "../../db";

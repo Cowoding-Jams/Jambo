@@ -9,7 +9,7 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 	const really: string = interaction.options.getString("really", true);
 
 	if (!(sure && really == "yes")) {
-		let embed = new EmbedBuilder()
+		const embed = new EmbedBuilder()
 			.setTitle("It seems like your are not really sure.")
 			.setDescription(
 				"Because you are not really sure if you should reset everything related to tracking, the reset wasn't executed."
@@ -18,7 +18,7 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 		await interaction.reply({ embeds: [embed] });
 		return;
 	} else {
-		let embed = new EmbedBuilder().setTitle("Reseting Logs and Blacklist...").setColor("#9d9e4c");
+		const embed = new EmbedBuilder().setTitle("Reseting Logs and Blacklist...").setColor("#9d9e4c");
 		await interaction.reply({ embeds: [embed] });
 	}
 
@@ -27,7 +27,7 @@ export async function adminReset(interaction: ChatInputCommandInteraction): Prom
 	activityTrackerBlacklistDb.ensure("general-user", []);
 	activityTrackerBlacklistDb.ensure("general-game", []);
 
-	let embed = new EmbedBuilder().setTitle("Reset done!").setColor("#4c9e4f");
+	const embed = new EmbedBuilder().setTitle("Reset done!").setColor("#4c9e4f");
 	await interaction.editReply({ embeds: [embed] });
 }
 
