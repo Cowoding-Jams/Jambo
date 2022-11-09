@@ -84,7 +84,7 @@ class TrackerCommand extends Command {
 							.setName("sort")
 							.setDescription("Sort by the ...")
 							.addChoices(
-								{ name: "logs chronolocially and per person", value: "log-history" },
+								{ name: "logs chronolocially", value: "log-history" },
 								{ name: "playtime per game", value: "playtime-per-game" },
 								{ name: "number of logs per game", value: "logs-per-game" },
 								{ name: "last log date per game", value: "log-date-per-game" }
@@ -122,6 +122,12 @@ class TrackerCommand extends Command {
 									.setDescription("Filter stats for the given game.")
 									.setAutocomplete(true)
 									.setRequired(true)
+							)
+							.addBooleanOption((opt) =>
+								opt
+									.setName("show-playtime")
+									.setDescription("Show the playtime of the game per player.")
+									.setRequired(false)
 							)
 					)
 					.addSubcommand((sub) => sub.setName("all-stats").setDescription("Show statistics across all logs."))
