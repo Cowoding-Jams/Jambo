@@ -2,9 +2,12 @@ import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { getEntrys, makeStats, splitId } from "./help";
 import { addDefaultEmbedFooter } from "../misc/embeds";
 import { deleteButtonAsRow } from "../misc/buttons";
+import { activityTrackerLogDb } from "../../db";
+import { msToReadable } from "../misc/time";
 
 export async function statisticsMyStats(interaction: ChatInputCommandInteraction): Promise<void> {
 	let game = interaction.options.getString("game")?.toLowerCase();
+
 	const entrys = await getEntrys(interaction.user.id, game);
 	const fields = await makeStats(entrys);
 
@@ -50,6 +53,8 @@ export async function statisticsMyStats(interaction: ChatInputCommandInteraction
 
 export async function statisticsGameStats(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
+	const showPlaytime = interaction.options.getBoolean("show-playtime") ?? false;
+
 	const entrys = await getEntrys(undefined, game);
 	const fields = await makeStats(entrys);
 
@@ -75,6 +80,29 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 		.setTitle(`Stats across all users for ${game.replace(/(\b\w)/g, (e) => e.toUpperCase())}!`)
 		.addFields(fields)
 		.addFields({ name: "Users", value: `${users.length} unique gaymers :)`, inline: true });
+
+	if (showPlaytime) {
+		const entries = activityTrackerLogDb.filter((val, key) => key.split("-")[0] === game);
+		let playtime = new Map<string, number>();
+		users.forEach((u) => {
+			playtime.set(
+				u,
+				Array.from(entries.filter((val, key) => key.split("-")[1] === u).values())
+					.flat()
+					.reduce((a, b) => a + b.t, 0)
+			);
+		});
+
+		playtime = new Map([...playtime.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10));
+
+		embed.addFields({
+			name: "Playtime top 10",
+			value: Array.from(playtime.entries())
+				.map((e) => `${msToReadable(e[1], true)} ⁘ <@${e[0]}>`)
+				.join("\n"),
+		});
+	}
+
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.reply({ embeds: [embed] });
 	return;

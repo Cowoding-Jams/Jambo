@@ -20,24 +20,24 @@ export async function getEntrys(
 		return gae == game || game == undefined;
 	};
 
-	allEntrys.forEach((element) => {
-		const [userEntry, gameEntry] = splitId(element);
+	allEntrys.forEach((key) => {
+		const [userEntry, gameEntry] = splitId(key);
 
 		if (userCheck(userEntry) && gameCheck(gameEntry)) {
-			const entry = activityTrackerLogDb.get(element);
-			if (entry !== undefined) found.push(element);
+			const entry = activityTrackerLogDb.get(key);
+			if (entry !== undefined) found.push(key);
 		} else if (userCheck(userEntry) && !gameCheck(gameEntry)) {
 			if (gameEntry !== game) return;
-			const entry = activityTrackerLogDb.get(element);
-			if (entry !== undefined) found.push(element);
+			const entry = activityTrackerLogDb.get(key);
+			if (entry !== undefined) found.push(key);
 		} else if (!userCheck(userEntry) && gameCheck(gameEntry)) {
 			if (userEntry !== user) return;
-			const entry = activityTrackerLogDb.get(element);
-			if (entry !== undefined) found.push(element);
+			const entry = activityTrackerLogDb.get(key);
+			if (entry !== undefined) found.push(key);
 		} else if (!userCheck(userEntry) && !gameCheck(gameEntry)) {
 			if (userEntry !== user || gameEntry !== game) return;
-			const entry = activityTrackerLogDb.get(element);
-			if (entry !== undefined) found.push(element);
+			const entry = activityTrackerLogDb.get(key);
+			if (entry !== undefined) found.push(key);
 		}
 	});
 	return found;
