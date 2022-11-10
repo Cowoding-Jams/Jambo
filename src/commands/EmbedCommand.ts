@@ -1,11 +1,11 @@
 import { Command } from "../interactions/interactionClasses";
 import {
+	ActionRowBuilder,
 	ChatInputCommandInteraction,
-	SlashCommandBuilder,
 	ModalBuilder,
+	SlashCommandBuilder,
 	TextInputBuilder,
 	TextInputStyle,
-	ActionRowBuilder,
 } from "discord.js";
 
 class EmbedCommand extends Command {
