@@ -46,7 +46,7 @@ class TrackerCommand extends Command {
 				await statisticsAllStats(interaction);
 			}
 		} else if (group === "admin") {
-			if (interaction.memberPermissions?.bitfield == config.activityTrackerAdminCommandPermission) {
+			if (!interaction.memberPermissions?.has(config.activityTrackerAdminCommandPermission)) {
 				return;
 			} else if (sub === "reset") {
 				await adminReset(interaction);
