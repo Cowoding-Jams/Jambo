@@ -14,12 +14,18 @@ class EmbedCommand extends Command {
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		const fields = interaction.options.getString("fields")?.replace(",", ".") ?? "";
+		const fields =
+			interaction.options
+				.getString("fields")
+				?.split(",")
+				.map((s) => s.trim())
+				.filter((s) => s)
+				.slice(0, 3) ?? [];
 		const showAuthor = interaction.options.getBoolean("show-author") ?? false;
 
 		const modal = new ModalBuilder()
-			.setCustomId(`embed.${showAuthor}${fields ? "." + fields : ""}`)
-			.setTitle("Add a new proposal!");
+			.setCustomId(`embed.${showAuthor}${fields.length ? "." + fields.join(".") : ""}`)
+			.setTitle("Create your own embed!");
 
 		modal.addComponents(
 			new ActionRowBuilder<TextInputBuilder>().addComponents(
@@ -45,7 +51,7 @@ class EmbedCommand extends Command {
 			)
 		);
 
-		for (const field of fields.split(".")) {
+		for (const field of fields) {
 			modal.addComponents(
 				new ActionRowBuilder<TextInputBuilder>().addComponents(
 					new TextInputBuilder()
@@ -58,6 +64,8 @@ class EmbedCommand extends Command {
 				)
 			);
 		}
+
+		interaction.showModal(modal);
 	}
 
 	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
@@ -67,7 +75,7 @@ class EmbedCommand extends Command {
 			.addStringOption((option) =>
 				option
 					.setName("fields")
-					.setDescription("Titles for up to 3 fields (comma seperated)")
+					.setDescription("Titles for up to 3 fields (comma separated)")
 					.setRequired(false)
 			)
 			.addBooleanOption((option) =>
