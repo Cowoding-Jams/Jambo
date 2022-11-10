@@ -82,18 +82,23 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 		.addFields({ name: "Users", value: `${users.length} unique gaymers :)`, inline: true });
 
 	if (showPlaytime) {
-		const entries = activityTrackerLogDb.filter((val, key) => key.split("-")[0] === game);
+		const entries = activityTrackerLogDb.filter((val, key) => splitId(key)[1] === game);
 		let playtime = new Map<string, number>();
 		users.forEach((u) => {
 			playtime.set(
 				u,
-				Array.from(entries.filter((val, key) => key.split("-")[1] === u).values())
+				Array.from(entries.filter((val, key) => splitId(key)[0] === u).values())
 					.flat()
 					.reduce((a, b) => a + b.t, 0)
 			);
 		});
 
-		playtime = new Map([...playtime.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10));
+		playtime = new Map(
+			[...playtime.entries()]
+				.filter((u) => u[1])
+				.sort((a, b) => b[1] - a[1])
+				.slice(0, 10)
+		);
 
 		embed.addFields({
 			name: "Playtime top 10",
