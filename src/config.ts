@@ -1,4 +1,5 @@
-import { ColorResolvable, ComponentEmojiResolvable, PermissionFlagsBits } from "discord.js";
+import { ColorResolvable, ComponentEmojiResolvable, PermissionsBitField } from "discord.js";
+import * as Time from "./util/birthdaySystem/TimeDefinition"
 
 // Configure your bot here.
 export const config: BotConfig = {
@@ -61,7 +62,9 @@ export const config: BotConfig = {
 		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
 	logLevel: "debug",
 	logActivity: true,
-	activityTrackerAdminCommandPermission: PermissionFlagsBits.Administrator,
+	activityTrackerAdminCommandPermission: PermissionsBitField.Flags.Administrator,
+	editBirthdayCommandPermission: PermissionsBitField.Flags.Administrator,
+	birthdayNotificationAt: Time.Moring,
 };
 
 interface BotConfig {
@@ -85,6 +88,10 @@ interface BotConfig {
 	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
 	// If User Game Activity should get logged
 	logActivity: boolean;
-	// Which permissions are needed to user game-activity-tracker commands
+	// Which permissions are needed to use the game-activity-tracker admin commands
 	activityTrackerAdminCommandPermission: bigint;
+	// Which permissions are needed to use the overwrite brithday command
+	editBirthdayCommandPermission: bigint;
+	// When a Birthday Notification should get send (timezone relative)
+	birthdayNotificationAt: number;
 }
