@@ -63,7 +63,6 @@ export const config: BotConfig = {
 	logLevel: "debug",
 	logActivity: true,
 	activityTrackerAdminCommandPermission: PermissionsBitField.Flags.Administrator,
-	editBirthdayCommandPermission: PermissionsBitField.Flags.Administrator,
 	birthdayNotificationAt: Time.Moring,
 };
 
@@ -90,8 +89,6 @@ interface BotConfig {
 	logActivity: boolean;
 	// Which permissions are needed to use the game-activity-tracker admin commands
 	activityTrackerAdminCommandPermission: bigint;
-	// Which permissions are needed to use the overwrite brithday command
-	editBirthdayCommandPermission: bigint;
 	// When a Birthday Notification should get send (timezone relative)
 	birthdayNotificationAt: number;
 }
