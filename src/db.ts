@@ -15,7 +15,6 @@ export interface Birthday {
 	day: number;
 }
 
-
 export const reminderTimeoutCache = new Map<number, NodeJS.Timeout>();
 export const reminderDb = new Enmap<number, Reminder>("reminder");
 export const latexDb = new Enmap<string, string>("latex");

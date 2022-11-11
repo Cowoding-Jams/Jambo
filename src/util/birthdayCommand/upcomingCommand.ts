@@ -4,71 +4,62 @@ import { addDefaultEmbedFooter } from "../misc/embeds";
 
 export async function upcomingCommand(interaction: ChatInputCommandInteraction) {
 	// I know there can be less loops, but cant matter that much
-	// and Im to lazy to redo thing now... ^^
-	const entrys = birthdayDb.keyArray()
+	// and Im to lazy to redo thing now...
+	const entrys = birthdayDb.keyArray();
 
-	let currentDate = new Date()
+	let currentDate = new Date();
 	currentDate = new Date(
-		currentDate.getUTCFullYear(), 
-		currentDate.getUTCMonth(), 
-		currentDate.getUTCDate(), 
-		0, 0, 0, 0)
+		currentDate.getUTCFullYear(),
+		currentDate.getUTCMonth(),
+		currentDate.getUTCDate(),
+		0,
+		0,
+		0,
+		0
+	);
 
-	let results: string[] = []
+	let results: string[] = [];
 
-	entrys.forEach((key) => {
-		const entry = birthdayDb.get(key);
-		if (!entry) return
-		const entryDate = new Date(
-				currentDate.getUTCFullYear(),
-				entry.month-1,
-				entry.day,
-				0, 0, 0, 0)
+	entrys.forEach((userid) => {
+		const entry = birthdayDb.get(userid);
+		if (!entry) return;
+		const entryDate = new Date(currentDate.getUTCFullYear(), entry.month - 1, entry.day, 0, 0, 0, 0);
 
-		if (entry.month < currentDate.getUTCMonth()) return
-		if (entry.day < currentDate.getUTCDate()) return
+		if (entry.month < currentDate.getUTCMonth()) return;
+		if (entry.day < currentDate.getUTCDate()) return;
 
-		let dayDifference = (currentDate.getTime() - entryDate.getTime()) / 86400000
+		const dayDifference = (currentDate.getTime() - entryDate.getTime()) / 86400000;
 
+		if (dayDifference <= 30 && dayDifference < 1) results.push(userid);
+	});
 
-		if (dayDifference <= 30 && dayDifference < 1) results.push(key)
-		
+	results = results
+		.sort((a, b) => {
+			const ea = birthdayDb.get(a);
+			const eb = birthdayDb.get(b);
+			return (ea?.day || 1) + (ea?.month || 1) * 31 - ((eb?.day || 1) + (ea?.month || 1) * 31);
+		})
+		.slice(0, 10);
 
-	})
+	const list: string[] = [];
 
-	results = results.sort((a, b) => {
-		let ea = birthdayDb.get(a);
-		let eb = birthdayDb.get(b);
-		return ((ea?.day || 1) + ((ea?.month || 1) * 31)) - ((eb?.day || 1) + ((ea?.month || 1) * 31))
-	}).slice(0, 10)
+	results.forEach((userid) => {
+		const entry = birthdayDb.get(userid);
+		if (!entry) return;
+		const entryDate = new Date(currentDate.getUTCFullYear(), entry.month - 1, entry.day, 0, 0, 0, 0);
+		list.push(`<@!${userid}> ⁘ <t:${entryDate.getTime() / 1000}:D>`);
+	});
 
-	
-	let list: string[] = []
-	
-	results.forEach((r) => {
-		const entry = birthdayDb.get(r);
-		if (!entry) return
-		const entryDate = new Date(
-			currentDate.getUTCFullYear(),
-			entry.month-1,
-			entry.day,
-			0, 0, 0, 0)
-		list.push(`<@!${r}> ⁘ <t:${entryDate.getTime()/1000}:D>`)
-		
-	})
-	
 	if (list.length == 0) {
 		let embed = new EmbedBuilder()
 			.setTitle("No upcoming Birthdays")
-			.setDescription("Seems like there are no upcoming birthdays in the next 30 days")
-		embed = addDefaultEmbedFooter(embed)
-		await interaction.editReply({embeds:[embed]})
-		return
+			.setDescription("Seems like there are no upcoming birthdays in the next 30 days");
+		embed = addDefaultEmbedFooter(embed);
+		await interaction.editReply({ embeds: [embed] });
+		return;
 	}
 
-	let embed = new EmbedBuilder()
-		.setTitle("Upcoming Birthdays")
-		.setDescription(list.join("\n"))
-	embed = addDefaultEmbedFooter(embed)
-	await interaction.editReply({embeds:[embed]})
+	let embed = new EmbedBuilder().setTitle("Upcoming Birthdays").setDescription(list.join("\n"));
+	embed = addDefaultEmbedFooter(embed);
+	await interaction.editReply({ embeds: [embed] });
 }
