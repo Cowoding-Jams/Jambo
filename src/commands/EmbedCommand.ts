@@ -9,6 +9,8 @@ import {
 } from "discord.js";
 
 class EmbedCommand extends Command {
+	fieldCache = new Map<string, string[]>();
+
 	constructor() {
 		super("embed");
 	}
@@ -23,8 +25,19 @@ class EmbedCommand extends Command {
 				.slice(0, 3) ?? [];
 		const showAuthor = interaction.options.getBoolean("show-author") ?? false;
 
+		if (fields.some((field) => field.length < 1 || field.length > 256)) {
+			await interaction.reply({
+				content: "Field titles must be between 1 and 256 characters long",
+				ephemeral: true,
+			});
+			return;
+		}
+
+		const cacheId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36);
+		this.fieldCache.set(cacheId, fields);
+
 		const modal = new ModalBuilder()
-			.setCustomId(`embed.${showAuthor}${fields.length ? "." + fields.join(".") : ""}`)
+			.setCustomId(`embed.${showAuthor}.${cacheId}`)
 			.setTitle("Create your own embed!");
 
 		modal.addComponents(
@@ -35,7 +48,7 @@ class EmbedCommand extends Command {
 					.setStyle(TextInputStyle.Short)
 					.setPlaceholder("Enter a title")
 					.setMinLength(1)
-					.setMaxLength(100)
+					.setMaxLength(256)
 			)
 		);
 
@@ -47,7 +60,7 @@ class EmbedCommand extends Command {
 					.setStyle(TextInputStyle.Paragraph)
 					.setPlaceholder("Enter a description")
 					.setMinLength(1)
-					.setMaxLength(400)
+					.setMaxLength(4000) // description limits is 4096 but field limit is 4000
 			)
 		);
 
@@ -55,17 +68,17 @@ class EmbedCommand extends Command {
 			modal.addComponents(
 				new ActionRowBuilder<TextInputBuilder>().addComponents(
 					new TextInputBuilder()
-						.setCustomId(field)
+						.setCustomId(`field.${fields.indexOf(field)}`)
 						.setLabel(field)
 						.setStyle(TextInputStyle.Paragraph)
-						.setPlaceholder(`Enter some text for ${field}`)
+						.setPlaceholder(`${field}`)
 						.setMinLength(1)
-						.setMaxLength(400)
+						.setMaxLength(1024)
 				)
 			);
 		}
 
-		interaction.showModal(modal);
+		await interaction.showModal(modal);
 	}
 
 	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
