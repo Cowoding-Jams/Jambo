@@ -20,5 +20,5 @@ export function isValidDay(month:number, day:number): boolean {
 }
 
 export function getTimezone(member: GuildMember) {
-    return search(member, "UTC-", true)[0].name
+    return search(member, "UTC", true)[0].name
 }
