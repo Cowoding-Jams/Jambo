@@ -63,7 +63,7 @@ export const config: BotConfig = {
 	logLevel: "debug",
 	logActivity: true,
 	activityTrackerAdminCommandPermission: PermissionsBitField.Flags.Administrator,
-	birthdayNotificationAt: Time.Moring,
+	birthdayNotificationAt: Time.SummerMorning,
 };
 
 interface BotConfig {

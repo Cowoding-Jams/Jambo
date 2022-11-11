@@ -1,16 +1,30 @@
 // Time specified as Text (summer time)
 
 /** 7 am  */
-export const Morning:number = 7;
+export const SummerMorning:number = 7;
+/** 6 am  */
+export const WinterMorning:number = 6;
 /** 11 am */
-export const LateMorning:number = 11;
+export const SummerLateMorning:number = 11;
+/** 10 am */
+export const WinterLateMorning:number = 10;
 /** 1 pm */
-export const Midday:number = 13;
+export const SummerMidday:number = 13;
+/** 12 am */
+export const WinterMidday:number = 12;
 /** 3  pm */
-export const Afternoon:number = 15;
+export const SummerAfternoon:number = 15;
+/** 2  pm */
+export const WinterAfternoon:number = 14;
 /** 6 pm */
-export const Evening:number = 18;
+export const SummerEvening:number = 18;
+/** 5 pm */
+export const WinterEvening:number = 17;
 /** 10 pm */
-export const Night:number = 22;
+export const SummerNight:number = 22;
+/** 9 pm */
+export const WinterNight:number = 21;
 /** 0 am */
-export const Midnight:number = 0;
+export const SummerMidnight:number = 0;
+/** 11 pm */
+export const WinterMidnight:number = 23;
