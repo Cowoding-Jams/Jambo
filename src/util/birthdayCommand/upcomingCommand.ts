@@ -9,9 +9,9 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 
 	let currentDate = new Date()
 	currentDate = new Date(
-		currentDate.getFullYear(), 
-		currentDate.getMonth(), 
-		currentDate.getDate(), 
+		currentDate.getUTCFullYear(), 
+		currentDate.getUTCMonth(), 
+		currentDate.getUTCDate(), 
 		0, 0, 0, 0)
 
 	let results: string[] = []
@@ -20,18 +20,18 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 		const entry = birthdayDb.get(key);
 		if (!entry) return
 		const entryDate = new Date(
-				currentDate.getFullYear(),
+				currentDate.getUTCFullYear(),
 				entry.month-1,
 				entry.day,
 				0, 0, 0, 0)
 
-		if (entry.month < currentDate.getMonth()) return
-		if (entry.day < currentDate.getDate()) return
+		if (entry.month < currentDate.getUTCMonth()) return
+		if (entry.day < currentDate.getUTCDate()) return
 
 		let dayDifference = (currentDate.getTime() - entryDate.getTime()) / 86400000
 
 
-		if (dayDifference <= 30 && dayDifference < 0) results.push(key)
+		if (dayDifference <= 30 && dayDifference < 1) results.push(key)
 		
 
 	})
@@ -49,11 +49,11 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 		const entry = birthdayDb.get(r);
 		if (!entry) return
 		const entryDate = new Date(
-			currentDate.getFullYear(),
+			currentDate.getUTCFullYear(),
 			entry.month-1,
 			entry.day,
 			0, 0, 0, 0)
-		list.push(`<@!${r}> ⁘ <t:${entryDate.getTime()/1000}:R>`)
+		list.push(`<@!${r}> ⁘ <t:${entryDate.getTime()/1000}:D>`)
 		
 	})
 	
