@@ -8,7 +8,6 @@ import { addDefaultEmbedFooter } from "../misc/embeds";
 export async function BirthdayMessage(client: Client) {
 
   schedule("0 * * * *", async () => {
-    console.log("Execution")
     if (!process.env.DEFAULT_GUILD) throw new Error("This error shouldn't accure... Something is wrong with the env");
 
     const targetHour = config.birthdayNotificationAt - 1;
