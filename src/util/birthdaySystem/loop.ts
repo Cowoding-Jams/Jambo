@@ -30,7 +30,7 @@ export async function BirthdayMessage(client: Client) {
 
 			if (
 				(adjustedMonth === month && adjustedDay === day) ||
-				(month === 1 && day === 29 && adjustedMonth === 2 && adjustedDay === 1)
+				(month === 2 && day === 29 && adjustedMonth === 3 && adjustedDay === 1)
 			) {
 				const embed = addDefaultEmbedFooter(
 					new EmbedBuilder()
