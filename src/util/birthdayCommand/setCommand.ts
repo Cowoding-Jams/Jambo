@@ -44,9 +44,9 @@ export async function setCommand(interaction: ChatInputCommandInteraction) {
 	}
 
 	set(interaction.user.id, newDay, newMonth);
-	const oldDate = `${oldDay != -1 ? oldDay : newDay}.${oldMonth != -1 ? oldMonth : newMonth}`;
 
 	if (oldMonth !== -1 || oldDay !== -1) {
+		const oldDate = `${oldDay}.${oldMonth}`;
 		let embed = new EmbedBuilder()
 			.setTitle("Changed Your birthday")
 			.setDescription(`Changed from \`${oldDate}\` to \`${newDay}.${newMonth}\``);

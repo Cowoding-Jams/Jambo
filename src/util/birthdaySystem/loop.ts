@@ -36,7 +36,9 @@ export async function BirthdayMessage(client: Client) {
 					new EmbedBuilder()
 						.setTitle("🎉🎉🎉 Birthday time 🎉🎉🎉")
 						.setThumbnail(user.displayAvatarURL({ size: 1024 }))
-						.setDescription("**CONGRATULATIONS!!!!!** IT'S YOUR **BIRTHDAY**")
+						.setDescription(
+							`**CONGRATULATIONS!!!!!** IT'S YOUR **BIRTHDAY**\n<@everyone> go ahead and congratulate ${user.displayName} or else >:(`
+						)
 				);
 				await defaultGuild.systemChannel
 					?.send({ content: user.toString(), embeds: [embed] })
