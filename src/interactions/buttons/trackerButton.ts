@@ -17,7 +17,7 @@ class gameActivityTrackerButton extends Button {
 		else if (args[0] == "right") offset += 1;
 		else if (args[0] == "jump-right") offset += jump;
 
-		if (offset < 0) offset = pages + (offset % pages);
+		if (offset < 0) offset = pages == 1 ? 0 : pages + (offset % pages);
 		else offset = offset % pages;
 
 		const sort = args[3];

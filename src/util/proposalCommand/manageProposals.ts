@@ -24,7 +24,7 @@ const description = new TextInputBuilder()
 	.setPlaceholder("Add a suiting description!")
 	.setStyle(TextInputStyle.Paragraph)
 	.setMinLength(20)
-	.setMaxLength(200);
+	.setMaxLength(400);
 
 const timePeriod = new TextInputBuilder()
 	.setCustomId("time-period")
@@ -39,7 +39,7 @@ const references = new TextInputBuilder()
 	.setLabel("References")
 	.setPlaceholder("Add any references you may have like links to youtube videos or wikipedia articles!")
 	.setStyle(TextInputStyle.Paragraph)
-	.setMaxLength(200)
+	.setMaxLength(400)
 	.setRequired(false);
 
 export async function addProposal(interaction: ChatInputCommandInteraction): Promise<void> {
