@@ -1,5 +1,3 @@
-// Time specified as Text (summer time)
-
 /** 7 am  */
 export const SummerMorning = 7;
 /** 6 am  */
