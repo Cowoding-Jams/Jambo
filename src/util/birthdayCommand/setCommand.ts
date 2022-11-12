@@ -13,9 +13,9 @@ export async function setCommand(interaction: ChatInputCommandInteraction) {
 
 	if (newDay == -1 || newMonth == -1) {
 		let embed = new EmbedBuilder()
-			.setTitle("Cant edit Birthday")
+			.setTitle("Can't edit your birthday...")
 			.setDescription(
-				"You cant edit your Birthday when you havent set one yet.\nTo set your birthday you need to give a `day` AND a `month`"
+				"You can't edit your birthday when you haven't set one yet.\nTo set your birthday you need to give a `day` AND a `month`"
 			);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.editReply({ embeds: [embed] });
@@ -25,8 +25,8 @@ export async function setCommand(interaction: ChatInputCommandInteraction) {
 	if (interaction.options.getBoolean("delete")) {
 		remove(interaction.user.id);
 		let embed = new EmbedBuilder()
-			.setTitle("Deleted your Birthday")
-			.setDescription("Your Birthday is now removed from the Database");
+			.setTitle("Deleted your birthday")
+			.setDescription("Your birthday is now removed from the database!");
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.editReply({ embeds: [embed] });
 		return;
@@ -34,9 +34,9 @@ export async function setCommand(interaction: ChatInputCommandInteraction) {
 
 	if (!isValidDay(newMonth, newDay)) {
 		let embed = new EmbedBuilder()
-			.setTitle("Invalid Date")
+			.setTitle("Invalid date")
 			.setDescription(
-				"Seams like your entered day is not correct. Please check if you entered everything correctly!"
+				"Seams like your entered day is not correct... Please check if you entered everything correctly!"
 			);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.editReply({ embeds: [embed] });
@@ -48,7 +48,7 @@ export async function setCommand(interaction: ChatInputCommandInteraction) {
 
 	if (oldMonth !== -1 || oldDay !== -1) {
 		let embed = new EmbedBuilder()
-			.setTitle("Changed Your Birthday")
+			.setTitle("Changed Your birthday")
 			.setDescription(`Changed from \`${oldDate}\` to \`${newDay}.${newMonth}\``);
 		embed = addDefaultEmbedFooter(embed);
 		await interaction.editReply({ embeds: [embed] });
