@@ -42,7 +42,7 @@ async function requestRendering(code: string, transparent: boolean): Promise<str
 		method: "POST",
 		body: JSON.stringify(body),
 		headers: { "Content-Type": "application/json" },
-	}).then((res) => res.json().catch((err) => undefined))) as res;
+	}).then((res) => res.json().catch(() => undefined))) as res;
 
 	if (response === undefined) {
 		logger.error("There is a problem with the LaTeX API");
