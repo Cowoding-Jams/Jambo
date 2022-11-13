@@ -25,7 +25,7 @@ interface ActivityLogEntry {
 
 // -- Proposal Database --
 export const proposalDb = new Enmap<string, Proposal>("proposal");
-interface Proposal {
+export interface Proposal {
 	title: string;
 	description: string;
 	references: string;

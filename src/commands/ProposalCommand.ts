@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { logger } from "../logger";
 import { addProposal, deleteProposal, editProposal } from "../util/proposalCommand/manageProposals";
-import { listProposals } from "../util/proposalCommand/listProposals";
+import { listProposals, viewProposal } from "../util/proposalCommand/listProposals";
 
 class PollCommand extends Command {
 	constructor() {
@@ -28,6 +28,10 @@ class PollCommand extends Command {
 			}
 			case "edit": {
 				editProposal(interaction);
+				break;
+			}
+			case "view": {
+				viewProposal(interaction);
 				break;
 			}
 			case "list": {
@@ -57,6 +61,12 @@ class PollCommand extends Command {
 				subcommand
 					.setName("edit")
 					.setDescription("Edit a proposals title, description or time period.")
+					.addStringOption(proposalSelectStringOption)
+			)
+			.addSubcommand((subcommand) =>
+				subcommand
+					.setName("view")
+					.setDescription("View one of the proposals.")
 					.addStringOption(proposalSelectStringOption)
 			)
 			.addSubcommand((subcommand) => subcommand.setName("list").setDescription("Lists all the proposals."));

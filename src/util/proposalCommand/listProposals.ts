@@ -5,14 +5,15 @@ import {
 	ButtonStyle,
 	ChatInputCommandInteraction,
 	EmbedBuilder,
+	ModalSubmitInteraction,
 } from "discord.js";
-import { proposalDb } from "../../db";
+import { proposalDb, Proposal } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
 
 export async function listProposals(
 	interaction: ChatInputCommandInteraction | ButtonInteraction,
 	page = 0,
-	proposalsPerPage = 2 // up to 10 embeds per message
+	proposalsPerPage = 6 // up to 10 embeds per message
 ): Promise<void> {
 	const pages = Math.ceil(proposalDb.size / proposalsPerPage);
 
@@ -21,27 +22,25 @@ export async function listProposals(
 
 	const proposals = proposalDb
 		.array()
-		.map((p) => p)
+		.map((p, i) => ({ p: p, i: i }))
 		.slice(page * proposalsPerPage, (page + 1) * proposalsPerPage);
 
-	let embeds: EmbedBuilder[] = [];
+	let embed = addEmbedColor(new EmbedBuilder().setTitle("Proposals"));
 
-	for (const p of proposals) {
-		embeds.push(
-			addEmbedColor(new EmbedBuilder().setTitle(p.title).setDescription(p.description)).addFields(
-				{
-					name: "References",
-					value: p.references ? p.references : "-",
-				},
-				{ name: "Proposed Time Period", value: p.timePeriod, inline: true },
-				{
-					name: "Proposed By",
-					value: (await interaction.guild?.members.fetch(p.owner))?.toString() || "Unknown",
-					inline: true,
-				}
-			)
-		);
+	for (const prop of proposals) {
+		embed.addFields({
+			name: `#${prop.i.toString().padStart(Math.ceil(proposalDb.size / 10), "0")} ${prop.p.title} ⁘ ${
+				prop.p.timePeriod
+			}`,
+			value: `${prop.p.description}${prop.p.references != "" ? `\n${prop.p.references}` : ""}`,
+		});
 	}
+
+	if (proposalDb.size == 0) embed = addEmbedColor(new EmbedBuilder().setTitle("No proposals in yet..."));
+	else
+		embed.setFooter({
+			text: `Page ${page + 1}/${pages} ⁘ Proposals per page: ${proposalsPerPage}/10`,
+		});
 
 	const row = new ActionRowBuilder<ButtonBuilder>().setComponents(
 		new ButtonBuilder()
@@ -62,13 +61,44 @@ export async function listProposals(
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	if (proposalDb.size == 0) embeds = [addEmbedColor(new EmbedBuilder().setTitle("No proposals in yet..."))];
-	else
-		embeds[embeds.length - 1].setFooter({
-			text: `Page ${page + 1}/${pages} - Proposals per page: ${proposalsPerPage}/10`,
-		});
-
 	if (interaction instanceof ChatInputCommandInteraction)
-		await interaction.reply({ embeds: embeds, components: proposalDb.size != 0 ? [row] : [] });
-	else await interaction.update({ embeds: embeds, components: proposalDb.size != 0 ? [row] : [] });
+		await interaction.reply({ embeds: [embed], components: proposalDb.size != 0 ? [row] : [] });
+	else await interaction.update({ embeds: [embed], components: proposalDb.size != 0 ? [row] : [] });
+}
+
+export async function viewProposal(interaction: ChatInputCommandInteraction): Promise<void> {
+	const title = interaction.options.getString("title") ?? "";
+	const proposal = proposalDb.get(title);
+
+	if (!proposal) {
+		await interaction.reply({
+			content: "There is no proposal with that title... Follow the autocompletion!",
+			ephemeral: true,
+		});
+		return;
+	}
+
+	await interaction.reply({ embeds: [await viewProposalEmbed(interaction, proposal, "(view)")] });
+}
+
+export async function viewProposalEmbed(
+	interaction: ChatInputCommandInteraction | ModalSubmitInteraction,
+	proposal: Proposal,
+	titleAddition: string
+): Promise<EmbedBuilder> {
+	return addEmbedColor(
+		new EmbedBuilder()
+			.setTitle(`${proposal.title} ⁘ ${titleAddition}`)
+			.setDescription(proposal.description)
+			.addFields(
+				{ name: "References", value: proposal.description ? proposal.description : "-" },
+				{ name: "Proposed Time Period", value: proposal.timePeriod },
+				{
+					name: "Proposed By",
+					value: proposal
+						? (await interaction.guild?.members.fetch(proposal.owner))?.toString() || "Unknown"
+						: interaction.user.toString(),
+				}
+			)
+	);
 }

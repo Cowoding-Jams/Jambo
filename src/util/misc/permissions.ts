@@ -1,10 +1,10 @@
 import {
+	AutocompleteInteraction,
 	ButtonInteraction,
 	ChatInputCommandInteraction,
 	GuildMember,
 	ModalSubmitInteraction,
 	Role,
-	AutocompleteInteraction,
 } from "discord.js";
 import { config } from "../../config";
 
