@@ -1,10 +1,10 @@
 import { AutocompleteInteraction } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { splitId } from "./help";
-import { config } from "../../config";
+import { hasAdminRole } from "../misc/permissions";
 
 export async function adminWhitelist(interaction: AutocompleteInteraction) {
-	if (interaction.memberPermissions?.bitfield == config.activityTrackerAdminCommandPermission) {
+	if (await hasAdminRole(interaction)) {
 		await interaction.respond([
 			{
 				name: "You don't have the permissions to use this command!",

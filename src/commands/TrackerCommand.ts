@@ -19,6 +19,7 @@ import {
 	adminWhitelistGame,
 } from "../util/trackerCommand/admin";
 import { list } from "../util/trackerCommand/list";
+import { hasAdminRole } from "../util/misc/permissions";
 
 class TrackerCommand extends Command {
 	constructor() {
@@ -46,7 +47,7 @@ class TrackerCommand extends Command {
 				await statisticsAllStats(interaction);
 			}
 		} else if (group === "admin") {
-			if (interaction.memberPermissions?.bitfield == config.activityTrackerAdminCommandPermission) {
+			if (await !hasAdminRole(interaction)) {
 				return;
 			} else if (sub === "reset") {
 				await adminReset(interaction);

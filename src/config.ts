@@ -1,10 +1,21 @@
-import { ColorResolvable, ComponentEmojiResolvable, PermissionFlagsBits } from "discord.js";
+import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 
 // Configure your bot here.
 export const config: BotConfig = {
+	// --- General ---
 	botName: "Jambo",
 	iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
 	githubURL: "https://github.com/Cowoding-Jams/Jambo",
+	color: "#F0A5AC",
+	serverDescription:
+		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
+	logLevel: "debug",
+
+	// --- Management ---
+	moderatorRoleId: "855349314807922698", // cowoding-jams/moderator
+	adminRoleId: "855348792025939988", // cowoding-jams/admin
+
+	// --- Roles ---
 	pronounRoles: [
 		["she/her", "541000113410015245"],
 		["he/him", "590631286666952704"],
@@ -56,38 +67,41 @@ export const config: BotConfig = {
 		"UTC+11",
 		"UTC+12",
 	],
-	color: "#F0A5AC",
-	serverDescription:
-		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
-	logLevel: "debug",
+
+	// --- Activity Tracker ---
 	logActivity: true,
-	activityTrackerAdminCommandPermission: PermissionFlagsBits.Administrator,
-	moderatorRoleId: "855349314807922698", // cowoding-jams/moderator
 };
 
 interface BotConfig {
+	// --- General ---
 	// Name of the bot.
 	botName: string;
 	// URL to a png or jpg of the logo of the bot.
 	iconURL: string;
 	// URL to the github repository of the bot. Please share your code!
 	githubURL: string;
-	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.
-	pronounRoles: [string, ComponentEmojiResolvable | null][];
-	// Max 25 color roles to pick from. First argument is the name of the role, second argument is the color.
-	colorRoles: [string, ColorResolvable][];
-	// Timezones users can pick from.
-	timezoneRoles: string[];
 	// The main color the bot will use.
 	color: ColorResolvable;
 	// A description of the server that will be displayed in the welcome message.
 	serverDescription: string;
 	// Also available: error, warn, info, http, verbose, debug, silly.
 	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
-	// If User Game Activity should get logged
-	logActivity: boolean;
-	// Which permissions are needed to user game-activity-tracker commands
-	activityTrackerAdminCommandPermission: bigint;
-	//
+
+	// --- Management ---
+	// Moderators of the server (to manage proposals)
 	moderatorRoleId: string;
+	// Admins of the server (to manage the game activity tracker)
+	adminRoleId: string;
+
+	// --- Roles ---
+	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.
+	pronounRoles: [string, ComponentEmojiResolvable | null][];
+	// Max 25 color roles to pick from. First argument is the name of the role, second argument is the color.
+	colorRoles: [string, ColorResolvable][];
+	// Timezones users can pick from.
+	timezoneRoles: string[];
+
+	// --- Activity Tracker ---
+	// If User Game Activity should get logged (if false completely disables the activity tracker)
+	logActivity: boolean;
 }

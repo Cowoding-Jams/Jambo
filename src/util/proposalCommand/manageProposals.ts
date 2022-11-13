@@ -1,14 +1,12 @@
 import {
 	ActionRowBuilder,
 	ChatInputCommandInteraction,
-	GuildMember,
 	ModalBuilder,
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js";
-import { config } from "../../config";
 import { proposalDb } from "../../db";
-import { hasRole } from "../misc/permissions";
+import { hasAdminRole } from "../misc/permissions";
 
 const title = new TextInputBuilder()
 	.setCustomId("title")
@@ -64,10 +62,7 @@ export async function deleteProposal(interaction: ChatInputCommandInteraction): 
 		return;
 	}
 
-	if (
-		proposal.owner !== interaction.user.id &&
-		!(await hasRole(interaction.member as GuildMember, config.moderatorRoleId))
-	) {
+	if (proposal.owner !== interaction.user.id && !(await hasAdminRole(interaction))) {
 		await interaction.reply({ content: "You can only delete your own proposals...", ephemeral: true });
 		return;
 	}
@@ -86,10 +81,7 @@ export async function editProposal(interaction: ChatInputCommandInteraction): Pr
 		return;
 	}
 
-	if (
-		proposal.owner !== interaction.user.id &&
-		(await hasRole(interaction.member as GuildMember, config.moderatorRoleId))
-	) {
+	if (proposal.owner !== interaction.user.id && !(await hasAdminRole(interaction))) {
 		await interaction.reply({ content: "You can only edit your own proposals...", ephemeral: true });
 		return;
 	}
