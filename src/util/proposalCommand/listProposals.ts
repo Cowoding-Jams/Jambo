@@ -7,13 +7,13 @@ import {
 	EmbedBuilder,
 	ModalSubmitInteraction,
 } from "discord.js";
-import { proposalDb, Proposal } from "../../db";
+import { Proposal, proposalDb } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
 
 export async function listProposals(
 	interaction: ChatInputCommandInteraction | ButtonInteraction,
 	page = 0,
-	proposalsPerPage = 6 // up to 10 embeds per message
+	proposalsPerPage = 6
 ): Promise<void> {
 	const pages = Math.ceil(proposalDb.size / proposalsPerPage);
 

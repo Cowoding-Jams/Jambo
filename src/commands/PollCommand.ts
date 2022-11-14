@@ -38,15 +38,26 @@ class PollCommand extends Command {
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
-							.setName("new-template")
+							.setName("delete")
+							.setDescription("Delete an existing poll.")
+							.addStringOption(pollNameStringOption)
+					)
+			)
+			.addSubcommandGroup((group) =>
+				group
+					.setName("manage-templates")
+					.setDescription("Manage the templates.")
+					.addSubcommand((subcommand) =>
+						subcommand
+							.setName("new")
 							.setDescription("Create a new poll template.")
 							.addStringOption(pollTemplateNameStringOption)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("delete")
-							.setDescription("Delete an existing poll.")
-							.addStringOption(pollNameStringOption)
+							.setDescription("Deleta a poll template.")
+							.addStringOption(pollTemplateNameStringOption)
 					)
 			)
 			.addSubcommandGroup((group) =>
@@ -70,4 +81,4 @@ const pollTemplateNameStringOption = (option: SlashCommandStringOption) =>
 	option.setName("template-name").setDescription("The name of the template for future reference.");
 
 const pollTemplateSelectStringOption = (option: SlashCommandStringOption) =>
-	option.setName("template-name").setDescription("The name of the template to use.").setRequired(true);
+	option.setName("template-name").setDescription("The name of the template.").setRequired(true);
