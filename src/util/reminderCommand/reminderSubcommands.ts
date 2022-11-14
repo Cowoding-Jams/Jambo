@@ -83,7 +83,7 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 
 	let timeString: Date | string = new Date(timestamp);
 	timeString =
-		days > 1
+		days > 0 || months > 0
 			? timeString.toLocaleString(interaction.locale, { timeStyle: "long", dateStyle: "long" })
 			: timeString.toLocaleTimeString(interaction.locale, { timeStyle: "long" });
 
