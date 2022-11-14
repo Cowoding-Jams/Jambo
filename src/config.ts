@@ -1,5 +1,5 @@
 import { ColorResolvable, ComponentEmojiResolvable, PermissionsBitField } from "discord.js";
-import * as Time from "./util/birthdaySystem/TimeDefinition";
+import * as Time from "./util/birthdayCommand/TimeDefinition";
 
 // Configure your bot here.
 export const config: BotConfig = {

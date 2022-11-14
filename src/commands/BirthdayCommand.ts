@@ -50,17 +50,16 @@ class BirthdayCommand extends Command {
 			.setDescription("Set your birthday so others can see when they need to congratulate you!")
 			.addSubcommand((option) =>
 				option
-					// so, if date is march 1 and the current year is not divisible by 4, include those born on feb 29
 					.setName("set")
 					.setDescription("Set the date of your birthday.")
+					.addIntegerOption((opt) =>
+						opt.setName("day").setDescription("The day of your birthday.").setMinValue(1).setMaxValue(31)
+					)
 					.addStringOption((opt) =>
 						opt
 							.setName("month")
 							.setDescription("The month of your birthday.")
 							.setChoices(...months)
-					)
-					.addIntegerOption((opt) =>
-						opt.setName("day").setDescription("The day of your birthday.").setMinValue(1).setMaxValue(31)
 					)
 					.addBooleanOption((opt) => opt.setName("delete").setDescription("Delete your birthday entry."))
 			)

@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import { birthdayDb } from "../../db";
 import { addDefaultEmbedFooter } from "../misc/embeds";
-import { isValidDay } from "../birthdaySystem/date";
-import { getDay, getMonth, remove, set } from "../birthdaySystem/set";
 
 export async function setCommand(interaction: ChatInputCommandInteraction) {
 	const month = interaction.options.getString("month");
@@ -58,4 +57,36 @@ export async function setCommand(interaction: ChatInputCommandInteraction) {
 	let embed = new EmbedBuilder().setTitle("Set Your Birthday").setDescription(`to \`${newDay}.${newMonth}\``);
 	embed = addDefaultEmbedFooter(embed);
 	await interaction.editReply({ embeds: [embed] });
+}
+
+function set(user: string, day: number, month: number) {
+	birthdayDb.set(user, { day: day, month: month });
+}
+
+function exists(user: string) {
+	return birthdayDb.has(user);
+}
+
+function getDay(user: string) {
+	if (!exists(user)) return -1;
+	return birthdayDb.get(user)?.day || 1;
+}
+
+function getMonth(user: string) {
+	if (!exists(user)) return -1;
+	return birthdayDb.get(user)?.month || 1;
+}
+
+function remove(user: string) {
+	birthdayDb.delete(user);
+}
+
+function isValidDay(month: number, day: number): boolean {
+	// (if date is march 1 and the current year is not divisible by 4, include those born on feb 29)
+	if (month == 2) {
+		return day <= 29;
+	}
+
+	if (month == 4 || month == 6 || month == 9 || month == 11) return day <= 30;
+	return true;
 }

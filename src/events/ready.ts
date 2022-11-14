@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
-import { BirthdayMessage } from "../util/birthdaySystem/loop";
+import { BirthdayMessage } from "../util/birthdayCommand/loop";
 
 export default async function ready(client: Client) {
 	logger.info(`Successfully logged in as ${client.user?.username}.`);
@@ -20,7 +20,7 @@ export default async function ready(client: Client) {
 	ReminderCommand.startScheduler(client);
 
 	logger.info("Starting Birthday scheduler...");
-	await BirthdayMessage(client);
+	BirthdayMessage(client);
 
 	logger.info("Setup successfully");
 }
