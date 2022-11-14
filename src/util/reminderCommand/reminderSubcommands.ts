@@ -81,6 +81,12 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 			setTimeout(() => elapse(interaction.client, id), timestamp - Date.now())
 		);
 
+	let timeString: Date | string = new Date(timestamp);
+	timeString =
+		days > 1
+			? timeString.toLocaleString(interaction.locale, { timeStyle: "long", dateStyle: "long" })
+			: timeString.toLocaleTimeString(interaction.locale, { timeStyle: "long" });
+
 	await interaction.reply({
 		embeds: [
 			addDefaultEmbedFooter(
@@ -89,7 +95,7 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 					.setDescription(
 						`I will remind you${additionalPing ? " and " + additionalPing.toString() : ""} in ${msToReadable(
 							milliseconds
-						)}!${
+						)} (${timeString})!${
 							message == ""
 								? ""
 								: `\nYour message to yourself${
