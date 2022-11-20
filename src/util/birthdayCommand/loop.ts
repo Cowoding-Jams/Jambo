@@ -14,6 +14,7 @@ export function BirthdayMessage(client: Client) {
 		const date = new Date();
 		const timezone = targetHour - date.getUTCHours();
 		const defaultGuild = await client.guilds.fetch(process.env.DEFAULT_GUILD);
+
 		const possibleUsers =
 			date.getUTCHours() == 0
 				? getMembersWithNoTimeZone(defaultGuild) || []
@@ -21,6 +22,7 @@ export function BirthdayMessage(client: Client) {
 						`UTC${timezone > 0 ? "+" + timezone : timezone < 0 ? timezone : ""}`,
 						defaultGuild
 				  ) || [];
+
 		const adjustedDate = new Date(Date.now() + timezone * 60 * 60 * 1000);
 		const adjustedMonth = adjustedDate.getUTCMonth() + 1;
 		const adjustedDay = adjustedDate.getUTCDate();
@@ -37,7 +39,7 @@ export function BirthdayMessage(client: Client) {
 						.setTitle("🎉🎉🎉 Birthday time 🎉🎉🎉")
 						.setThumbnail(user.displayAvatarURL({ size: 1024 }))
 						.setDescription(
-							`**CONGRATULATIONS!!!!!** IT'S YOUR **BIRTHDAY**\n<@everyone> go ahead and congratulate ${user.displayName} or else >:(`
+							`**CONGRATULATIONS!!!!!** IT'S YOUR **BIRTHDAY**\n<@everyone> go ahead and congratulate ${user.displayName} and sing or else >:(`
 						)
 				);
 				await defaultGuild.systemChannel
