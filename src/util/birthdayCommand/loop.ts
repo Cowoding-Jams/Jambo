@@ -7,18 +7,18 @@ import { addDefaultEmbedFooter } from "../misc/embeds";
 
 export function BirthdayMessage(client: Client) {
 	schedule("0 * * * *", async () => {
-
 		const targetHour = config.birthdayNotificationAt + 1;
 		const date = new Date();
 		const timezone = targetHour - date.getUTCHours();
 		const defaultGuild = await client.guilds.fetch(ctx.defaultGuild);
 		await defaultGuild.members.fetch();
-		let possibleUsers = getMembersWithTimeZone(
-			`UTC${timezone > 0 ? "+" + timezone : timezone < 0 ? timezone : ""}`,
-			defaultGuild
-	  ) || [];
+		const possibleUsers =
+			getMembersWithTimeZone(
+				`UTC${timezone > 0 ? "+" + timezone : timezone < 0 ? timezone : ""}`,
+				defaultGuild
+			) || [];
 		if (date.getUTCHours() == 0) {
-				possibleUsers.push(...getMembersWithNoTimeZone(defaultGuild))
+			possibleUsers.push(...getMembersWithNoTimeZone(defaultGuild));
 		}
 		const adjustedDate = new Date(Date.now() + timezone * 60 * 60 * 1000);
 		const adjustedMonth = adjustedDate.getUTCMonth() + 1;
@@ -48,9 +48,11 @@ export function BirthdayMessage(client: Client) {
 }
 
 function getMembersWithTimeZone(timezone: string, guild: Guild) {
-	return guild.roles.cache.find((role) => role.name == timezone)?.members.map(m => m);
+	return guild.roles.cache.find((role) => role.name == timezone)?.members.map((m) => m);
 }
 
 function getMembersWithNoTimeZone(guild: Guild) {
-	return guild.members.cache.filter(m => !m.roles.cache.some(r => r.name.startsWith("UTC"))).map(m => m);
+	return guild.members.cache
+		.filter((m) => !m.roles.cache.some((r) => r.name.startsWith("UTC")))
+		.map((m) => m);
 }
