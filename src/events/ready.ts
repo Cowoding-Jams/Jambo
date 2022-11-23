@@ -13,14 +13,14 @@ export default async function ready(client: Client) {
 	logger.info(`Successfully logged in as ${client.user?.username}.`);
 	logger.info(`Watching over ${client.guilds.cache.size} guilds.`);
 
-	logger.info("Publishing commands...");
-	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
-
 	logger.info("Starting reminder scheduler...");
 	ReminderCommand.startScheduler(client);
 
 	logger.info("Starting Birthday scheduler...");
 	BirthdayMessage(client);
+
+	logger.info("Publishing commands...");
+	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
 	logger.info("Setup successfully");
 }
