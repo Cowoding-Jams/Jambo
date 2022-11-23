@@ -11,7 +11,7 @@ class CountryAutocompleter extends Autocompleter {
 		const country = ["Finland", "Sweden", "Norway"];
 
 		// for example filter for options which start with the user input
-		let filterdoptions = country.filter((c) =>
+		let filteredOptions = country.filter((c) =>
 			c
 				// to make sure capitalisaion doesnt matter, make every option to lower case
 				.toLowerCase()
@@ -23,10 +23,10 @@ class CountryAutocompleter extends Autocompleter {
 
 		// if the filterd options are more than 25 remove everything after the 25th option
 		// because discord only allows 25 autocomplete results
-		if (filterdoptions.length > 25) filterdoptions = filterdoptions.slice(0, 25);
+		if (filteredOptions.length > 25) filteredOptions = filteredOptions.slice(0, 25);
 
 		// map filtered options
-		const map = filterdoptions.map((c) => ({ name: c, value: c }));
+		const map = filteredOptions.map((c) => ({ name: c, value: c }));
 
 		// send map back to the user
 		await interaction.respond(map);

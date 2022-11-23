@@ -62,7 +62,7 @@ export async function deleteProposal(interaction: ChatInputCommandInteraction): 
 		return;
 	}
 
-	if (proposal.owner !== interaction.user.id && !(await hasAdminRole(interaction))) {
+	if (proposal.ownerID !== interaction.user.id && !(await hasAdminRole(interaction))) {
 		await interaction.reply({ content: "You can only delete your own proposals...", ephemeral: true });
 		return;
 	}
@@ -81,7 +81,7 @@ export async function editProposal(interaction: ChatInputCommandInteraction): Pr
 		return;
 	}
 
-	if (proposal.owner !== interaction.user.id && !(await hasAdminRole(interaction))) {
+	if (proposal.ownerID !== interaction.user.id && !(await hasAdminRole(interaction))) {
 		await interaction.reply({ content: "You can only edit your own proposals...", ephemeral: true });
 		return;
 	}

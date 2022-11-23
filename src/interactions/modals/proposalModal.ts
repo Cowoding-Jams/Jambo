@@ -33,7 +33,8 @@ class ProposalModal extends Modal {
 				description: description.trim(),
 				references: references.trim(),
 				timePeriod: timePeriod.trim(),
-				owner: interaction.user.id,
+				ownerID: interaction.user.id,
+				votesLastPoll: proposal?.votesLastPoll || null,
 			};
 
 			proposalDb.set(title, proposal);

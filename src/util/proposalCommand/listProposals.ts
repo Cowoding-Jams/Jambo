@@ -96,8 +96,13 @@ export async function viewProposalEmbed(
 				{
 					name: "Proposed By",
 					value: proposal
-						? (await interaction.guild?.members.fetch(proposal.owner))?.toString() || "Unknown"
+						? (await interaction.guild?.members.fetch(proposal.ownerID))?.toString() || "Unknown"
 						: interaction.user.toString(),
+				},
+				{
+					name: "Votes last poll",
+					value: proposal.votesLastPoll?.toString() || "Wasn't part of a poll yet.",
+					inline: true,
 				}
 			)
 	);

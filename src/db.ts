@@ -19,22 +19,31 @@ export const activityTrackerBlacklistDb = new Enmap<string, string[]>("TrackerBl
 activityTrackerBlacklistDb.ensure("general-user", []);
 activityTrackerBlacklistDb.ensure("general-game", []);
 interface ActivityLogEntry {
-	t: number;
-	w: number;
+	time: number;
+	when: number;
 }
 
 // -- Proposal Database --
-export const proposalDb = new Enmap<string, Proposal>("proposal");
+export const proposalDb = new Enmap<string, Proposal>("proposal"); // key: title
 export interface Proposal {
 	title: string;
 	description: string;
 	references: string;
 	timePeriod: string;
-	owner: string;
+	ownerID: string;
+	votesLastPoll: number | null;
 }
 
 // -- Poll Database --
-export const pollDb = new Enmap<string, Poll>("poll");
+export const pollDb = new Enmap<string, Poll>("poll"); // key: title
 interface Poll {
 	title: string;
+}
+
+// -- Jam Database --
+export const jamDb = new Enmap<string, Jam>("jam"); // key: title
+interface Jam {
+	title: string;
+	startDate: Date;
+	timePeriod: number;
 }
