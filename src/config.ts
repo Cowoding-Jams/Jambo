@@ -88,6 +88,6 @@ interface BotConfig {
 	logActivity: boolean;
 	/** Which permissions are needed to use the game-activity-tracker admin commands */
 	activityTrackerAdminCommandPermission: bigint;
-	/** Can be any Integer between 0 and 23, or use already defined times With Time.x to define (timezone) relative time of when a Birthday message should get send */
+	/** Can be any Integer between 0 and 23 to define (timezone) relative time of when a Birthday message should get send */
 	birthdayNotificationAt: number;
 }
