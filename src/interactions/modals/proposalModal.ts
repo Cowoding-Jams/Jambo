@@ -26,19 +26,20 @@ class ProposalModal extends Modal {
 				}
 			}
 
-			const embedTitle = customId[0] == "add" ? "(new)" : "(edit)";
-
 			proposal = {
 				title: title.trim(),
 				description: description.trim(),
 				references: references.trim(),
 				timePeriod: timePeriod.trim(),
-				ownerID: interaction.user.id,
-				votesLastPoll: proposal?.votesLastPoll || null,
+				ownerID: proposal?.ownerID || interaction.user.id,
+				votesLastPoll: proposal?.votesLastPoll || 0,
+				totalVotes: proposal?.totalVotes || 0,
+				polls: proposal?.polls || 0,
 			};
 
 			proposalDb.set(title, proposal);
 
+			const embedTitle = customId[0] == "add" ? "(new)" : "(edit)";
 			await interaction.reply({ embeds: [await viewProposalEmbed(interaction, proposal, embedTitle)] });
 		}
 	}

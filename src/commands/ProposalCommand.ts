@@ -17,32 +17,19 @@ class PollCommand extends Command {
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const subcommand = interaction.options.getSubcommand();
 
-		switch (subcommand) {
-			case "add": {
-				addProposal(interaction);
-				break;
-			}
-			case "delete": {
-				deleteProposal(interaction);
-				break;
-			}
-			case "edit": {
-				editProposal(interaction);
-				break;
-			}
-			case "view": {
-				viewProposal(interaction);
-				break;
-			}
-			case "list": {
-				listProposals(interaction);
-				break;
-			}
-			default: {
-				await interaction.reply("I don't know that subcommand... Please contact a developer.");
-				logger.error("Unkown subcommand: " + subcommand);
-				break;
-			}
+		const commands: { [key: string]: (interaction: ChatInputCommandInteraction) => Promise<void> } = {
+			add: addProposal,
+			delete: deleteProposal,
+			edit: editProposal,
+			view: viewProposal,
+			list: listProposals,
+		};
+
+		if (commands[subcommand]) {
+			await commands[subcommand](interaction);
+		} else {
+			await interaction.reply("I don't know that subcommand... Please contact a developer.");
+			logger.error("Unkown subcommand: " + subcommand);
 		}
 	}
 

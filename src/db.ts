@@ -31,19 +31,28 @@ export interface Proposal {
 	references: string;
 	timePeriod: string;
 	ownerID: string;
-	votesLastPoll: number | null;
+	votesLastPoll: number;
+	totalVotes: number;
+	polls: number;
 }
 
 // -- Poll Database --
 export const pollDb = new Enmap<string, Poll>("poll"); // key: title
 interface Poll {
 	title: string;
+	startDate: Date;
+	endDate: Date;
+	proposals: Proposal[];
+	votes: Map<string, string[]>; // key: userID, value: proposal titles
 }
 
 // -- Jam Database --
 export const jamDb = new Enmap<string, Jam>("jam"); // key: title
 interface Jam {
 	title: string;
+	proposal: Proposal;
 	startDate: Date;
-	timePeriod: number;
+	endDate: Date;
+	timePeriod: number; // in ms
+	resultChannelID: string;
 }
