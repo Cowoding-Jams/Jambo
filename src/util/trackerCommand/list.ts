@@ -5,9 +5,9 @@ import { gameActivityTrackerEmbed } from "./trackerEmbed";
 import { msToReadable } from "../misc/time";
 
 interface log {
-	u: string;
-	g: string;
-	w: number;
+	user: string;
+	game: string;
+	when: number;
 }
 
 export async function nofilter(offset: number, order: string) {
@@ -28,22 +28,22 @@ export async function nofilter(offset: number, order: string) {
 		}
 
 		log.forEach((l) => {
-			logs.push({ u: `<@!${user}>`, g: game, w: l.w });
+			logs.push({ user: `<@!${user}>`, game: game, when: l.when });
 		});
 	});
 
 	if (order == "decreasing") {
-		logs = logs.sort((a, b) => b.w - a.w);
+		logs = logs.sort((a, b) => b.when - a.when);
 	} else if (order == "increasing") {
-		logs = logs.sort((a, b) => a.w - b.w);
+		logs = logs.sort((a, b) => a.when - b.when);
 	}
 
 	const games: string[] = [];
 	const timeAndUser: string[] = [];
 
 	logs.forEach((e) => {
-		games.push(e.g.replace(/(\b\w)/g, (e) => e.toUpperCase()));
-		timeAndUser.push(`<t:${Math.floor(e.w / 1000)}:d> ⁘ ${e.u}`);
+		games.push(e.game.replace(/(\b\w)/g, (e) => e.toUpperCase()));
+		timeAndUser.push(`<t:${Math.floor(e.when / 1000)}:d> ⁘ ${e.user}`);
 	});
 
 	return [
@@ -75,9 +75,9 @@ export async function createList(sort: string, offset: number, order: string) {
 		if (logs == 0) return;
 
 		log.forEach((entry) => {
-			playtime += entry.t;
-			if (entry.w > lastplayed) lastplayed = entry.w;
-			if (entry.w < firstplayed) firstplayed = entry.w;
+			playtime += entry.time;
+			if (entry.when > lastplayed) lastplayed = entry.when;
+			if (entry.when < firstplayed) firstplayed = entry.when;
 		});
 
 		switch (sort) {

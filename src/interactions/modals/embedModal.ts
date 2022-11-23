@@ -1,7 +1,6 @@
 import { Modal } from "../interactionClasses";
 import { EmbedBuilder, ModalSubmitInteraction } from "discord.js";
-import { addDefaultEmbedFooter, countEmbedCharacters } from "../../util/misc/embeds";
-import { config } from "../../config";
+import { addEmbedColor, addEmbedFooter, countEmbedCharacters } from "../../util/misc/embeds";
 import EmbedCommand from "../../commands/EmbedCommand";
 
 class EmbedModal extends Modal {
@@ -23,8 +22,7 @@ class EmbedModal extends Modal {
 			embed.addFields({ name: field, value: val });
 		}
 
-		// I will change this once my other branch gets merged...
-		embed = showAuthor ? addDefaultEmbedFooter(embed) : embed.setColor(config.color);
+		embed = showAuthor ? addEmbedFooter(embed) : addEmbedColor(embed);
 
 		if (countEmbedCharacters(embed) > 6000) {
 			await interaction.reply({

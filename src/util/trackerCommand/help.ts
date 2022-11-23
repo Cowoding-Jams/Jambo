@@ -58,10 +58,10 @@ export async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
 		const logs = activityTrackerLogDb.get(game);
 		logs?.forEach((log) => {
 			totalRecords += 1;
-			playTime += log.t;
-			if (log.w < firstEntry) firstEntry = log.w;
-			if (log.w > lastEntry) lastEntry = log.w;
-			if (log.t > longestRecord) longestRecord = log.t;
+			playTime += log.time;
+			if (log.when < firstEntry) firstEntry = log.when;
+			if (log.when > lastEntry) lastEntry = log.when;
+			if (log.time > longestRecord) longestRecord = log.time;
 		});
 	});
 

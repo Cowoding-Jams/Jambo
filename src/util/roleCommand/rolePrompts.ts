@@ -163,3 +163,30 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 		logger.error("Failed to set up timezone roles.");
 	}
 }
+
+export async function jamPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
+	const roleName = "jammin";
+
+	const prompt: EmbedBuilder = new EmbedBuilder()
+		.setTitle("Jam role 🖥️")
+		.setDescription("Select if you want to participate in upcoming jams and be notified with all the news!");
+
+	const actionRows: ActionRowBuilder<ButtonBuilder>[] = [
+		new ActionRowBuilder<ButtonBuilder>().addComponents(
+			new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
+				.setLabel("Participate in jams")
+				.setCustomId(`role.${roleName}`)
+		),
+	];
+
+	await interaction.guild?.roles.create({
+		name: roleName,
+		position: 1,
+	});
+
+	await interaction.editReply({
+		embeds: [addEmbedFooter(prompt)],
+		components: actionRows,
+	});
+}

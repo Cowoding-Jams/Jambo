@@ -102,7 +102,8 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 										additionalPing ? " and " + additionalPing.toString() : ""
 								  }: ${message}`
 						} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${id}`)}`
-					)
+					),
+				true
 			),
 		],
 	});

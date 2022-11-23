@@ -5,7 +5,7 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
-import { colorPrompt, pronounPrompt, timezonePrompt } from "../util/roleCommand/rolePrompts";
+import { colorPrompt, jamPrompt, pronounPrompt, timezonePrompt } from "../util/roleCommand/rolePrompts";
 import { deleteRoles } from "../util/roleCommand/roleUtil";
 
 class RoleCommand extends Command {
@@ -17,7 +17,7 @@ class RoleCommand extends Command {
 		if (!(await hasAdminPerms(interaction))) {
 			// color role commands are only available to admins
 			await interaction.reply({
-				content: "You don't have the admin permission to use that command.",
+				content: "The role prompt commands are meant to be used by admins only.",
 				ephemeral: true,
 			});
 			return;
@@ -34,6 +34,9 @@ class RoleCommand extends Command {
 		} else if (subcommand === "timezone-prompt") {
 			await interaction.deferReply();
 			await timezonePrompt(interaction);
+		} else if (subcommand === "jam-prompt") {
+			await interaction.deferReply();
+			await jamPrompt(interaction);
 		} else if (subcommand === "delete") {
 			await interaction.deferReply({ ephemeral: true });
 			await deleteRoles(interaction);
@@ -65,6 +68,7 @@ class RoleCommand extends Command {
 			.addSubcommand((option) =>
 				option.setName("timezone-prompt").setDescription("Creates the timezone role prompt.")
 			)
+			.addSubcommand((option) => option.setName("jam-prompt").setDescription("Creates the jam role prompt."))
 			.addSubcommand((option) =>
 				option
 					.setName("delete")
