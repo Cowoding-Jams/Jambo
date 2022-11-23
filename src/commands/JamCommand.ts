@@ -50,9 +50,7 @@ class PollCommand extends Command {
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("coding-jams")
-			.setDescription(
-				"A full featured system to manage the coding jams. (Meant to be used by members with elavated permissions)"
-			)
+			.setDescription("A full featured system to manage the coding jams. (admins/mods only)")
 			.addSubcommandGroup((group) =>
 				group
 					.setName("poll")

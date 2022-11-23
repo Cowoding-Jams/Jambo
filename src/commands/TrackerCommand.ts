@@ -4,7 +4,6 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { Command } from "../interactions/interactionClasses";
-import { config } from "../config";
 import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/trackerCommand/blacklist";
 import {
 	statisticsAllStats,
@@ -66,13 +65,8 @@ class TrackerCommand extends Command {
 	}
 
 	register():
-		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
-		| boolean {
-		if (!config.logActivity) {
-			return false;
-		}
+		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
 			.setName("game-activity-tracker")
 			.setDescription("A game activity tracker to provide interesting insights in the people on this server.")

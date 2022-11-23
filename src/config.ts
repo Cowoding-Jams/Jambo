@@ -15,8 +15,9 @@ export const config: BotConfig = {
 	moderatorRoleId: "855349314807922698", // cowoding-jams/role: moderator
 	adminRoleId: "855348792025939988", // cowoding-jams/role: admin
 
-	// --- Poll System ---
+	// --- Poll/Jam System ---
 	pollChannelId: "856214233930792960", // cowoding-jams/channel: voting-area
+	jamChannelId: "856214233930792960", // cowoding-jams/channel: voting-area
 
 	// --- Roles ---
 	pronounRoles: [
@@ -96,9 +97,11 @@ interface BotConfig {
 	// Admins of the server (to manage the game activity tracker)
 	adminRoleId: string;
 
-	// --- Poll System ---
+	// --- Poll/Jam System ---
 	// The channel where the poll system will post polls.
 	pollChannelId: string;
+	// The channel where the jam system will post announcements to jams.
+	jamChannelId: string;
 
 	// --- Roles ---
 	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.

@@ -41,6 +41,6 @@ ctx.update(
 	await loadAutocompleters()
 );
 await loadEvents(client);
-logger.debug("Attempting login");
+logger.debug("Attempting login.");
 await client.login(process.env.TOKEN);
-logger.info("Successfully started Application");
+logger.info("Successfully started application.");
