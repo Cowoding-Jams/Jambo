@@ -153,5 +153,8 @@ export async function list(interaction: ChatInputCommandInteraction) {
 	const [embed, row] = await gameActivityTrackerEmbed(sort, order);
 	if (!embed) return;
 
-	await interaction.editReply({ embeds: [embed], components: row ? [row] : [] });
+	await interaction.editReply({
+		embeds: [embed],
+		components: row ? [row] : [],
+	});
 }

@@ -1,22 +1,31 @@
 import { Presence } from "discord.js";
 import { config } from "../config";
-import { blacklistCheck, getStopedActivities, logTime } from "../util/trackerCommand/presence";
+import { blacklistCheck, getChangedActivities, logTime } from "../util/trackerCommand/presence";
+
+const userCache = new Map<string, Record<string, number>>();
 
 export default async function presenceUpdate(oldPresence: Presence | null, newPresence: Presence) {
-	if (!config.logActivity) return;
+	if (!config.logActivity || newPresence.user?.bot) return;
 
-	const stopedActivities = await getStopedActivities(oldPresence, newPresence);
-	if (stopedActivities.length == 0) return;
-
+	const { started, stopped } = await getChangedActivities(oldPresence, newPresence);
+	if (!started.length && !stopped.length) return;
 	const userid = newPresence.userId;
 
-	stopedActivities.forEach(async (element) => {
-		const start = element.createdTimestamp;
+	started.forEach(async (activity) => {
+		if (await blacklistCheck(userid, activity.name.toLowerCase())) return;
+		userCache.set(userid, { ...userCache.get(userid), [activity.name]: Date.now() });
+	});
+
+	stopped.forEach(async (activity) => {
+		const cachedUser = userCache.get(userid);
+		if (!cachedUser) return;
+		const start = cachedUser[activity.name];
+		if (!start) return;
+		delete cachedUser[activity.name];
 		const timePlayed = Date.now() - start;
 		if (timePlayed < 20000) return;
 
-		if (await blacklistCheck(userid, element.name.toLowerCase())) return;
-		if (oldPresence?.user?.bot) return;
-		await logTime(userid, element.name.toLowerCase(), timePlayed);
+		if (await blacklistCheck(userid, activity.name.toLowerCase())) return;
+		await logTime(userid, activity.name.toLowerCase(), timePlayed);
 	});
 }
