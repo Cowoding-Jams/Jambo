@@ -41,7 +41,7 @@ class Latex extends Command {
 		}
 	}
 
-	answerWithImage(interaction: ChatInputCommandInteraction, urlToFile: string | null = null): void {
+	answerWithImage(interaction: ChatInputCommandInteraction, urlToFile: string | null = ""): void {
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 			new ButtonBuilder()
 				.setCustomId("latex.delete")
@@ -50,9 +50,14 @@ class Latex extends Command {
 				.setEmoji("🔁")
 		);
 
-		if (urlToFile === null) {
+		if (urlToFile === "") {
 			interaction.editReply({
 				content: "LaTeX compiling error...\nPlease double check your code.",
+				components: [row],
+			});
+		} else if (urlToFile === null) {
+			interaction.editReply({
+				content: "There is a problem with the LaTeX api we are using... So sorry! Go yell at the devs!",
 				components: [row],
 			});
 		} else {
