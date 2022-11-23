@@ -7,9 +7,7 @@ import { addDefaultEmbedFooter } from "../misc/embeds";
 
 export function BirthdayMessage(client: Client) {
 	schedule("0 * * * *", async () => {
-		const targetHour = config.birthdayNotificationAt + 1;
-		const date = new Date();
-		const timezone = targetHour - date.getUTCHours();
+		const timezone = getTimezoneForTargetHour(config.birthdayNotificationAt);
 		const defaultGuild = await client.guilds.fetch(ctx.defaultGuild);
 		await defaultGuild.members.fetch();
 		const possibleUsers =
@@ -17,9 +15,7 @@ export function BirthdayMessage(client: Client) {
 				`UTC${timezone > 0 ? "+" + timezone : timezone < 0 ? timezone : ""}`,
 				defaultGuild
 			) || [];
-		if (date.getUTCHours() == 0) {
-			possibleUsers.push(...getMembersWithNoTimeZone(defaultGuild));
-		}
+		if (timezone === 0) possibleUsers.push(...getMembersWithNoTimeZone(defaultGuild));
 		const adjustedDate = new Date(Date.now() + timezone * 60 * 60 * 1000);
 		const adjustedMonth = adjustedDate.getUTCMonth() + 1;
 		const adjustedDay = adjustedDate.getUTCDate();
@@ -55,4 +51,12 @@ function getMembersWithNoTimeZone(guild: Guild) {
 	return guild.members.cache
 		.filter((m) => !m.roles.cache.some((r) => r.name.startsWith("UTC")))
 		.map((m) => m);
+}
+
+function getTimezoneForTargetHour(targetHour: number): number {
+	for (let tz = -12; tz < 14; tz++) {
+		const offsetdate = new Date(Date.now() + tz * 60 * 60 * 1000);
+		if (offsetdate.getUTCHours() === targetHour) return tz;
+	}
+	throw NaN; // this shouldn't happen, return NaN to do nothing
 }
