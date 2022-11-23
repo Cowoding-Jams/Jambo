@@ -65,13 +65,13 @@ class PollCommand extends Command {
 						subcommand
 							.setName("edit")
 							.setDescription("Edit an existing poll.")
-							.addStringOption(pollNameStringOption)
+							.addStringOption(pollNameStringOption.setAutocomplete(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("delete")
 							.setDescription("Delete an existing poll.")
-							.addStringOption(pollNameStringOption)
+							.addStringOption(pollNameStringOption.setAutocomplete(true))
 					)
 			)
 			.addSubcommandGroup((group) =>
@@ -85,13 +85,13 @@ class PollCommand extends Command {
 						subcommand
 							.setName("edit")
 							.setDescription("Edit an existing jam.")
-							.addStringOption(jamNameStringOption)
+							.addStringOption(jamNameStringOption.setAutocomplete(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("delete")
 							.setDescription("Delete an existing jam.")
-							.addStringOption(jamNameStringOption)
+							.addStringOption(jamNameStringOption.setAutocomplete(true))
 					)
 			)
 			.addSubcommandGroup((group) =>
@@ -106,8 +106,12 @@ class PollCommand extends Command {
 
 export default new PollCommand();
 
-const pollNameStringOption = (option: SlashCommandStringOption) =>
-	option.setName("name").setDescription("The name of the poll.").setRequired(true);
+const pollNameStringOption = new SlashCommandStringOption()
+	.setName("name")
+	.setDescription("The name of the poll.")
+	.setRequired(true);
 
-const jamNameStringOption = (option: SlashCommandStringOption) =>
-	option.setName("name").setDescription("The name of the jam.").setRequired(true);
+const jamNameStringOption = new SlashCommandStringOption()
+	.setName("name")
+	.setDescription("The name of the jam.")
+	.setRequired(true);

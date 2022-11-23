@@ -4,44 +4,34 @@ import { reminderDb, reminderTimeoutCache } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
 import { msToReadable } from "../misc/time";
 import { elapse } from "./reminderUtil";
+import { DateTime, Duration } from "luxon";
 
 export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const minutes = interaction.options.getInteger("minutes") || 0;
 	const hours = interaction.options.getInteger("hours") || 0;
 	const days = interaction.options.getInteger("days") || 0;
 	const months = interaction.options.getInteger("months") || 0;
-	const dateIsoString = interaction.options.getString("date-iso") || "error";
-	const dateIso = Date.parse(dateIsoString);
-	const dateUnixString = interaction.options.getString("date-unix") || "error";
-	const dateUnix = new Date(parseInt(dateUnixString) * 1000).getTime();
-
-	if ((dateIsoString != "error" && !dateIso) || (dateUnixString != "error" && !dateUnix)) {
-		await interaction.reply({
-			content:
-				"Couldn't interpret that date. Invalid date format... Please use the ISO 8601 or an Unix timestamp.",
-			ephemeral: true,
-		});
-		return;
-	}
+	const dateIsoString = interaction.options.getString("date-iso")?.toUpperCase();
+	const dateIso = dateIsoString ? DateTime.fromISO(dateIsoString) : undefined;
+	const dateUnixString = interaction.options.getString("date-unix");
+	const dateUnix = dateUnixString ? DateTime.fromSeconds(parseInt(dateUnixString)) : undefined;
 
 	const message = interaction.options.getString("message") || "";
 	const additionalPing = interaction.options.getMentionable("additional-ping") as GuildMember | Role | null;
 
-	let milliseconds =
-		(minutes + 60 * hours + 60 * 24 * days + 60 * 24 * 30 * months) * 1000 * 60 || 20 * 60 * 1000; // defaults to 20 minutes
-	let timestamp: number;
+	const duration =
+		months + days + hours + minutes == 0
+			? Duration.fromObject({ minutes: 30 })
+			: Duration.fromObject({
+					minutes: minutes,
+					hours: hours,
+					days: days,
+					months: months,
+			  });
 
-	if (dateIso) {
-		timestamp = dateIso;
-		milliseconds = timestamp - Date.now();
-	} else if (dateUnix) {
-		timestamp = dateUnix;
-		milliseconds = timestamp - Date.now();
-	} else {
-		timestamp = Date.now() + milliseconds;
-	}
+	const timestamp = dateUnix ?? dateIso ?? DateTime.now().plus(duration);
 
-	if (timestamp <= Date.now()) {
+	if (timestamp <= DateTime.now()) {
 		await interaction.reply({
 			content: "Dummy... The timestamp must be in the future.",
 			ephemeral: true,
@@ -69,23 +59,25 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 
 	const id = reminderDb.autonum;
 	reminderDb.set(id, {
-		timestamp: timestamp,
+		timestamp: timestamp.toISO(),
 		message: message,
 		channelID: interaction.channel.id,
-		pings: [member?.toString(), additionalPing?.toString() ?? ""],
+		user: member?.toString(),
+		ping: additionalPing?.toString() ?? null,
 	});
 
-	if (timestamp <= Date.now() + 30 * 60 * 1000)
+	if (timestamp.diffNow() <= Duration.fromObject({ minutes: 30 })) {
 		reminderTimeoutCache.set(
 			id,
-			setTimeout(() => elapse(interaction.client, id), timestamp - Date.now())
+			setTimeout(() => elapse(interaction.client, id), timestamp.diffNow().toMillis())
 		);
+	}
 
-	let timeString: Date | string = new Date(timestamp);
-	timeString =
-		days > 0 || months > 0
-			? timeString.toLocaleString(interaction.locale, { timeStyle: "long", dateStyle: "long" })
-			: timeString.toLocaleTimeString(interaction.locale, { timeStyle: "long" });
+	const durationString = msToReadable(timestamp.diffNow().toMillis(), false);
+	const timestampString =
+		timestamp.diffNow() > Duration.fromObject({ hours: 1 })
+			? timestamp.toFormat("dd.MM.yyyy HH:mm:ss 'UTC'Z")
+			: timestamp.toFormat("HH:mm:ss 'UTC'Z");
 
 	await interaction.reply({
 		embeds: [
@@ -93,9 +85,9 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 				new EmbedBuilder()
 					.setTitle("Reminder set!")
 					.setDescription(
-						`I will remind you${additionalPing ? " and " + additionalPing.toString() : ""} in ${msToReadable(
-							milliseconds
-						)} (${timeString})!${
+						`I will remind you${
+							additionalPing ? " and " + additionalPing.toString() : ""
+						} in ${durationString}! (${timestampString})${
 							message == ""
 								? ""
 								: `\nYour message to yourself${
@@ -119,7 +111,7 @@ export async function reminderDelete(interaction: ChatInputCommandInteraction) {
 		return;
 	}
 
-	if (member.toString() === item.pings[0]) {
+	if (member.toString() === item.user) {
 		reminderDb.delete(c_id);
 		if (reminderTimeoutCache.has(c_id)) {
 			clearTimeout(reminderTimeoutCache.get(c_id));
@@ -136,12 +128,10 @@ export async function reminderList(interaction: ChatInputCommandInteraction) {
 	let output = "";
 
 	reminderDb.forEach((value, key) => {
-		const time = (value.timestamp / 1000).toFixed(0);
-
-		if (value.pings[0] === member.toString()) {
-			output += `ID: ${key} - <t:${time}:R> - ${value.pings.join(" ")} - ${
-				value.message == "" ? "No message." : `${value.message}`
-			}\n`;
+		if (value.user === member.toString()) {
+			output += `ID: ${key} - <t:${DateTime.fromISO(value.timestamp).toSeconds()}:R> ${
+				value.ping ? `- ${value.ping} -` : "-"
+			} ${value.message == "" ? "No message." : `${value.message}`}\n`;
 		}
 	});
 

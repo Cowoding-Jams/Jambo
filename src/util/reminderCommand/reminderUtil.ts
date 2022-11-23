@@ -2,13 +2,14 @@ import { addEmbedColor } from "../misc/embeds";
 import { reminderDb, reminderTimeoutCache } from "../../db";
 import { logger } from "../../logger";
 import { Client, EmbedBuilder, TextBasedChannel } from "discord.js";
+import { DateTime, Duration } from "luxon";
 
 export async function elapse(client: Client, id: number): Promise<void> {
 	const reminder = reminderDb.get(id);
 	if (!reminder) return;
 	const channel = (await client.channels.fetch(reminder.channelID)) as TextBasedChannel;
 	await channel?.send({
-		content: reminder.pings.join(" "),
+		content: `${reminder.user} ${reminder.ping || ""}`,
 		embeds: [
 			addEmbedColor(
 				new EmbedBuilder().setTitle("Time is up!").setDescription(reminder.message || "I believe in you!")
@@ -22,10 +23,11 @@ export async function elapse(client: Client, id: number): Promise<void> {
 export function schedulerTick(client: Client) {
 	try {
 		reminderDb.forEach((reminder, id) => {
-			if (!reminderTimeoutCache.has(id) && reminder.timestamp <= Date.now() + 30 * 60 * 1000) {
+			const diffNow = DateTime.fromISO(reminder.timestamp).diffNow();
+			if (!reminderTimeoutCache.has(id) && diffNow <= Duration.fromObject({ minutes: 30 })) {
 				reminderTimeoutCache.set(
 					id,
-					setTimeout(() => elapse(client, id), reminder.timestamp - Date.now())
+					setTimeout(() => elapse(client, id), diffNow.toMillis())
 				);
 			}
 		});

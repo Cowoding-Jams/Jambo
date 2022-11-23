@@ -2,6 +2,7 @@ import { Modal } from "../interactionClasses";
 import { ModalSubmitInteraction } from "discord.js";
 import { proposalDb } from "../../db";
 import { viewProposalEmbed } from "../../util/proposalCommand/listProposals";
+import { Duration } from "luxon";
 
 class ProposalModal extends Modal {
 	constructor() {
@@ -12,7 +13,7 @@ class ProposalModal extends Modal {
 		if (["add", "edit"].includes(customId[0])) {
 			const title = interaction.fields.getTextInputValue("title");
 			const description = interaction.fields.getTextInputValue("description");
-			const timePeriod = interaction.fields.getTextInputValue("time-period");
+			const duration = Duration.fromISO(interaction.fields.getTextInputValue("duration").toUpperCase());
 			const references = interaction.fields.getTextInputValue("references");
 			let proposal = proposalDb.get(title);
 
@@ -30,7 +31,7 @@ class ProposalModal extends Modal {
 				title: title.trim(),
 				description: description.trim(),
 				references: references.trim(),
-				timePeriod: timePeriod.trim(),
+				duration: duration.toISO(),
 				ownerID: proposal?.ownerID || interaction.user.id,
 				votesLastPoll: proposal?.votesLastPoll || 0,
 				totalVotes: proposal?.totalVotes || 0,

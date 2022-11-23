@@ -24,10 +24,10 @@ const description = new TextInputBuilder()
 	.setMinLength(20)
 	.setMaxLength(400);
 
-const timePeriod = new TextInputBuilder()
-	.setCustomId("time-period")
-	.setLabel("Time Period")
-	.setPlaceholder("Enter a time period for your proposal!")
+const duration = new TextInputBuilder()
+	.setCustomId("duration")
+	.setLabel("Duration in ISO")
+	.setPlaceholder("Enter a duration for your jam! (in ISO e.g. P2DT12H)")
 	.setStyle(TextInputStyle.Short)
 	.setMinLength(2)
 	.setMaxLength(30);
@@ -46,7 +46,7 @@ export async function addProposal(interaction: ChatInputCommandInteraction): Pro
 	modal.addComponents(
 		new ActionRowBuilder<TextInputBuilder>().addComponents(title),
 		new ActionRowBuilder<TextInputBuilder>().addComponents(description),
-		new ActionRowBuilder<TextInputBuilder>().addComponents(timePeriod),
+		new ActionRowBuilder<TextInputBuilder>().addComponents(duration),
 		new ActionRowBuilder<TextInputBuilder>().addComponents(references)
 	);
 
@@ -91,7 +91,7 @@ export async function editProposal(interaction: ChatInputCommandInteraction): Pr
 	modal.addComponents(
 		new ActionRowBuilder<TextInputBuilder>().addComponents(title.setValue(proposal.title)),
 		new ActionRowBuilder<TextInputBuilder>().addComponents(description.setValue(proposal.description)),
-		new ActionRowBuilder<TextInputBuilder>().addComponents(timePeriod.setValue(proposal.timePeriod)),
+		new ActionRowBuilder<TextInputBuilder>().addComponents(duration.setValue(proposal.duration)),
 		new ActionRowBuilder<TextInputBuilder>().addComponents(references.setValue(proposal.references))
 	);
 

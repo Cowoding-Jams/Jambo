@@ -7,10 +7,11 @@ export const latexDb = new Enmap<string, string>("latex");
 export const reminderTimeoutCache = new Map<number, NodeJS.Timeout>();
 export const reminderDb = new Enmap<number, Reminder>("reminder");
 interface Reminder {
-	timestamp: number;
+	timestamp: string; // ISO
 	message: string;
 	channelID: string;
-	pings: string[];
+	user: string;
+	ping: string | null;
 }
 
 // -- Game Activity Tracker Database --
@@ -29,7 +30,7 @@ export interface Proposal {
 	title: string;
 	description: string;
 	references: string;
-	timePeriod: string;
+	duration: string; // ISO Duration
 	ownerID: string;
 	votesLastPoll: number;
 	totalVotes: number;
@@ -40,8 +41,8 @@ export interface Proposal {
 export const pollDb = new Enmap<string, Poll>("poll"); // key: title
 interface Poll {
 	title: string;
-	startDate: Date;
-	endDate: Date;
+	startDate: string; // ISO
+	endDate: string; // ISO
 	proposals: Proposal[];
 	votes: Map<string, string[]>; // key: userID, value: proposal titles
 }
@@ -51,8 +52,8 @@ export const jamDb = new Enmap<string, Jam>("jam"); // key: title
 interface Jam {
 	title: string;
 	proposal: Proposal;
-	startDate: Date;
-	endDate: Date;
-	timePeriod: number; // in ms
+	startDate: string; // ISO
+	endDate: string; // ISO
+	duration: string; // ISO Duration
 	resultChannelID: string;
 }

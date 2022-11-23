@@ -1,7 +1,7 @@
 import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import { reminderDb } from "../../db";
-import { msToReadable } from "../../util/misc/time";
+import { DateTime } from "luxon";
 
 class ReminderAutocompleter extends Autocompleter {
 	constructor() {
@@ -12,13 +12,12 @@ class ReminderAutocompleter extends Autocompleter {
 		const options: { name: string; value: number }[] = [];
 
 		for (const [key, value] of reminderDb) {
-			if (value.pings[0] === interaction.user.toString()) {
-				const id = value.pings[1].replace(/\D/g, "");
-				const role = await interaction.guild?.roles.fetch(id);
-				const member = await interaction.guild?.members.fetch(id).catch(() => null);
-				let name = `ID: ${key} - ${msToReadable(value.timestamp, true)} ${
-					role || member ? `- @${role ? role.name : member?.displayName} -` : "-"
-				} ${value.message == "" ? "No message." : `${value.message}`}`;
+			if (value.user === interaction.user.toString()) {
+				let name = `ID: ${key} - ${DateTime.fromISO(value.timestamp).toFormat(
+					"dd.MM.yyyy HH:mm:ss 'UTC'Z"
+				)} ${value.ping ? `- ${value.ping} -` : "-"} ${
+					value.message == "" ? "No message." : `${value.message}`
+				}`;
 
 				if (name.length > 100) {
 					name = name.slice(0, 97) + "...";

@@ -7,6 +7,7 @@ import {
 	EmbedBuilder,
 	ModalSubmitInteraction,
 } from "discord.js";
+import { Duration } from "luxon";
 import { Proposal, proposalDb } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
 
@@ -29,9 +30,9 @@ export async function listProposals(
 
 	for (const prop of proposals) {
 		embed.addFields({
-			name: `#${prop.i.toString().padStart(Math.ceil(proposalDb.size / 10), "0")} ${prop.p.title} ⁘ ${
-				prop.p.timePeriod
-			}`,
+			name: `#${prop.i.toString().padStart(Math.ceil(proposalDb.size / 10), "0")} ${
+				prop.p.title
+			} ⁘ ${Duration.fromISO(prop.p.duration).toFormat("d'd' h'h'")}`,
 			value: `${prop.p.description}${prop.p.references != "" ? `\n${prop.p.references}` : ""}`,
 		});
 	}
@@ -91,17 +92,24 @@ export async function viewProposalEmbed(
 			.setTitle(`${proposal.title} ⁘ ${titleAddition}`)
 			.setDescription(proposal.description)
 			.addFields(
-				{ name: "References", value: proposal.description ? proposal.description : "-" },
-				{ name: "Proposed Time Period", value: proposal.timePeriod },
+				{
+					name: "References",
+					value: proposal.references != "" ? proposal.references : "No references given.",
+				},
+				{
+					name: "Proposed Duration",
+					value: Duration.fromISO(proposal.duration).toFormat("d 'days' h 'hours'"),
+				},
 				{
 					name: "Proposed By",
 					value: proposal
 						? (await interaction.guild?.members.fetch(proposal.ownerID))?.toString() || "Unknown"
 						: interaction.user.toString(),
+					inline: true,
 				},
 				{
 					name: "Votes last poll",
-					value: proposal.votesLastPoll?.toString() || "Wasn't part of a poll yet.",
+					value: proposal.polls == 0 ? "Wasn't part of a poll yet." : proposal.votesLastPoll.toString(),
 					inline: true,
 				}
 			)

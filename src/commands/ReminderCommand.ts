@@ -55,11 +55,11 @@ class ReminderCommand extends Command {
 					.setName("set")
 					.setDescription("Set a new reminder.")
 					.addStringOption(message)
-					.addStringOption(setDateIso)
-					.addIntegerOption(setMonths)
-					.addIntegerOption(setDays)
-					.addIntegerOption(setHours)
 					.addIntegerOption(setMinutes)
+					.addIntegerOption(setHours)
+					.addIntegerOption(setDays)
+					.addIntegerOption(setMonths)
+					.addStringOption(setDateIso)
 					.addStringOption(setDateUnix)
 					.addMentionableOption(additionalPing)
 			)
@@ -83,42 +83,40 @@ class ReminderCommand extends Command {
 
 const setMinutes = new SlashCommandIntegerOption()
 	.setName("minutes")
-	.setDescription("Set the minutes. (60 seconds)")
+	.setDescription("Set the minutes.")
 	.setMinValue(0)
 	.setMaxValue(1440)
 	.setRequired(false);
 
 const setHours = new SlashCommandIntegerOption()
 	.setName("hours")
-	.setDescription("Set the hours. (60 minutes)")
+	.setDescription("Set the hours.")
 	.setMinValue(0)
 	.setMaxValue(720)
 	.setRequired(false);
 
 const setDays = new SlashCommandIntegerOption()
 	.setName("days")
-	.setDescription("Set the days. (24 hours)")
+	.setDescription("Set the days.")
 	.setMinValue(0)
 	.setMaxValue(365)
 	.setRequired(false);
 
 const setMonths = new SlashCommandIntegerOption()
 	.setName("months")
-	.setDescription("Set the months. (30 days)")
+	.setDescription("Set the months.")
 	.setMinValue(0)
 	.setMaxValue(24)
 	.setRequired(false);
 
 const setDateIso = new SlashCommandStringOption()
 	.setName("date-iso")
-	.setDescription(
-		"The date in ISO-8601. (e.g. '2003-05-26T04:48:33+02:00' or try '26 May 2003 04:48:33 UTC+2')"
-	)
+	.setDescription("The date in ISO-8601. (e.g. '2003-05-26T04:48:33+02:00', '2003-05-26T04' or '04:48:33')")
 	.setRequired(false);
 
 const setDateUnix = new SlashCommandStringOption()
 	.setName("date-unix")
-	.setDescription("The date with a unix timestamp. (e.g. '1053917313000')")
+	.setDescription("The date as an unix timestamp in seconds. (e.g. '1053917313000')")
 	.setRequired(false);
 
 const additionalPing = new SlashCommandMentionableOption()
