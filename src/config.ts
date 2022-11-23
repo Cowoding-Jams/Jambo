@@ -1,5 +1,5 @@
 import { ColorResolvable, ComponentEmojiResolvable, PermissionsBitField } from "discord.js";
-//import * as Time from "./util/birthdayCommand/TimeDefinition";
+import * as Time from "./util/birthdayCommand/TimeDefinition";
 
 // Configure your bot here.
 export const config: BotConfig = {
@@ -63,7 +63,7 @@ export const config: BotConfig = {
 	logLevel: "debug",
 	logActivity: true,
 	activityTrackerAdminCommandPermission: PermissionsBitField.Flags.Administrator,
-	birthdayNotificationAt: 6,
+	birthdayNotificationAt: Time.SummerMorning,
 };
 
 interface BotConfig {
