@@ -18,10 +18,11 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const message = interaction.options.getString("message") || "";
 	const additionalPing = interaction.options.getMentionable("additional-ping") as GuildMember | Role | null;
 
-	if (!dateIso?.isValid && !dateUnix?.isValid) {
+	if (!dateIso?.isValid && !dateUnix?.isValid && !(!dateUnix && !dateIso)) {
 		await interaction.reply({
-			content:
-				"That's an invalid date format you used... Please use ISO 8601/Unix timestamps.\n<https://en.wikipedia.org/wiki/ISO_8601> / <https://en.wikipedia.org/wiki/Unix_time>",
+			content: `That's an invalid date format you used... Please use ISO 8601/Unix timestamps.\n<https://en.wikipedia.org/wiki/ISO_8601> / <https://en.wikipedia.org/wiki/Unix_time>\n\n**Your inputs:**\n- Date ISO: ${dateIsoString}\n- Date Unix: ${
+				dateUnixString || ""
+			}\n- Message: ${message}\n- Additional ping: ${additionalPing?.toString() || ""}`,
 			ephemeral: true,
 		});
 		return;
@@ -37,7 +38,7 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 					months: months,
 			  });
 
-	const timestamp = dateUnix ?? dateIso ?? DateTime.now().plus(duration);
+	const timestamp = dateUnix?.isValid ? dateUnix : dateIso?.isValid ? dateIso : DateTime.now().plus(duration);
 
 	if (timestamp <= DateTime.now()) {
 		await interaction.reply({
