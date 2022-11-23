@@ -15,9 +15,17 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const dateIso = dateIsoString ? DateTime.fromISO(dateIsoString) : undefined;
 	const dateUnixString = interaction.options.getString("date-unix");
 	const dateUnix = dateUnixString ? DateTime.fromSeconds(parseInt(dateUnixString)) : undefined;
-
 	const message = interaction.options.getString("message") || "";
 	const additionalPing = interaction.options.getMentionable("additional-ping") as GuildMember | Role | null;
+
+	if (!dateIso?.isValid && !dateUnix?.isValid) {
+		await interaction.reply({
+			content:
+				"That's an invalid date format you used... Please use ISO 8601/Unix timestamps.\n<https://en.wikipedia.org/wiki/ISO_8601> / <https://en.wikipedia.org/wiki/Unix_time>",
+			ephemeral: true,
+		});
+		return;
+	}
 
 	const duration =
 		months + days + hours + minutes == 0

@@ -13,9 +13,18 @@ class ProposalModal extends Modal {
 		if (["add", "edit"].includes(customId[0])) {
 			const title = interaction.fields.getTextInputValue("title");
 			const description = interaction.fields.getTextInputValue("description");
-			const duration = Duration.fromISO(interaction.fields.getTextInputValue("duration").toUpperCase());
+			const durationString = interaction.fields.getTextInputValue("duration").toUpperCase();
+			const duration = Duration.fromISO(durationString);
 			const references = interaction.fields.getTextInputValue("references");
 			let proposal = proposalDb.get(title);
+
+			if (!duration.isValid) {
+				await interaction.reply({
+					content: `Invalid duration format... Please use ISO 8601 (e.g. P2D2H).\n<https://en.wikipedia.org/wiki/ISO_8601>\n\n**These were your inputs:**\n- Title: ${title}\n- Description: ${description}\n- Duration: ${durationString}\n- References: ${references}`,
+					ephemeral: true,
+				});
+				return;
+			}
 
 			if (customId[0] == "add") {
 				if (proposal) {
