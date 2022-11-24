@@ -16,11 +16,7 @@ class ProposalAutocompleter extends Autocompleter {
 		}
 
 		const input = interaction.options.getFocused();
-		proposals =
-			input != ""
-				? proposals.filter((p) => p.title.toLowerCase().startsWith(input.toLowerCase()))
-				: proposals;
-
+		proposals = proposals.filter((p) => p.title.toLowerCase().startsWith(input.toLowerCase()));
 		await interaction.respond(proposals.slice(0, 25).map((c) => ({ name: c.title, value: c.title })));
 	}
 }

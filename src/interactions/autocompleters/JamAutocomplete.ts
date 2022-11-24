@@ -9,22 +9,25 @@ class PollAutocompleter extends Autocompleter {
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
 		const subCmdGroup = interaction.options.getSubcommandGroup();
+		//const subCmd = interaction.options.getSubcommand();
+
+		let db;
 
 		if (subCmdGroup == "poll") {
-			await interaction.respond(
-				pollDb
-					.keyArray()
-					.slice(0, 25)
-					.map((c) => ({ name: c, value: c }))
-			);
-		} else if (subCmdGroup == "jam") {
-			await interaction.respond(
-				jamDb
-					.keyArray()
-					.slice(0, 25)
-					.map((c) => ({ name: c, value: c }))
-			);
+			db = pollDb;
+		} else {
+			// (subCmdGroup == "jam")
+			db = jamDb;
 		}
+
+		const focus = interaction.options.getFocused(true);
+		await interaction.respond(
+			db
+				.keyArray()
+				.filter((k) => k.toLowerCase().startsWith(focus.value.toLowerCase()))
+				.slice(0, 25)
+				.map((c) => ({ name: c, value: c }))
+		);
 	}
 }
 

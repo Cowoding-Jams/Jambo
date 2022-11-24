@@ -18,6 +18,7 @@ export const config: BotConfig = {
 	// --- Poll/Jam System ---
 	pollChannelId: "856214233930792960", // cowoding-jams/channel: voting-area
 	jamChannelId: "856214233930792960", // cowoding-jams/channel: voting-area
+	resultChannelCategoryId: "855356830724259871", // cowoding-jams/category: working
 
 	// --- Roles ---
 	pronounRoles: [
@@ -102,6 +103,8 @@ interface BotConfig {
 	pollChannelId: string;
 	// The channel where the jam system will post announcements to jams.
 	jamChannelId: string;
+	// The category where the jam system will create channels for jams.
+	resultChannelCategoryId: string;
 
 	// --- Roles ---
 	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.

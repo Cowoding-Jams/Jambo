@@ -2,6 +2,7 @@ import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
+	SlashCommandIntegerOption,
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
@@ -16,9 +17,8 @@ class PollCommand extends Command {
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (!(await hasAdminPerms(interaction))) {
-			// color role commands are only available to admins
 			await interaction.reply({
-				content: "The role prompt commands are meant to be used by admins only.",
+				content: "The coding jam commands are meant to be used by admins only.",
 				ephemeral: true,
 			});
 			return;
@@ -60,12 +60,18 @@ class PollCommand extends Command {
 							.setName("new")
 							.setDescription("Create a new poll.")
 							.addStringOption(pollNameStringOption)
+							.addIntegerOption(pollProposalsIntegerOption)
+							.addIntegerOption(pollVotesIntegerOption)
+							.addStringOption(startDateStringOption)
+							.addStringOption(endDateStringOption)
+							.addStringOption(durationStringOption)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("edit")
 							.setDescription("Edit an existing poll.")
 							.addStringOption(pollNameStringOption.setAutocomplete(true))
+							.addStringOption(endDateStringOption.setRequired(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
@@ -79,7 +85,14 @@ class PollCommand extends Command {
 					.setName("jam")
 					.setDescription("Manage the jams.")
 					.addSubcommand((subcommand) =>
-						subcommand.setName("new").setDescription("Create a new jam.").addStringOption(jamNameStringOption)
+						subcommand
+							.setName("new")
+							.setDescription("Create a new jam.")
+							.addStringOption(jamNameStringOption)
+							.addStringOption(jamProposalNameStringOption)
+							.addStringOption(startDateStringOption)
+							.addStringOption(endDateStringOption)
+							.addStringOption(durationStringOption)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
@@ -106,12 +119,50 @@ class PollCommand extends Command {
 
 export default new PollCommand();
 
+// Polls
 const pollNameStringOption = new SlashCommandStringOption()
 	.setName("name")
 	.setDescription("The name of the poll.")
 	.setRequired(true);
 
+const pollVotesIntegerOption = new SlashCommandIntegerOption()
+	.setName("votes")
+	.setDescription("Number of votes for every person. ('proposals' > 'votes')")
+	.setRequired(true)
+	.setMinValue(2)
+	.setMaxValue(40);
+
+const pollProposalsIntegerOption = new SlashCommandIntegerOption()
+	.setName("proposals")
+	.setDescription("Number of proposals to vote. ('proposals' > 'votes')")
+	.setRequired(true)
+	.setMinValue(2)
+	.setMaxValue(40);
+
+// Jams
 const jamNameStringOption = new SlashCommandStringOption()
 	.setName("name")
 	.setDescription("The name of the jam.")
 	.setRequired(true);
+
+const jamProposalNameStringOption = new SlashCommandStringOption()
+	.setName("proposal")
+	.setDescription("Select the name of the proposal for this jam.")
+	.setRequired(true)
+	.setAutocomplete(true);
+
+// MISC
+const startDateStringOption = new SlashCommandStringOption()
+	.setName("start-date")
+	.setDescription("Set the start date in the ISO format.")
+	.setRequired(true);
+
+const endDateStringOption = new SlashCommandStringOption()
+	.setName("end-date")
+	.setDescription("Set the end date in the ISO format. (alternative to 'duration')")
+	.setRequired(false);
+
+const durationStringOption = new SlashCommandStringOption()
+	.setName("duration")
+	.setDescription("Set the duration in the ISO format. (alternative to 'end-date')")
+	.setRequired(false);
