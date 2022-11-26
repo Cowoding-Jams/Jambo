@@ -9,7 +9,7 @@ class ProposalAutocompleter extends Autocompleter {
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
-		let proposals = proposalDb.array();
+		let proposals = Array.from(proposalDb.values());
 
 		if (!(await hasModeratorRole(interaction)) && interaction.options.getSubcommand() != "view") {
 			proposals = proposals.filter((p) => p.ownerID == interaction.user.id);

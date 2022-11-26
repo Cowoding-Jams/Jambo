@@ -20,3 +20,8 @@ export function msToReadable(milliseconds: number, short = false): string {
 		}${_minutes == 0 ? "" : ` ${_minutes} minutes`}${_seconds == 0 ? "" : ` ${_seconds} seconds`}`;
 	}
 }
+
+export const longDateTimeFormat = "dd.MM.yyyy HH:mm:ss 'UTC'Z";
+export const shortDateTimeFormat = "dd.MM.yyyy HH:mm 'UTC'Z";
+export const longTimeFormat = "HH:mm:ss 'UTC'Z";
+export const shortTimeFormat = "HH:mm 'UTC'Z";

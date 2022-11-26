@@ -2,7 +2,7 @@ import { hasRoleMentionPerms } from "../misc/permissions";
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, inlineCode, Role } from "discord.js";
 import { reminderDb, reminderTimeoutCache } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
-import { msToReadable } from "../misc/time";
+import { longDateTimeFormat, longTimeFormat, msToReadable } from "../misc/time";
 import { elapse } from "./reminderUtil";
 import { DateTime, Duration } from "luxon";
 
@@ -66,7 +66,9 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 
 	const member = await interaction.guild!.members.fetch(interaction.user);
 
-	const id = reminderDb.autonum;
+	// @ts-expect-error enmap gets fixed
+	const id = reminderDb.autonum as string;
+
 	reminderDb.set(id, {
 		timestamp: timestamp.toISO(),
 		message: message,
@@ -85,8 +87,8 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const durationString = msToReadable(timestamp.diffNow().toMillis(), false);
 	const timestampString =
 		timestamp.diffNow() > Duration.fromObject({ hours: 1 })
-			? timestamp.toFormat("dd.MM.yyyy HH:mm:ss 'UTC'Z")
-			: timestamp.toFormat("HH:mm:ss 'UTC'Z");
+			? timestamp.toFormat(longDateTimeFormat)
+			: timestamp.toFormat(longTimeFormat);
 
 	await interaction.reply({
 		embeds: [
@@ -111,7 +113,7 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 }
 
 export async function reminderDelete(interaction: ChatInputCommandInteraction) {
-	const c_id = interaction.options.getInteger("id", true);
+	const c_id = interaction.options.getInteger("id", true).toString();
 	const member = await interaction.guild!.members.fetch(interaction.user);
 
 	const item = reminderDb.get(c_id);

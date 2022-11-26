@@ -26,7 +26,7 @@ const description = new TextInputBuilder()
 
 const duration = new TextInputBuilder()
 	.setCustomId("duration")
-	.setLabel("Duration in ISO")
+	.setLabel("Duration in the ISO Duration format")
 	.setPlaceholder("Enter a duration for your jam! (in ISO e.g. P2DT12H)")
 	.setStyle(TextInputStyle.Short)
 	.setMinLength(2)
@@ -55,38 +55,39 @@ export async function addProposal(interaction: ChatInputCommandInteraction): Pro
 
 export async function deleteProposal(interaction: ChatInputCommandInteraction): Promise<void> {
 	const titleString = interaction.options.getString("title") || "";
-	const proposal = proposalDb.get(titleString);
+	const key = proposalDb.findKey((p) => p.title === titleString);
 
-	if (!proposal) {
+	if (!key) {
 		await interaction.reply({ content: "There is no proposal with that title...", ephemeral: true });
 		return;
 	}
 
+	const proposal = proposalDb.get(key)!;
 	if (proposal.ownerID !== interaction.user.id && !(await hasAdminRole(interaction))) {
 		await interaction.reply({ content: "You can only delete your own proposals...", ephemeral: true });
 		return;
 	}
 
-	proposalDb.delete(titleString);
+	proposalDb.delete(key);
 	await interaction.reply({ content: "Proposal deleted!", ephemeral: true });
 }
 
 export async function editProposal(interaction: ChatInputCommandInteraction): Promise<void> {
 	const titleString = interaction.options.getString("title") || "";
+	const key = proposalDb.findKey((p) => p.title === titleString);
 
-	const proposal = proposalDb.get(titleString);
-
-	if (!proposal) {
+	if (!key) {
 		await interaction.reply({ content: "There is no proposal with that title...", ephemeral: true });
 		return;
 	}
 
+	const proposal = proposalDb.get(key)!;
 	if (proposal.ownerID !== interaction.user.id && !(await hasAdminRole(interaction))) {
 		await interaction.reply({ content: "You can only edit your own proposals...", ephemeral: true });
 		return;
 	}
 
-	const modal = new ModalBuilder().setCustomId("proposal.edit").setTitle("Edit a proposal!");
+	const modal = new ModalBuilder().setCustomId(`proposal.edit.${key}`).setTitle("Edit a proposal!");
 
 	modal.addComponents(
 		new ActionRowBuilder<TextInputBuilder>().addComponents(title.setValue(proposal.title)),

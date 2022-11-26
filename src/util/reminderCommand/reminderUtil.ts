@@ -4,7 +4,7 @@ import { logger } from "../../logger";
 import { Client, EmbedBuilder, TextBasedChannel } from "discord.js";
 import { DateTime, Duration } from "luxon";
 
-export async function elapse(client: Client, id: number): Promise<void> {
+export async function elapse(client: Client, id: string): Promise<void> {
 	const reminder = reminderDb.get(id);
 	if (!reminder) return;
 	const channel = (await client.channels.fetch(reminder.channelID)) as TextBasedChannel;

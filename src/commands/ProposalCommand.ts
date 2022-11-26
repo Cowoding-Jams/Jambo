@@ -15,6 +15,15 @@ class PollCommand extends Command {
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+		if (interaction.channel?.isThread()) {
+			await interaction.reply({
+				content:
+					"These commands are not allowed in threads. Please use them in the main channel for everyone to see them.",
+				ephemeral: true,
+			});
+			return;
+		}
+
 		const subcommand = interaction.options.getSubcommand();
 
 		const commands: { [key: string]: (interaction: ChatInputCommandInteraction) => Promise<void> } = {

@@ -7,9 +7,10 @@ import {
 	EmbedBuilder,
 	ModalSubmitInteraction,
 } from "discord.js";
-import { Duration } from "luxon";
+import { DateTime, Duration } from "luxon";
 import { Proposal, proposalDb } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
+import { msToReadable } from "../misc/time";
 
 export async function listProposals(
 	interaction: ChatInputCommandInteraction | ButtonInteraction,
@@ -32,7 +33,7 @@ export async function listProposals(
 		embed.addFields({
 			name: `#${prop.i.toString().padStart(Math.ceil(proposalDb.size / 10), "0")} ${
 				prop.p.title
-			} ⁘ ${Duration.fromISO(prop.p.duration).toFormat("d'd' h'h'")}`,
+			} ⁘ ${msToReadable(Duration.fromISO(prop.p.duration).toMillis())}`,
 			value: `${prop.p.description}${prop.p.references != "" ? `\n${prop.p.references}` : ""}`,
 		});
 	}
@@ -69,9 +70,9 @@ export async function listProposals(
 
 export async function viewProposal(interaction: ChatInputCommandInteraction): Promise<void> {
 	const title = interaction.options.getString("title") ?? "";
-	const proposal = proposalDb.get(title);
+	const key = proposalDb.findKey((p) => p.title === title);
 
-	if (!proposal) {
+	if (!key) {
 		await interaction.reply({
 			content: "There is no proposal with that title... Follow the autocompletion!",
 			ephemeral: true,
@@ -79,6 +80,7 @@ export async function viewProposal(interaction: ChatInputCommandInteraction): Pr
 		return;
 	}
 
+	const proposal = proposalDb.get(key)!;
 	await interaction.reply({ embeds: [await viewProposalEmbed(interaction, proposal, "(view)")] });
 }
 
@@ -97,20 +99,22 @@ export async function viewProposalEmbed(
 					value: proposal.references != "" ? proposal.references : "No references given.",
 				},
 				{
-					name: "Proposed Duration",
-					value: Duration.fromISO(proposal.duration).toFormat("d 'days' h 'hours'"),
-				},
-				{
-					name: "Proposed By",
-					value: proposal
-						? (await interaction.guild?.members.fetch(proposal.ownerID))?.toString() || "Unknown"
-						: interaction.user.toString(),
+					name: "Duration",
+					value: msToReadable(Duration.fromISO(proposal.duration).toMillis()),
 					inline: true,
 				},
 				{
-					name: "Votes last poll",
+					name: "Votes Last Poll",
 					value: proposal.polls == 0 ? "Wasn't part of a poll yet." : proposal.votesLastPoll.toString(),
 					inline: true,
+				},
+				{
+					name: "Proposed By/On",
+					value:
+						(proposal
+							? (await interaction.guild?.members.fetch(proposal.ownerID))?.toString() || "Unknown"
+							: interaction.user.toString()) +
+						` ⁘ <t:${Math.floor(DateTime.fromISO(proposal.created).toSeconds())}:R>`,
 				}
 			)
 	);
