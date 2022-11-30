@@ -50,7 +50,7 @@
 		"@napi-rs/canvas": "^0.1.30",
 		"discord.js": "^14.5.0",
 		"dotenv": "^16.0.0",
-		"enmap": "^5.9.0",
+		"enmap": "github:StrangeGirlMurph/enmap",
 		"luxon": "^3.1.0",
 		"node-cron": "^3.0.2",
 		"node-fetch": "^3.2.3",
