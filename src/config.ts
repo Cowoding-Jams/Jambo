@@ -1,4 +1,4 @@
-import { ColorResolvable, ComponentEmojiResolvable, PermissionFlagsBits } from "discord.js";
+import { ColorResolvable, ComponentEmojiResolvable, PermissionsBitField } from "discord.js";
 
 // Configure your bot here.
 export const config: BotConfig = {
@@ -61,30 +61,33 @@ export const config: BotConfig = {
 		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
 	logLevel: "debug",
 	logActivity: true,
-	activityTrackerAdminCommandPermission: PermissionFlagsBits.Administrator,
+	activityTrackerAdminCommandPermission: PermissionsBitField.Flags.Administrator,
+	birthdayNotificationAt: 7,
 };
 
 interface BotConfig {
-	// Name of the bot.
+	/** Name of the bot. */
 	botName: string;
-	// URL to a png or jpg of the logo of the bot.
+	/** URL to a png or jpg of the logo of the bot. */
 	iconURL: string;
-	// URL to the github repository of the bot. Please share your code!
+	/** URL to the github repository of the bot. Please share your code! */
 	githubURL: string;
-	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.
+	/** Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id. */
 	pronounRoles: [string, ComponentEmojiResolvable | null][];
-	// Max 25 color roles to pick from. First argument is the name of the role, second argument is the color.
+	/** Max 25 color roles to pick from. First argument is the name of the role, second argument is the color. */
 	colorRoles: [string, ColorResolvable][];
-	// Timezones users can pick from.
+	/** Timezones users can pick from. */
 	timezoneRoles: string[];
-	// The main color the bot will use.
+	/** The main color the bot will use. */
 	color: ColorResolvable;
-	// A description of the server that will be displayed in the welcome message.
+	/** A description of the server that will be displayed in the welcome message. */
 	serverDescription: string;
-	// Also available: error, warn, info, http, verbose, debug, silly.
+	/** Also available: error, warn, info, http, verbose, debug, silly. */
 	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
-	// If User Game Activity should get logged
+	/** If User Game Activity should get logged */
 	logActivity: boolean;
-	// Which permissions are needed to user game-activity-tracker commands
+	/** Which permissions are needed to use the game-activity-tracker admin commands */
 	activityTrackerAdminCommandPermission: bigint;
+	/** Can be any Integer between 0 and 23 to define (timezone) relative time of when a Birthday message should get send */
+	birthdayNotificationAt: number;
 }

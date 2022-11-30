@@ -1,4 +1,5 @@
 import ReminderCommand from "../commands/ReminderCommand";
+import BirthdayCommand from "../commands/BirthdayCommand";
 import {
 	ApplicationCommand,
 	Client,
@@ -12,11 +13,14 @@ export default async function ready(client: Client) {
 	logger.info(`Successfully logged in as ${client.user?.username}.`);
 	logger.info(`Watching over ${client.guilds.cache.size} guilds.`);
 
-	logger.info("Publishing commands...");
-	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
-
 	logger.info("Starting reminder scheduler...");
 	ReminderCommand.startScheduler(client);
+
+	logger.info("Starting Birthday scheduler...");
+	BirthdayCommand.startScheduler(client);
+
+	logger.info("Publishing commands...");
+	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
 
 	logger.info("Setup successfully");
 }
