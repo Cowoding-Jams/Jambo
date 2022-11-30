@@ -1,4 +1,4 @@
-# Jambo
+# Jambo (still WIP)
 
 This bot is made to autonomously manage a discord server with regular game jams/hackathons and make it a plasent and happy enviroment.  
 It will collect the proposals for the jam, create polls for everyone to participate (with reactions directly on the server) and will give the server some more glamour with color roles for example.
