@@ -1,12 +1,15 @@
 import {
 	ChatInputCommandInteraction,
+	Client,
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
+import cron from "node-cron";
 import { Command } from "../interactions/interactionClasses";
 import { setCommand } from "../util/birthdayCommand/setCommand";
 import { myCommand } from "../util/birthdayCommand/myCommand";
 import { upcomingCommand } from "../util/birthdayCommand/upcomingCommand";
+import { birthdayMessageTick } from "../util/birthdayCommand/loop";
 
 const months = [
 	{ name: "January", value: "1" },
@@ -26,6 +29,10 @@ const months = [
 class BirthdayCommand extends Command {
 	constructor() {
 		super("birthday");
+	}
+
+	startScheduler(client: Client) {
+		cron.schedule("0 * * * *", birthdayMessageTick.bind(this, client));
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {

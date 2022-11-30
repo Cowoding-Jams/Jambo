@@ -1,4 +1,5 @@
 import ReminderCommand from "../commands/ReminderCommand";
+import BirthdayCommand from "../commands/BirthdayCommand";
 import {
 	ApplicationCommand,
 	Client,
@@ -7,7 +8,6 @@ import {
 } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
-import { BirthdayMessage } from "../util/birthdayCommand/loop";
 
 export default async function ready(client: Client) {
 	logger.info(`Successfully logged in as ${client.user?.username}.`);
@@ -17,7 +17,7 @@ export default async function ready(client: Client) {
 	ReminderCommand.startScheduler(client);
 
 	logger.info("Starting Birthday scheduler...");
-	BirthdayMessage(client);
+	BirthdayCommand.startScheduler(client);
 
 	logger.info("Publishing commands...");
 	await updateRegisteredCommands(client).then(() => logger.info("Finished publishing commands."));
