@@ -8,7 +8,8 @@ coverage
 .env
 
 # Dependency directory
-node_modules
+node_modules/*
+!node_modules/enmap
 
 # Editors
 .idea
