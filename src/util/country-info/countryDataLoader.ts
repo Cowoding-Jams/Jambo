@@ -21,7 +21,7 @@ export async function initializeCountryData() {
 			})
 	).sort((a, b) => b.population - a.population);
 
-	logger.debug("Initialized the country data");
+	logger.debug("Initialized the country data.");
 }
 
 function countryDataImportToCountryData(countryImport: CountryImport[]): Country[] {

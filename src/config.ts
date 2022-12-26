@@ -4,6 +4,7 @@ import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 export const config: BotConfig = {
 	// --- General ---
 	botName: "Jambo",
+	birthdayNotificationAt: 7,
 	iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
 	githubURL: "https://github.com/Cowoding-Jams/Jambo",
 	color: "#F0A5AC",
@@ -80,44 +81,49 @@ export const config: BotConfig = {
 
 interface BotConfig {
 	// --- General ---
-	// Name of the bot.
+	/** Name of the bot. */
 	botName: string;
-	// URL to a png or jpg of the logo of the bot.
+	/** URL to a png or jpg of the logo of the bot. */
 	iconURL: string;
-	// URL to the github repository of the bot. Please share your code!
+	/** URL to the github repository of the bot. Please share your code! */
 	githubURL: string;
-	// The main color the bot will use.
+
+	/** The main color the bot will use. */
 	color: ColorResolvable;
-	// A description of the server that will be displayed in the welcome message.
+	/** A description of the server that will be displayed in the welcome message. */
 	serverDescription: string;
-	// Also available: error, warn, info, http, verbose, debug, silly.
+	/** Also available: error, warn, info, http, verbose, debug, silly. */
 	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
 
 	// --- Management ---
-	// Moderators of the server (to manage proposals)
+	/** Moderators of the server (to manage proposals) */
 	moderatorRoleId: string;
-	// Admins of the server (to manage the game activity tracker)
+	/** Admins of the server (to manage the game activity tracker) */
 	adminRoleId: string;
-	// Active Jam participants role name
+	/** Active Jam participants role name */
 	jamRoleName: string;
 
 	// --- Poll/Jam System ---
-	// The text channel where the poll system will post polls.
+	/** The text channel where the poll system will post polls. */
 	pollChannelId: string;
-	// The text channel where the jam system will post announcements to jams.
+	/** The text channel where the jam system will post announcements to jams. */
 	jamChannelId: string;
-	// The category where the jam system will create channels for jams.
+	/** The category where the jam system will create channels for jams. */
 	resultCategoryId: string;
 
 	// --- Roles ---
-	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.
+	/** Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id. */
 	pronounRoles: [string, ComponentEmojiResolvable | null][];
-	// Max 25 color roles to pick from. First argument is the name of the role, second argument is the color.
+	/** Max 25 color roles to pick from. First argument is the name of the role, second argument is the color. */
 	colorRoles: [string, ColorResolvable][];
-	// Timezones users can pick from.
+	/** Timezones users can pick from. */
 	timezoneRoles: string[];
 
 	// --- Activity Tracker ---
-	// If User Game Activity should get logged (if false completely disables the activity tracker)
+	/** If User Game Activity should get logged */
 	logActivity: boolean;
+
+	// --- Birthday System ---
+	/** Can be any Integer between 0 and 23 to define (timezone) relative time of when a Birthday message should get send */
+	birthdayNotificationAt: number;
 }

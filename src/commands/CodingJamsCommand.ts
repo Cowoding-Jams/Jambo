@@ -16,7 +16,7 @@ import { checkDate, checkDuration } from "../util/misc/time";
 import { DateTime, Duration } from "luxon";
 import { listJams, listPolls } from "../util/coding-jams/listPollsAndJams";
 
-class JamCommand extends Command {
+class CodingJamsCommand extends Command {
 	constructor() {
 		super("coding-jams");
 	}
@@ -192,7 +192,7 @@ class JamCommand extends Command {
 	}
 }
 
-export default new JamCommand();
+export default new CodingJamsCommand();
 
 // Polls
 const pollNameStringOption = new SlashCommandStringOption()

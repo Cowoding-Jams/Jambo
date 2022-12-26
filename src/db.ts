@@ -217,3 +217,12 @@ interface InternalJamEvent {
 	jamID: jamID;
 	date: ISODate;
 }
+
+// -- Birthday Database --
+// key: user id
+export const birthdayDb = new Enmap<Birthday>("birthday");
+
+export interface Birthday {
+	month: number;
+	day: number;
+}
