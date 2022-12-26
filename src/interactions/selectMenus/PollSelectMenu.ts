@@ -44,7 +44,7 @@ class PollSelectMenu extends SelectMenu {
 			pollDb.set(pollKey, poll);
 
 			await interaction.update({
-				embeds: [pollEmbed(poll, "(include/exclude)")],
+				embeds: [pollEmbed(poll, pollKey, "(include/exclude)")],
 				components: pollSelectMenus(
 					poll,
 					pollKey,

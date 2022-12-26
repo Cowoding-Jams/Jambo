@@ -2,7 +2,7 @@ import ReminderCommand from "../commands/ReminderCommand";
 import { ActivityType, Client } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
-import JamCommand from "../commands/JamCommand";
+import JamCommand from "../commands/CodingJamsCommand";
 import { validateConfigParameters } from "../config-validate";
 
 export default async function ready(client: Client) {

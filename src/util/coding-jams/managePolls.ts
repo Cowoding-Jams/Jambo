@@ -1,11 +1,11 @@
 import { ActionRowBuilder, CommandInteraction, EmbedBuilder, SelectMenuBuilder } from "discord.js";
 import { DateTime } from "luxon";
-import { pollSelectionTypes } from "../../commands/JamCommand";
+import { pollSelectionTypes } from "../../commands/CodingJamsCommand";
 import { Poll, pollDb, PollEvent, pollEventsDb, Proposal, proposalDb } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
 import { numberedList } from "../misc/format";
 import { getFromEnmap } from "../misc/enmap";
-import { discordTimestamp } from "../misc/time";
+import { discordRelativeTimestamp, discordTimestamp } from "../misc/time";
 
 export async function newPoll(
 	interaction: CommandInteraction,
@@ -54,7 +54,7 @@ export async function newPoll(
 	events.forEach((e) => pollEventsDb.set(pollEventsDb.autonum, e));
 
 	interaction.reply({
-		embeds: [pollEmbed(poll, "(new)")],
+		embeds: [pollEmbed(poll, id, "(new)")],
 		components: pollSelectMenus(poll, id, sorted, sorted),
 		ephemeral: true,
 	});
@@ -85,7 +85,7 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 	}
 
 	await interaction.reply({
-		embeds: [pollEmbed(poll, "(edit)")],
+		embeds: [pollEmbed(poll, pollKey, "(edit)")],
 		components: pollSelectMenus(
 			poll,
 			pollKey,
@@ -94,6 +94,19 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 		),
 		ephemeral: true,
 	});
+}
+
+export async function viewPoll(interaction: CommandInteraction, name: string) {
+	const pollKey = pollDb.findKey((poll) => poll.title === name);
+
+	if (!pollKey) {
+		interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
+		return;
+	}
+
+	const poll = pollDb.get(pollKey)!;
+
+	await interaction.reply({ embeds: [pollEmbed(poll, pollKey, "(view)")], ephemeral: true });
 }
 
 export async function deletePoll(interaction: CommandInteraction, name: string) {
@@ -176,7 +189,7 @@ export function sortBySelectionType(selectionType: string) {
 		.map((e) => ({ label: e.val.title, value: e.key }));
 }
 
-export function pollEmbed(poll: Poll, title: string) {
+export function pollEmbed(poll: Poll, pollKey: string, title: string) {
 	const proposals = proposalDb
 		.filter((v, k) => poll.proposals.includes(k))
 		.map((v, k) => `- ${v.title} (${k})`);
@@ -207,6 +220,13 @@ export function pollEmbed(poll: Poll, title: string) {
 							.array()
 							.map((v) => v.title)
 							.join(", ") || "-",
+				},
+				{
+					name: "Events",
+					value: pollEventsDb
+						.filter((e) => e.pollID == pollKey)
+						.map((e) => `- ${e.type} ⁘ ${discordRelativeTimestamp(e.date)}`)
+						.join("\n"),
 				},
 				{ name: "Proposals", value: proposals.join("\n") }
 			)

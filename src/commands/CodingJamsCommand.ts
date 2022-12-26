@@ -8,12 +8,13 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
-import { deleteJam, editJam, newJam } from "../util/coding-jams/manageJams";
-import { deletePoll, editPoll, newPoll, votesPoll } from "../util/coding-jams/managePolls";
+import { deleteJam, editJam, newJam, viewJam } from "../util/coding-jams/manageJams";
+import { deletePoll, editPoll, newPoll, viewPoll, votesPoll } from "../util/coding-jams/managePolls";
 import { jamSchedulerTick } from "../util/coding-jams/eventHandler";
 import cron from "node-cron";
 import { checkDate, checkDuration } from "../util/misc/time";
 import { DateTime, Duration } from "luxon";
+import { listJams, listPolls } from "../util/coding-jams/listPollsAndJams";
 
 class JamCommand extends Command {
 	constructor() {
@@ -67,6 +68,9 @@ class JamCommand extends Command {
 				case "extend":
 					editJam(interaction, name, endDate!);
 					break;
+				case "view":
+					viewJam(interaction, name);
+					break;
 				case "delete":
 					deleteJam(interaction, name);
 					break;
@@ -79,6 +83,9 @@ class JamCommand extends Command {
 				case "extend":
 					editPoll(interaction, name, endDate!);
 					break;
+				case "view":
+					viewPoll(interaction, name);
+					break;
 				case "delete":
 					deletePoll(interaction, name);
 					break;
@@ -87,7 +94,11 @@ class JamCommand extends Command {
 					break;
 			}
 		} else if (subCmdGroup === "list") {
-			// WIP
+			if (subCmd === "jams") {
+				listJams(interaction);
+			} else if (subCmd === "polls") {
+				listPolls(interaction);
+			}
 		}
 	}
 
@@ -117,6 +128,12 @@ class JamCommand extends Command {
 							.setDescription("Extend a running poll in its length.")
 							.addStringOption(pollNameStringOption.setAutocomplete(true))
 							.addStringOption(endDateStringOption.setRequired(true).setAutocomplete(true))
+					)
+					.addSubcommand((subcommand) =>
+						subcommand
+							.setName("view")
+							.setDescription("View an existing poll.")
+							.addStringOption(pollNameStringOption.setAutocomplete(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
@@ -151,6 +168,12 @@ class JamCommand extends Command {
 							.setDescription("Extend a running Jam in its length.")
 							.addStringOption(jamNameStringOption.setAutocomplete(true))
 							.addStringOption(endDateStringOption.setRequired(true).setAutocomplete(true))
+					)
+					.addSubcommand((subcommand) =>
+						subcommand
+							.setName("view")
+							.setDescription("View an existing jam.")
+							.addStringOption(jamNameStringOption.setAutocomplete(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand

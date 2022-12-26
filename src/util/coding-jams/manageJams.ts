@@ -2,7 +2,7 @@ import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { DateTime } from "luxon";
 import { Jam, jamDb, JamEvent, jamEventsDb, proposalDb } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
-import { discordTimestamp, durationToReadable } from "../misc/time";
+import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time";
 
 export async function newJam(
 	interaction: CommandInteraction,
@@ -51,7 +51,7 @@ export async function newJam(
 
 	events.forEach((e) => jamEventsDb.set(jamEventsDb.autonum, e));
 
-	interaction.reply({ embeds: [jamEmbed(jam, "(new)")], ephemeral: true });
+	interaction.reply({ embeds: [jamEmbed(jam, id, "(new)")], ephemeral: true });
 }
 
 export async function editJam(interaction: CommandInteraction, name: string, end: DateTime) {
@@ -81,7 +81,18 @@ export async function editJam(interaction: CommandInteraction, name: string, end
 		interaction.guild?.scheduledEvents.edit(jam.eventID, { scheduledEndTime: end.toISO() });
 	}
 
-	interaction.reply({ embeds: [jamEmbed(jam, "(edit)")], ephemeral: true });
+	interaction.reply({ embeds: [jamEmbed(jam, jamKey, "(edit)")], ephemeral: true });
+}
+
+export async function viewJam(interaction: CommandInteraction, name: string) {
+	const jamKey = jamDb.findKey((j) => j.title === name);
+	if (!jamKey) {
+		interaction.reply({ content: "There is no jam with that name...", ephemeral: true });
+		return;
+	}
+
+	const jam = jamDb.get(jamKey)!;
+	await interaction.reply({ embeds: [jamEmbed(jam, jamKey, "(view)")], ephemeral: true });
 }
 
 export async function deleteJam(interaction: CommandInteraction, name: string) {
@@ -108,7 +119,7 @@ export async function deleteJam(interaction: CommandInteraction, name: string) {
 	interaction.reply({ content: `${name} deleted!`, ephemeral: true });
 }
 
-function jamEmbed(jam: Jam, title: string) {
+function jamEmbed(jam: Jam, jamKey: string, title: string) {
 	return addEmbedFooter(new EmbedBuilder().setTitle(`${jam.title} ${title}`)).addFields(
 		{
 			name: "Start",
@@ -128,6 +139,13 @@ function jamEmbed(jam: Jam, title: string) {
 		{
 			name: "Proposal",
 			value: proposalDb.get(jam.proposal)?.title || "Unknown...",
+		},
+		{
+			name: "Events",
+			value: jamEventsDb
+				.filter((e) => e.jamID == jamKey)
+				.map((e) => `- ${e.type} ⁘ ${discordRelativeTimestamp(e.date)}`)
+				.join("\n"),
 		}
 	);
 }

@@ -1,5 +1,6 @@
 import { Activity, ActivityType, Presence } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
+import { DateTime, Duration } from "luxon";
 
 export async function getChangedActivities(
 	oldPresence: Presence | null,
@@ -34,5 +35,8 @@ export async function logTime(userid: string, elementName: string, timePlayed: n
 	const name = elementName.replace(/[^\x20-\x7F]/g, "").trim();
 	if (name.length == 0) return;
 	if (!activityTrackerLogDb.has(`${userid}-${name}`)) activityTrackerLogDb.set(`${userid}-${name}`, []);
-	activityTrackerLogDb.push(`${userid}-${name}`, { t: timePlayed, w: Date.now() });
+	activityTrackerLogDb.push(`${userid}-${name}`, {
+		duration: Duration.fromMillis(timePlayed),
+		date: DateTime.now().toISO(),
+	});
 }

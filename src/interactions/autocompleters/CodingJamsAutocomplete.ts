@@ -27,15 +27,27 @@ class JamAutocompleter extends Autocompleter {
 		const optionName = focus.name;
 		const value = focus.value.toLowerCase();
 
+		const jamNameAutocompletion = async () =>
+			await interaction.respond(
+				jamDb
+					.array()
+					.filter((k) => k.title.toLowerCase().startsWith(value))
+					.slice(0, 25)
+					.map((c) => ({ name: c.title, value: c.title }))
+			);
+
+		const proposalNameAutocompletion = async () =>
+			await interaction.respond(
+				proposalDb
+					.array()
+					.filter((k) => k.title.toLowerCase().startsWith(value))
+					.slice(0, 25)
+					.map((c) => ({ name: c.title, value: c.title }))
+			);
+
 		if (subCmd == "new") {
 			if (optionName == "proposal") {
-				await interaction.respond(
-					proposalDb
-						.array()
-						.filter((k) => k.title.toLowerCase().startsWith(value))
-						.slice(0, 25)
-						.map((c) => ({ name: c.title, value: c.title }))
-				);
+				proposalNameAutocompletion();
 			} else if (optionName == "duration") {
 				await autocompleteISODuration(interaction);
 			} else {
@@ -64,14 +76,9 @@ class JamAutocompleter extends Autocompleter {
 				}
 				await autocompleteISOTime(interaction);
 			}
-		} else if (subCmd == "delete") {
-			await interaction.respond(
-				jamDb
-					.array()
-					.filter((k) => k.title.toLowerCase().startsWith(value))
-					.slice(0, 25)
-					.map((c) => ({ name: c.title, value: c.title }))
-			);
+		} else {
+			// delete, view
+			jamNameAutocompletion();
 		}
 	}
 
@@ -80,6 +87,15 @@ class JamAutocompleter extends Autocompleter {
 		const focus = interaction.options.getFocused(true);
 		const optionName = focus.name;
 		const value = focus.value.toLowerCase();
+
+		const pollNameAutocompletion = async () =>
+			await interaction.respond(
+				pollDb
+					.array()
+					.filter((k) => k.title.toLowerCase().startsWith(value))
+					.slice(0, 25)
+					.map((c) => ({ name: c.title, value: c.title }))
+			);
 
 		if (subCmd == "new") {
 			if (optionName == "duration") {
@@ -90,13 +106,7 @@ class JamAutocompleter extends Autocompleter {
 			}
 		} else if (subCmd == "extend") {
 			if (optionName == "name") {
-				await interaction.respond(
-					pollDb
-						.array()
-						.filter((k) => k.title.toLowerCase().startsWith(value))
-						.slice(0, 25)
-						.map((c) => ({ name: c.title, value: c.title }))
-				);
+				pollNameAutocompletion();
 			} else {
 				if (value.length == 0) {
 					const name = interaction.options.getString("name") || "";
@@ -110,14 +120,9 @@ class JamAutocompleter extends Autocompleter {
 				}
 				await autocompleteISOTime(interaction);
 			}
-		} else if (subCmd == "delete") {
-			await interaction.respond(
-				pollDb
-					.array()
-					.filter((k) => k.title.toLowerCase().startsWith(value))
-					.slice(0, 25)
-					.map((c) => ({ name: c.title, value: c.title }))
-			);
+		} else {
+			// delete, view, votes
+			pollNameAutocompletion();
 		}
 	}
 }
