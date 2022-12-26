@@ -16,7 +16,13 @@ export async function hasRoleMentionPerms(
 	return member?.permissions.has("MentionEveryone") || mentionable?.mentionable || false;
 }
 
-export async function hasAdminPerms(interaction: ChatInputCommandInteraction): Promise<boolean> {
+export async function hasAdminPerms(
+	interaction:
+		| ChatInputCommandInteraction
+		| ButtonInteraction
+		| ModalSubmitInteraction
+		| AutocompleteInteraction
+): Promise<boolean> {
 	const member = await interaction.guild?.members.fetch(interaction.user);
 	return member?.permissions.has("Administrator") || false;
 }
@@ -29,7 +35,7 @@ export async function hasAdminRole(
 		| AutocompleteInteraction
 ): Promise<boolean> {
 	const member = await interaction.guild?.members.fetch(interaction.user);
-	return member?.roles.cache.has(config.adminRoleId) || false;
+	return member?.roles.cache.has(config.adminRoleId) || hasAdminPerms(interaction);
 }
 
 export async function hasModeratorRole(
@@ -40,7 +46,7 @@ export async function hasModeratorRole(
 		| AutocompleteInteraction
 ): Promise<boolean> {
 	const member = await interaction.guild?.members.fetch(interaction.user);
-	return member?.roles.cache.has(config.moderatorRoleId) || false;
+	return member?.roles.cache.has(config.moderatorRoleId) || hasAdminPerms(interaction);
 }
 
 export async function hasRole(member: GuildMember | null, roleID: string): Promise<boolean> {

@@ -1,64 +1,219 @@
 import Enmap from "enmap";
+import { DateTime, Duration } from "luxon";
 
 // -- LaTeX Database --
 export const latexDb = new Enmap<string>("latex"); // key: reply id
 
 // -- Reminder Database --
 export const reminderTimeoutCache = new Map<string, NodeJS.Timeout>();
-export const reminderDb = new Enmap<Reminder>("reminder"); // key: unique id
-interface Reminder {
-	timestamp: string; // ISO
+// key: unique id
+export const reminderDb = new Enmap<Reminder, InternalReminder>({
+	name: "reminder",
+	serializer: (data) => ({ ...data, timestamp: data.timestamp.toISO() }),
+	deserializer: (data) => ({ ...data, timestamp: DateTime.fromISO(data.timestamp) }),
+});
+export interface Reminder {
+	timestamp: DateTime;
 	message: string;
 	channelID: string;
 	user: string;
 	ping: string | null;
 }
 
-// -- Game Activity Tracker Database --
-export const activityTrackerLogDb = new Enmap<ActivityLogEntry[]>("TrackerLog");
-export const activityTrackerBlacklistDb = new Enmap<string[]>("TrackerBlacklist");
-activityTrackerBlacklistDb.ensure("general-user", []);
-activityTrackerBlacklistDb.ensure("general-game", []);
-interface ActivityLogEntry {
-	time: number;
-	when: number;
+interface InternalReminder {
+	timestamp: ISODate;
+	message: string;
+	channelID: string;
+	user: string;
+	ping: string | null;
 }
 
+// -- Activity Tracker Database --
+export const activityTrackerBlacklistDb = new Enmap<string[]>("trackerBlacklist");
+activityTrackerBlacklistDb.ensure("general-user", []);
+activityTrackerBlacklistDb.ensure("general-game", []);
+
+// key: "[user id]-[game]"
+export const activityTrackerLogDb = new Enmap<ActivityLogEntry[], InternalActivityLogEntry[]>({
+	name: "trackerLog",
+	serializer: (data) => data.map((e) => ({ ...e, duration: e.duration.toISO(), date: e.date.toISO() })),
+	deserializer: (data) =>
+		data.map((e) => ({ ...e, duration: Duration.fromISO(e.duration), date: DateTime.fromISO(e.date) })),
+});
+
+export interface ActivityLogEntry {
+	duration: Duration;
+	date: DateTime;
+}
+
+interface InternalActivityLogEntry {
+	duration: ISODuration;
+	date: ISODate;
+}
+
+// -- MISC --
+// Types
+export type ISODate = string; // ISO Date
+export type ISODuration = string; // ISO Duration
+export type jamID = string; // key of jamDb
+export type pollID = string; // key of pollDb
+export type proposalID = string; // key of proposalDb
+export type userID = string; // Discord user id
+
 // -- Proposal Database --
-export const proposalDb = new Enmap<Proposal>("proposal"); // key: unique id
+// key: unique id
+export const proposalDb = new Enmap<Proposal, InternalProposal>({
+	name: "proposal",
+	serializer: (data) => ({ ...data, created: data.created.toISO(), duration: data.duration.toISO() }),
+	deserializer: (data) => ({
+		...data,
+		created: DateTime.fromISO(data.created),
+		duration: Duration.fromISO(data.duration),
+	}),
+});
+
 export interface Proposal {
 	title: string;
+	abbreviation: string;
 	description: string;
 	references: string;
-	duration: string; // ISO Duration
-	ownerID: string;
+	duration: Duration;
+	owner: userID;
 	votesLastPoll: number;
 	totalVotes: number;
 	polls: number;
-	created: string; // ISO
+	created: DateTime;
+}
+
+interface InternalProposal {
+	title: string;
+	abbreviation: string;
+	description: string;
+	references: string;
+	duration: ISODuration;
+	owner: userID;
+	votesLastPoll: number;
+	totalVotes: number;
+	polls: number;
+	created: ISODate;
 }
 
 // -- Poll Database --
-export const pollDb = new Enmap<Poll>("poll"); // key: unique id
-interface Poll {
+// key: unique id
+export const pollDb = new Enmap<Poll, InternalPoll>({
+	name: "poll",
+	serializer: (data) => ({
+		...data,
+		start: data.start.toISO(),
+		end: data.end.toISO(),
+	}),
+	deserializer: (data) => ({
+		...data,
+		start: DateTime.fromISO(data.start),
+		end: DateTime.fromISO(data.end),
+	}),
+});
+export interface Poll {
 	title: string;
-	startDate: string; // ISO
-	endDate: string; // ISO
+	start: DateTime;
+	end: DateTime;
 	numVotes: number;
 	numProposals: number;
-	excluded: string[]; // keys of proposalDb
-	include: string[]; // keys of proposalDb
-	proposals: string[]; // keys of proposalDb
-	votes: Map<string, string[]>; // key: userID, value: proposal titles
+	selectionType: string;
+	votingPrompt: string | null; // id of the message
+	exclude: proposalID[];
+	include: proposalID[];
+	proposals: proposalID[];
+	votes: Map<userID, proposalID[]>;
+}
+
+interface InternalPoll {
+	title: string;
+	start: ISODate;
+	end: ISODate;
+	numVotes: number;
+	numProposals: number;
+	selectionType: string;
+	votingPrompt: string | null; // id of the message
+	exclude: proposalID[];
+	include: proposalID[];
+	proposals: proposalID[];
+	votes: Map<userID, proposalID[]>;
+}
+
+export const pollTimeoutCache = new Map<string, NodeJS.Timeout>();
+// key: unique id
+export const pollEventsDb = new Enmap<PollEvent, InternalPollEvent>({
+	name: "pollEvents",
+	serializer: (data) => ({ ...data, date: data.date.toISO() }),
+});
+
+export interface PollEvent {
+	type: "open" | "close" | "before";
+	pollID: pollID;
+	promptID: string | null;
+	date: DateTime;
+}
+
+interface InternalPollEvent {
+	type: "open" | "close" | "before";
+	pollID: pollID;
+	promptID: string | null;
+	date: ISODate;
 }
 
 // -- Jam Database --
-export const jamDb = new Enmap<Jam>("jam"); // key: unique id
-interface Jam {
+// key: unique id
+export const jamDb = new Enmap<Jam, InternalJam>({
+	name: "jam",
+	serializer: (data) => ({
+		...data,
+		start: data.start.toISO(),
+		end: data.end.toISO(),
+	}),
+	deserializer: (data) => ({
+		...data,
+		start: DateTime.fromISO(data.start),
+		end: DateTime.fromISO(data.end),
+	}),
+});
+
+export interface Jam {
 	title: string;
-	proposal: Proposal;
-	startDate: string; // ISO
-	endDate: string; // ISO
-	duration: string; // ISO Duration
-	resultChannelID: string;
+	proposal: proposalID;
+	start: DateTime;
+	end: DateTime;
+	resultChannelID: string | null;
+	eventID: string | null;
+	//pollID: string | null;
+}
+
+interface InternalJam {
+	title: string;
+	proposal: proposalID;
+	start: ISODate;
+	end: ISODate;
+	resultChannelID: string | null;
+	eventID: string | null;
+	//pollID: string | null;
+}
+
+export const jamTimeoutCache = new Map<string, NodeJS.Timeout>();
+// key: unique id
+export const jamEventsDb = new Enmap<JamEvent, InternalJamEvent>({
+	name: "jamEvents",
+	serializer: (data) => ({ ...data, date: data.date.toISO() }),
+	deserializer: (data) => ({ ...data, date: DateTime.fromISO(data.date) }),
+});
+
+export interface JamEvent {
+	type: "start" | "end" | "createScheduledEvent" | "halftime" | "close-to-end" | "close-to-start";
+	jamID: jamID;
+	date: DateTime;
+}
+
+interface InternalJamEvent {
+	type: "start" | "end" | "createScheduledEvent" | "halftime" | "close-to-end" | "close-to-start";
+	jamID: jamID;
+	date: ISODate;
 }

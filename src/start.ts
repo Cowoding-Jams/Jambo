@@ -40,6 +40,7 @@ ctx.update(
 	await loadModals(),
 	await loadAutocompleters()
 );
+
 await loadEvents(client);
 logger.debug("Attempting login.");
 await client.login(process.env.TOKEN);

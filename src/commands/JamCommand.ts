@@ -1,18 +1,29 @@
 import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
+	Client,
 	SlashCommandBuilder,
 	SlashCommandIntegerOption,
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
-import { deleteJam, editJam, newJam } from "../util/jamCommand/manageJams";
-import { deletePoll, editPoll, newPoll } from "../util/pollCommand/managePolls";
+import { deleteJam, editJam, newJam } from "../util/coding-jams/manageJams";
+import { deletePoll, editPoll, newPoll, votesPoll } from "../util/coding-jams/managePolls";
+import { jamSchedulerTick } from "../util/coding-jams/eventHandler";
+import cron from "node-cron";
+import { checkDate, checkDuration } from "../util/misc/time";
+import { DateTime, Duration } from "luxon";
 
-class PollCommand extends Command {
+class JamCommand extends Command {
 	constructor() {
 		super("coding-jams");
+	}
+
+	startScheduler(client: Client) {
+		jamSchedulerTick(client);
+		// every hour
+		cron.schedule("0 * * * *", jamSchedulerTick.bind(this, client));
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -24,27 +35,60 @@ class PollCommand extends Command {
 			return;
 		}
 
+		const name = interaction.options.getString("name") || "Default Name";
+		const proposal = interaction.options.getString("proposal") || "";
+
+		const numVotes = interaction.options.getInteger("num-votes") || 3;
+		const numProposals = interaction.options.getInteger("num-proposals") || 3;
+		const selectionType =
+			interaction.options.getString("proposal-selection-type") || pollSelectionTypes.topAll;
+
 		const subCmdGroup = interaction.options.getSubcommandGroup() || "cmd";
 		const subCmd = interaction.options.getSubcommand();
 
-		const commands: {
-			[key: string]: { [key: string]: (interaction: ChatInputCommandInteraction) => Promise<void> };
-		} = {
-			jam: {
-				new: newJam,
-				edit: editJam,
-				delete: deleteJam,
-			},
-			poll: {
-				new: newPoll,
-				edit: editPoll,
-				delete: deletePoll,
-			},
-			cmd: {},
-		};
+		let startDate: DateTime | null;
+		let endDate: DateTime | null;
+		let duration: Duration | null;
 
-		await interaction.deferReply({ ephemeral: true });
-		await commands[subCmdGroup][subCmd](interaction);
+		if (subCmd === "new") {
+			startDate = await checkDate(interaction, interaction.options.getString("start-date"));
+			endDate = await checkDate(interaction, interaction.options.getString("end-date"));
+			duration = await checkDuration(interaction, interaction.options.getString("duration"));
+
+			if (!(startDate && (endDate || duration))) return;
+			endDate = endDate || startDate.plus(duration!); // can't believe ts can't figure this out by itself... smh
+		}
+
+		if (subCmdGroup === "jam") {
+			switch (subCmd) {
+				case "new":
+					newJam(interaction, name, proposal, startDate!, endDate!);
+					break;
+				case "extend":
+					editJam(interaction, name, endDate!);
+					break;
+				case "delete":
+					deleteJam(interaction, name);
+					break;
+			}
+		} else if (subCmdGroup === "poll") {
+			switch (subCmd) {
+				case "new":
+					newPoll(interaction, name, numProposals, numVotes, selectionType, startDate!, endDate!);
+					break;
+				case "extend":
+					editPoll(interaction, name, endDate!);
+					break;
+				case "delete":
+					deletePoll(interaction, name);
+					break;
+				case "votes":
+					votesPoll(interaction, name);
+					break;
+			}
+		} else if (subCmdGroup === "list") {
+			// WIP
+		}
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
@@ -66,21 +110,24 @@ class PollCommand extends Command {
 							.addStringOption(startDateStringOption)
 							.addStringOption(endDateStringOption)
 							.addStringOption(durationStringOption)
-							.addStringOption(pollIncludeSpecificProposalsStringOption)
-							.addStringOption(pollExcludeSpecificProposalsStringOption)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("extend")
 							.setDescription("Extend a running poll in its length.")
 							.addStringOption(pollNameStringOption.setAutocomplete(true))
-							.addStringOption(endDateStringOption)
-							.addStringOption(durationStringOption)
+							.addStringOption(endDateStringOption.setRequired(true).setAutocomplete(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("delete")
 							.setDescription("Delete an existing poll.")
+							.addStringOption(pollNameStringOption.setAutocomplete(true))
+					)
+					.addSubcommand((subcommand) =>
+						subcommand
+							.setName("votes")
+							.setDescription("View the votes for a poll.")
 							.addStringOption(pollNameStringOption.setAutocomplete(true))
 					)
 			)
@@ -103,8 +150,7 @@ class PollCommand extends Command {
 							.setName("extend")
 							.setDescription("Extend a running Jam in its length.")
 							.addStringOption(jamNameStringOption.setAutocomplete(true))
-							.addStringOption(endDateStringOption)
-							.addStringOption(durationStringOption)
+							.addStringOption(endDateStringOption.setRequired(true).setAutocomplete(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
@@ -123,12 +169,14 @@ class PollCommand extends Command {
 	}
 }
 
-export default new PollCommand();
+export default new JamCommand();
 
 // Polls
 const pollNameStringOption = new SlashCommandStringOption()
 	.setName("name")
-	.setDescription("The name of the poll.")
+	.setDescription("The unique name of the poll.")
+	.setMinLength(4)
+	.setMaxLength(30)
 	.setRequired(true);
 
 const pollVotesIntegerOption = new SlashCommandIntegerOption()
@@ -136,57 +184,45 @@ const pollVotesIntegerOption = new SlashCommandIntegerOption()
 	.setDescription("Number of votes for every person. ('proposals' > 'votes')")
 	.setRequired(true)
 	.setMinValue(2)
-	.setMaxValue(40);
+	.setMaxValue(25);
 
 const pollProposalsIntegerOption = new SlashCommandIntegerOption()
 	.setName("num-proposals")
 	.setDescription("Number of proposals to vote. ('proposals' > 'votes')")
 	.setRequired(true)
 	.setMinValue(2)
-	.setMaxValue(40);
+	.setMaxValue(25);
 
-export const pollSelectionRandom = "random";
-export const pollSelectionTop = "top";
-export const pollSelectionBottom = "bottom";
-export const pollSelectionTopAll = "topAll";
-export const pollSelectionBottomAll = "bottomAll";
-export const pollSelectionNewest = "newest";
-export const pollSelectionOldest = "oldest";
+export const pollSelectionTypes = {
+	random: "random",
+	top: "top",
+	bottom: "bottom",
+	topAll: "topAll",
+	bottomAll: "bottomAll",
+	newest: "newest",
+	oldest: "oldest",
+};
 
 const pollSelectionStringOption = new SlashCommandStringOption()
 	.setName("proposal-selection-type")
 	.setDescription("Determins which proposals will be selected for voting.")
 	.setRequired(true)
 	.addChoices(
-		{ name: "Top (last time)", value: pollSelectionTop },
-		{ name: "Bottom (last time)", value: pollSelectionBottom },
-		{ name: "Random", value: pollSelectionRandom },
-		{ name: "Newest", value: pollSelectionNewest },
-		{ name: "Oldest", value: pollSelectionOldest },
-		{ name: "Top-All (all time)", value: pollSelectionTopAll },
-		{ name: "Bottom-All (all time)", value: pollSelectionBottomAll }
+		{ name: "Top (last time)", value: pollSelectionTypes.top },
+		{ name: "Bottom (last time)", value: pollSelectionTypes.bottom },
+		{ name: "Random", value: pollSelectionTypes.random },
+		{ name: "Newest", value: pollSelectionTypes.newest },
+		{ name: "Oldest", value: pollSelectionTypes.oldest },
+		{ name: "Top-All (all time)", value: pollSelectionTypes.topAll },
+		{ name: "Bottom-All (all time)", value: pollSelectionTypes.bottomAll }
 	);
-
-const pollIncludeSpecificProposalsStringOption = new SlashCommandStringOption()
-	.setName("include-proposals")
-	.setDescription(
-		"Lets you enter specific proposals you want included in the poll. (follow the autocomplete!)"
-	)
-	.setRequired(false)
-	.setAutocomplete(true);
-
-const pollExcludeSpecificProposalsStringOption = new SlashCommandStringOption()
-	.setName("exclude-proposals")
-	.setDescription(
-		"Lets you enter specific proposals you want to exclude from the poll. (follow the autocomplete!)"
-	)
-	.setRequired(false)
-	.setAutocomplete(true);
 
 // Jams
 const jamNameStringOption = new SlashCommandStringOption()
 	.setName("name")
 	.setDescription("The name of the jam.")
+	.setMinLength(3)
+	.setMaxLength(30)
 	.setRequired(true);
 
 const jamProposalNameStringOption = new SlashCommandStringOption()
@@ -199,14 +235,17 @@ const jamProposalNameStringOption = new SlashCommandStringOption()
 const startDateStringOption = new SlashCommandStringOption()
 	.setName("start-date")
 	.setDescription("Set the start date in the ISO format.")
-	.setRequired(true);
+	.setRequired(true)
+	.setAutocomplete(true);
 
 const endDateStringOption = new SlashCommandStringOption()
 	.setName("end-date")
 	.setDescription("Set the end date in the ISO format. (alternative to 'duration')")
-	.setRequired(false);
+	.setRequired(false)
+	.setAutocomplete(true);
 
 const durationStringOption = new SlashCommandStringOption()
 	.setName("duration")
 	.setDescription("Set the duration in the ISO format. (alternative to 'end-date')")
-	.setRequired(false);
+	.setRequired(false)
+	.setAutocomplete(true);

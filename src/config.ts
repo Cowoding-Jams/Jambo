@@ -12,13 +12,14 @@ export const config: BotConfig = {
 	logLevel: "debug",
 
 	// --- Management ---
-	moderatorRoleId: "855349314807922698", // cowoding-jams/role: moderator
-	adminRoleId: "855348792025939988", // cowoding-jams/role: admin
+	moderatorRoleId: "1056979456650133565", // cowoding-jams/role: moderator 855349314807922698
+	adminRoleId: "1056979442708271204", // cowoding-jams/role: admin 855348792025939988
+	jamRoleName: "jammin",
 
 	// --- Poll/Jam System ---
-	pollChannelId: "856214233930792960", // cowoding-jams/channel: voting-area
-	jamChannelId: "856214233930792960", // cowoding-jams/channel: voting-area
-	resultChannelCategoryId: "855356830724259871", // cowoding-jams/category: working
+	pollChannelId: "1056979768882516068", // cowoding-jams/channel: voting-area
+	jamChannelId: "1056979756500910131", // cowoding-jams/channel: voting-area 856214233930792960
+	resultCategoryId: "1056979741955076106", // cowoding-jams/category: working 855356830724259871
 
 	// --- Roles ---
 	pronounRoles: [
@@ -97,14 +98,16 @@ interface BotConfig {
 	moderatorRoleId: string;
 	// Admins of the server (to manage the game activity tracker)
 	adminRoleId: string;
+	// Active Jam participants role name
+	jamRoleName: string;
 
 	// --- Poll/Jam System ---
-	// The channel where the poll system will post polls.
+	// The text channel where the poll system will post polls.
 	pollChannelId: string;
-	// The channel where the jam system will post announcements to jams.
+	// The text channel where the jam system will post announcements to jams.
 	jamChannelId: string;
 	// The category where the jam system will create channels for jams.
-	resultChannelCategoryId: string;
+	resultCategoryId: string;
 
 	// --- Roles ---
 	// Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id.

@@ -6,10 +6,10 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { logger } from "../logger";
-import { addProposal, deleteProposal, editProposal } from "../util/proposalCommand/manageProposals";
-import { listProposals, viewProposal } from "../util/proposalCommand/listProposals";
+import { addProposal, deleteProposal, editProposal } from "../util/proposal/manageProposals";
+import { listProposals, viewProposal } from "../util/proposal/listProposals";
 
-class PollCommand extends Command {
+class ProposalCommand extends Command {
 	constructor() {
 		super("proposal");
 	}
@@ -69,7 +69,7 @@ class PollCommand extends Command {
 	}
 }
 
-export default new PollCommand();
+export default new ProposalCommand();
 
 const proposalSelectStringOption = (option: SlashCommandStringOption) =>
 	option

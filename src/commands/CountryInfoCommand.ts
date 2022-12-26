@@ -5,11 +5,11 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { countryData, initializeCountryData } from "../util/countryCommand/countryDataLoader";
-import { overviewSubcommand, randomOverviewSubcommand } from "../util/countryCommand/overviewSubcommand";
-import { specificCommand } from "../util/countryCommand/specificSubcommand";
-import { querySubcommand } from "../util/countryCommand/querySubcommand";
-import { unknownSubcommandReply } from "../util/misc/unknownSubcommand";
+import { countryData, initializeCountryData } from "../util/country-info/countryDataLoader";
+import { overviewSubcommand, randomOverviewSubcommand } from "../util/country-info/overviewSubcommand";
+import { specificCommand } from "../util/country-info/specificSubcommand";
+import { querySubcommand } from "../util/country-info/querySubcommand";
+import { unknownSubcommandReply } from "../util/misc/commands";
 
 class CountryInfoCommand extends Command {
 	constructor() {

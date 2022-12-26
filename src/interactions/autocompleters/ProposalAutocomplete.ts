@@ -12,7 +12,7 @@ class ProposalAutocompleter extends Autocompleter {
 		let proposals = Array.from(proposalDb.values());
 
 		if (!(await hasModeratorRole(interaction)) && interaction.options.getSubcommand() != "view") {
-			proposals = proposals.filter((p) => p.ownerID == interaction.user.id);
+			proposals = proposals.filter((p) => p.owner == interaction.user.id);
 		}
 
 		const input = interaction.options.getFocused();

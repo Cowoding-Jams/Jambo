@@ -5,12 +5,12 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
-import { colorPrompt, jamPrompt, pronounPrompt, timezonePrompt } from "../util/roleCommand/rolePrompts";
-import { deleteRoles } from "../util/roleCommand/roleUtil";
+import { colorPrompt, jamPrompt, pronounPrompt, timezonePrompt } from "../util/role/rolePrompts";
+import { deleteRoles } from "../util/role/roleUtil";
 
 class RoleCommand extends Command {
 	constructor() {
-		super("roles");
+		super("role");
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -45,7 +45,7 @@ class RoleCommand extends Command {
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
-			.setName("roles")
+			.setName("role")
 			.setDescription("Manages the roles on the server.")
 			.addSubcommand((option) =>
 				option
