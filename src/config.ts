@@ -4,7 +4,7 @@ import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 export const config: BotConfig = {
 	// --- General ---
 	botName: "Jambo",
-	birthdayNotificationAt: 15,
+	birthdayNotificationAt: 17,
 	iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
 	githubURL: "https://github.com/Cowoding-Jams/Jambo",
 	color: "#F0A5AC",

@@ -24,8 +24,20 @@ export async function newPoll(
 		return;
 	}
 
+	if (proposalDb.size < 2) {
+		interaction.reply({
+			content: "There simply aren't enough proposals to create a poll...",
+			ephemeral: true,
+		});
+		return;
+	}
+
 	// check numVotes and numProposals
 	if (numVotes > numProposals) numVotes = numProposals;
+	if (proposalDb.size < numProposals) {
+		numProposals = proposalDb.size;
+		numVotes = proposalDb.size;
+	}
 
 	const sorted = sortBySelectionType(selectionType);
 

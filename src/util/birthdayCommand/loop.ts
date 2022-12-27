@@ -11,10 +11,14 @@ export async function birthdayMessageTick(client: Client) {
 	const now = DateTime.now();
 	const birthdays = birthdayDb
 		.map((d, key) => ({ user: key, date: d.set({ year: now.year }) }))
-		.filter((d) => d.date >= now && d.date.diffNow().as("hours") < 1);
+		.filter((d) => -0.5 < d.date.diffNow().as("hours") && d.date.diffNow().as("hours") <= 0.5);
 
 	for (const { user, date } of birthdays) {
-		const guildUser = await defaultGuild.members.fetch(user);
+		const guildUser = await defaultGuild.members.fetch(user).catch(() => {
+			birthdayDb.delete(user);
+			return null;
+		});
+		if (!guildUser) continue;
 		const birthYear = birthdayDb.get(user)!.year;
 		const age = birthYear === 0 ? null : date.year - birthYear;
 		const embed = addEmbedFooter(

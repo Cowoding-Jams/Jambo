@@ -18,12 +18,12 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 		const embed = new EmbedBuilder()
 			.setTitle("No upcoming birthdays")
 			.setDescription("Seems like there are no upcoming birthdays in the next 30 days...");
-		await interaction.editReply({ embeds: [addEmbedColor(embed)] });
+		await interaction.reply({ embeds: [addEmbedColor(embed)] });
 		return;
 	}
 
 	const embed = new EmbedBuilder()
 		.setTitle("Upcoming birthdays")
 		.setDescription(answer.join("\n").slice(0, 4096));
-	await interaction.editReply({ embeds: [addEmbedColor(embed)] });
+	await interaction.reply({ embeds: [addEmbedColor(embed)] });
 }
