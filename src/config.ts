@@ -4,7 +4,7 @@ import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 export const config: BotConfig = {
 	// --- General ---
 	botName: "Jambo",
-	birthdayNotificationAt: 7,
+	birthdayNotificationAt: 15,
 	iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
 	githubURL: "https://github.com/Cowoding-Jams/Jambo",
 	color: "#F0A5AC",
@@ -47,34 +47,6 @@ export const config: BotConfig = {
 		["Medium Aquamarine", "#6cd9a9"],
 		["Sea Serpent", "#5db9cf"],
 	],
-	timezoneRoles: [
-		"UTC-12",
-		"UTC-11",
-		"UTC-10",
-		"UTC-9",
-		"UTC-8",
-		"UTC-7",
-		"UTC-6",
-		"UTC-5",
-		"UTC-4",
-		"UTC-3",
-		"UTC-2",
-		"UTC-1",
-		"UTC",
-		"UTC+1",
-		"UTC+2",
-		"UTC+3",
-		"UTC+4",
-		"UTC+5",
-		"UTC+6",
-		"UTC+7",
-		"UTC+8",
-		"UTC+9",
-		"UTC+10",
-		"UTC+11",
-		"UTC+12",
-	],
-
 	// --- Activity Tracker ---
 	logActivity: true,
 };
@@ -116,14 +88,36 @@ interface BotConfig {
 	pronounRoles: [string, ComponentEmojiResolvable | null][];
 	/** Max 25 color roles to pick from. First argument is the name of the role, second argument is the color. */
 	colorRoles: [string, ColorResolvable][];
-	/** Timezones users can pick from. */
-	timezoneRoles: string[];
 
 	// --- Activity Tracker ---
 	/** If User Game Activity should get logged */
 	logActivity: boolean;
 
 	// --- Birthday System ---
-	/** Can be any Integer between 0 and 23 to define (timezone) relative time of when a Birthday message should get send */
-	birthdayNotificationAt: number;
+	/** Can be any integer between 0 and 23. Defines at what time the birthday message should get send. */
+	birthdayNotificationAt:
+		| 0
+		| 1
+		| 2
+		| 3
+		| 4
+		| 5
+		| 6
+		| 7
+		| 8
+		| 9
+		| 10
+		| 11
+		| 12
+		| 13
+		| 14
+		| 15
+		| 16
+		| 17
+		| 18
+		| 19
+		| 20
+		| 21
+		| 22
+		| 23;
 }

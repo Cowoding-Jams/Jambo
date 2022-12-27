@@ -13,12 +13,13 @@ export async function listJams(interaction: CommandInteraction) {
 
 	jams.sort((a, b) => (a.start < b.start ? -1 : 1));
 
-	const embed = new EmbedBuilder().setTitle("Coding Jams").setDescription(
-		`List of all jams sorted by start date\n\n${jams
-			.map((j) => `${discordTimestamp(j.start)} - ${j.title}`)
-			.join("\n")
-			.slice(0, 4090)}`
-	);
+	const embed = new EmbedBuilder()
+		.setTitle("Coding Jams")
+		.setDescription(
+			`List of all jams sorted by start date\n\n${jams
+				.map((j) => `${discordTimestamp(j.start)} - ${j.title}`)
+				.join("\n")}`.slice(0, 4090)
+		);
 
 	await interaction.reply({ embeds: [addEmbedFooter(embed)], ephemeral: true });
 }
@@ -33,12 +34,13 @@ export async function listPolls(interaction: CommandInteraction) {
 
 	polls.sort((a, b) => (a.start < b.start ? -1 : 1));
 
-	const embed = new EmbedBuilder().setTitle("Polls").setDescription(
-		`List of all jams sorted by start date\n\n${polls
-			.map((j) => `${discordTimestamp(j.start)} - ${j.title}`)
-			.join("\n")
-			.slice(0, 4090)}`
-	);
+	const embed = new EmbedBuilder()
+		.setTitle("Polls")
+		.setDescription(
+			`List of all jams sorted by start date\n\n${polls
+				.map((j) => `${discordTimestamp(j.start)} - ${j.title}`)
+				.join("\n")}`.slice(0, 4090)
+		);
 
 	await interaction.reply({ embeds: [addEmbedFooter(embed)], ephemeral: true });
 }

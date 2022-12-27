@@ -38,9 +38,9 @@ export async function statisticsMystats(interaction: AutocompleteInteraction) {
 	const allKeys = activityTrackerLogDb.keyArray();
 	let games: string[] = [];
 	allKeys.forEach((e) => {
-		const [userEntry, gameEntry] = splitId(e);
-		if (userEntry !== interaction.user.id) return;
-		games.push(gameEntry);
+		const { user, game } = splitId(e);
+		if (user !== interaction.user.id) return;
+		games.push(game);
 	});
 
 	games = [...new Set(games)];
@@ -60,7 +60,7 @@ export async function gamesAutocompletion(interaction: AutocompleteInteraction) 
 	const allKeys = activityTrackerLogDb.keyArray();
 	let games: string[] = [];
 	allKeys.forEach((e) => {
-		const gameEntry = splitId(e)[1];
+		const gameEntry = splitId(e).game;
 		games.push(gameEntry);
 	});
 
@@ -109,9 +109,9 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 	const allKeys = activityTrackerLogDb.keyArray();
 	let games: string[] = [];
 	allKeys.forEach((e) => {
-		const [userEntry, gameEntry] = splitId(e);
-		if (userEntry !== interaction.user.id) return;
-		games.push(gameEntry);
+		const { user, game } = splitId(e);
+		if (user !== interaction.user.id) return;
+		games.push(game);
 	});
 
 	games = [...new Set(games)];

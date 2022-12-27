@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { getEntrys, makeStats, splitId } from "./help";
+import { getEntries, makeStats, splitId } from "./help";
 import { addEmbedFooter } from "../misc/embeds";
-import { deleteButtonAsRow } from "../misc/buttons";
 import { activityTrackerLogDb } from "../../db";
 import { durationToReadable } from "../misc/time";
 import { Duration } from "luxon";
@@ -9,26 +8,22 @@ import { Duration } from "luxon";
 export async function statisticsMyStats(interaction: ChatInputCommandInteraction): Promise<void> {
 	let game = interaction.options.getString("game")?.toLowerCase();
 
-	const entrys = await getEntrys(interaction.user.id, game);
-	const fields = await makeStats(entrys);
+	const entries = getEntries(interaction.user.id, game);
 
-	if (fields.length == 0) {
-		let embed = new EmbedBuilder().setTitle(
-			game === null
-				? "No logs found!"
-				: game == undefined
-				? `Nothing has been loggged yet.`
-				: `No logs found for ${game}...`
-		);
-		embed = addEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed] });
+	if (entries.length == 0) {
+		await interaction.reply({
+			content: "No logs found...",
+			ephemeral: true,
+		});
 		return;
 	}
 
+	const fields = await makeStats(entries);
+
 	if (game === null) {
 		const games: string[] = [];
-		entrys.forEach((e) => {
-			games.push(splitId(e)[1]);
+		entries.forEach((e) => {
+			games.push(splitId(e).game);
 		});
 
 		let embed = new EmbedBuilder()
@@ -48,15 +43,14 @@ export async function statisticsMyStats(interaction: ChatInputCommandInteraction
 
 	let embed = new EmbedBuilder().setTitle(`Your stats about ${game}`).addFields(fields);
 	embed = addEmbedFooter(embed);
-	const row = deleteButtonAsRow(interaction.user.id, true);
-	await interaction.reply({ embeds: [embed], components: [row] });
+	await interaction.reply({ embeds: [embed] });
 }
 
 export async function statisticsGameStats(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
 	const showPlaytime = interaction.options.getBoolean("show-playtime") ?? false;
 
-	const entrys = await getEntrys(undefined, game);
+	const entrys = await getEntries(undefined, game);
 	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
@@ -68,12 +62,10 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 
 	const users: string[] = [];
 	entrys.forEach((e) => {
-		users.push(splitId(e)[0]);
+		users.push(splitId(e).user);
 	});
 	if (users.length === 0) {
-		let embed = new EmbedBuilder().setTitle("No records found!");
-		embed = addEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed] });
+		await interaction.reply({ content: "No records found...", ephemeral: true });
 		return;
 	}
 
@@ -83,12 +75,12 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 		.addFields({ name: "Users", value: `${users.length} unique gaymers :)`, inline: true });
 
 	if (showPlaytime) {
-		const entries = activityTrackerLogDb.filter((val, key) => splitId(key)[1] === game);
+		const entries = activityTrackerLogDb.filter((val, key) => splitId(key).game === game);
 		let playtime = new Map<string, Duration>();
 		users.forEach((u) => {
 			playtime.set(
 				u,
-				Array.from(entries.filter((val, key) => splitId(key)[0] === u).values())
+				Array.from(entries.filter((val, key) => splitId(key).user === u).values())
 					.flat()
 					.reduce((a, b) => a.plus(b.duration), Duration.fromObject({ seconds: 0 }))
 			);
@@ -115,22 +107,20 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 }
 
 export async function statisticsAllStats(interaction: ChatInputCommandInteraction): Promise<void> {
-	const entrys = await getEntrys(undefined, undefined);
+	const entrys = getEntries();
 	const fields = await makeStats(entrys);
 
 	if (fields.length == 0) {
-		let embed = new EmbedBuilder().setTitle("No logs found");
-		embed = addEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed] });
+		await interaction.reply({ content: "No logs found...", ephemeral: true });
 		return;
 	}
 
 	const users: string[] = [];
 	const games: string[] = [];
 	entrys.forEach((e) => {
-		const [userEntry, gameEntry] = splitId(e);
-		if (!users.some((e) => e === userEntry)) users.push(userEntry);
-		if (!games.some((e) => e === gameEntry)) games.push(gameEntry);
+		const { user, game } = splitId(e);
+		if (!users.some((e) => e === user)) users.push(user);
+		if (!games.some((e) => e === game)) games.push(game);
 	});
 
 	let embed = new EmbedBuilder()

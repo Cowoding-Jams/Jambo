@@ -17,6 +17,7 @@ export function durationToReadable(duration: Duration, short = false): string {
 	}
 }
 
+export const longDateFormatWithTimezone = "dd MMMM yyyy 'UTC'Z";
 export const longDateTimeFormat = "dd.MM.yyyy HH:mm:ss 'UTC'Z";
 export const shortDateTimeFormat = "dd.MM.yyyy HH:mm 'UTC'Z";
 export const longTimeFormat = "HH:mm:ss 'UTC'Z";
@@ -27,7 +28,7 @@ export async function checkDate(
 	date: string | null,
 	futherMessage = ""
 ): Promise<DateTime | null> {
-	const iso = date ? DateTime.fromISO(date.toUpperCase()) : null;
+	const iso = date ? DateTime.fromISO(date.toUpperCase(), { setZone: true }) : null;
 	if (!iso || !iso.isValid) {
 		const separator = futherMessage ? "\n" : "";
 		if (date !== "" && date !== null) {

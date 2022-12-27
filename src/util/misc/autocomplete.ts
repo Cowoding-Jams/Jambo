@@ -7,7 +7,7 @@ export async function autocompleteISOTime(interaction: AutocompleteInteraction) 
 	const response = [];
 
 	if (focus.length !== 0) {
-		const date = DateTime.fromISO(focus);
+		const date = DateTime.fromISO(focus, { setZone: true });
 		if (date.isValid) {
 			response.push({ name: "[Valid] " + date.toISO(), value: date.toISO() });
 		} else {

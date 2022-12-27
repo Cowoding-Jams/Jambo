@@ -30,7 +30,6 @@ export async function validateConfigParameters(guild: Guild) {
 	const str = [config.botName, config.serverDescription, config.jamRoleName];
 	str.push(...config.colorRoles.map((role) => role[0]));
 	str.push(...config.pronounRoles.map((role) => role[0]));
-	str.push(...config.timezoneRoles);
 	str
 		.map((string) => ({ string, valid: isNotEmpty(string) }))
 		.forEach((string) => {

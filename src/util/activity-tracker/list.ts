@@ -19,9 +19,9 @@ export async function logHistoryList(offset: number, order: string) {
 		const log = activityTrackerLogDb.get(e);
 		if (!log) return;
 
-		const out = splitId(e);
-		const user = out[0];
-		let game = out[1];
+		const key = splitId(e);
+		const user = key.user;
+		let game = key.game;
 
 		if (game.length > 14) {
 			game = game.slice(0, 13);

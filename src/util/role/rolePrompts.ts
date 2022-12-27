@@ -11,6 +11,7 @@ import {
 import { addEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
 import { bringIntoButtonGrid, setUpRoles } from "./roleUtil";
+import { timezoneRoles } from "../misc/role";
 
 export async function pronounPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
 	const prompt: EmbedBuilder = new EmbedBuilder()
@@ -146,13 +147,13 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 				.setPlaceholder("Select your timezone!")
 				.setMinValues(1)
 				.setMaxValues(1)
-				.setOptions(...config.timezoneRoles.map((t) => ({ label: t, value: t })))
+				.setOptions(...timezoneRoles.map((t) => ({ label: t, value: t })))
 		);
 
 	if (
 		await setUpRoles(
 			interaction.guild,
-			config.timezoneRoles.map((r) => [r]),
+			timezoneRoles.map((r) => [r]),
 			"- StartTimezoneRoles -",
 			"- EndTimezoneRoles -"
 		)

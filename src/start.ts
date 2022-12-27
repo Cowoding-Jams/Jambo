@@ -11,6 +11,7 @@ import { Client } from "discord.js";
 import { ctx } from "./ctx";
 import { logger } from "./logger";
 import { config } from "./config";
+import { Settings } from "luxon";
 
 logger.debug("Creating client...");
 const client = new Client({
@@ -31,6 +32,8 @@ process.on("unhandledRejection", shutdown);
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 process.on("uncaughtException", shutdown);
+
+Settings.defaultZone = "utc";
 
 logger.debug("Loading context...");
 ctx.update(

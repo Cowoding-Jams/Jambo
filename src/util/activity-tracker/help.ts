@@ -8,44 +8,22 @@ export async function getBlacklist(userid: string): Promise<string[] | undefined
 	return activityTrackerBlacklistDb.get(userid);
 }
 
-export async function getEntrys(
-	user: string | undefined | null,
-	game: string | undefined | null
-): Promise<string[]> {
-	const allEntrys = activityTrackerLogDb.keyArray();
-	const found: string[] = [];
-	const userCheck = (usr: string) => {
-		return usr == user || user == undefined;
-	};
-	const gameCheck = (gae: string) => {
-		return gae == game || game == undefined;
-	};
+export function getEntries(user?: string, game?: string): string[] {
+	let entries = activityTrackerLogDb.keyArray().map((e) => splitId(e));
 
-	allEntrys.forEach((key) => {
-		const [userEntry, gameEntry] = splitId(key);
+	if (user) {
+		entries = entries.filter((e) => e.user === user);
+	}
 
-		if (userCheck(userEntry) && gameCheck(gameEntry)) {
-			const entry = activityTrackerLogDb.get(key);
-			if (entry !== undefined) found.push(key);
-		} else if (userCheck(userEntry) && !gameCheck(gameEntry)) {
-			if (gameEntry !== game) return;
-			const entry = activityTrackerLogDb.get(key);
-			if (entry !== undefined) found.push(key);
-		} else if (!userCheck(userEntry) && gameCheck(gameEntry)) {
-			if (userEntry !== user) return;
-			const entry = activityTrackerLogDb.get(key);
-			if (entry !== undefined) found.push(key);
-		} else if (!userCheck(userEntry) && !gameCheck(gameEntry)) {
-			if (userEntry !== user || gameEntry !== game) return;
-			const entry = activityTrackerLogDb.get(key);
-			if (entry !== undefined) found.push(key);
-		}
-	});
-	return found;
+	if (game) {
+		entries = entries.filter((e) => e.game === game);
+	}
+
+	return entries.map((e) => joinId(e));
 }
 
-export async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
-	if (entrys.length == 0) {
+export async function makeStats(entries: string[]): Promise<Array<EmbedField>> {
+	if (entries.length == 0) {
 		return [];
 	}
 
@@ -55,8 +33,8 @@ export async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
 	let longestRecord = Duration.fromObject({ seconds: 0 });
 	let totalRecords = 0;
 
-	entrys.forEach((game) => {
-		const logs = activityTrackerLogDb.get(game);
+	entries.forEach((key) => {
+		const logs = activityTrackerLogDb.get(key);
 		logs?.forEach((log) => {
 			totalRecords += 1;
 			playTime.plus(log.duration);
@@ -96,8 +74,13 @@ export async function makeStats(entrys: string[]): Promise<Array<EmbedField>> {
 	return fields;
 }
 
-export function splitId(id: string): [string, string] {
+/** Splits the key into the userID and game */
+export function splitId(id: string): { user: string; game: string } {
 	const [user, ...gameParts] = id.split("-");
 	const game = gameParts.join("-");
-	return [user, game];
+	return { user: user, game: game };
+}
+
+function joinId(element: { user: string; game: string }): string {
+	return `${element.user}-${element.game}`;
 }
