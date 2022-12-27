@@ -10,6 +10,14 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 	const dateString = interaction.options.getString("date")!;
 	let date = DateTime.fromISO(dateString, { setZone: true });
 
+	if (interaction.options.getBoolean("delete")) {
+		birthdayDb.delete(interaction.user.id);
+		await interaction.reply({
+			content: `Your birthday is now removed from the database!`,
+		});
+		return;
+	}
+
 	if (!date || !date.isValid) {
 		await interaction.reply({
 			content: `${inlineCode(dateString)} is not a valid date... Please enter a valid ISO string!`,
@@ -29,15 +37,14 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 	const zone = await getTimezonefromRole(interaction.user.id, interaction.guild!);
 	if (zone) date = date.setZone(zone.name);
 
-	if (interaction.options.getBoolean("delete")) {
-		birthdayDb.delete(interaction.user.id);
-		await interaction.reply({ content: `Your birthday is now removed from the database!` });
-		return;
-	}
-
 	birthdayDb.set(
 		interaction.user.id,
-		date.set({ hour: config.birthdayNotificationAt, minute: 0, second: 0, millisecond: 0 })
+		date.set({
+			hour: config.birthdayNotificationAt,
+			minute: 0,
+			second: 0,
+			millisecond: 0,
+		})
 	);
 
 	if (oldDate) {

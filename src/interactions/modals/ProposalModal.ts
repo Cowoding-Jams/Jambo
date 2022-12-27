@@ -20,7 +20,7 @@ class ProposalModal extends Modal {
 		const duration = await checkDuration(
 			interaction,
 			durationString,
-			`\n\n**Your inputs:**\n- Title: ${title}\n- Description: ${description}\n- Duration: ${durationString}\n- References: ${references}`
+			`**Your inputs:**\n- Title: ${title}\n- Description: ${description}\n- Duration: ${durationString}\n- References: ${references}`
 		);
 
 		if (!duration) return;

@@ -104,7 +104,10 @@ export async function reminderDelete(interaction: ChatInputCommandInteraction) {
 
 	const item = reminderDb.get(c_id);
 	if (!item) {
-		await interaction.reply({ content: "The id does not exist.", ephemeral: true });
+		await interaction.reply({
+			content: "The id does not exist.",
+			ephemeral: true,
+		});
 		return;
 	}
 
@@ -114,9 +117,15 @@ export async function reminderDelete(interaction: ChatInputCommandInteraction) {
 			clearTimeout(reminderTimeoutCache.get(c_id));
 			reminderTimeoutCache.delete(c_id);
 		}
-		await interaction.reply({ content: "I've removed the reminder :)", ephemeral: true });
+		await interaction.reply({
+			content: "I've removed the reminder :)",
+			ephemeral: true,
+		});
 	} else {
-		await interaction.reply({ content: "You can only delete your own reminders.", ephemeral: true });
+		await interaction.reply({
+			content: "You can only delete your own reminders.",
+			ephemeral: true,
+		});
 	}
 }
 

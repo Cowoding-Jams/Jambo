@@ -39,6 +39,4 @@ export const timezoneRoles = [
 	"UTC+10",
 	"UTC+11",
 	"UTC+12",
-	"UTC+13",
-	"UTC+14",
 ];

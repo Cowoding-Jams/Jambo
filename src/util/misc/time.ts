@@ -30,7 +30,7 @@ export async function checkDate(
 ): Promise<DateTime | null> {
 	const iso = date ? DateTime.fromISO(date.toUpperCase(), { setZone: true }) : null;
 	if (!iso || !iso.isValid) {
-		const separator = futherMessage ? "\n" : "";
+		const separator = futherMessage ? "\n\n" : "";
 		if (date !== "" && date !== null) {
 			await interaction.reply({
 				content: `Invalid date format... Please use ISO 8601 (e.g. '2003-05-26T04:48:33+02:00').\n<https://en.wikipedia.org/wiki/ISO_8601>${separator}${futherMessage}`,
@@ -51,10 +51,10 @@ export async function checkDuration(
 ): Promise<Duration | null> {
 	const iso = duration ? Duration.fromISO(duration.toUpperCase()) : null;
 	if (!iso || !iso.isValid) {
-		const separator = futherMessage ? "\n" : "";
+		const separator = futherMessage ? "\n\n" : "";
 		if (duration !== "" && duration !== null) {
 			await interaction.reply({
-				content: `Invalid duration format... Please use ISO 8601 (e.g. P2D2H).\n<https://en.wikipedia.org/wiki/ISO_8601>${separator}${futherMessage}`,
+				content: `Invalid duration format... Please use ISO 8601 (e.g. P2D2H).\n<https://en.wikipedia.org/wiki/ISO_8601#Durations>${separator}${futherMessage}`,
 				ephemeral: true,
 			});
 		}
