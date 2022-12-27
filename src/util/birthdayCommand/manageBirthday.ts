@@ -32,6 +32,12 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 			ephemeral: true,
 		});
 		return;
+	} else if (date.year < DateTime.now().year - 100) {
+		await interaction.reply({
+			content: `Hmm... You seem to be a bit too old to be on Discord... Are you really *that* old? 🤔\nI don't really belive you dear...`,
+			ephemeral: true,
+		});
+		return;
 	}
 
 	const zone = await getTimezonefromRole(interaction.user.id, interaction.guild!);
