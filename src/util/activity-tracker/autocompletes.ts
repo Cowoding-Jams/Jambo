@@ -2,13 +2,14 @@ import { AutocompleteInteraction } from "discord.js";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { splitId } from "./help";
 import { hasAdminRole } from "../misc/permissions";
+import { blacklistCodes } from "./blacklist";
 
 export async function blacklistAutocompletion(interaction: AutocompleteInteraction) {
 	if (await hasAdminRole(interaction)) {
 		await interaction.respond([
 			{
-				name: "You don't have the permissions to use this command!",
-				value: "missing-permissions",
+				name: "[You don't have the permissions to use this command!]",
+				value: blacklistCodes.missingPermission,
 			},
 		]);
 		return;
@@ -21,8 +22,8 @@ export async function blacklistAutocompletion(interaction: AutocompleteInteracti
 	if (options?.length === 0 || !options) {
 		await interaction.respond([
 			{
-				name: "The global blacklist is empty...",
-				value: "empty-global-blacklist",
+				name: "[The global blacklist is empty...]",
+				value: blacklistCodes.emptyGlobalBlacklist,
 			},
 		]);
 		return;
@@ -85,17 +86,15 @@ export async function blacklistRemove(interaction: AutocompleteInteraction) {
 	if (activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)) {
 		await interaction.respond([
 			{
-				name: "<Tracking is disabled, select this to activate it again>",
-				value: "Tracking is disabled, select this to activate it again",
+				name: "[Tracking is disabled, select this to activate it again]",
+				value: blacklistCodes.trackingDisabled,
 			},
 		]);
 		return;
 	}
 
 	if (options?.length === 0 || !options) {
-		await interaction.respond([
-			{ name: "No games are on your blacklist", value: "No games are on your blacklist" },
-		]);
+		await interaction.respond([{ name: "No games are on your blacklist", value: "empty-blacklist" }]);
 		return;
 	}
 
@@ -124,7 +123,7 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 	let map = filterAndMapAutocompletion(interaction, games);
 	map = map.slice(0, 24);
 
-	map.push({ name: "<Disable tracking for all games>", value: "Disable Tracking" });
+	map.push({ name: "[Disable tracking for all games]", value: blacklistCodes.disableTracking });
 
 	await interaction.respond(map);
 }

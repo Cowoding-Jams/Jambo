@@ -58,7 +58,7 @@ class CodingJamsCommand extends Command {
 
 			if (!startDate) return;
 
-			if (!(endDate || duration)) {
+			if (!(endDate || duration) && subCmdGroup === "poll") {
 				await interaction.reply({
 					content: "You must provide either an end date or a duration...",
 					ephemeral: true,
@@ -66,7 +66,7 @@ class CodingJamsCommand extends Command {
 				return;
 			}
 
-			endDate = endDate || startDate.plus(duration!); // can't believe ts can't figure this out by itself... smh
+			if (subCmdGroup === "poll") endDate = endDate || startDate.plus(duration!);
 		} else if (subCmd === "extend") {
 			endDate = await checkDate(interaction, interaction.options.getString("end-date"));
 

@@ -1,6 +1,6 @@
 import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { jamDb, pollDb } from "../../db";
-import { addEmbedFooter } from "../misc/embeds";
+import { addEmbedColor } from "../misc/embeds";
 import { discordTimestamp } from "../misc/time";
 
 export async function listJams(interaction: CommandInteraction) {
@@ -17,11 +17,11 @@ export async function listJams(interaction: CommandInteraction) {
 		.setTitle("Coding Jams")
 		.setDescription(
 			`List of all jams sorted by start date\n\n${jams
-				.map((j) => `${discordTimestamp(j.start)} - ${j.title}`)
+				.map((j) => `${discordTimestamp(j.start)} ⁘ **${j.title}**`)
 				.join("\n")}`.slice(0, 4090)
 		);
 
-	await interaction.reply({ embeds: [addEmbedFooter(embed)], ephemeral: true });
+	await interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 }
 
 export async function listPolls(interaction: CommandInteraction) {
@@ -38,9 +38,9 @@ export async function listPolls(interaction: CommandInteraction) {
 		.setTitle("Polls")
 		.setDescription(
 			`List of all jams sorted by start date\n\n${polls
-				.map((j) => `${discordTimestamp(j.start)} - ${j.title}`)
+				.map((j) => `${discordTimestamp(j.start)} ⁘ **${j.title}**`)
 				.join("\n")}`.slice(0, 4090)
 		);
 
-	await interaction.reply({ embeds: [addEmbedFooter(embed)], ephemeral: true });
+	await interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 }

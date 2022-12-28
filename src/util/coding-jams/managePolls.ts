@@ -155,7 +155,7 @@ export async function votesPoll(interaction: CommandInteraction, name: string) {
 	}
 	const poll = pollDb.get(pollKey)!;
 
-	if (poll.start < DateTime.now()) {
+	if (poll.start > DateTime.now()) {
 		await interaction.reply({ content: "Voting hasn't started yet...", ephemeral: true });
 		return;
 	}

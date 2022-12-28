@@ -16,7 +16,7 @@ export async function createScheduledEventEvent(channel: TextChannel, jamID: str
 	const proposal = proposalDb.get(jam.proposal)!;
 
 	const options: GuildScheduledEventCreateOptions = {
-		name: proposal.title + " Jam",
+		name: proposal.title,
 		description: jam.title,
 		scheduledStartTime: jam.start.toISO(),
 		scheduledEndTime: jam.end.toISO(),
@@ -101,8 +101,8 @@ export async function halftimeEvent(channel: TextChannel, jamID: string) {
 	const embed = new EmbedBuilder()
 		.setTitle(`Halftime!`)
 		.setDescription(
-			`The ${proposal.title} jam is halfway over! ${durationToReadable(
-				jam.end.diffNow()
+			`The ${proposal.title} jam is halfway over! It ends ${discordRelativeTimestamp(
+				jam.end
 			)} left! I hope you're having a great time and are making good progress. If you're stuck or need help, ask for it. There are always people willing to help. If you're done, make sure to share your work in ${
 				jam.resultChannelID ? `<#${jam.resultChannelID}` : "the results channel"
 			}.`
@@ -139,8 +139,8 @@ export async function closeToStartEvent(channel: TextChannel, jamID: string) {
 	const embed = new EmbedBuilder()
 		.setTitle(`Starting soon!`)
 		.setDescription(
-			`The ${proposal.title} jam is starting soon! In ${durationToReadable(
-				jam.start.diffNow()
+			`The ${proposal.title} jam is starting soon ${discordRelativeTimestamp(
+				jam.start
 			)}! Make sure to setup your coding enviroment, put on some fresh pants, get yourself some water and fruity snacks. This is going to be great :)`
 		);
 

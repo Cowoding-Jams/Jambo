@@ -45,7 +45,7 @@ export async function newJam(
 		{
 			type: "halftime",
 			jamID: id,
-			date: start.plus({ milliseconds: Math.floor(start.diff(end).toMillis() / 2) }),
+			date: start.plus({ milliseconds: Math.floor(end.diff(start).toMillis() / 2) }),
 		},
 		{ type: "close-to-end", jamID: id, date: end.minus({ hours: 2 }) },
 		{ type: "close-to-start", jamID: id, date: start.minus({ hours: 2 }) },
@@ -124,23 +124,8 @@ export async function deleteJam(interaction: CommandInteraction, name: string) {
 function jamEmbed(jam: Jam, jamKey: string, title: string) {
 	return addEmbedFooter(new EmbedBuilder().setTitle(`${jam.title} ${title}`)).addFields(
 		{
-			name: "Start",
-			value: discordTimestamp(jam.start),
-			inline: true,
-		},
-		{
-			name: "End",
-			value: discordTimestamp(jam.end),
-			inline: true,
-		},
-		{
-			name: "Duration",
-			value: durationToReadable(jam.start.diff(jam.end)),
-			inline: true,
-		},
-		{
-			name: "Proposal",
-			value: proposalDb.get(jam.proposal)?.title || "Unknown...",
+			name: "Start - End",
+			value: `${discordTimestamp(jam.start)} - ${discordTimestamp(jam.end)}`,
 		},
 		{
 			name: "Events",
@@ -148,6 +133,13 @@ function jamEmbed(jam: Jam, jamKey: string, title: string) {
 				.filter((e) => e.jamID == jamKey)
 				.map((e) => `- ${e.type} ⁘ ${discordRelativeTimestamp(e.date)}`)
 				.join("\n"),
+			inline: true,
+		},
+		{ name: "Duration", value: durationToReadable(jam.end.diff(jam.start)), inline: true },
+		{
+			name: "Proposal",
+			value: proposalDb.get(jam.proposal)?.title || "Unknown...",
+			inline: true,
 		}
 	);
 }

@@ -3,6 +3,7 @@ import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
 import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { getBlacklist } from "./help";
 import { logger } from "../../logger";
+import { blacklistCodes } from "./blacklist";
 
 export async function adminReset(interaction: ChatInputCommandInteraction): Promise<void> {
 	const sure: boolean = interaction.options.getBoolean("sure", true);
@@ -40,7 +41,7 @@ export async function adminBlacklistGame(interaction: ChatInputCommandInteractio
 export async function adminWhitelistGame(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
 
-	if (game == "empty-global-blacklist") {
+	if (game == blacklistCodes.emptyGlobalBlacklist) {
 		interaction.reply({ content: "The global blacklist is empty...", ephemeral: true });
 	}
 

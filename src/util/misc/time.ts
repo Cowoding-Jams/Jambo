@@ -11,9 +11,9 @@ export function discordRelativeTimestamp(datetime: DateTime): string {
 
 export function durationToReadable(duration: Duration, short = false): string {
 	if (short) {
-		return duration.toHuman({ listStyle: "short", unitDisplay: "narrow" });
+		return duration.normalize().rescale().toHuman({ listStyle: "short", unitDisplay: "narrow" });
 	} else {
-		return duration.toHuman({ listStyle: "long", unitDisplay: "long" });
+		return duration.normalize().rescale().toHuman({ listStyle: "long", unitDisplay: "long" });
 	}
 }
 

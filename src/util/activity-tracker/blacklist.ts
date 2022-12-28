@@ -1,7 +1,15 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
-import { activityTrackerBlacklistDb } from "../../db";
-import { getBlacklist } from "./help";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
+import { getBlacklist, splitId } from "./help";
+
+export const blacklistCodes = {
+	emptyBlacklist: "empty-blacklist",
+	missingPermission: "missing-permission",
+	emptyGlobalBlacklist: "empty-global-blacklist",
+	trackingDisabled: "tracking-disabled",
+	disableTracking: "disable-tracking",
+};
 
 export async function blacklistAdd(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true);
@@ -22,12 +30,25 @@ export async function blacklistAdd(interaction: ChatInputCommandInteraction): Pr
 	}
 	activityTrackerBlacklistDb.push(interaction.user.id, game.toLowerCase());
 	await interaction.reply({ content: `"${game}" is now on your blacklist!`, ephemeral: true });
+
+	if (
+		!activityTrackerLogDb
+			.keyArray()
+			.map(splitId)
+			.map((e) => e.game)
+			.find((e) => e === game.toLowerCase())
+	) {
+		await interaction.followUp({
+			content:
+				"Even though no log across all users of that game exists. Maybe double check if you didn't make a spelling error (capitalization doesn't matter).",
+		});
+	}
 }
 
 export async function blacklistRemove(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true);
 
-	if (game === "Tracking is disabled, select this to activate it again") {
+	if (game === blacklistCodes.trackingDisabled) {
 		let blacklistedUser = activityTrackerBlacklistDb.get("general-user");
 		if (!blacklistedUser) {
 			await interaction.reply({ content: "Something went wrong", ephemeral: true });
@@ -41,19 +62,22 @@ export async function blacklistRemove(interaction: ChatInputCommandInteraction):
 		return;
 	}
 
-	let blacklistedGames: string[] | undefined = activityTrackerBlacklistDb.get(interaction.user.id);
+	let blacklistedGames = activityTrackerBlacklistDb.get(interaction.user.id);
 
-	if (game === "No games are on your blacklist") {
+	if (game === blacklistCodes.emptyBlacklist) {
 		interaction.reply({ content: "No games are on your blacklist.", ephemeral: true });
 		return;
 	}
 
 	if (!blacklistedGames) {
-		await interaction.reply({ content: "Something went wrong", ephemeral: true });
+		await interaction.reply({
+			content: "You don't have a blacklist to remove items from yet...",
+			ephemeral: true,
+		});
 		return;
 	}
 
-	blacklistedGames = blacklistedGames?.filter((e) => e !== game);
+	blacklistedGames = blacklistedGames.filter((e) => e !== game);
 
 	activityTrackerBlacklistDb.set(interaction.user.id, blacklistedGames);
 
