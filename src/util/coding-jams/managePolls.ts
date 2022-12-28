@@ -79,7 +79,13 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 		interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
 		return;
 	}
+
 	const poll = pollDb.get(pollKey)!;
+
+	if (poll.end < DateTime.now()) {
+		await interaction.reply({ content: "You can't extend polls that have already ended!", ephemeral: true });
+		return;
+	}
 
 	pollDb.set(pollKey, { ...poll, end: end });
 
@@ -112,7 +118,7 @@ export async function viewPoll(interaction: CommandInteraction, name: string) {
 	const pollKey = pollDb.findKey((poll) => poll.title === name);
 
 	if (!pollKey) {
-		interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
+		await interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
 		return;
 	}
 
@@ -149,9 +155,14 @@ export async function votesPoll(interaction: CommandInteraction, name: string) {
 	}
 	const poll = pollDb.get(pollKey)!;
 
-	const votesPerUser = Array.from(poll.votes.values());
+	if (poll.start < DateTime.now()) {
+		await interaction.reply({ content: "Voting hasn't started yet...", ephemeral: true });
+		return;
+	}
+
+	const votesPerUser = Array.from(poll.votes.entries()).map((e) => ({ user: e[0], votes: e[1] }));
 	const votesPerProposal: { key: string; votes: number }[] = [];
-	const votesInTotal = votesPerUser.flat();
+	const votesInTotal = votesPerUser.map((e) => e.votes).flat();
 
 	poll.proposals.forEach((p) =>
 		votesPerProposal.push({ key: p, votes: votesInTotal.filter((v) => v === p).length })
@@ -163,7 +174,7 @@ export async function votesPoll(interaction: CommandInteraction, name: string) {
 		votesPerProposal.map((p) => p.key)
 	);
 	const usersPerProposal = votesPerProposal.map((e) =>
-		votesPerUser.filter((v) => v[1].includes(e.key)).map((v) => v[0])
+		votesPerUser.filter((v) => v.votes.includes(e.key)).map((v) => v.user)
 	);
 
 	const list = numberedList(
@@ -171,11 +182,10 @@ export async function votesPoll(interaction: CommandInteraction, name: string) {
 		votesPerProposal.map((p) => p.votes + " votes")
 	);
 
-	const embed = new EmbedBuilder().setTitle(`${poll.title} (votes)`).setFields(
-		...list.map((e, i) => ({
-			name: e,
-			value: usersPerProposal[i].map((u) => `<@${u}>`).join(" "),
-			inline: true,
+	const embed = new EmbedBuilder().setTitle(`${poll.title} (votes)`).addFields(
+		list.map((e, i) => ({
+			name: e ?? "Unknown",
+			value: usersPerProposal[i].map((u) => `<@${u}>`).join(" ") || "-",
 		}))
 	);
 
@@ -204,12 +214,12 @@ export function sortBySelectionType(selectionType: string) {
 export function pollEmbed(poll: Poll, pollKey: string, title: string) {
 	const proposals = proposalDb
 		.filter((v, k) => poll.proposals.includes(k))
-		.map((v, k) => `- ${v.title} (${k})`);
+		.map((v, k) => `- ${v.title} (id: ${k})`);
 
 	return addEmbedFooter(
 		new EmbedBuilder()
 			.setTitle(`${poll.title} ${title}`)
-			.setDescription(`Proposals: ${poll.numProposals} - Votes: ${poll.numVotes}`)
+			.setDescription(`Proposals: ${poll.numProposals} ⁘ Votes: ${poll.numVotes}`)
 			.addFields(
 				{
 					name: "Start - End",
@@ -222,7 +232,7 @@ export function pollEmbed(poll: Poll, pollKey: string, title: string) {
 							.filter((v, k) => poll.include.includes(k))
 							.array()
 							.map((v) => v.title)
-							.join(", ") || "-",
+							.join(", ") || "None",
 				},
 				{
 					name: "Excluded proposals",
@@ -231,16 +241,17 @@ export function pollEmbed(poll: Poll, pollKey: string, title: string) {
 							.filter((v, k) => poll.exclude.includes(k))
 							.array()
 							.map((v) => v.title)
-							.join(", ") || "-",
+							.join(", ") || "None",
 				},
 				{
 					name: "Events",
-					value: pollEventsDb
-						.filter((e) => e.pollID == pollKey)
-						.map((e) => `- ${e.type} ⁘ ${discordRelativeTimestamp(e.date)}`)
-						.join("\n"),
+					value:
+						pollEventsDb
+							.filter((e) => e.pollID == pollKey)
+							.map((e) => `- ${e.type} ⁘ ${discordRelativeTimestamp(e.date)}`)
+							.join("\n") || "None",
 				},
-				{ name: "Proposals", value: proposals.join("\n") }
+				{ name: "Proposals", value: proposals.join("\n") || "None" }
 			)
 	);
 }
@@ -258,8 +269,9 @@ export function pollSelectMenus(
 			new SelectMenuBuilder()
 				.setCustomId(`poll.include.${pollKey}`)
 				.setPlaceholder("Proposals to include")
-				.setOptions(includeOptions.slice(0, 25))
-				.setMaxValues(25)
+				.setOptions({ label: "[reset]", value: "-" }, ...includeOptions.slice(0, 24))
+				.setMinValues(0)
+				.setMaxValues(Math.min(includeOptions.length + 1, 25))
 		)
 	);
 
@@ -268,8 +280,9 @@ export function pollSelectMenus(
 			new SelectMenuBuilder()
 				.setCustomId(`poll.exclude.${pollKey}`)
 				.setPlaceholder("Proposals to exclude")
-				.setOptions(excludeOptions.slice(0, 25))
-				.setMaxValues(25)
+				.setOptions({ label: "[reset]", value: "-" }, ...excludeOptions.slice(0, 24))
+				.setMinValues(0)
+				.setMaxValues(Math.min(excludeOptions.length + 1, 25))
 		)
 	);
 

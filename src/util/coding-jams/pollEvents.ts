@@ -47,7 +47,7 @@ export async function openEvent(channel: TextChannel, pollID: string) {
 		proposals.map((p) => durationToReadable(p.duration))
 	);
 
-	embed.addFields(...list.map((v, i) => ({ name: v, value: proposals[i]?.description || "", inline: true })));
+	embed.addFields(...list.map((v, i) => ({ name: v, value: proposals[i]?.description || "" })));
 
 	const actionrow = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
 		new SelectMenuBuilder()
@@ -116,7 +116,7 @@ export async function closeEvent(channel: TextChannel, pollID: string) {
 	const embed = new EmbedBuilder()
 		.setTitle("Voting is closed!")
 		.setDescription(
-			`Thanks to everyone who voted! The winner with incredible ${winner.votesLastPoll} votes is`
+			`Thanks to everyone who voted! The winner with incredible ${winner.votesLastPoll} votes is:`
 		)
 		.addFields(
 			{
@@ -126,8 +126,8 @@ export async function closeEvent(channel: TextChannel, pollID: string) {
 			{
 				name: "Top 10 proposals",
 				value: numberedList(
-					proposals.map((p) => `${p.votesLastPoll}`),
-					proposals.map((p) => p.title)
+					proposals.map((p) => p.title),
+					proposals.map((p) => `${p.votesLastPoll}`)
 				)
 					.slice(1, 10)
 					.join("\n"),

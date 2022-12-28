@@ -21,9 +21,11 @@ class PollSelectMenu extends SelectMenu {
 			return;
 		}
 
-		const values = interaction.values;
+		let values = interaction.values;
 
 		if (type === "include" || type === "exclude") {
+			if (values.includes("-")) values = [];
+
 			if (type === "include") {
 				if (values.length > poll.numProposals) {
 					await interaction.reply({
@@ -47,12 +49,12 @@ class PollSelectMenu extends SelectMenu {
 			}
 
 			const sorted = sortBySelectionType(poll.selectionType);
-			poll.proposals = poll.include;
+			poll.proposals = poll.include.slice(0); // copy the array
 
 			const numExtra = poll.numProposals - poll.proposals.length;
 			poll.proposals.push(
 				...sorted
-					.filter((e) => !poll.exclude.includes(e.value))
+					.filter((e) => !poll.exclude.includes(e.value) && !poll.include.includes(e.value))
 					.map((e) => e.value)
 					.slice(0, numExtra)
 			);
@@ -82,6 +84,7 @@ class PollSelectMenu extends SelectMenu {
 				content: `Thanks for voting ${member?.displayName || interaction.user}!\nYou voted for ${proposals
 					.map((e) => e.title)
 					.join(", ")}`,
+				ephemeral: true,
 			});
 		}
 	}

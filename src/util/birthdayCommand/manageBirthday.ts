@@ -41,7 +41,7 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 	}
 
 	const zone = await getTimezonefromRole(interaction.user.id, interaction.guild!);
-	if (zone) date = date.setZone(zone.name);
+	if (zone) date = date.setZone(zone);
 
 	birthdayDb.set(
 		interaction.user.id,

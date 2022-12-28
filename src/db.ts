@@ -149,6 +149,7 @@ export const pollTimeoutCache = new Map<string, NodeJS.Timeout>();
 export const pollEventsDb = new Enmap<PollEvent, InternalPollEvent>({
 	name: "pollEvents",
 	serializer: (data) => ({ ...data, date: data.date.toISO() }),
+	deserializer: (data) => ({ ...data, date: DateTime.fromISO(data.date, { setZone: true }) }),
 });
 
 export interface PollEvent {

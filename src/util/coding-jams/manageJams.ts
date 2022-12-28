@@ -7,22 +7,24 @@ import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "
 export async function newJam(
 	interaction: CommandInteraction,
 	name: string,
-	proposal: string,
-	start: DateTime,
-	end: DateTime
+	proposalName: string,
+	start: DateTime
 ) {
 	if (jamDb.findKey((jam) => jam.title === name)) {
 		interaction.reply({ content: `A jam with the name "${name}" already exists...`, ephemeral: true });
 		return;
 	}
 
-	const proposalID = proposalDb.findKey((p) => p.title === proposal);
+	const proposalID = proposalDb.findKey((p) => p.title === proposalName);
 	if (!proposalID) {
 		interaction.reply({
-			content: `Couldn't find a proposal with the name "${proposal}". Follow the autocomplete!`,
+			content: `Couldn't find a proposal with the name "${proposalName}". Follow the autocomplete!`,
 		});
 		return;
 	}
+
+	const proposal = proposalDb.get(proposalID)!;
+	const end = start.plus(proposal.duration);
 
 	const jam: Jam = {
 		title: name,

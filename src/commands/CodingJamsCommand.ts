@@ -23,8 +23,8 @@ class CodingJamsCommand extends Command {
 
 	startScheduler(client: Client) {
 		jamSchedulerTick(client);
-		// every hour
-		cron.schedule("0 * * * *", jamSchedulerTick.bind(this, client));
+		// every 30 min
+		cron.schedule("*/30 * * * *", jamSchedulerTick.bind(this, client));
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -56,14 +56,27 @@ class CodingJamsCommand extends Command {
 			endDate = await checkDate(interaction, interaction.options.getString("end-date"));
 			duration = await checkDuration(interaction, interaction.options.getString("duration"));
 
-			if (!(startDate && (endDate || duration))) return;
+			if (!startDate) return;
+
+			if (!(endDate || duration)) {
+				await interaction.reply({
+					content: "You must provide either an end date or a duration...",
+					ephemeral: true,
+				});
+				return;
+			}
+
 			endDate = endDate || startDate.plus(duration!); // can't believe ts can't figure this out by itself... smh
+		} else if (subCmd === "extend") {
+			endDate = await checkDate(interaction, interaction.options.getString("end-date"));
+
+			if (!endDate) return;
 		}
 
 		if (subCmdGroup === "jam") {
 			switch (subCmd) {
 				case "new":
-					newJam(interaction, name, proposal, startDate!, endDate!);
+					newJam(interaction, name, proposal, startDate!);
 					break;
 				case "extend":
 					editJam(interaction, name, endDate!);
@@ -126,26 +139,26 @@ class CodingJamsCommand extends Command {
 						subcommand
 							.setName("extend")
 							.setDescription("Extend a running poll in its length.")
-							.addStringOption(pollNameStringOption.setAutocomplete(true))
-							.addStringOption(endDateStringOption.setRequired(true).setAutocomplete(true))
+							.addStringOption(pollNameStringOptionAutocomplete)
+							.addStringOption(requiredEndDateStringOption)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("view")
 							.setDescription("View an existing poll.")
-							.addStringOption(pollNameStringOption.setAutocomplete(true))
+							.addStringOption(pollNameStringOptionAutocomplete)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("delete")
 							.setDescription("Delete an existing poll.")
-							.addStringOption(pollNameStringOption.setAutocomplete(true))
+							.addStringOption(pollNameStringOptionAutocomplete)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("votes")
 							.setDescription("View the votes for a poll.")
-							.addStringOption(pollNameStringOption.setAutocomplete(true))
+							.addStringOption(pollNameStringOptionAutocomplete)
 					)
 			)
 			.addSubcommandGroup((group) =>
@@ -159,27 +172,25 @@ class CodingJamsCommand extends Command {
 							.addStringOption(jamNameStringOption)
 							.addStringOption(jamProposalNameStringOption)
 							.addStringOption(startDateStringOption)
-							.addStringOption(endDateStringOption)
-							.addStringOption(durationStringOption)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("extend")
 							.setDescription("Extend a running Jam in its length.")
-							.addStringOption(jamNameStringOption.setAutocomplete(true))
-							.addStringOption(endDateStringOption.setRequired(true))
+							.addStringOption(jamNameStringOptionAutocomplete)
+							.addStringOption(requiredEndDateStringOption)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("view")
 							.setDescription("View an existing jam.")
-							.addStringOption(jamNameStringOption.setAutocomplete(true))
+							.addStringOption(jamNameStringOptionAutocomplete)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("delete")
 							.setDescription("Delete an existing jam.")
-							.addStringOption(jamNameStringOption.setAutocomplete(true))
+							.addStringOption(jamNameStringOptionAutocomplete)
 					)
 			)
 			.addSubcommandGroup((group) =>
@@ -197,10 +208,18 @@ export default new CodingJamsCommand();
 // Polls
 const pollNameStringOption = new SlashCommandStringOption()
 	.setName("name")
-	.setDescription("The unique name of the poll.")
+	.setDescription("The unique name of the poll. (e.g. 'December 2022 Poll')")
 	.setMinLength(4)
 	.setMaxLength(30)
 	.setRequired(true);
+
+const pollNameStringOptionAutocomplete = new SlashCommandStringOption()
+	.setName("name")
+	.setDescription("The unique name of the poll.")
+	.setMinLength(4)
+	.setMaxLength(30)
+	.setRequired(true)
+	.setAutocomplete(true);
 
 const pollVotesIntegerOption = new SlashCommandIntegerOption()
 	.setName("num-votes")
@@ -248,6 +267,14 @@ const jamNameStringOption = new SlashCommandStringOption()
 	.setMaxLength(30)
 	.setRequired(true);
 
+const jamNameStringOptionAutocomplete = new SlashCommandStringOption()
+	.setName("name")
+	.setDescription("The name of the jam.")
+	.setMinLength(3)
+	.setMaxLength(30)
+	.setRequired(true)
+	.setAutocomplete(true);
+
 const jamProposalNameStringOption = new SlashCommandStringOption()
 	.setName("proposal")
 	.setDescription("Select the name of the proposal for this jam.")
@@ -265,6 +292,12 @@ const endDateStringOption = new SlashCommandStringOption()
 	.setName("end-date")
 	.setDescription("Set the end date in the ISO format. (alternative to 'duration')")
 	.setRequired(false)
+	.setAutocomplete(true);
+
+const requiredEndDateStringOption = new SlashCommandStringOption()
+	.setName("end-date")
+	.setDescription("Set the end date in the ISO format. (alternative to 'duration')")
+	.setRequired(true)
 	.setAutocomplete(true);
 
 const durationStringOption = new SlashCommandStringOption()

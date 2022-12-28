@@ -6,7 +6,7 @@ import { CountryKey } from "../../util/country-info/typesCountryCommand";
 import { logger } from "../../logger";
 import { returnChoiceWithSameValues } from "../../util/country-info/generalCountryCommandUtil";
 
-class CountryAutocompleter extends Autocompleter {
+class CountryInfoAutocompleter extends Autocompleter {
 	constructor() {
 		super("country-info");
 	}
@@ -75,4 +75,4 @@ class CountryAutocompleter extends Autocompleter {
 	}
 }
 
-export default new CountryAutocompleter();
+export default new CountryInfoAutocompleter();

@@ -8,7 +8,7 @@ import {
 	statisticsMystats,
 } from "../../util/activity-tracker/autocompletes";
 
-class TrackerAutocompleter extends Autocompleter {
+class ActivityTrackerAutocompleter extends Autocompleter {
 	constructor() {
 		super("activity-tracker");
 	}
@@ -30,4 +30,4 @@ class TrackerAutocompleter extends Autocompleter {
 	}
 }
 
-export default new TrackerAutocompleter();
+export default new ActivityTrackerAutocompleter();

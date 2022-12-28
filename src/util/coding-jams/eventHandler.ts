@@ -1,5 +1,5 @@
 import { Client, TextChannel } from "discord.js";
-import { Duration } from "luxon";
+import { DateTime, Duration } from "luxon";
 import { jamEventsDb, jamTimeoutCache, pollEventsDb, pollTimeoutCache } from "../../db";
 import { logger } from "../../logger";
 import { config } from "../../config";
@@ -30,6 +30,7 @@ export async function elapseJamEvent(client: Client, eventID: string, jamID: str
 
 	events[event.type](channel, jamID);
 
+	jamEventsDb.delete(eventID);
 	jamTimeoutCache.delete(eventID);
 }
 
@@ -47,14 +48,19 @@ export async function elapsePollEvent(client: Client, eventID: string, pollID: s
 
 	events[event.type](channel, pollID);
 
+	pollEventsDb.delete(eventID);
 	pollTimeoutCache.delete(eventID);
 }
 
 export function jamSchedulerTick(client: Client) {
 	try {
 		jamEventsDb.forEach((event, id) => {
+			if (event.date < DateTime.now()) {
+				elapseJamEvent(client, id, event.jamID);
+				return;
+			}
 			const diffNow = event.date.diffNow();
-			if (!jamTimeoutCache.has(id) && diffNow <= Duration.fromObject({ hours: 1 })) {
+			if (!jamTimeoutCache.has(id) && diffNow <= Duration.fromObject({ minutes: 30 })) {
 				jamTimeoutCache.set(
 					id,
 					setTimeout(() => elapseJamEvent(client, id, event.jamID), diffNow.toMillis())
@@ -62,8 +68,13 @@ export function jamSchedulerTick(client: Client) {
 			}
 		});
 		pollEventsDb.forEach((event, id) => {
+			if (event.date < DateTime.now()) {
+				elapsePollEvent(client, id, event.pollID);
+				return;
+			}
+
 			const diffNow = event.date.diffNow();
-			if (!pollTimeoutCache.has(id) && diffNow <= Duration.fromObject({ hours: 1 })) {
+			if (!pollTimeoutCache.has(id) && diffNow <= Duration.fromObject({ minutes: 30 })) {
 				pollTimeoutCache.set(
 					id,
 					setTimeout(() => elapsePollEvent(client, id, event.pollID), diffNow.toMillis())

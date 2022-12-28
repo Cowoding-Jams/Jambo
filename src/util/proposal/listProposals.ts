@@ -7,7 +7,7 @@ import {
 	EmbedBuilder,
 } from "discord.js";
 import { Proposal, proposalDb } from "../../db";
-import { addEmbedColor } from "../misc/embeds";
+import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
 import { discordRelativeTimestamp, durationToReadable } from "../misc/time";
 import { numberedList } from "../misc/format";
 
@@ -23,7 +23,7 @@ export async function listProposals(
 
 	const proposals = proposalDb.array().slice(page * proposalsPerPage, (page + 1) * proposalsPerPage);
 
-	let embed = addEmbedColor(new EmbedBuilder().setTitle("Proposals"));
+	let embed = addEmbedFooter(new EmbedBuilder().setTitle("Proposals"));
 
 	const list = numberedList(
 		proposals.map((p) => p.title),
@@ -38,7 +38,7 @@ export async function listProposals(
 		});
 	}
 
-	if (proposalDb.size == 0) embed = addEmbedColor(new EmbedBuilder().setTitle("No proposals in yet..."));
+	if (proposalDb.size == 0) embed = addEmbedFooter(new EmbedBuilder().setTitle("No proposals in yet..."));
 	else
 		embed.setFooter({
 			text: `Page ${page + 1}/${pages} ⁘ Proposals per page: ${proposalsPerPage}/10`,

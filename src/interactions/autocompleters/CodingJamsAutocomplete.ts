@@ -7,7 +7,7 @@ export const autocompleteCache: {
 	[key: userID]: { include: Map<string, proposalID[]>; exclude: Map<string, proposalID[]> };
 } = {};
 
-class JamAutocompleter extends Autocompleter {
+class CodingJamsAutocompleter extends Autocompleter {
 	constructor() {
 		super("coding-jams");
 	}
@@ -66,13 +66,14 @@ class JamAutocompleter extends Autocompleter {
 			} else {
 				if (value.length == 0) {
 					const name = interaction.options.getString("name") || "";
-					const endDate = jamDb.get(name)?.end;
+					const endDate = jamDb.find((e) => e.title === name)?.end;
 					interaction.respond([
 						{
 							name: endDate ? endDate.toISO() : "Enter the name to get the current end date!",
 							value: endDate ? endDate.toISO() : "-",
 						},
 					]);
+					return;
 				}
 				await autocompleteISOTime(interaction);
 			}
@@ -110,13 +111,14 @@ class JamAutocompleter extends Autocompleter {
 			} else {
 				if (value.length == 0) {
 					const name = interaction.options.getString("name") || "";
-					const endDate = pollDb.get(name)?.end;
+					const endDate = pollDb.find((e) => e.title === name)?.end;
 					interaction.respond([
 						{
 							name: endDate ? endDate.toISO() : "Enter the name to get the current end date!",
 							value: endDate ? endDate.toISO() : "-",
 						},
 					]);
+					return;
 				}
 				await autocompleteISOTime(interaction);
 			}
@@ -127,4 +129,4 @@ class JamAutocompleter extends Autocompleter {
 	}
 }
 
-export default new JamAutocompleter();
+export default new CodingJamsAutocompleter();
