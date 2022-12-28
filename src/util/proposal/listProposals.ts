@@ -27,7 +27,8 @@ export async function listProposals(
 
 	const list = numberedList(
 		proposals.map((p) => p.title),
-		proposals.map((p) => durationToReadable(p.duration))
+		proposals.map((p) => durationToReadable(p.duration)),
+		page * proposalsPerPage
 	);
 
 	for (const [index, proposal] of proposals.entries()) {

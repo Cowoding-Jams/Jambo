@@ -167,7 +167,7 @@ class CodingJamsCommand extends Command {
 							.setName("extend")
 							.setDescription("Extend a running Jam in its length.")
 							.addStringOption(jamNameStringOption.setAutocomplete(true))
-							.addStringOption(endDateStringOption.setRequired(true).setAutocomplete(true))
+							.addStringOption(endDateStringOption.setRequired(true))
 					)
 					.addSubcommand((subcommand) =>
 						subcommand

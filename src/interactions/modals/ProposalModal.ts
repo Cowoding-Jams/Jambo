@@ -24,7 +24,7 @@ class ProposalModal extends Modal {
 		);
 
 		if (!duration) return;
-		if (duration.as("minutes") <= 30) {
+		if (duration.as("hours") < 1) {
 			await interaction.reply({
 				content: "That seems a bit short for a jam... Try another duration.",
 				ephemeral: true,
