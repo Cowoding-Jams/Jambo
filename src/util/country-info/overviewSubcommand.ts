@@ -33,20 +33,22 @@ function getOverviewEmbed(country: Country, locale: string): EmbedBuilder {
 				name: "Demographics",
 				value: `- Population size: ${formatNumber(country.population, locale)} (${
 					countryData.indexOf(country) + 1
-				}.)
-			 - Is ${!country.unMember ? "not" : ""} a member of the UN
-			 - Top Level Domain: ${inlineCode(country.tld.join(" / "))}
-			 - Currencie(s): ${country.currencies.join(", ")}
-			 - Language(s): ${Object.values(country.languages).join(", ")}`,
+				}.)\n- Is ${!country.unMember ? "not" : ""} a member of the UN\n- Top Level Domain: ${inlineCode(
+					country.tld.join(" / ")
+				)}\n- Currencie(s): ${country.currencies.join(", ")}\n- Language(s): ${Object.values(
+					country.languages
+				).join(", ")}`,
 			},
 			{
 				name: "Geographics",
-				value: `- Capital: ${country.capital.join(", ")}
-			 - Region: ${country.region}, Subregion: ${country.subregion}
-			 - Coordinates: ${Math.round(country.latitude)}° N/S, ${Math.round(country.longitude)}° E/W
-			 - Timezone(s): ${country.timezones.join(", ")}
-			 - Area: ${formatNumber(country.area, locale)} km²
-			 - [Google Maps](${country.maps.googleMaps})`,
+				value: `- Capital: ${country.capital.join(", ")}\n- Region: ${country.region}, Subregion: ${
+					country.subregion
+				}\n- Coordinates: ${Math.round(country.latitude)}° N/S, ${Math.round(
+					country.longitude
+				)}° E/W\n- Timezone(s): ${country.timezones.join(", ")}\n- Area: ${formatNumber(
+					country.area,
+					locale
+				)} km²\n- [Google Maps](${country.maps.googleMaps})`,
 			}
 		);
 
