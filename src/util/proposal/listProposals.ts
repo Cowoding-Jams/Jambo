@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import { Proposal, proposalDb } from "../../db";
 import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
-import { discordRelativeTimestamp, durationToReadable } from "../misc/time";
+import { discordTimestamp, durationToReadable } from "../misc/time";
 import { numberedList } from "../misc/format";
 
 export async function listProposals(
@@ -106,7 +106,7 @@ export async function viewProposalEmbed(proposal: Proposal, titleAddition: strin
 				},
 				{
 					name: "Proposed By/On",
-					value: `<@${proposal.owner}> ⁘ <t:${proposal.created}:d>`,
+					value: `<@${proposal.owner}> ⁘ ${discordTimestamp(proposal.created)}`,
 				}
 			)
 	);

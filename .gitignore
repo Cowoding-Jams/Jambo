@@ -6,6 +6,7 @@ coverage
 
 # API keys and secrets
 .env
+docker-compose.yml
 
 # Dependency directory
 node_modules
