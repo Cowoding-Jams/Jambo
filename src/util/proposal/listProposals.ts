@@ -106,7 +106,7 @@ export async function viewProposalEmbed(proposal: Proposal, titleAddition: strin
 				},
 				{
 					name: "Proposed By/On",
-					value: `<@${proposal.owner}> ⁘ ${discordRelativeTimestamp(proposal.created)}`,
+					value: `<@${proposal.owner}> ⁘ <t:${proposal.created}:d>`,
 				}
 			)
 	);
