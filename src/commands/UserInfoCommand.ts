@@ -3,9 +3,9 @@ import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 	GuildMember,
+	roleMention,
 	SlashCommandBuilder,
 	User,
-	roleMention,
 } from "discord.js";
 import { addEmbedFooter } from "../util/misc/embeds";
 import { discordRelativeTimestamp, discordTimestamp } from "../util/misc/time";
