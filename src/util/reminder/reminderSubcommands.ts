@@ -79,14 +79,14 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const embed = new EmbedBuilder()
 		.setTitle("Reminder set!")
 		.setDescription(
-			`I will remind you${
-				additionalPing ? " and " + additionalPing.toString() : ""
-			} ${discordRelativeTimestamp(timestamp)}! (${inlineCode(`ID: ${id}`)})`
+			`I will remind you ${discordRelativeTimestamp(timestamp)}! (${inlineCode(`ID: ${id}`)})${
+				additionalPing ? `\n(You and ${additionalPing.toString()})` : ""
+			}`
 		);
 
 	if (message !== "") {
 		embed.addFields({
-			name: `Message to yourself${additionalPing ? " and " + additionalPing.toString() : ""}`,
+			name: `Message`,
 			value: message,
 		});
 	}
