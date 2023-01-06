@@ -1,15 +1,18 @@
 import { addEmbedColor } from "../misc/embeds";
 import { reminderDb, reminderTimeoutCache } from "../../db";
-import { Client, EmbedBuilder, TextBasedChannel } from "discord.js";
+import { Client, EmbedBuilder, TextBasedChannel, userMention } from "discord.js";
 import { Duration } from "luxon";
+import { getUserOrRole } from "../misc/user";
 
 export async function elapse(client: Client, id: string): Promise<void> {
 	const reminder = reminderDb.get(id);
 	if (!reminder) return;
 	const channel = (await client.channels.fetch(reminder.channelID)) as TextBasedChannel;
 
+	const ping = reminder.ping ? await getUserOrRole(reminder.ping, client.guilds.cache.first()!) : null;
+
 	await channel?.send({
-		content: `${reminder.user} ${reminder.ping || ""}`,
+		content: `${userMention(reminder.user)} ${ping?.toString() || ""}`,
 		embeds: [
 			addEmbedColor(
 				new EmbedBuilder().setTitle("Time is up!").setDescription(reminder.message || "I believe in you!")

@@ -5,8 +5,10 @@ import {
 	GuildMember,
 	SlashCommandBuilder,
 	User,
+	roleMention,
 } from "discord.js";
 import { addEmbedFooter } from "../util/misc/embeds";
+import { discordRelativeTimestamp, discordTimestamp } from "../util/misc/time";
 
 class UserInfoCommand extends Command {
 	constructor() {
@@ -47,43 +49,45 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 		.setThumbnail(user.displayAvatarURL({ size: 1024 }))
 		.setDescription(user.toString());
 
-	embed.addFields({ name: "User Id", value: user.id, inline: true });
-
-	if (user.flags?.toArray().length) {
-		embed.addFields({
-			name: "Discord Badges",
-			value: user.flags
-				.toArray()
-				.map((v) => v.toLowerCase().replace(/_/g, " "))
-				.join(", ")
-				.replace(/\b(.)/g, (c) => c.toUpperCase()),
-		});
-	}
+	embed.addFields({ name: "User Id", value: user.id });
 
 	embed.addFields({
 		name: "Account created",
-		value: `<t:${toUnix(user.createdTimestamp)}> ⁘ <t:${toUnix(user.createdTimestamp)}:R>`,
+		value: discordRelativeTimestamp(toUnix(user.createdTimestamp)),
+		inline: true,
 	});
 
 	if (member) {
 		let roles = "";
 		member.roles.cache.forEach((role) => {
 			if (role.id === role.guild.id) return;
-			roles += `<@&${role.id}> `;
+			roles += roleMention(role.id);
 		});
-
-		const boosting = member.premiumSince
-			? `Since <t:${toUnix(member.premiumSince)}> ⁘ <t:${toUnix(member.premiumSince)}:R> :)`
-			: "Not boosting :(";
 
 		if (member.joinedTimestamp)
 			embed.addFields({
 				name: "Joined server",
-				value: `<t:${toUnix(member.joinedTimestamp)}> ⁘ <t:${toUnix(member.joinedTimestamp)}:R>`,
+				value: discordRelativeTimestamp(toUnix(member.joinedTimestamp)),
 				inline: true,
 			});
 
-		embed.addFields({ name: "Boosting", value: boosting, inline: true }, { name: "Roles", value: roles });
+		const boosting = member.premiumSince
+			? `Since ${discordTimestamp(toUnix(member.premiumSince))} <3`
+			: "Not boosting (yet) :(";
+
+		if (!user.bot) embed.addFields({ name: "Boosting", value: boosting, inline: true });
+
+		if (user.flags?.toArray().length) {
+			embed.addFields({
+				name: "Discord Badges",
+				value: user.flags
+					.toArray()
+					.map((v) => v.replace(/[A-Z0-9]/g, " $&").trim())
+					.join(", "),
+			});
+		}
+
+		embed.addFields({ name: "Roles", value: roles });
 	}
 	return addEmbedFooter(embed);
 }

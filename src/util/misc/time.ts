@@ -1,12 +1,12 @@
 import { ChatInputCommandInteraction, CommandInteraction, ModalSubmitInteraction } from "discord.js";
 import { DateTime, Duration } from "luxon";
 
-export function discordTimestamp(datetime: DateTime): string {
-	return `<t:${Math.floor(datetime.toSeconds())}>`;
+export function discordTimestamp(datetime: DateTime | number): string {
+	return `<t:${datetime instanceof DateTime ? Math.floor(datetime.toSeconds()) : datetime}>`;
 }
 
-export function discordRelativeTimestamp(datetime: DateTime): string {
-	return `<t:${Math.floor(datetime.toSeconds())}:R>`;
+export function discordRelativeTimestamp(datetime: DateTime | number): string {
+	return `<t:${datetime instanceof DateTime ? Math.floor(datetime.toSeconds()) : datetime}:R>`;
 }
 
 export function durationToReadable(duration: Duration, short = false): string {

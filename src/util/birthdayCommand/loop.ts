@@ -30,7 +30,7 @@ export async function birthdayMessageTick(client: Client) {
 						age ? `\n${age} years... That's pretty old :)` : ""
 					}\n@everyone go ahead and congratulate **${guildUser.displayName}** or else >:(`
 				)
-		);
+		).setColor(guildUser.displayHexColor);
 
 		const sysChannel = defaultGuild.systemChannel;
 		if (sysChannel) sysChannel.send({ content: guildUser.toString(), embeds: [embed] });

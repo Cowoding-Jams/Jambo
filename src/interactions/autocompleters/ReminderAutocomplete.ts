@@ -3,6 +3,7 @@ import { AutocompleteInteraction } from "discord.js";
 import { reminderDb } from "../../db";
 import { autocompleteISODuration, autocompleteISOTime } from "../../util/misc/autocomplete";
 import { shortDateTimeFormat } from "../../util/misc/time";
+import { getUsernameOrRolename } from "../../util/misc/user";
 
 class ReminderAutocompleter extends Autocompleter {
 	constructor() {
@@ -23,9 +24,11 @@ class ReminderAutocompleter extends Autocompleter {
 			const options: { name: string; value: number }[] = [];
 
 			for (const [key, value] of reminderDb) {
-				if (value.user === interaction.user.toString()) {
+				if (value.user === interaction.user.id) {
+					const ping = value.ping ? await getUsernameOrRolename(value.ping, interaction.guild!) : null;
+
 					let name = `ID: ${key} ⁘ ${value.timestamp.toFormat(shortDateTimeFormat)} ${
-						value.ping ? `⁘ ${value.ping} ⁘` : "-"
+						ping ? `⁘ ${ping} ⁘` : "⁘"
 					} ${value.message == "" ? "No message." : `${value.message}`}`;
 
 					if (name.length > 100) {
@@ -34,7 +37,7 @@ class ReminderAutocompleter extends Autocompleter {
 
 					options.push({
 						name: name,
-						value: parseInt(key.toString()),
+						value: parseInt(key),
 					});
 				}
 			}

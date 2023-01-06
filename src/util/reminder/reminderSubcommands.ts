@@ -65,8 +65,8 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 		timestamp: timestamp,
 		message: message,
 		channelID: interaction.channel.id,
-		user: member?.toString(),
-		ping: additionalPing?.toString() ?? null,
+		user: member.id,
+		ping: additionalPing?.id ?? null,
 	});
 
 	if (timestamp.diffNow() <= Duration.fromObject({ minutes: 30 })) {
