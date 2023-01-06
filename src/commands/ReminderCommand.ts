@@ -38,7 +38,7 @@ class ReminderCommand extends Command {
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("reminder")
-			.setDescription("Reminds you after a certain amount of time has passed. (default: 20 minutes)")
+			.setDescription("Reminds you after a certain amount of time has passed. (default: 30 minutes)")
 			.addSubcommand((option) =>
 				option
 					.setName("set")

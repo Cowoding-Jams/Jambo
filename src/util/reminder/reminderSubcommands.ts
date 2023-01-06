@@ -76,24 +76,23 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 		);
 	}
 
+	const embed = new EmbedBuilder()
+		.setTitle("Reminder set!")
+		.setDescription(
+			`I will remind you${
+				additionalPing ? " and " + additionalPing.toString() : ""
+			} ${discordRelativeTimestamp(timestamp)}! (${inlineCode(`ID: ${id}`)})`
+		);
+
+	if (message !== "") {
+		embed.addFields({
+			name: `Message to yourself${additionalPing ? " and " + additionalPing.toString() : ""}`,
+			value: message,
+		});
+	}
+
 	await interaction.reply({
-		embeds: [
-			addEmbedColor(
-				new EmbedBuilder()
-					.setTitle("Reminder set!")
-					.setDescription(
-						`I will remind you${
-							additionalPing ? " and " + additionalPing.toString() : ""
-						} ${discordRelativeTimestamp(timestamp)}! (${inlineCode(`ID: ${id}`)})${
-							message == ""
-								? ""
-								: `\nYour message to yourself${
-										additionalPing ? " and " + additionalPing.toString() : ""
-								  }:\n${message}`
-						}`
-					)
-			),
-		],
+		embeds: [addEmbedColor(embed)],
 	});
 }
 
