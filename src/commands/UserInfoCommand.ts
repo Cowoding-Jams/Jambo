@@ -39,6 +39,19 @@ const toUnix = (timestamp: number | Date) => {
 	return Math.floor(timestamp / 1000);
 };
 
+const badges = {
+	BotHTTPInteractions: "HTTP Bot",
+	BugHunterLevel1: "Bug Hunter",
+	BugHunterLevel2: "Bug Hunter",
+	CertifiedModerator: "Moderator Programs Alumni",
+	HypeSquadOnlineHouse1: "HypeSquad Bravery",
+	HypeSquadOnlineHouse2: "HypeSquad Brilliance",
+	HypeSquadOnlineHouse3: "HypeSquad Balance",
+	Hypesquad: "HypeSquad Events",
+	Partner: "Partnered Server Owner",
+	PremiumEarlySupporter: "Early Supporter",
+};
+
 function getUserEmbed(user: User, member: GuildMember | null | undefined): EmbedBuilder {
 	const embed = new EmbedBuilder()
 		.setTitle(
@@ -61,7 +74,7 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 		let roles = "";
 		member.roles.cache.forEach((role) => {
 			if (role.id === role.guild.id) return;
-			roles += roleMention(role.id);
+			roles += roleMention(role.id) + " ";
 		});
 
 		if (member.joinedTimestamp)
@@ -73,7 +86,7 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 
 		const boosting = member.premiumSince
 			? `Since ${discordTimestamp(toUnix(member.premiumSince))} <3`
-			: "Not boosting (yet) :(";
+			: "Not boosting (*yet*) :(";
 
 		if (!user.bot) embed.addFields({ name: "Boosting", value: boosting, inline: true });
 
@@ -82,7 +95,7 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 				name: "Discord Badges",
 				value: user.flags
 					.toArray()
-					.map((v) => v.replace(/[A-Z0-9]/g, " $&").trim())
+					.map((v) => badges[v as keyof typeof badges] || v.replace(/[A-Z0-9]/g, " $&").trim())
 					.join(", "),
 			});
 		}
