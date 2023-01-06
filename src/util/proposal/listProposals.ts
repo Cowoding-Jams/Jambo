@@ -23,7 +23,7 @@ export async function listProposals(
 
 	const proposals = proposalDb.array().slice(page * proposalsPerPage, (page + 1) * proposalsPerPage);
 
-	let embed = addEmbedFooter(new EmbedBuilder().setTitle("Proposals"));
+	let embed = addEmbedFooter(new EmbedBuilder().setTitle(`${proposalDb.size} Proposals`));
 
 	const list = numberedList(
 		proposals.map((p) => p.title),

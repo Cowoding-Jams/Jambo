@@ -1,8 +1,8 @@
-import { hasRoleMentionPerms } from "../misc/permissions";
+import { hasModeratorRole, hasRoleMentionPerms } from "../misc/permissions";
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, inlineCode, Role } from "discord.js";
 import { reminderDb, reminderTimeoutCache } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
-import { checkDate, checkDuration, discordRelativeTimestamp, discordTimestamp } from "../misc/time";
+import { checkDate, checkDuration, discordRelativeTimestamp } from "../misc/time";
 import { elapse } from "./reminderUtil";
 import { DateTime, Duration } from "luxon";
 
@@ -84,15 +84,14 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 					.setDescription(
 						`I will remind you${
 							additionalPing ? " and " + additionalPing.toString() : ""
-						} ${discordRelativeTimestamp(timestamp)}! (${discordTimestamp(timestamp)})${
+						} ${discordRelativeTimestamp(timestamp)}! (${inlineCode(`ID: ${id}`)})${
 							message == ""
 								? ""
 								: `\nYour message to yourself${
 										additionalPing ? " and " + additionalPing.toString() : ""
-								  }: ${message}`
-						} \nYou can always delete this reminder with ${inlineCode(`/reminder delete ${id}`)}`
-					),
-				true
+								  }:\n${message}`
+						}`
+					)
 			),
 		],
 	});
@@ -111,7 +110,7 @@ export async function reminderDelete(interaction: ChatInputCommandInteraction) {
 		return;
 	}
 
-	if (member.toString() === item.user) {
+	if (member.toString() === item.user || (await hasModeratorRole(interaction))) {
 		reminderDb.delete(c_id);
 		if (reminderTimeoutCache.has(c_id)) {
 			clearTimeout(reminderTimeoutCache.get(c_id));
