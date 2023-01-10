@@ -10,7 +10,10 @@ export async function beforeEvent(channel: TextChannel, pollID: string) {
 	const poll = pollDb.get(pollID)!;
 
 	const proposals = getFromEnmap(proposalDb, poll.proposals);
-	const list = numberedList(proposals.map((p) => p?.title));
+	const list = numberedList(
+		proposals.map((p) => p.title),
+		proposals.map((p) => durationToReadable(p.duration))
+	);
 
 	const embed = new EmbedBuilder()
 		.setTitle(`${poll.title} coming up!`)
@@ -116,7 +119,7 @@ export async function closeEvent(channel: TextChannel, pollID: string) {
 	const embed = new EmbedBuilder()
 		.setTitle("Voting is closed!")
 		.setDescription(
-			`Thanks to everyone who voted! The winner with incredible ${winner.votesLastPoll} votes is:`
+			`Thanks to everyone who voted!\nThe winner with incredible ${winner.votesLastPoll} votes is:`
 		)
 		.addFields(
 			{
@@ -128,11 +131,12 @@ export async function closeEvent(channel: TextChannel, pollID: string) {
 				value: numberedList(
 					proposals.map((p) => p.title),
 					proposals.map((p) => `${p.votesLastPoll}`)
-				)
-					.slice(1, 10)
-					.join("\n"),
+				).join("\n"),
 			}
 		);
 
-	await channel.send({ embeds: [addEmbedFooter(embed)] });
+	const jamRole =
+		channel.guild.roles.cache.find((v) => v.name === config.jamRoleName) || channel.guild.roles.everyone;
+
+	await channel.send({ content: jamRole.toString(), embeds: [addEmbedFooter(embed)] });
 }

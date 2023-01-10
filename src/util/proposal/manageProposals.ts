@@ -18,7 +18,7 @@ const title = new TextInputBuilder()
 
 const abbreviation = new TextInputBuilder()
 	.setCustomId("abbreviation")
-	.setLabel("Shorter title/abbreviation")
+	.setLabel("Shorter title/abbreviation (in kebab-case)")
 	.setPlaceholder("(e.g. 'aoc22' instead of 'Advent of Code 2022')")
 	.setStyle(TextInputStyle.Short)
 	.setMinLength(2)

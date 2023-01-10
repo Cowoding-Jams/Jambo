@@ -251,7 +251,7 @@ export function pollEmbed(poll: Poll, pollKey: string, title: string) {
 							.map((e) => `- ${e.type} ⁘ ${discordRelativeTimestamp(e.date)}`)
 							.join("\n") || "None",
 				},
-				{ name: "Proposals", value: proposals.join("\n") || "None" }
+				{ name: `Proposals (${poll.selectionType})`, value: proposals.join("\n") || "None" }
 			)
 	);
 }

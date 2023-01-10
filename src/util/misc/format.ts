@@ -3,7 +3,7 @@ export function numberedList(list: (string | undefined)[], additional?: string[]
 	if (additional && len !== additional.length) throw new Error("The length of the two arrays must be equal.");
 	return list.map(
 		(e, i) =>
-			`#${(i + offset).toString().padStart(Math.ceil(len / 10), "0")} ${e}${
+			`#${(i + 1 + offset).toString().padStart(Math.ceil(len / 10), "0")} ${e}${
 				additional ? " ⁘ " + additional[i] : ""
 			}`
 	);
