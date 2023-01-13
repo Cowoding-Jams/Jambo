@@ -122,10 +122,15 @@ export async function deleteJam(interaction: CommandInteraction, name: string) {
 }
 
 function jamEmbed(jam: Jam, jamKey: string, title: string) {
+	const proposal = proposalDb.get(jam.proposal);
 	return addEmbedFooter(new EmbedBuilder().setTitle(`${jam.title} ${title}`)).addFields(
 		{
-			name: "Start - End",
+			name: `Start - End (${durationToReadable(jam.end.diff(jam.start), true)})`,
 			value: `${discordTimestamp(jam.start)} - ${discordTimestamp(jam.end)}`,
+		},
+		{
+			name: "Proposal",
+			value: `${proposal?.title} ⁘ ${proposal?.abbreviation}` || "Unknown...",
 		},
 		{
 			name: "Events",
@@ -133,12 +138,6 @@ function jamEmbed(jam: Jam, jamKey: string, title: string) {
 				.filter((e) => e.jamID == jamKey)
 				.map((e) => `- ${e.type} ⁘ ${discordRelativeTimestamp(e.date)}`)
 				.join("\n"),
-			inline: true,
-		},
-		{ name: "Duration", value: durationToReadable(jam.end.diff(jam.start)), inline: true },
-		{
-			name: "Proposal",
-			value: proposalDb.get(jam.proposal)?.title || "Unknown...",
 			inline: true,
 		}
 	);

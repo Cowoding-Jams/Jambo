@@ -4,23 +4,24 @@ import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 export const config: BotConfig = {
 	// --- General ---
 	botName: "Jambo",
-	birthdayNotificationAt: 17,
 	iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
 	githubURL: "https://github.com/Cowoding-Jams/Jambo",
-	color: "#F0A5AC",
 	serverDescription:
 		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
+	color: "#F0A5AC",
+
+	// --- Development ---
 	logLevel: "debug",
 
 	// --- Management ---
-	moderatorRoleId: "1056979456650133565", // cowoding-jams/role: moderator 855349314807922698
-	adminRoleId: "1056979442708271204", // cowoding-jams/role: admin 855348792025939988
-	jamRoleName: "jammin",
+	adminRoleId: "855348792025939988", // cowoding-jams/roles: admin
+	moderatorRoleId: "855349314807922698", // cowoding-jams/roles: moderator
 
-	// --- Poll/Jam System ---
-	pollChannelId: "1056979768882516068", // cowoding-jams/channel: voting-area
-	jamChannelId: "1056979756500910131", // cowoding-jams/channel: voting-area 856214233930792960
-	resultCategoryId: "1056979741955076106", // cowoding-jams/category: working 855356830724259871
+	// --- Polls & Coding Jams ---
+	jamRoleName: "jammin",
+	pollChannelId: "1063379924267847761", // cowoding-jams/channels: coding-jams
+	jamChannelId: "1063379924267847761", // cowoding-jams/channels: coding-jams
+	resultCategoryId: "855356830724259871", // cowoding-jams/categories: Working Area
 
 	// --- Roles ---
 	pronounRoles: [
@@ -47,8 +48,12 @@ export const config: BotConfig = {
 		["Medium Aquamarine", "#6cd9a9"],
 		["Sea Serpent", "#5db9cf"],
 	],
+
 	// --- Activity Tracker ---
 	logActivity: true,
+
+	// --- Birthday feature ---
+	birthdayNotificationAt: 9,
 };
 
 interface BotConfig {
@@ -59,11 +64,12 @@ interface BotConfig {
 	iconURL: string;
 	/** URL to the github repository of the bot. Please share your code! */
 	githubURL: string;
-
-	/** The main color the bot will use. */
-	color: ColorResolvable;
 	/** A description of the server that will be displayed in the welcome message. */
 	serverDescription: string;
+	/** The main color the bot will use. */
+	color: ColorResolvable;
+
+	// --- Development ---
 	/** Also available: error, warn, info, http, verbose, debug, silly. */
 	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
 
@@ -72,10 +78,10 @@ interface BotConfig {
 	moderatorRoleId: string;
 	/** Admins of the server (to manage the game activity tracker) */
 	adminRoleId: string;
-	/** Active Jam participants role name */
-	jamRoleName: string;
 
-	// --- Poll/Jam System ---
+	// --- Polls & Coding Jams ---
+	/** Active Jam participants role name (will be pinged for announcements) */
+	jamRoleName: string;
 	/** The text channel where the poll system will post polls. */
 	pollChannelId: string;
 	/** The text channel where the jam system will post announcements to jams. */
@@ -93,7 +99,7 @@ interface BotConfig {
 	/** If User Game Activity should get logged */
 	logActivity: boolean;
 
-	// --- Birthday System ---
+	// --- Birthday Feature ---
 	/** Can be any integer between 0 and 23. Defines at what time the birthday message should get send. */
 	birthdayNotificationAt:
 		| 0
