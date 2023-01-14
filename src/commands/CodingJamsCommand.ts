@@ -243,6 +243,8 @@ export const pollSelectionTypes = {
 	bottomAll: "bottomAll",
 	newest: "newest",
 	oldest: "oldest",
+	fewestPolls: "fewestPolls",
+	mostPolls: "mostPolls",
 };
 
 const pollSelectionStringOption = new SlashCommandStringOption()
@@ -255,6 +257,8 @@ const pollSelectionStringOption = new SlashCommandStringOption()
 		{ name: "Random", value: pollSelectionTypes.random },
 		{ name: "Newest", value: pollSelectionTypes.newest },
 		{ name: "Oldest", value: pollSelectionTypes.oldest },
+		{ name: "Fewest polls", value: pollSelectionTypes.fewestPolls },
+		{ name: "Most polls)", value: pollSelectionTypes.mostPolls },
 		{ name: "Top-All (all time)", value: pollSelectionTypes.topAll },
 		{ name: "Bottom-All (all time)", value: pollSelectionTypes.bottomAll }
 	);

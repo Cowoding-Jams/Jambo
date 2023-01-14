@@ -102,13 +102,15 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 		});
 	}
 
+	const sorted = sortBySelectionType(poll.selectionType);
+
 	await interaction.reply({
 		embeds: [pollEmbed(poll, pollKey, "(edit)")],
 		components: pollSelectMenus(
 			poll,
 			pollKey,
-			sortBySelectionType(poll.selectionType).filter((e) => !poll.exclude.includes(e.value)),
-			sortBySelectionType(poll.selectionType).filter((e) => !poll.include.includes(e.value))
+			sorted.filter((e) => !poll.exclude.includes(e.value)),
+			sorted.filter((e) => !poll.include.includes(e.value))
 		),
 		ephemeral: true,
 	});
@@ -203,6 +205,8 @@ export function sortBySelectionType(selectionType: string) {
 		[pollSelectionTypes.bottom]: (a, b) => a.val.votesLastPoll - b.val.votesLastPoll,
 		[pollSelectionTypes.topAll]: (a, b) => b.val.totalVotes - a.val.totalVotes,
 		[pollSelectionTypes.bottomAll]: (a, b) => a.val.totalVotes - b.val.totalVotes,
+		[pollSelectionTypes.fewestPolls]: (a, b) => b.val.polls - a.val.polls,
+		[pollSelectionTypes.mostPolls]: (a, b) => a.val.polls - b.val.polls,
 	};
 
 	return Array.from(proposalDb.entries())

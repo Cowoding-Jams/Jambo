@@ -42,6 +42,7 @@ export async function adminWhitelistGame(interaction: ChatInputCommandInteractio
 	const game = interaction.options.getString("game", true).toLowerCase();
 
 	if (game == blacklistCodes.emptyGlobalBlacklist) {
+		// blacklistCodes.emptyGlobalBlacklist is returned by the autocomplete when global blacklist is empty
 		interaction.reply({ content: "The global blacklist is empty...", ephemeral: true });
 	}
 
