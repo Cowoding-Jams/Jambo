@@ -258,7 +258,7 @@ const pollSelectionStringOption = new SlashCommandStringOption()
 		{ name: "Newest", value: pollSelectionTypes.newest },
 		{ name: "Oldest", value: pollSelectionTypes.oldest },
 		{ name: "Fewest polls", value: pollSelectionTypes.fewestPolls },
-		{ name: "Most polls)", value: pollSelectionTypes.mostPolls },
+		{ name: "Most polls", value: pollSelectionTypes.mostPolls },
 		{ name: "Top-All (all time)", value: pollSelectionTypes.topAll },
 		{ name: "Bottom-All (all time)", value: pollSelectionTypes.bottomAll }
 	);
