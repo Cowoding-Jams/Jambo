@@ -34,6 +34,6 @@ export async function birthdayMessageTick(client: Client) {
 
 		const sysChannel = defaultGuild.systemChannel;
 		if (sysChannel) sysChannel.send({ content: guildUser.toString(), embeds: [embed] });
-		else logger.error("No system channel found to send birthday messages to!");
+		else logger.warn("No birthday message sent because the system channel isn't set!");
 	}
 }

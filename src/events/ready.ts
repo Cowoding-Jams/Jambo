@@ -34,6 +34,12 @@ export default async function ready(client: Client) {
 	logger.info("Starting birthday scheduler...");
 	BirthdayCommand.startScheduler(client);
 
+	if (!guild.systemChannel) {
+		logger.error(
+			"There is no system channel configured which I need to send the birthday messages to... Please set one in the Discord settings!"
+		);
+	}
+
 	logger.info("Setup successful!");
 
 	logger.debug("Validating config parameters...");
