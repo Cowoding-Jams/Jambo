@@ -25,7 +25,7 @@ export default async function ready(client: Client) {
 	logger.info("Publishing commands...");
 	await client.application?.commands.set(ctx.commands.map((cmd) => cmd.register().toJSON()));
 
-	logger.info("Starting coding jam event scheduler...");
+	logger.info("Starting coding-jam event scheduler...");
 	CodingJamsCommand.startScheduler(client);
 
 	logger.info("Starting reminder scheduler...");

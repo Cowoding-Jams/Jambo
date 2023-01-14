@@ -30,7 +30,7 @@ export async function loadCommands(): Promise<Collection<string, Command>> {
 			.filter(isActive)
 			.map(async (filename) => {
 				const _command = (await import(`../commands/${filename}`)).default as Command;
-				if (config.logActivity || _command.name !== "game-activity-tracker") {
+				if (config.logActivity || _command.name !== "activity-tracker") {
 					loadedCommands.set(_command.name, _command);
 				}
 			})

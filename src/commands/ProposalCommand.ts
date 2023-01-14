@@ -5,7 +5,6 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { logger } from "../logger";
 import { addProposal, deleteProposal, editProposal } from "../util/proposal/manageProposals";
 import { listProposals, viewProposal } from "../util/proposal/listProposals";
 
@@ -34,12 +33,7 @@ class ProposalCommand extends Command {
 			list: listProposals,
 		};
 
-		if (commands[subcommand]) {
-			await commands[subcommand](interaction);
-		} else {
-			await interaction.reply("I don't know that subcommand... Please contact a developer.");
-			logger.error("Unkown subcommand: " + subcommand);
-		}
+		await commands[subcommand](interaction);
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
