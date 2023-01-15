@@ -71,7 +71,7 @@ export async function blacklistRemove(interaction: ChatInputCommandInteraction):
 
 	if (!blacklistedGames) {
 		await interaction.reply({
-			content: "You don't have a blacklist to remove items from yet...",
+			content: "Cant remove any games from your blacklist because no games are blacklisted!",
 			ephemeral: true,
 		});
 		return;
