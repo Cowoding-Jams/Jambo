@@ -45,7 +45,7 @@ function getOverviewEmbed(country: Country, locale: string): EmbedBuilder {
 					country.subregion
 				}\n- Coordinates: ${Math.round(country.latitude)}° N/S, ${Math.round(
 					country.longitude
-				)}° E/W\n- Timezone(s): ${country.timezones.join(", ")}\n- Area: ${formatNumber(
+				)}° E/W\n- Timezone${country.timezones.length != 1 ? '' : 's'}: ${country.timezones.join(", ")}\n- Area: ${formatNumber(
 					country.area,
 					locale
 				)} km²\n- [Google Maps](${country.maps.googleMaps})`,
