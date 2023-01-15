@@ -97,7 +97,7 @@ export async function blacklistShow(interaction: ChatInputCommandInteraction): P
 					(activityTrackerBlacklistDb.get("general-user")?.includes(interaction.user.id)
 						? "disabled"
 						: "enabled") +
-					"`\nBlacklisted games: No game is blacklisted. Every game gets logged"
+					"`\nBlacklisted games: No game is blacklisted. Logging every game."
 			);
 
 		embed = addEmbedFooter(embed);
