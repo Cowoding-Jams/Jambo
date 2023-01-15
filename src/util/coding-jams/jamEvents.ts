@@ -61,7 +61,7 @@ export async function startEvent(channel: TextChannel, jamID: string) {
 	const embed = new EmbedBuilder()
 		.setTitle(`Time to jam!`)
 		.setDescription(
-			`The ${proposal.title} jam has offically started now!\nI wish you all an incredible time and lots of fun!`
+			`The **${proposal.title} jam** has offically started now!\nI wish you all an incredible time and lots of fun!`
 		);
 
 	const jamRole =
