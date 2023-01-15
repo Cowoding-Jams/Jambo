@@ -40,7 +40,7 @@ export async function blacklistAdd(interaction: ChatInputCommandInteraction): Pr
 	) {
 		await interaction.followUp({
 			content:
-				"Even though no log across all users of that game exists. Maybe double check if you didn't make a spelling error (capitalization doesn't matter).",
+				"No logs across all users of that game exists. Maybe double check if you didn't make a spelling error (capitalization doesn't matter) (use the autocomplete!).",
 		});
 	}
 }
