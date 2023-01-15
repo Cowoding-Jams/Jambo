@@ -65,7 +65,7 @@ export async function blacklistRemove(interaction: ChatInputCommandInteraction):
 	let blacklistedGames = activityTrackerBlacklistDb.get(interaction.user.id);
 
 	if (game === blacklistCodes.emptyBlacklist) {
-		interaction.reply({ content: "No games are on your blacklist.", ephemeral: true });
+		interaction.reply({ content: "You didn't blacklist any games yet.", ephemeral: true });
 		return;
 	}
 
