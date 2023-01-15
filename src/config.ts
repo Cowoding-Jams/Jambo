@@ -90,7 +90,7 @@ interface BotConfig {
 	resultCategoryId: string;
 
 	// --- Roles ---
-	/** Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id. */
+	/** Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id (You get the id by typing "\\[insert emoji]" in Discord). */
 	pronounRoles: [string, ComponentEmojiResolvable | null][];
 	/** Max 25 color roles to pick from. First argument is the name of the role, second argument is the color. */
 	colorRoles: [string, ColorResolvable][];

@@ -60,11 +60,10 @@ export async function adminWhitelistGame(interaction: ChatInputCommandInteractio
 
 	activityTrackerBlacklistDb.set("general-game", blacklistedGames);
 
-	let embed = new EmbedBuilder()
+	const embed = new EmbedBuilder()
 		.setTitle("Removed a game from the global blacklist!")
 		.setDescription(`Removed "${game}" from global blacklist.`);
-	embed = addEmbedColor(embed);
-	await interaction.reply({ embeds: [embed], ephemeral: true });
+	await interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 }
 
 export async function adminLook(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -72,15 +71,14 @@ export async function adminLook(interaction: ChatInputCommandInteraction): Promi
 	const blacklist = await getBlacklist(user.id);
 
 	if (blacklist?.length == 0 || blacklist == undefined) {
-		let embed = new EmbedBuilder()
+		const embed = new EmbedBuilder()
 			.setTitle(`${user.tag}'s blacklist`)
 			.setDescription(
 				"Tracking status: `" +
 					(activityTrackerBlacklistDb.get("general-user")?.includes(user.id) ? "disabled" : "enabled") +
 					"`\nBlacklisted games: No game is blacklisted. Every game gets logged"
 			);
-		embed = addEmbedColor(embed);
-		await interaction.reply({ embeds: [embed], ephemeral: true });
+		await interaction.reply({ embeds: [addEmbedColor(embed)], ephemeral: true });
 		return;
 	}
 
