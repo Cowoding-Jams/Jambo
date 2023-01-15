@@ -11,7 +11,7 @@ export default async function ready(client: Client) {
 
 	if (client.guilds.cache.size > 1)
 		logger.warn(
-			"This bot somehow is in more than one guild... That's not supported! Please remove it from all but one guild"
+			"This bot is in more than one guild... Remember that the bot will only work in one guild which is given in the .env file!"
 		);
 
 	logger.info(`Successfully logged in as ${client.user?.username}.`);
