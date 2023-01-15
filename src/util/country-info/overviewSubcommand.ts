@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction, EmbedBuilder, inlineCode } from "discord.js";
 import { handleUndefinedCountry } from "./generalCountryCommandUtil";
-import { addEmbedFooter } from "../misc/embeds";
 import { getCountryByName } from "./countryDataManager";
 import { pickRandomFromList } from "../misc/random";
 import { formatNumber } from "../misc/numbers";
 import { Country } from "./typesCountryCommand";
 import { countryData } from "./countryDataLoader";
+import { addEmbedFooter } from "../misc/embeds";
 
 export function overviewSubcommand(interaction: ChatInputCommandInteraction) {
 	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));
@@ -35,9 +35,9 @@ function getOverviewEmbed(country: Country, locale: string): EmbedBuilder {
 					countryData.indexOf(country) + 1
 				}.)\n- Is ${!country.unMember ? "not" : ""} a member of the UN\n- Top Level Domain: ${inlineCode(
 					country.tld.join(" / ")
-				)}\n- Currenc${country.currencies.length > 1 : 'ies' : 'y'}: ${country.currencies.join(", ")}\n- Language(s): ${Object.values(
-					country.languages
-				).join(", ")}`,
+				)}\n- Currenc${country.currencies.length > 1 ? "ies" : "y"}: ${country.currencies.join(
+					", "
+				)}\n- Language(s): ${Object.values(country.languages).join(", ")}`,
 			},
 			{
 				name: "Geographics",
