@@ -8,7 +8,7 @@ export async function blacklistAutocompletion(interaction: AutocompleteInteracti
 	if (await hasAdminRole(interaction)) {
 		await interaction.respond([
 			{
-				name: "[You don't have the permissions to use this command!]",
+				name: "[Admin permissions are required to use this command!]",
 				value: blacklistCodes.missingPermission,
 			},
 		]);
