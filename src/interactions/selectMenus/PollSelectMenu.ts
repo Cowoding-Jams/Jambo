@@ -39,7 +39,7 @@ class PollSelectMenu extends SelectMenu {
 			} else if (type === "exclude") {
 				if (proposalDb.size - values.length < poll.numProposals) {
 					await interaction.reply({
-						content: `You can't exclude that many proposals. For the poll to have ${poll.numProposals} proposals there aren't enough other proposals to fill up the rest. Haven't excluded any proposals...`,
+						content: `You can't exclude ${values.length} proposals because then only ${proposalDb.size - values.length} proposals are left, which is less than the required amount of ${poll.numProposals}. So no proposals were used.`,
 						ephemeral: true,
 					});
 					return;
