@@ -35,7 +35,7 @@ function getOverviewEmbed(country: Country, locale: string): EmbedBuilder {
 					countryData.indexOf(country) + 1
 				}.)\n- Is ${!country.unMember ? "not" : ""} a member of the UN\n- Top Level Domain: ${inlineCode(
 					country.tld.join(" / ")
-				)}\n- Currencie(s): ${country.currencies.join(", ")}\n- Language(s): ${Object.values(
+				)}\n- Currenc${country.currencies.length > 1 : 'ies' : 'y'}: ${country.currencies.join(", ")}\n- Language(s): ${Object.values(
 					country.languages
 				).join(", ")}`,
 			},
