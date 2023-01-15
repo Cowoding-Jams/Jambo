@@ -123,7 +123,7 @@ export async function blacklistAdd(interaction: AutocompleteInteraction) {
 	let map = filterAndMapAutocompletion(interaction, games);
 	map = map.slice(0, 24);
 
-	map.push({ name: "[Disable tracking for all games]", value: blacklistCodes.disableTracking });
+	map.push({ name: "[Disable your tracking for all games]", value: blacklistCodes.disableTracking });
 
 	await interaction.respond(map);
 }
