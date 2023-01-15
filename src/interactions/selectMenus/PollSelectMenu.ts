@@ -17,7 +17,7 @@ class PollSelectMenu extends SelectMenu {
 		const poll = pollDb.get(pollKey);
 		if (!poll) {
 			await interaction.reply({ content: "Couldn't find the poll...", ephemeral: true });
-			logger.warn("Couldn't find a poll. Probably is an old prompt still open.");
+			logger.warn(`Couldn't find a poll using key "§{pollKey}"`);
 			return;
 		}
 
