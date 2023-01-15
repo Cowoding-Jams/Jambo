@@ -28,7 +28,7 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 
 	if (date > DateTime.now()) {
 		await interaction.reply({
-			content: `You can't set your birthday in the future!`,
+			content: `Either you are a crazy scientist and developed time travel, or you are trying to troll me... Anyways, because I'm not sure I wont add this to the database...`,
 			ephemeral: true,
 		});
 		return;
