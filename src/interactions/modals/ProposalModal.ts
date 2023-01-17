@@ -36,7 +36,7 @@ class ProposalModal extends Modal {
 		if (customId[0] == "add") {
 			if (proposalDb.find((p) => p.title === title)) {
 				await interaction.reply({
-					content: "A proposal with that title already exists... Try another one.",
+					content: `A proposal with the name "${title}" already exists... Try another one.`,
 					ephemeral: true,
 				});
 				return;
