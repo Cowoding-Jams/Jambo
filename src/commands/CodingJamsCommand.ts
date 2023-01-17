@@ -223,14 +223,14 @@ const pollNameStringOptionAutocomplete = new SlashCommandStringOption()
 
 const pollVotesIntegerOption = new SlashCommandIntegerOption()
 	.setName("num-votes")
-	.setDescription("Number of votes for every person. ('proposals' > 'votes')")
+	.setDescription("Number of proposals every person can vote for. ('proposals' > 'votes')")
 	.setRequired(true)
 	.setMinValue(2)
 	.setMaxValue(25);
 
 const pollProposalsIntegerOption = new SlashCommandIntegerOption()
 	.setName("num-proposals")
-	.setDescription("Number of proposals to vote. ('proposals' > 'votes')")
+	.setDescription("Number of proposals to vote for. ('proposals' > 'votes')")
 	.setRequired(true)
 	.setMinValue(2)
 	.setMaxValue(25);
