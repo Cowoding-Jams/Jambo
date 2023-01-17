@@ -6,7 +6,7 @@ import {
 	ButtonStyle,
 	ChatInputCommandInteraction,
 	EmbedBuilder,
-	SelectMenuBuilder,
+	StringSelectMenuBuilder,
 } from "discord.js";
 import { addEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
@@ -140,9 +140,9 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 			"Select the timezone you life in. That way we can schedule events at times that work for most of us :)"
 		);
 
-	const actionRow: ActionRowBuilder<SelectMenuBuilder> =
-		new ActionRowBuilder<SelectMenuBuilder>().setComponents(
-			new SelectMenuBuilder()
+	const actionRow: ActionRowBuilder<StringSelectMenuBuilder> =
+		new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
+			new StringSelectMenuBuilder()
 				.setCustomId("role.timezone")
 				.setPlaceholder("Select your timezone!")
 				.setMinValues(1)

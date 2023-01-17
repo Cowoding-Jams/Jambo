@@ -1,4 +1,4 @@
-import { ActionRowBuilder, EmbedBuilder, SelectMenuBuilder, TextChannel } from "discord.js";
+import { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder, TextChannel } from "discord.js";
 import { pollDb, pollEventsDb, proposalDb } from "../../db";
 import { config } from "../../config";
 import { addEmbedFooter } from "../misc/embeds";
@@ -52,8 +52,8 @@ export async function openEvent(channel: TextChannel, pollID: string) {
 
 	embed.addFields(...list.map((v, i) => ({ name: v, value: proposals[i]?.description || "" })));
 
-	const actionrow = new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-		new SelectMenuBuilder()
+	const actionrow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+		new StringSelectMenuBuilder()
 			.setCustomId(`poll.vote.${pollID}`)
 			.setPlaceholder("Vote!")
 			.setOptions(proposals.map((p, i) => ({ label: p.title, value: poll.proposals[i] })))

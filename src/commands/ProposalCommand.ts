@@ -10,7 +10,7 @@ import { listProposals, viewProposal } from "../util/proposal/listProposals";
 
 class ProposalCommand extends Command {
 	constructor() {
-		super("proposal");
+		super("proposals");
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -38,7 +38,7 @@ class ProposalCommand extends Command {
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
-			.setName("proposal")
+			.setName("proposals")
 			.setDescription("To manage all the proposals for upcoming jams.")
 			.addSubcommand((subcommand) => subcommand.setName("add").setDescription("Create a proposal."))
 			.addSubcommand((subcommand) =>

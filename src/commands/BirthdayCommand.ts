@@ -14,7 +14,7 @@ import { config } from "../config";
 
 class BirthdayCommand extends Command {
 	constructor() {
-		super("birthday");
+		super("birthdays");
 	}
 
 	startScheduler(client: Client) {
@@ -47,7 +47,7 @@ class BirthdayCommand extends Command {
 		| SlashCommandSubcommandsOnlyBuilder
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
-			.setName("birthday")
+			.setName("birthdays")
 			.setDescription("Set your birthday so others can see when they need to congratulate you!")
 			.addSubcommand((option) =>
 				option

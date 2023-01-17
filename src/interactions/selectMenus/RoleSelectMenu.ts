@@ -4,7 +4,7 @@ import { logger } from "../../logger";
 
 class RoleSelectMenu extends SelectMenu {
 	constructor() {
-		super("role");
+		super("roles");
 	}
 
 	async execute(interaction: SelectMenuInteraction, customID: string[]): Promise<void> {

@@ -10,7 +10,7 @@ import { deleteRoles } from "../util/role/roleUtil";
 
 class RoleCommand extends Command {
 	constructor() {
-		super("role");
+		super("roles");
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {

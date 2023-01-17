@@ -4,7 +4,7 @@ import { logger } from "../../logger";
 
 class RoleButton extends Button {
 	constructor() {
-		super("role");
+		super("roles");
 	}
 
 	async execute(interaction: ButtonInteraction, args: string[]): Promise<void> {
