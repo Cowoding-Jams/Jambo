@@ -76,14 +76,14 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 	const pollKey = pollDb.findKey((poll) => poll.title === name);
 
 	if (!pollKey) {
-		interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
+		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 
 	const poll = pollDb.get(pollKey)!;
 
 	if (poll.end < DateTime.now()) {
-		await interaction.reply({ content: "You can't extend polls that have already ended!", ephemeral: true });
+		await interaction.reply({ content: `"${name}" has already ended, so extending it doesnt make much sense`, ephemeral: true });
 		return;
 	}
 
@@ -120,7 +120,7 @@ export async function viewPoll(interaction: CommandInteraction, name: string) {
 	const pollKey = pollDb.findKey((poll) => poll.title === name);
 
 	if (!pollKey) {
-		await interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
+		await interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 
@@ -133,7 +133,7 @@ export async function deletePoll(interaction: CommandInteraction, name: string) 
 	const pollKey = pollDb.findKey((poll) => poll.title === name);
 
 	if (!pollKey) {
-		interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
+		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 
@@ -152,13 +152,13 @@ export async function votesPoll(interaction: CommandInteraction, name: string) {
 	const pollKey = pollDb.findKey((poll) => poll.title === name);
 
 	if (!pollKey) {
-		interaction.reply({ content: "There is no poll with that name...", ephemeral: true });
+		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 	const poll = pollDb.get(pollKey)!;
 
 	if (poll.start > DateTime.now()) {
-		await interaction.reply({ content: "Voting hasn't started yet...", ephemeral: true });
+		await interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 
