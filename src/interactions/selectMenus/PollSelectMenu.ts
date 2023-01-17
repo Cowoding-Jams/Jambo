@@ -29,8 +29,9 @@ class PollSelectMenu extends SelectMenu {
 			if (type === "include") {
 				if (values.length > poll.numProposals) {
 					await interaction.reply({
-						content:
-							"You can't include more proposals than the number of proposals this poll has. Haven't included any proposals...",
+						content: `You can't include ${values.length} proposals because the required amount of proposals is ${
+							poll.numProposals
+						}. So no proposals were used.`,
 						ephemeral: true,
 					});
 					return;
@@ -43,7 +44,7 @@ class PollSelectMenu extends SelectMenu {
 							proposalDb.size - values.length
 						} proposals are left, which is less than the required amount of ${
 							poll.numProposals
-						}. So no proposals were used.`,
+						} proposals. So no proposals were used.`,
 						ephemeral: true,
 					});
 					return;
