@@ -102,7 +102,7 @@ export async function editProposal(interaction: ChatInputCommandInteraction): Pr
 
 	const proposal = proposalDb.get(key)!;
 	if (proposal.owner !== interaction.user.id && !(await hasAdminRole(interaction))) {
-		await interaction.reply({ content: "Thats not your proposal! To bad you can only delete your own :p", ephemeral: true });
+		await interaction.reply({ content: "Thats not your proposal! To bad you can only edit your own :p", ephemeral: true });
 		return;
 	}
 
