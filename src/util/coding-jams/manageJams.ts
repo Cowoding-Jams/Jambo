@@ -59,7 +59,7 @@ export async function newJam(
 export async function editJam(interaction: CommandInteraction, name: string, end: DateTime) {
 	const jamKey = jamDb.findKey((j) => j.title === name);
 	if (!jamKey) {
-		interaction.reply({ content: "There is no jam with that name...", ephemeral: true });
+		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 	const jam = jamDb.get(jamKey)!;
@@ -89,7 +89,7 @@ export async function editJam(interaction: CommandInteraction, name: string, end
 export async function viewJam(interaction: CommandInteraction, name: string) {
 	const jamKey = jamDb.findKey((j) => j.title === name);
 	if (!jamKey) {
-		interaction.reply({ content: "There is no jam with that name...", ephemeral: true });
+		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 
@@ -100,7 +100,7 @@ export async function viewJam(interaction: CommandInteraction, name: string) {
 export async function deleteJam(interaction: CommandInteraction, name: string) {
 	const jamKey = jamDb.findKey((j) => j.title === name);
 	if (!jamKey) {
-		interaction.reply({ content: "There is no jam with that name...", ephemeral: true });
+		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
 
