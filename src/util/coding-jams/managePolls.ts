@@ -158,7 +158,7 @@ export async function votesPoll(interaction: CommandInteraction, name: string) {
 	const poll = pollDb.get(pollKey)!;
 
 	if (poll.start > DateTime.now()) {
-		await interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
+		await interaction.reply({ content: `Voting hasn't started yet...`, ephemeral: true });
 		return;
 	}
 
