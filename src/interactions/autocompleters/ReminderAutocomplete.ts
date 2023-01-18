@@ -7,7 +7,7 @@ import { getUsernameOrRolename } from "../../util/misc/user";
 
 class ReminderAutocompleter extends Autocompleter {
 	constructor() {
-		super("reminders");
+		super("reminder");
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {

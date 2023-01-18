@@ -29,9 +29,7 @@ class PollSelectMenu extends SelectMenu {
 			if (type === "include") {
 				if (values.length > poll.numProposals) {
 					await interaction.reply({
-						content: `You can't include ${values.length} proposals because the required amount of proposals is ${
-							poll.numProposals
-						}. So no proposals were used.`,
+						content: `You can't include ${values.length} proposals because the required amount of proposals is ${poll.numProposals}. So no proposals were used.`,
 						ephemeral: true,
 					});
 					return;

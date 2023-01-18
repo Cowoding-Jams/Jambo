@@ -4,7 +4,7 @@ import { listProposals } from "../../util/proposal/listProposals";
 
 class ProposalButton extends Button {
 	constructor() {
-		super("proposals");
+		super("proposal");
 	}
 
 	async execute(interaction: ButtonInteraction, args: string[]): Promise<void> {

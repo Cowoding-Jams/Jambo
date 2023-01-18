@@ -10,7 +10,7 @@ class LatexButton extends Button {
 	async execute(interaction: ButtonInteraction, args: string[]): Promise<void> {
 		const id = args[0];
 
-		let input = await latexDb.get(interaction.message.id);
+		let input = latexDb.get(interaction.message.id);
 		latexDb.delete(interaction.message.id);
 
 		input = input ? inlineCode(input) : "- No data availabe... -";

@@ -14,7 +14,7 @@ import cron from "node-cron";
 
 class ReminderCommand extends Command {
 	constructor() {
-		super("reminders");
+		super("reminder");
 	}
 
 	startScheduler(client: Client) {
@@ -37,7 +37,7 @@ class ReminderCommand extends Command {
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
-			.setName("reminders")
+			.setName("reminder")
 			.setDescription("Reminds you after a certain amount of time has passed. (default: 30 minutes)")
 			.addSubcommand((option) =>
 				option

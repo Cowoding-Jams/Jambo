@@ -5,7 +5,7 @@ import { hasModeratorRole } from "../../util/misc/permissions";
 
 class ProposalAutocompleter extends Autocompleter {
 	constructor() {
-		super("proposals");
+		super("proposal");
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {

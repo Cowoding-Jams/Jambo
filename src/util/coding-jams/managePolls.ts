@@ -83,7 +83,10 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 	const poll = pollDb.get(pollKey)!;
 
 	if (poll.end < DateTime.now()) {
-		await interaction.reply({ content: `"${name}" has already ended, so extending it doesnt make much sense`, ephemeral: true });
+		await interaction.reply({
+			content: `"${name}" has already ended, so extending it doesnt make much sense`,
+			ephemeral: true,
+		});
 		return;
 	}
 
