@@ -1,6 +1,7 @@
 import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactionClasses";
 import { logger } from "../logger";
 import { Client, Collection } from "discord.js";
+import { config } from "../config";
 import fs from "fs";
 
 export async function loadEvents(client: Client) {
@@ -29,7 +30,10 @@ export async function loadCommands(): Promise<Collection<string, Command>> {
 			.filter(isActive)
 			.map(async (filename) => {
 				const _command = (await import(`../commands/${filename}`)).default as Command;
-				loadedCommands.set(_command.name, _command);
+				if (config.logActivity || _command.name !== "activity-tracker") {
+					// When logActivity from the config is false every command except the activity-tracker should be loaded. If not this will always be true and all the commands will be loaded.
+					loadedCommands.set(_command.name, _command);
+				}
 			})
 	);
 	return loadedCommands;

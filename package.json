@@ -17,41 +17,42 @@
 		"url": "git+https://github.com/Cowoding-Jams/Jambo.git"
 	},
 	"contributors": [
-		"Commentator2.0 aka Leonie <kommentator2.9.0.1@gmail.com>",
-		"Lucy <lucy@blackdemon.codes>",
-		"Antti <antti@antti.codes>",
-		"WilsontheWolf (https://wilson.antti.codes)",
+		"Leonie - KommentatorForAll",
+		"Lucy - BlackDemonFire",
+		"Antti - Chicken",
+		"WilsonTheWolf (https://shorty.systems/)",
 		"Murph - StrangeGirlMurph",
 		"Amber - UselessAmber",
 		"Floschy - flloschy",
 		"Riley - Exonorid",
-		"Crispr - CrispiCas",
 		"Kryal - Da-Real-Kryall",
 		"Ian - IanToujou"
 	],
-	"license": "MIT",
+	"license": "SEE LICENSE IN LICENSE",
 	"bugs": {
 		"url": "https://github.com/Cowoding-Jams/Jambo/issues"
 	},
-	"homepage": "https://github.com/Cowoding-Jams/Jambo#readme",
+	"homepage": "https://github.com/Cowoding-Jams/Jambo",
 	"devDependencies": {
-		"@types/node-cron": "^3.0.4",
-		"@typescript-eslint/eslint-plugin": "^5.15.0",
-		"@typescript-eslint/parser": "^5.15.0",
-		"discord-api-types": "^0.37.14",
-		"eslint": "^8.11.0",
-		"eslint-config-prettier": "^8.5.0",
-		"husky": "^8.0.1",
-		"prettier": "^2.6.0",
-		"typescript": "^4.6.2"
+		"@types/luxon": "^3.2.0",
+		"@types/node-cron": "^3.0.7",
+		"@typescript-eslint/eslint-plugin": "^5.48.1",
+		"@typescript-eslint/parser": "^5.48.1",
+		"discord-api-types": "^0.37.28",
+		"eslint": "^8.32.0",
+		"eslint-config-prettier": "^8.6.0",
+		"husky": "^8.0.3",
+		"prettier": "^2.8.3",
+		"typescript": "^4.9.4"
 	},
 	"dependencies": {
-		"@napi-rs/canvas": "^0.1.30",
-		"discord.js": "^14.5.0",
-		"dotenv": "^16.0.0",
-		"enmap": "^5.9.0",
+		"@napi-rs/canvas": "^0.1.34",
+		"discord.js": "^14.7.1",
+		"dotenv": "^16.0.3",
+		"enmap": "github:Cowoding-Jams/enmap",
+		"luxon": "^3.2.1",
 		"node-cron": "^3.0.2",
-		"node-fetch": "^3.2.3",
-		"winston": "^3.6.0"
+		"node-fetch": "^3.3.0",
+		"winston": "^3.8.2"
 	}
 }

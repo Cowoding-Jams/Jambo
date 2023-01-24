@@ -6,25 +6,11 @@ import {
 } from "discord.js";
 import cron from "node-cron";
 import { Command } from "../interactions/interactionClasses";
-import { setCommand } from "../util/birthdayCommand/setCommand";
-import { myCommand } from "../util/birthdayCommand/myCommand";
+import { myBirthday, setBirthday } from "../util/birthdayCommand/manageBirthday";
 import { upcomingCommand } from "../util/birthdayCommand/upcomingCommand";
 import { birthdayMessageTick } from "../util/birthdayCommand/loop";
-
-const months = [
-	{ name: "January", value: "1" },
-	{ name: "Febuary", value: "2" },
-	{ name: "March", value: "3" },
-	{ name: "April", value: "4" },
-	{ name: "May", value: "5" },
-	{ name: "June", value: "6" },
-	{ name: "July", value: "7" },
-	{ name: "August", value: "8" },
-	{ name: "September", value: "9" },
-	{ name: "October", value: "10" },
-	{ name: "November", value: "11" },
-	{ name: "December", value: "12" },
-];
+import { birthdayDb } from "../db";
+import { config } from "../config";
 
 class BirthdayCommand extends Command {
 	constructor() {
@@ -32,17 +18,25 @@ class BirthdayCommand extends Command {
 	}
 
 	startScheduler(client: Client) {
+		// Update all birthdays to the correct time
+		for (const key of birthdayDb.keys()) {
+			const date = birthdayDb.get(key)!;
+			birthdayDb.set(
+				key,
+				date.set({ hour: config.birthdayNotificationAt, minute: 0, second: 0, millisecond: 0 })
+			);
+		}
+
 		cron.schedule("0 * * * *", birthdayMessageTick.bind(this, client));
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		await interaction.deferReply();
 		const sub = interaction.options.getSubcommand();
 
 		if (sub == "set") {
-			await setCommand(interaction);
+			await setBirthday(interaction);
 		} else if (sub == "my") {
-			await myCommand(interaction);
+			await myBirthday(interaction);
 		} else if (sub == "upcoming") {
 			await upcomingCommand(interaction);
 		}
@@ -58,20 +52,21 @@ class BirthdayCommand extends Command {
 			.addSubcommand((option) =>
 				option
 					.setName("set")
-					.setDescription("Set the date of your birthday.")
-					.addIntegerOption((opt) =>
-						opt.setName("day").setDescription("The day of your birthday.").setMinValue(1).setMaxValue(31)
+					.setDescription(
+						"Set the date of your birthday. Make sure you have selected the correct timezone role!"
 					)
 					.addStringOption((opt) =>
 						opt
-							.setName("month")
-							.setDescription("The month of your birthday.")
-							.setChoices(...months)
+							.setName("date")
+							.setDescription(
+								"The date of in the ISO format (e.g. '2003-05-26' year-month-day). The year '0000' ignores your age."
+							)
+							.setRequired(true)
 					)
 					.addBooleanOption((opt) => opt.setName("delete").setDescription("Delete your birthday entry."))
 			)
 			.addSubcommand((option) =>
-				option.setName("my").setDescription("Show what date is stored for your birthday")
+				option.setName("my").setDescription("Show what date is stored for your birthday.")
 			)
 			.addSubcommand((option) =>
 				option.setName("upcoming").setDescription("Lists the upcoming birthdays in the next 30 days.")

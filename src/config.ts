@@ -1,10 +1,29 @@
-import { ColorResolvable, ComponentEmojiResolvable, PermissionsBitField } from "discord.js";
+import { ColorResolvable, ComponentEmojiResolvable } from "discord.js";
 
 // Configure your bot here.
 export const config: BotConfig = {
+	// --- General ---
 	botName: "Jambo",
 	iconURL: "https://raw.githubusercontent.com/Cowoding-Jams/Jambo/main/images/Robot-lowres.png",
 	githubURL: "https://github.com/Cowoding-Jams/Jambo",
+	serverDescription:
+		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
+	color: "#F0A5AC",
+
+	// --- Development ---
+	logLevel: "debug",
+
+	// --- Management ---
+	adminRoleId: "855348792025939988", // cowoding-jams/roles: admin
+	moderatorRoleId: "855349314807922698", // cowoding-jams/roles: moderator
+
+	// --- Polls & Coding Jams ---
+	jamRoleName: "jammin",
+	pollChannelId: "1063379924267847761", // cowoding-jams/channels: coding-jams
+	jamChannelId: "1063379924267847761", // cowoding-jams/channels: coding-jams
+	resultCategoryId: "855356830724259871", // cowoding-jams/categories: Working Area
+
+	// --- Roles ---
 	pronounRoles: [
 		["she/her", "541000113410015245"],
 		["he/him", "590631286666952704"],
@@ -29,65 +48,82 @@ export const config: BotConfig = {
 		["Medium Aquamarine", "#6cd9a9"],
 		["Sea Serpent", "#5db9cf"],
 	],
-	timezoneRoles: [
-		"UTC-12",
-		"UTC-11",
-		"UTC-10",
-		"UTC-9",
-		"UTC-8",
-		"UTC-7",
-		"UTC-6",
-		"UTC-5",
-		"UTC-4",
-		"UTC-3",
-		"UTC-2",
-		"UTC-1",
-		"UTC",
-		"UTC+1",
-		"UTC+2",
-		"UTC+3",
-		"UTC+4",
-		"UTC+5",
-		"UTC+6",
-		"UTC+7",
-		"UTC+8",
-		"UTC+9",
-		"UTC+10",
-		"UTC+11",
-		"UTC+12",
-	],
-	color: "#F0A5AC",
-	serverDescription:
-		"We're a group of young and mostly queer people having a game jam/hackathon server together. We're a very friendly and welcoming community and are happy to have you join us! \nCheck out <#1022874504525008997> for more information!",
-	logLevel: "debug",
+
+	// --- Activity Tracker ---
 	logActivity: true,
-	activityTrackerAdminCommandPermission: PermissionsBitField.Flags.Administrator,
-	birthdayNotificationAt: 7,
+
+	// --- Birthday feature ---
+	birthdayNotificationAt: 9,
 };
 
 interface BotConfig {
+	// --- General ---
 	/** Name of the bot. */
 	botName: string;
 	/** URL to a png or jpg of the logo of the bot. */
 	iconURL: string;
 	/** URL to the github repository of the bot. Please share your code! */
 	githubURL: string;
-	/** Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id. */
+	/** A description of the server that will be displayed in the welcome message. */
+	serverDescription: string;
+	/** The main color the bot will use. */
+	color: ColorResolvable;
+
+	// --- Development ---
+	/** Also available: error, warn, info, http, verbose, debug, silly. */
+	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
+
+	// --- Management ---
+	/** Moderators of the server (to manage proposals) */
+	moderatorRoleId: string;
+	/** Admins of the server (to manage the game activity tracker) */
+	adminRoleId: string;
+
+	// --- Polls & Coding Jams ---
+	/** Active Jam participants role name (will be pinged for announcements) */
+	jamRoleName: string;
+	/** The text channel where the poll system will post polls. */
+	pollChannelId: string;
+	/** The text channel where the jam system will post announcements to jams. */
+	jamChannelId: string;
+	/** The category where the jam system will create channels for jams. */
+	resultCategoryId: string;
+
+	// --- Roles ---
+	/** Pronoun roles to pick from. First argument is the name of the role, second argument is the emoji id (You get the id by typing "\\[insert emoji]" in Discord). */
 	pronounRoles: [string, ComponentEmojiResolvable | null][];
 	/** Max 25 color roles to pick from. First argument is the name of the role, second argument is the color. */
 	colorRoles: [string, ColorResolvable][];
-	/** Timezones users can pick from. */
-	timezoneRoles: string[];
-	/** The main color the bot will use. */
-	color: ColorResolvable;
-	/** A description of the server that will be displayed in the welcome message. */
-	serverDescription: string;
-	/** Also available: error, warn, info, http, verbose, debug, silly. */
-	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
+
+	// --- Activity Tracker ---
 	/** If User Game Activity should get logged */
 	logActivity: boolean;
-	/** Which permissions are needed to use the game-activity-tracker admin commands */
-	activityTrackerAdminCommandPermission: bigint;
-	/** Can be any Integer between 0 and 23 to define (timezone) relative time of when a Birthday message should get send */
-	birthdayNotificationAt: number;
+
+	// --- Birthday Feature ---
+	/** Can be any integer between 0 and 23. Defines at what time the birthday message should get send. */
+	birthdayNotificationAt:
+		| 0
+		| 1
+		| 2
+		| 3
+		| 4
+		| 5
+		| 6
+		| 7
+		| 8
+		| 9
+		| 10
+		| 11
+		| 12
+		| 13
+		| 14
+		| 15
+		| 16
+		| 17
+		| 18
+		| 19
+		| 20
+		| 21
+		| 22
+		| 23;
 }

@@ -1,22 +1,65 @@
-export function msToReadable(milliseconds: number, short = false): string {
-	milliseconds /= 1000 * 60; // relative time in minutes
-	const _months = Math.floor(milliseconds / (60 * 24 * 30));
-	milliseconds = milliseconds % (60 * 24 * 30);
-	const _days = Math.floor(milliseconds / (60 * 24));
-	milliseconds = milliseconds % (60 * 24);
-	const _hours = Math.floor(milliseconds / 60);
-	milliseconds = milliseconds % 60;
-	const _minutes = Math.floor(milliseconds);
-	milliseconds = milliseconds % 1;
-	const _seconds = Math.floor(milliseconds * 60);
+import { ChatInputCommandInteraction, CommandInteraction, ModalSubmitInteraction } from "discord.js";
+import { DateTime, Duration } from "luxon";
 
+export function discordTimestamp(datetime: DateTime | number): string {
+	return `<t:${datetime instanceof DateTime ? Math.floor(datetime.toSeconds()) : datetime}>`;
+}
+
+export function discordRelativeTimestamp(datetime: DateTime | number): string {
+	return `<t:${datetime instanceof DateTime ? Math.floor(datetime.toSeconds()) : datetime}:R>`;
+}
+
+export function durationToReadable(duration: Duration, short = false): string {
 	if (short) {
-		return `${_months == 0 ? "" : `${_months}mon`}${_days == 0 ? "" : ` ${_days}d`}${
-			_hours == 0 ? "" : ` ${_hours}h`
-		}${_minutes == 0 ? "" : ` ${_minutes}m`}${_seconds == 0 ? "" : ` ${_seconds}s`}`;
+		return duration.normalize().rescale().toHuman({ listStyle: "short", unitDisplay: "narrow" });
 	} else {
-		return `${_months == 0 ? "" : `${_months} months`}${_days == 0 ? "" : ` ${_days} days`}${
-			_hours == 0 ? "" : ` ${_hours} hours`
-		}${_minutes == 0 ? "" : ` ${_minutes} minutes`}${_seconds == 0 ? "" : ` ${_seconds} seconds`}`;
+		return duration.normalize().rescale().toHuman({ listStyle: "long", unitDisplay: "long" });
+	}
+}
+
+export const longDateFormatWithTimezone = "dd MMMM yyyy 'UTC'Z";
+export const longDateTimeFormat = "dd.MM.yyyy HH:mm:ss 'UTC'Z";
+export const shortDateTimeFormat = "dd.MM.yyyy HH:mm 'UTC'Z";
+export const longTimeFormat = "HH:mm:ss 'UTC'Z";
+export const shortTimeFormat = "HH:mm 'UTC'Z";
+
+export async function checkDate(
+	interaction: CommandInteraction,
+	date: string | null,
+	futherMessage = ""
+): Promise<DateTime | null> {
+	const iso = date ? DateTime.fromISO(date.toUpperCase(), { setZone: true }) : null;
+	if (!iso || !iso.isValid) {
+		const separator = futherMessage ? "\n\n" : "";
+		if (date !== "" && date !== null) {
+			await interaction.reply({
+				content: `Invalid date format... Please use ISO 8601 (e.g. '2003-05-26T04:48:33+02:00').\n<https://en.wikipedia.org/wiki/ISO_8601>${separator}${futherMessage}`,
+				ephemeral: true,
+			});
+		}
+
+		return null;
+	} else {
+		return iso;
+	}
+}
+
+export async function checkDuration(
+	interaction: ChatInputCommandInteraction | ModalSubmitInteraction,
+	duration: string | null,
+	futherMessage = ""
+): Promise<Duration | null> {
+	const iso = duration ? Duration.fromISO(duration.toUpperCase()) : null;
+	if (!iso || !iso.isValid) {
+		const separator = futherMessage ? "\n\n" : "";
+		if (duration !== "" && duration !== null) {
+			await interaction.reply({
+				content: `Invalid duration format... Please use ISO 8601 (e.g. P2D2H).\n<https://en.wikipedia.org/wiki/ISO_8601#Durations>${separator}${futherMessage}`,
+				ephemeral: true,
+			});
+		}
+		return null;
+	} else {
+		return iso;
 	}
 }

@@ -16,7 +16,7 @@ export default async function interactionCreate(interaction: Interaction) {
 			await handleButtonInteractions(interaction);
 		} else if (interaction.isAutocomplete()) {
 			await handleAutocompleteInteraction(interaction);
-		} else if (interaction.isSelectMenu()) {
+		} else if (interaction.isStringSelectMenu()) {
 			await handleSelectMenuInteractions(interaction);
 		} else if (interaction.isModalSubmit()) {
 			await handleModalInteractions(interaction);

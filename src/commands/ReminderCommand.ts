@@ -8,8 +8,8 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { reminderDelete, reminderList, reminderSet } from "../util/reminderCommand/reminderSubcommands";
-import { schedulerTick } from "../util/reminderCommand/reminderUtil";
+import { reminderDelete, reminderList, reminderSet } from "../util/reminder/reminderSubcommands";
+import { schedulerTick as reminderSchedulerTick } from "../util/reminder/reminderUtil";
 import cron from "node-cron";
 
 class ReminderCommand extends Command {
@@ -18,49 +18,36 @@ class ReminderCommand extends Command {
 	}
 
 	startScheduler(client: Client) {
-		schedulerTick(client);
-		cron.schedule("*/30 * * * *", schedulerTick.bind(this, client));
+		reminderSchedulerTick(client);
+		// every 30 minutes
+		cron.schedule("*/30 * * * *", reminderSchedulerTick.bind(this, client));
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		const subcommand = interaction.options.getSubcommand();
 
-		if (!interaction.guild) {
-			await interaction.reply("This command can only be used inside a guild.");
-			return;
-		}
+		const commands: { [key: string]: (interaction: ChatInputCommandInteraction) => Promise<void> } = {
+			set: reminderSet,
+			delete: reminderDelete,
+			list: reminderList,
+		};
 
-		switch (subcommand) {
-			case "set": {
-				reminderSet(interaction);
-				break;
-			}
-			case "delete": {
-				reminderDelete(interaction);
-				break;
-			}
-			case "list": {
-				reminderList(interaction);
-				break;
-			}
-		}
+		await commands[subcommand](interaction);
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("reminder")
-			.setDescription("Reminds you after a certain amount of time has passed. (default: 20 minutes)")
+			.setDescription("Reminds you after a certain amount of time has passed. (default: 30 minutes)")
 			.addSubcommand((option) =>
 				option
 					.setName("set")
 					.setDescription("Set a new reminder.")
 					.addStringOption(message)
-					.addStringOption(setDateIso)
-					.addIntegerOption(setMonths)
-					.addIntegerOption(setDays)
-					.addIntegerOption(setHours)
 					.addIntegerOption(setMinutes)
-					.addStringOption(setDateUnix)
+					.addIntegerOption(setHours)
+					.addStringOption(setDateIso)
+					.addStringOption(setDurationIso)
 					.addMentionableOption(additionalPing)
 			)
 			.addSubcommand((option) =>
@@ -83,43 +70,29 @@ class ReminderCommand extends Command {
 
 const setMinutes = new SlashCommandIntegerOption()
 	.setName("minutes")
-	.setDescription("Set the minutes. (60 seconds)")
+	.setDescription("Set the minutes.")
 	.setMinValue(0)
 	.setMaxValue(1440)
 	.setRequired(false);
 
 const setHours = new SlashCommandIntegerOption()
 	.setName("hours")
-	.setDescription("Set the hours. (60 minutes)")
+	.setDescription("Set the hours.")
 	.setMinValue(0)
 	.setMaxValue(720)
 	.setRequired(false);
 
-const setDays = new SlashCommandIntegerOption()
-	.setName("days")
-	.setDescription("Set the days. (24 hours)")
-	.setMinValue(0)
-	.setMaxValue(365)
-	.setRequired(false);
-
-const setMonths = new SlashCommandIntegerOption()
-	.setName("months")
-	.setDescription("Set the months. (30 days)")
-	.setMinValue(0)
-	.setMaxValue(24)
-	.setRequired(false);
-
 const setDateIso = new SlashCommandStringOption()
 	.setName("date-iso")
-	.setDescription(
-		"The date in ISO-8601. (e.g. '2003-05-26T04:48:33+02:00' or try '26 May 2003 04:48:33 UTC+2')"
-	)
-	.setRequired(false);
+	.setDescription("The date in ISO-8601. (e.g. '2003-05-26T04:48:33+02:00', '2003-05-26T04' or '04:48:33')")
+	.setRequired(false)
+	.setAutocomplete(true);
 
-const setDateUnix = new SlashCommandStringOption()
-	.setName("date-unix")
-	.setDescription("The date with a unix timestamp. (e.g. '1053917313000')")
-	.setRequired(false);
+const setDurationIso = new SlashCommandStringOption()
+	.setName("duration-iso")
+	.setDescription("The duration in ISO-8601. (e.g. 'P2DT3H20M')")
+	.setRequired(false)
+	.setAutocomplete(true);
 
 const additionalPing = new SlashCommandMentionableOption()
 	.setName("additional-ping")

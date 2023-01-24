@@ -8,11 +8,11 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { unknownSubcommandEdit } from "../util/misc/unknownSubcommand";
-import { latexEquation, latexMixed } from "../util/latexCommand/latexRendering";
+import { unknownSubcommandEdit } from "../util/misc/commands";
+import { latexEquation, latexMixed } from "../util/latex/latexRendering";
 import { latexDb } from "../db";
 
-class Latex extends Command {
+class LatexCommand extends Command {
 	constructor() {
 		super("latex");
 	}
@@ -103,4 +103,4 @@ const transparencyOption = new SlashCommandBooleanOption()
 	.setDescription("Whether or not the image is a png with no background or a jpg with a white background.")
 	.setRequired(false);
 
-export default new Latex();
+export default new LatexCommand();

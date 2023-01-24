@@ -11,6 +11,7 @@ import { Client } from "discord.js";
 import { ctx } from "./ctx";
 import { logger } from "./logger";
 import { config } from "./config";
+import { Settings } from "luxon";
 
 logger.debug("Creating client...");
 const client = new Client({
@@ -32,6 +33,8 @@ process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 process.on("uncaughtException", shutdown);
 
+Settings.defaultZone = "utc";
+
 logger.debug("Loading context...");
 ctx.update(
 	await loadCommands(),
@@ -40,7 +43,8 @@ ctx.update(
 	await loadModals(),
 	await loadAutocompleters()
 );
+
 await loadEvents(client);
-logger.debug("Attempting login");
+logger.debug("Attempting login.");
 await client.login(process.env.TOKEN);
-logger.info("Successfully started Application");
+logger.info("Successfully started application.");

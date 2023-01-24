@@ -1,14 +1,18 @@
 import { EmbedBuilder } from "discord.js";
 import { config } from "../../config";
 
-export function addDefaultEmbedFooter(embed: EmbedBuilder): EmbedBuilder {
-	return embed
-		.setAuthor({
-			name: `Made by me, ${config.botName} :)`,
-			iconURL: config.iconURL,
-			url: config.githubURL,
-		})
-		.setColor(config.color);
+export function addEmbedFooter(embed: EmbedBuilder, timestamp = false): EmbedBuilder {
+	embed = embed.setColor(config.color).setAuthor({
+		name: `Made by me, ${config.botName} :)`,
+		iconURL: config.iconURL,
+		url: config.githubURL,
+	});
+	return timestamp ? embed.setTimestamp() : embed;
+}
+
+export function addEmbedColor(embed: EmbedBuilder, timestamp = false): EmbedBuilder {
+	embed = embed.setColor(config.color);
+	return timestamp ? embed.setTimestamp() : embed;
 }
 
 export function countEmbedCharacters(embed: EmbedBuilder): number {

@@ -3,10 +3,12 @@ import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 	GuildMember,
+	roleMention,
 	SlashCommandBuilder,
 	User,
 } from "discord.js";
-import { addDefaultEmbedFooter } from "../util/misc/embeds";
+import { addEmbedFooter } from "../util/misc/embeds";
+import { discordRelativeTimestamp, discordTimestamp } from "../util/misc/time";
 
 class UserInfoCommand extends Command {
 	constructor() {
@@ -22,7 +24,7 @@ class UserInfoCommand extends Command {
 		await interaction.reply({ embeds: [getUserEmbed(user, member)] });
 	}
 
-	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
 			.setName("user-info")
 			.setDescription("Get information about a user")
@@ -37,6 +39,19 @@ const toUnix = (timestamp: number | Date) => {
 	return Math.floor(timestamp / 1000);
 };
 
+const badges = {
+	BotHTTPInteractions: "HTTP Bot",
+	BugHunterLevel1: "Bug Hunter",
+	BugHunterLevel2: "Bug Hunter",
+	CertifiedModerator: "Moderator Programs Alumni",
+	HypeSquadOnlineHouse1: "HypeSquad Bravery",
+	HypeSquadOnlineHouse2: "HypeSquad Brilliance",
+	HypeSquadOnlineHouse3: "HypeSquad Balance",
+	Hypesquad: "HypeSquad Events",
+	Partner: "Partnered Server Owner",
+	PremiumEarlySupporter: "Early Supporter",
+};
+
 function getUserEmbed(user: User, member: GuildMember | null | undefined): EmbedBuilder {
 	const embed = new EmbedBuilder()
 		.setTitle(
@@ -47,45 +62,47 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 		.setThumbnail(user.displayAvatarURL({ size: 1024 }))
 		.setDescription(user.toString());
 
-	embed.addFields({ name: "User Id", value: user.id, inline: true });
-
-	if (user.flags?.toArray().length) {
-		embed.addFields({
-			name: "Discord Badges",
-			value: user.flags
-				.toArray()
-				.map((v) => v.toLowerCase().replace(/_/g, " "))
-				.join(", ")
-				.replace(/\b(.)/g, (c) => c.toUpperCase()),
-		});
-	}
+	embed.addFields({ name: "User Id", value: user.id });
 
 	embed.addFields({
 		name: "Account created",
-		value: `<t:${toUnix(user.createdTimestamp)}> ⁘ <t:${toUnix(user.createdTimestamp)}:R>`,
+		value: discordRelativeTimestamp(toUnix(user.createdTimestamp)),
+		inline: true,
 	});
 
 	if (member) {
 		let roles = "";
 		member.roles.cache.forEach((role) => {
 			if (role.id === role.guild.id) return;
-			roles += `<@&${role.id}> `;
+			roles += roleMention(role.id) + " ";
 		});
-
-		const boosting = member.premiumSince
-			? `Since <t:${toUnix(member.premiumSince)}> ⁘ <t:${toUnix(member.premiumSince)}:R> :)`
-			: "Not boosting :(";
 
 		if (member.joinedTimestamp)
 			embed.addFields({
 				name: "Joined server",
-				value: `<t:${toUnix(member.joinedTimestamp)}> ⁘ <t:${toUnix(member.joinedTimestamp)}:R>`,
+				value: discordRelativeTimestamp(toUnix(member.joinedTimestamp)),
 				inline: true,
 			});
 
-		embed.addFields({ name: "Boosting", value: boosting, inline: true }, { name: "Roles", value: roles });
+		const boosting = member.premiumSince
+			? `Since ${discordTimestamp(toUnix(member.premiumSince))} <3`
+			: "Not boosting (*yet*) :(";
+
+		if (!user.bot) embed.addFields({ name: "Boosting", value: boosting, inline: true });
+
+		if (user.flags?.toArray().length) {
+			embed.addFields({
+				name: "Discord Badges",
+				value: user.flags
+					.toArray()
+					.map((v) => badges[v as keyof typeof badges] || v.replace(/[A-Z0-9]/g, " $&").trim())
+					.join(", "),
+			});
+		}
+
+		embed.addFields({ name: "Roles", value: roles });
 	}
-	return addDefaultEmbedFooter(embed);
+	return addEmbedFooter(embed);
 }
 
 export default new UserInfoCommand();

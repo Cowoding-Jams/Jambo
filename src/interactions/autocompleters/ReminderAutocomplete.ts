@@ -1,7 +1,9 @@
 import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import { reminderDb } from "../../db";
-import { msToReadable } from "../../util/misc/time";
+import { autocompleteISODuration, autocompleteISOTime } from "../../util/misc/autocomplete";
+import { shortDateTimeFormat } from "../../util/misc/time";
+import { getUsernameOrRolename } from "../../util/misc/user";
 
 class ReminderAutocompleter extends Autocompleter {
 	constructor() {
@@ -9,33 +11,43 @@ class ReminderAutocompleter extends Autocompleter {
 	}
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
-		const options: { name: string; value: number }[] = [];
+		const subCmd = interaction.options.getSubcommand();
 
-		for (const [key, value] of reminderDb) {
-			if (value.pings[0] === interaction.user.toString()) {
-				const id = value.pings[1].replace(/\D/g, "");
-				const role = await interaction.guild?.roles.fetch(id);
-				const member = await interaction.guild?.members.fetch(id).catch(() => null);
-				let name = `ID: ${key} - ${msToReadable(value.timestamp, true)} ${
-					role || member ? `- @${role ? role.name : member?.displayName} -` : "-"
-				} ${value.message == "" ? "No message." : `${value.message}`}`;
-
-				if (name.length > 100) {
-					name = name.slice(0, 97) + "...";
-				}
-
-				options.push({
-					name: name,
-					value: parseInt(key.toString()),
-				});
+		if (subCmd === "set") {
+			const focus = interaction.options.getFocused(true);
+			if (focus.name === "date-iso") {
+				await autocompleteISOTime(interaction);
+			} else {
+				await autocompleteISODuration(interaction);
 			}
-		}
+		} else if (subCmd === "delete") {
+			const options: { name: string; value: number }[] = [];
 
-		await interaction.respond(
-			options
-				.filter((c) => c.value.toString().startsWith(interaction.options.getFocused() as string))
-				.slice(0, 25)
-		);
+			for (const [key, value] of reminderDb) {
+				if (value.user === interaction.user.id) {
+					const ping = value.ping ? await getUsernameOrRolename(value.ping, interaction.guild!) : null;
+
+					let name = `ID: ${key} ⁘ ${value.timestamp.toFormat(shortDateTimeFormat)} ${
+						ping ? `⁘ ${ping} ⁘` : "⁘"
+					} ${value.message == "" ? "No message." : `${value.message}`}`;
+
+					if (name.length > 100) {
+						name = name.slice(0, 97) + "...";
+					}
+
+					options.push({
+						name: name,
+						value: parseInt(key),
+					});
+				}
+			}
+
+			await interaction.respond(
+				options
+					.filter((c) => c.value.toString().startsWith(interaction.options.getFocused() as string))
+					.slice(0, 25)
+			);
+		}
 	}
 }
 

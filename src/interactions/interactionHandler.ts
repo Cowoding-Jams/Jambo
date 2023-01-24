@@ -15,7 +15,7 @@ export async function handleCommandInteractions(interaction: ChatInputCommandInt
 	} else {
 		logger.error(`Error resolving command for: ${interaction.commandName}`);
 		await interaction.reply({
-			content: "An error occurred. Please contact a developer",
+			content: "An error occurred. Please contact a developer.",
 			ephemeral: true,
 		});
 	}
@@ -30,7 +30,7 @@ export async function handleButtonInteractions(interaction: ButtonInteraction) {
 	} else {
 		logger.error(`Error resolving clicked button for: ${buttonName}`);
 		await interaction.reply({
-			content: "An error occurred. Please contact a developer",
+			content: "An error occurred. Please contact a developer.",
 			ephemeral: true,
 		});
 	}
@@ -45,7 +45,7 @@ export async function handleSelectMenuInteractions(interaction: SelectMenuIntera
 	} else {
 		logger.error(`Error resolving select menu for: ${menuName}`);
 		await interaction.reply({
-			content: "An error occurred. Please contact a developer",
+			content: "An error occurred. Please contact a developer.",
 			ephemeral: true,
 		});
 	}
@@ -60,7 +60,7 @@ export async function handleModalInteractions(interaction: ModalSubmitInteractio
 	} else {
 		logger.error(`Error resolving submitted modal for: ${modalName}`);
 		await interaction.reply({
-			content: "An error occurred. Please contact a developer",
+			content: "An error occurred. Please contact a developer.",
 			ephemeral: true,
 		});
 	}
@@ -72,6 +72,11 @@ export async function handleAutocompleteInteraction(interaction: AutocompleteInt
 		await autocompleter.execute(interaction);
 	} else {
 		logger.error(`Error resolving autocompleter for: ${interaction.commandName}`);
-		await interaction.respond([]);
+		await interaction.respond([
+			{
+				name: `[Error resolving autocompletion for: ${interaction.commandName}. Please contact a developer.]`,
+				value: "-",
+			},
+		]);
 	}
 }

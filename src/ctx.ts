@@ -2,7 +2,7 @@ import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interaction
 import { Collection } from "discord.js";
 import { config } from "./config";
 
-class Ctx {
+class Context {
 	public readonly defaultGuild;
 	public readonly commands: Collection<string, Command> = new Collection<string, Command>();
 	public readonly buttons: Collection<string, Button> = new Collection<string, Button>();
@@ -33,4 +33,4 @@ class Ctx {
 	}
 }
 
-export const ctx = new Ctx();
+export const ctx = new Context();
