@@ -9,7 +9,7 @@ import {
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
 import { deleteJam, editJam, newJam, viewJam } from "../util/coding-jams/manageJams";
-import { deletePoll, editPoll, newPoll, viewPoll, votesPoll } from "../util/coding-jams/managePolls";
+import { deletePoll, editPoll, newPoll, viewPoll, votesPoll } from "../util/coding-jams/managePoll";
 import { jamSchedulerTick } from "../util/coding-jams/eventHandler";
 import cron from "node-cron";
 import { checkDate, checkDuration } from "../util/misc/time";

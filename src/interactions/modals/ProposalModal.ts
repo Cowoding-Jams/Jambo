@@ -7,7 +7,7 @@ import { checkDuration } from "../../util/misc/time";
 
 class ProposalModal extends Modal {
 	constructor() {
-		super("proposals");
+		super("proposal");
 	}
 
 	async execute(interaction: ModalSubmitInteraction, customId: string[]): Promise<void> {

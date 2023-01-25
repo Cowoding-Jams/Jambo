@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 import { addEmbedFooter } from "../misc/embeds";
 import { createCanvas } from "@napi-rs/canvas";
-import { bringIntoButtonGrid, setUpRoles } from "./roleUtil";
+import { bringIntoButtonGrid, setUpRoles } from "./rolesUtil";
 import { timezoneRoles } from "../misc/role";
 
 export async function pronounPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -27,7 +27,7 @@ export async function pronounPrompt(interaction: ChatInputCommandInteraction): P
 		for (const role of row) {
 			actionRows[actionRows.length - 1].addComponents(
 				new ButtonBuilder()
-					.setCustomId(`role.${role[0]}`)
+					.setCustomId(`roles.${role[0]}`)
 					.setLabel(role[0])
 					.setStyle(actionRows.length == 1 ? ButtonStyle.Primary : ButtonStyle.Secondary)
 			);
@@ -70,7 +70,7 @@ export async function colorPrompt(interaction: ChatInputCommandInteraction): Pro
 		actionRows.push(new ActionRowBuilder());
 		for (const role of row) {
 			actionRows[actionRows.length - 1].addComponents(
-				new ButtonBuilder().setCustomId(`role.${role[0]}`).setLabel(role[0]).setStyle(ButtonStyle.Secondary)
+				new ButtonBuilder().setCustomId(`roles.${role[0]}`).setLabel(role[0]).setStyle(ButtonStyle.Secondary)
 			);
 		}
 	}
@@ -143,7 +143,7 @@ export async function timezonePrompt(interaction: ChatInputCommandInteraction): 
 	const actionRow: ActionRowBuilder<StringSelectMenuBuilder> =
 		new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
 			new StringSelectMenuBuilder()
-				.setCustomId("role.timezone")
+				.setCustomId("roles.timezone")
 				.setPlaceholder("Select your timezone!")
 				.setMinValues(1)
 				.setMaxValues(1)
@@ -177,7 +177,7 @@ export async function jamPrompt(interaction: ChatInputCommandInteraction): Promi
 			new ButtonBuilder()
 				.setStyle(ButtonStyle.Primary)
 				.setLabel("Participate in jams")
-				.setCustomId(`role.${roleName}`)
+				.setCustomId(`roles.${roleName}`)
 		),
 	];
 
