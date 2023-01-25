@@ -11,11 +11,15 @@ class ProposalModal extends Modal {
 	}
 
 	async execute(interaction: ModalSubmitInteraction, customId: string[]): Promise<void> {
-		const title = interaction.fields.getTextInputValue("title");
-		const abbreviation = interaction.fields.getTextInputValue("abbreviation");
-		const description = interaction.fields.getTextInputValue("description");
-		const durationString = interaction.fields.getTextInputValue("duration").toUpperCase();
-		const references = interaction.fields.getTextInputValue("references");
+		const title = interaction.fields.getTextInputValue("title").trim();
+		const abbreviation = interaction.fields
+			.getTextInputValue("abbreviation")
+			.trim()
+			.toLowerCase()
+			.replaceAll(" ", "-");
+		const description = interaction.fields.getTextInputValue("description").trim();
+		const durationString = interaction.fields.getTextInputValue("duration").trim().toUpperCase();
+		const references = interaction.fields.getTextInputValue("references").trim();
 
 		const duration = await checkDuration(
 			interaction,
@@ -43,10 +47,10 @@ class ProposalModal extends Modal {
 			}
 
 			proposal = {
-				title: title.trim(),
-				abbreviation: abbreviation.trim(),
-				description: description.trim(),
-				references: references.trim(),
+				title: title,
+				abbreviation: abbreviation,
+				description: description,
+				references: references,
 				duration: duration,
 				owner: interaction.user.id,
 				votesLastPoll: 0,
@@ -62,10 +66,10 @@ class ProposalModal extends Modal {
 			const oldProposal = proposalDb.get(key)!;
 
 			proposal = {
-				title: title.trim(),
-				abbreviation: abbreviation.trim(),
-				description: description.trim(),
-				references: references.trim(),
+				title: title,
+				abbreviation: abbreviation,
+				description: description,
+				references: references,
 				duration: duration,
 				owner: oldProposal.owner,
 				votesLastPoll: oldProposal.votesLastPoll,
