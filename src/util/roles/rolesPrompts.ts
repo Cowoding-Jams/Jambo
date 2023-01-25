@@ -184,6 +184,7 @@ export async function jamPrompt(interaction: ChatInputCommandInteraction): Promi
 	await interaction.guild?.roles.create({
 		name: roleName,
 		position: 1,
+		permissions: [],
 	});
 
 	await interaction.editReply({
