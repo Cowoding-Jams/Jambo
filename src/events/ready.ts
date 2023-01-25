@@ -23,7 +23,10 @@ export default async function ready(client: Client) {
 	});
 
 	logger.info("Publishing commands...");
-	await client.application?.commands.set(ctx.commands.map((cmd) => cmd.register().toJSON()));
+	await client.application?.commands.set(
+		ctx.commands.map((cmd) => cmd.register().toJSON()),
+		ctx.defaultGuild
+	);
 
 	logger.info("Starting coding-jam event scheduler...");
 	CodingJamsCommand.startScheduler(client);
