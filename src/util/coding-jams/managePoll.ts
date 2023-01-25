@@ -1,4 +1,10 @@
-import { ActionRowBuilder, CommandInteraction, EmbedBuilder, SelectMenuBuilder } from "discord.js";
+import {
+	ActionRowBuilder,
+	CommandInteraction,
+	EmbedBuilder,
+	SelectMenuBuilder,
+	StringSelectMenuBuilder,
+} from "discord.js";
 import { DateTime } from "luxon";
 import { pollSelectionTypes } from "../../commands/CodingJamsCommand";
 import { Poll, pollDb, PollEvent, pollEventsDb, Proposal, proposalDb } from "../../db";
@@ -84,7 +90,7 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 
 	if (poll.end < DateTime.now()) {
 		await interaction.reply({
-			content: `"${name}" has already ended, so extending it doesnt make much sense`,
+			content: `"${name}" has already ended, so extending it doesn't make much sense`,
 			ephemeral: true,
 		});
 		return;
@@ -273,7 +279,7 @@ export function pollSelectMenus(
 
 	actionRows.push(
 		new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-			new SelectMenuBuilder()
+			new StringSelectMenuBuilder()
 				.setCustomId(`poll.include.${pollKey}`)
 				.setPlaceholder("Proposals to include")
 				.setOptions({ label: "[reset]", value: "-" }, ...includeOptions.slice(0, 24))
@@ -284,7 +290,7 @@ export function pollSelectMenus(
 
 	actionRows.push(
 		new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-			new SelectMenuBuilder()
+			new StringSelectMenuBuilder()
 				.setCustomId(`poll.exclude.${pollKey}`)
 				.setPlaceholder("Proposals to exclude")
 				.setOptions({ label: "[reset]", value: "-" }, ...excludeOptions.slice(0, 24))
