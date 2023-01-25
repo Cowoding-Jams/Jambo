@@ -22,7 +22,7 @@ const abbreviation = new TextInputBuilder()
 	.setPlaceholder("(e.g. 'aoc22' instead of 'Advent of Code 2022')")
 	.setStyle(TextInputStyle.Short)
 	.setMinLength(2)
-	.setMaxLength(12);
+	.setMaxLength(20);
 
 const description = new TextInputBuilder()
 	.setCustomId("description")
