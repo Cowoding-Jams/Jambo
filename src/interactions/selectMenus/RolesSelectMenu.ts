@@ -1,5 +1,5 @@
 import { SelectMenu } from "../interactionClasses";
-import { inlineCode, SelectMenuInteraction } from "discord.js";
+import { inlineCode, StringSelectMenuInteraction } from "discord.js";
 import { logger } from "../../logger";
 
 class RoleSelectMenu extends SelectMenu {
@@ -7,7 +7,7 @@ class RoleSelectMenu extends SelectMenu {
 		super("roles");
 	}
 
-	async execute(interaction: SelectMenuInteraction, customID: string[]): Promise<void> {
+	async execute(interaction: StringSelectMenuInteraction, customID: string[]): Promise<void> {
 		if (customID[0] == "timezone") {
 			const timezone = interaction.values[0] ?? "None";
 			const guildRoles = await interaction.guild?.roles.fetch();

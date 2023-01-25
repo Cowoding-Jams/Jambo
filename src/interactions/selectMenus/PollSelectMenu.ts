@@ -1,8 +1,8 @@
 import { SelectMenu } from "../interactionClasses";
-import { GuildMember, SelectMenuInteraction } from "discord.js";
+import { GuildMember, StringSelectMenuInteraction } from "discord.js";
 import { logger } from "../../logger";
 import { pollDb, proposalDb } from "../../db";
-import { pollEmbed, pollSelectMenus, sortBySelectionType } from "../../util/coding-jams/managePolls";
+import { pollEmbed, pollSelectMenus, sortBySelectionType } from "../../util/coding-jams/managePoll";
 import { getFromEnmap } from "../../util/misc/enmap";
 
 class PollSelectMenu extends SelectMenu {
@@ -10,7 +10,7 @@ class PollSelectMenu extends SelectMenu {
 		super("poll");
 	}
 
-	async execute(interaction: SelectMenuInteraction, customID: string[]): Promise<void> {
+	async execute(interaction: StringSelectMenuInteraction, customID: string[]): Promise<void> {
 		const type = customID[0]; // include/exclude/vote
 		const pollKey = customID[1];
 

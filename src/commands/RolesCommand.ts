@@ -5,8 +5,8 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { hasAdminPerms } from "../util/misc/permissions";
-import { colorPrompt, jamPrompt, pronounPrompt, timezonePrompt } from "../util/roles/rolePrompts";
-import { deleteRoles } from "../util/roles/roleUtil";
+import { colorPrompt, jamPrompt, pronounPrompt, timezonePrompt } from "../util/roles/rolesPrompts";
+import { deleteRoles } from "../util/roles/rolesUtil";
 
 class RoleCommand extends Command {
 	constructor() {
