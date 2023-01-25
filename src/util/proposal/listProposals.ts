@@ -85,7 +85,7 @@ export async function viewProposal(interaction: ChatInputCommandInteraction): Pr
 }
 
 export async function viewProposalEmbed(proposal: Proposal, titleAddition: string): Promise<EmbedBuilder> {
-	return addEmbedColor(
+	const embed = addEmbedColor(
 		new EmbedBuilder()
 			.setTitle(`${proposal.title} ⁘ ${proposal.abbreviation} ⁘ ${titleAddition}`)
 			.setDescription(proposal.description)
@@ -100,14 +100,20 @@ export async function viewProposalEmbed(proposal: Proposal, titleAddition: strin
 					inline: true,
 				},
 				{
-					name: "Votes Last Poll",
-					value: proposal.polls == 0 ? "Wasn't part of a poll yet." : proposal.votesLastPoll.toString(),
-					inline: true,
-				},
-				{
 					name: "Proposed By/On",
 					value: `<@${proposal.owner}> ⁘ ${discordTimestamp(proposal.created)}`,
+					inline: true,
 				}
 			)
 	);
+
+	if (titleAddition !== "(new)") {
+		embed.addFields({
+			name: "Votes Last Poll",
+			value: proposal.polls == 0 ? "Wasn't part of a poll yet." : proposal.votesLastPoll.toString(),
+			inline: true,
+		});
+	}
+
+	return embed;
 }
