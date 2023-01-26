@@ -16,10 +16,12 @@ export async function setUpRoles(
 		await guild?.roles.create({
 			name: startSeparator,
 			position: 1,
+			permissions: [],
 		});
 		await guild?.roles.create({
 			name: endSeparator,
 			position: 1,
+			permissions: [],
 		});
 	}
 
@@ -41,6 +43,7 @@ export async function setUpRoles(
 				name: role[0],
 				color: role[1],
 				position: endSeparatorPos + 1,
+				permissions: [],
 			});
 		}
 	}

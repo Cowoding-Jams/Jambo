@@ -20,7 +20,7 @@ export async function birthdayMessageTick(client: Client) {
 		});
 		if (!guildUser) continue;
 		const birthYear = birthdayDb.get(user)!.year;
-		const age = birthYear === 0 ? null : date.year - birthYear;
+		const age = birthYear == 0 ? null : date.year - birthYear;
 		const embed = addEmbedFooter(
 			new EmbedBuilder()
 				.setTitle(`🎉🎊🎆 Happy Birthday ${guildUser.displayName}!!! 🎈🎇🎉`)

@@ -5,6 +5,7 @@ import { addEmbedColor } from "../misc/embeds";
 import { checkDate, checkDuration, discordRelativeTimestamp } from "../misc/time";
 import { elapse } from "./reminderUtil";
 import { DateTime, Duration } from "luxon";
+import { getUserOrRole } from "../misc/user";
 
 export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const message = interaction.options.getString("message") || "";
@@ -109,7 +110,7 @@ export async function reminderDelete(interaction: ChatInputCommandInteraction) {
 		return;
 	}
 
-	if (member.toString() === item.user || (await hasModeratorRole(interaction))) {
+	if (member.id === item.user || (await hasModeratorRole(interaction))) {
 		reminderDb.delete(c_id);
 		if (reminderTimeoutCache.has(c_id)) {
 			clearTimeout(reminderTimeoutCache.get(c_id));
@@ -131,10 +132,12 @@ export async function reminderList(interaction: ChatInputCommandInteraction) {
 	const member = await interaction.guild!.members.fetch(interaction.user);
 	let output = "";
 
-	reminderDb.forEach((value, key) => {
-		if (value.user === member.toString()) {
+	reminderDb.forEach(async (value, key) => {
+		const ping = value.ping ? await getUserOrRole(value.ping, interaction.guild!) : null;
+
+		if (value.user === member.id) {
 			output += `ID: ${key} - ${discordRelativeTimestamp(value.timestamp)} ${
-				value.ping ? `- ${value.ping} -` : "-"
+				ping ? `- ${ping.toString()} -` : "-"
 			} ${value.message == "" ? "No message." : `${value.message}`}\n`;
 		}
 	});

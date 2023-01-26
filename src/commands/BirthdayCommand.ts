@@ -6,9 +6,9 @@ import {
 } from "discord.js";
 import cron from "node-cron";
 import { Command } from "../interactions/interactionClasses";
-import { myBirthday, setBirthday } from "../util/birthdayCommand/manageBirthday";
-import { upcomingCommand } from "../util/birthdayCommand/upcomingCommand";
-import { birthdayMessageTick } from "../util/birthdayCommand/loop";
+import { myBirthday, setBirthday } from "../util/birthday/manageBirthday";
+import { upcomingCommand } from "../util/birthday/upcomingCommand";
+import { birthdayMessageTick } from "../util/birthday/loop";
 import { birthdayDb } from "../db";
 import { config } from "../config";
 
