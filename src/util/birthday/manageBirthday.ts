@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, inlineCode } from "discord.js";
 import { birthdayDb } from "../../db";
 import { DateTime } from "luxon";
-import { getTimezonefromRole } from "../misc/role";
+import { getTimezoneFromRole } from "../misc/role";
 import { longDateFormatWithTimezone } from "../misc/time";
 import { config } from "../../config";
 
@@ -32,15 +32,15 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 			ephemeral: true,
 		});
 		return;
-	} else if (date.year < DateTime.now().year - 100) {
+	} else if (date.year < DateTime.now().year - 100 && date.year != 0) {
 		await interaction.reply({
-			content: `Hmm... You seem to be a bit too old to be on Discord... Are you really *that* old? 🤔\nI don't really belive you dear...`,
+			content: `Hmm... You seem to be a bit too old to be on Discord...\nAre you really *that* old? 🤔\nI don't really believe you dear...`,
 			ephemeral: true,
 		});
 		return;
 	}
 
-	const zone = await getTimezonefromRole(interaction.user.id, interaction.guild!);
+	const zone = await getTimezoneFromRole(interaction.user.id, interaction.guild!);
 	if (zone) date = date.setZone(zone);
 
 	birthdayDb.set(

@@ -1,14 +1,14 @@
 import { Guild, GuildMember } from "discord.js";
 
-export function search(user: GuildMember, find: string, useStartsWith = true) {
+export function searchForRole(user: GuildMember, find: string, useStartsWith = true) {
 	const check = (role: string) => (useStartsWith ? role.startsWith(find) : role == find);
 	return Array.from(user.roles.cache.filter((role) => check(role.name)).values());
 }
 
 /** Returns the first role name that starts with UTC or null */
-export async function getTimezonefromRole(userID: string, guild: Guild) {
+export async function getTimezoneFromRole(userID: string, guild: Guild) {
 	const user = await guild.members.fetch(userID);
-	const found = search(user, "UTC");
+	const found = searchForRole(user, "UTC");
 	if (found.length == 0) return null;
 	return found[0].name;
 }
