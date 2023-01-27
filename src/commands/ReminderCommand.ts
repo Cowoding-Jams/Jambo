@@ -8,7 +8,7 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { reminderDelete, reminderList, reminderSet } from "../util/reminder/reminderSubcommands";
+import { reminderDelete, reminderList, reminderSet } from "../util/reminder/manageReminder";
 import { schedulerTick as reminderSchedulerTick } from "../util/reminder/reminderUtil";
 import cron from "node-cron";
 

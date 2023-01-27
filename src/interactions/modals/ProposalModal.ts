@@ -21,11 +21,7 @@ class ProposalModal extends Modal {
 		const durationString = interaction.fields.getTextInputValue("duration").trim().toUpperCase();
 		const references = interaction.fields.getTextInputValue("references").trim();
 
-		const duration = await checkDuration(
-			interaction,
-			durationString,
-			`**Your inputs:**\n- Title: ${title}\n- Description: ${description}\n- Duration: ${durationString}\n- References: ${references}`
-		);
+		const duration = await checkDuration(interaction, durationString);
 
 		if (!duration) return;
 		if (duration.as("hours") < 1) {
