@@ -5,6 +5,7 @@ import { logger } from "../logger";
 import CodingJamsCommand from "../commands/CodingJamsCommand";
 import { validateConfigParameters } from "../config-validate";
 import BirthdayCommand from "../commands/BirthdayCommand";
+import { config } from "../config";
 
 export default async function ready(client: Client) {
 	const guild = client.guilds.cache.get(ctx.defaultGuild)!;
@@ -45,7 +46,9 @@ export default async function ready(client: Client) {
 
 	logger.info("Setup successful!");
 
-	logger.debug("Validating config parameters...");
-	await validateConfigParameters(guild);
-	logger.debug("Config parameters validated!");
+	if (!config.debugMode) {
+		logger.debug("Validating config parameters...");
+		await validateConfigParameters(guild);
+		logger.debug("Config parameters validated!");
+	}
 }

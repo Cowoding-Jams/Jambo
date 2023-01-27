@@ -98,11 +98,6 @@ export async function viewProposalEmbed(proposal: Proposal, titleAddition: strin
 					name: "Duration",
 					value: durationToReadable(proposal.duration),
 					inline: true,
-				},
-				{
-					name: "Proposed By/On",
-					value: `<@${proposal.owner}> ⁘ ${discordTimestamp(proposal.created)}`,
-					inline: true,
 				}
 			)
 	);
@@ -114,6 +109,11 @@ export async function viewProposalEmbed(proposal: Proposal, titleAddition: strin
 			inline: true,
 		});
 	}
+
+	embed.addFields({
+		name: "Proposed By/On",
+		value: `<@${proposal.owner}> ⁘ ${discordTimestamp(proposal.created)}`,
+	});
 
 	return embed;
 }
