@@ -16,9 +16,8 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const dateIsoString = interaction.options.getString("date-iso");
 	const durationIsoString = interaction.options.getString("duration-iso");
 
-	const inputs = `- Message: ${message}\n- Additional ping: ${additionalPing?.toString() || ""}`;
-	const dateIso = await checkDate(interaction, dateIsoString, inputs);
-	const durationIso = await checkDuration(interaction, durationIsoString, inputs);
+	const dateIso = await checkDate(interaction, dateIsoString);
+	const durationIso = await checkDuration(interaction, durationIsoString);
 
 	const duration =
 		hours + minutes == 0
@@ -27,6 +26,9 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 					minutes: minutes,
 					hours: hours,
 			  });
+
+	if (!dateIso && dateIsoString) return;
+	if (!durationIso && durationIsoString) return;
 
 	const timestamp = dateIso
 		? dateIso
