@@ -25,16 +25,16 @@ class RoleCommand extends Command {
 
 		const subcommand = interaction.options.getSubcommand();
 
-		if (subcommand === "pronoun-prompt") {
+		if (subcommand === "pronouns") {
 			await interaction.deferReply();
 			await pronounPrompt(interaction);
-		} else if (subcommand === "color-prompt") {
+		} else if (subcommand === "colors") {
 			await interaction.deferReply();
 			await colorPrompt(interaction);
-		} else if (subcommand === "timezone-prompt") {
+		} else if (subcommand === "timezones") {
 			await interaction.deferReply();
 			await timezonePrompt(interaction);
-		} else if (subcommand === "jam-prompt") {
+		} else if (subcommand === "jam") {
 			await interaction.deferReply();
 			await jamPrompt(interaction);
 		} else if (subcommand === "delete") {
@@ -47,28 +47,31 @@ class RoleCommand extends Command {
 		return new SlashCommandBuilder()
 			.setName("roles")
 			.setDescription("Manages the roles on the server.")
-			.addSubcommand((option) =>
-				option
-					.setName("pronoun-prompt")
-					.setDescription("Creates the pronoun role prompt to select the roles.")
-			)
-			.addSubcommand((option) =>
-				option
-					.setName("color-prompt")
-					.setDescription("Creates the color role prompt to select the roles.")
-					.addIntegerOption((option) =>
-						option
-							.setName("columns")
-							.setDescription("The number of columns to use for the color roles. (Default: 2)")
-							.setRequired(false)
-							.setMinValue(1)
-							.setMaxValue(4)
+			.addSubcommandGroup((group) =>
+				group
+					.setName("prompt")
+					.setDescription("To create different kinds of role prompts.")
+					.addSubcommand((option) =>
+						option.setName("pronouns").setDescription("Creates the pronoun role prompt.")
 					)
+					.addSubcommand((option) =>
+						option
+							.setName("colors")
+							.setDescription("Creates the color role prompt.")
+							.addIntegerOption((option) =>
+								option
+									.setName("columns")
+									.setDescription("The number of columns to use for the color roles. (Default: 2)")
+									.setRequired(false)
+									.setMinValue(1)
+									.setMaxValue(4)
+							)
+					)
+					.addSubcommand((option) =>
+						option.setName("timezones").setDescription("Creates the timezone role prompt.")
+					)
+					.addSubcommand((option) => option.setName("jam").setDescription("Creates the jam role prompt."))
 			)
-			.addSubcommand((option) =>
-				option.setName("timezone-prompt").setDescription("Creates the timezone role prompt.")
-			)
-			.addSubcommand((option) => option.setName("jam-prompt").setDescription("Creates the jam role prompt."))
 			.addSubcommand((option) =>
 				option
 					.setName("delete")
