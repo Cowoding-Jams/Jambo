@@ -16,7 +16,8 @@ export async function listProposals(
 	page = 0,
 	proposalsPerPage = 6
 ): Promise<void> {
-	await interaction.deferReply();
+	if (interaction instanceof ChatInputCommandInteraction) await interaction.deferReply();
+	else await interaction.deferUpdate();
 
 	const pages = Math.ceil(proposalDb.size / proposalsPerPage);
 
@@ -65,9 +66,7 @@ export async function listProposals(
 			.setStyle(ButtonStyle.Secondary)
 	);
 
-	if (interaction instanceof ChatInputCommandInteraction)
-		await interaction.reply({ embeds: [embed], components: proposalDb.size != 0 ? [row] : [] });
-	else await interaction.update({ embeds: [embed], components: proposalDb.size != 0 ? [row] : [] });
+	await interaction.editReply({ embeds: [embed], components: proposalDb.size != 0 ? [row] : [] });
 }
 
 export async function viewProposal(interaction: ChatInputCommandInteraction): Promise<void> {
