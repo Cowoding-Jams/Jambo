@@ -5,7 +5,7 @@ import { activityTrackerLogDb } from "../../db";
 import { durationToReadable } from "../misc/time";
 import { Duration } from "luxon";
 
-export async function statisticsMyStats(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function statsMy(interaction: ChatInputCommandInteraction): Promise<void> {
 	let game = interaction.options.getString("game")?.toLowerCase();
 
 	const entries = getEntries(interaction.user.id, game);
@@ -46,7 +46,7 @@ export async function statisticsMyStats(interaction: ChatInputCommandInteraction
 	await interaction.reply({ embeds: [embed] });
 }
 
-export async function statisticsGameStats(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function statsGame(interaction: ChatInputCommandInteraction): Promise<void> {
 	const game = interaction.options.getString("game", true).toLowerCase();
 	const showPlaytime = interaction.options.getBoolean("show-playtime") ?? false;
 
@@ -106,7 +106,7 @@ export async function statisticsGameStats(interaction: ChatInputCommandInteracti
 	return;
 }
 
-export async function statisticsAllStats(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function statsAll(interaction: ChatInputCommandInteraction): Promise<void> {
 	const entrys = getEntries();
 	const fields = await makeStats(entrys);
 

@@ -5,11 +5,7 @@ import {
 } from "discord.js";
 import { Command } from "../interactions/interactionClasses";
 import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/activity-tracker/blacklist";
-import {
-	statisticsAllStats,
-	statisticsGameStats,
-	statisticsMyStats,
-} from "../util/activity-tracker/statistics";
+import { statsAll, statsGame, statsMy } from "../util/activity-tracker/statistics";
 import {
 	adminBlacklistGame,
 	adminLook,
@@ -37,13 +33,13 @@ class ActivityTrackerCommand extends Command {
 			} else if (sub === "show") {
 				await blacklistShow(interaction);
 			}
-		} else if (group === "statistics") {
-			if (sub === "my-stats") {
-				await statisticsMyStats(interaction);
-			} else if (sub === "game-stats") {
-				await statisticsGameStats(interaction);
-			} else if (sub === "all-stats") {
-				await statisticsAllStats(interaction);
+		} else if (group === "stats") {
+			if (sub === "my") {
+				await statsMy(interaction);
+			} else if (sub === "game") {
+				await statsGame(interaction);
+			} else if (sub === "all") {
+				await statsAll(interaction);
 			}
 		} else if (group === "admin") {
 			if (await !hasAdminRole(interaction)) {
@@ -100,11 +96,11 @@ class ActivityTrackerCommand extends Command {
 			)
 			.addSubcommandGroup((group) =>
 				group
-					.setName("statistics")
+					.setName("stats")
 					.setDescription("Gives you statistics based on the game activity.")
 					.addSubcommand((sub) =>
 						sub
-							.setName("my-stats")
+							.setName("my")
 							.setDescription("Show statistics about your own logs.")
 							.addStringOption((opt) =>
 								opt.setName("game").setDescription("Filter stats for the given name.").setAutocomplete(true)
@@ -112,7 +108,7 @@ class ActivityTrackerCommand extends Command {
 					)
 					.addSubcommand((sub) =>
 						sub
-							.setName("game-stats")
+							.setName("game")
 							.setDescription("Show statistics about a given game across all logs.")
 							.addStringOption((opt) =>
 								opt
@@ -128,7 +124,7 @@ class ActivityTrackerCommand extends Command {
 									.setRequired(false)
 							)
 					)
-					.addSubcommand((sub) => sub.setName("all-stats").setDescription("Show statistics across all logs."))
+					.addSubcommand((sub) => sub.setName("all").setDescription("Show statistics across all logs."))
 			)
 			.addSubcommandGroup((group) =>
 				group
