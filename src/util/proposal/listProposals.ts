@@ -16,6 +16,8 @@ export async function listProposals(
 	page = 0,
 	proposalsPerPage = 6
 ): Promise<void> {
+	await interaction.deferReply();
+
 	const pages = Math.ceil(proposalDb.size / proposalsPerPage);
 
 	if (page < 0) page = pages - 1;

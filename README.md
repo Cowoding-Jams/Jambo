@@ -16,8 +16,6 @@ We're all part of a game jam/hackothon server with monthly events and wanted to 
 We won't host the bot for you. If you want to use it on your own server you have to do that yourself :)  
 To see how to use this bot on your own visit our [wiki](https://github.com/Cowoding-Jams/Jambo/wiki). It's really good! We promise. It can help you a lot.
 
-
-
 ## License
 
 This project is licensed under the [Anti-Capitalist Software License](https://anticapitalist.software/). See [LICENSE](LICENSE).
