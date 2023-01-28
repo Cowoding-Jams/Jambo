@@ -12,7 +12,6 @@ export const config: BotConfig = {
 
 	// --- Development ---
 	logLevel: "debug",
-	debugMode: false,
 
 	// --- Management ---
 	adminRoleId: "855348792025939988", // cowoding-jams/roles: admin
@@ -73,8 +72,6 @@ interface BotConfig {
 	// --- Development ---
 	/** Also available: error, warn, info, http, verbose, debug, silly. */
 	logLevel: "debug" | "info" | "warn" | "error" | "verbose";
-	/** In debug mode no config validation will be made. */
-	debugMode: boolean;
 
 	// --- Management ---
 	/** Moderators of the server (to manage proposals) */

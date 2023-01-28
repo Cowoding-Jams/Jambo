@@ -4,6 +4,7 @@ import { config } from "./config";
 
 class Context {
 	public readonly defaultGuild;
+	public readonly debugMode;
 	public readonly commands: Collection<string, Command> = new Collection<string, Command>();
 	public readonly buttons: Collection<string, Button> = new Collection<string, Button>();
 	public readonly selectMenus: Collection<string, SelectMenu> = new Collection<string, SelectMenu>();
@@ -15,6 +16,7 @@ class Context {
 		if (!process.env.DEFAULT_GUILD) throw new Error("Default guild not defined!");
 
 		this.defaultGuild = process.env.DEFAULT_GUILD;
+		this.debugMode = process.env.DEBUG_MODE === "1";
 		this.logLevel = config.logLevel || "error";
 	}
 
