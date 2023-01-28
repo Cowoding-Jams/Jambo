@@ -29,7 +29,7 @@ export async function listProposals(
 	let embed = addEmbedFooter(new EmbedBuilder().setTitle(`${proposalDb.size} Proposals`));
 
 	const list = numberedList(
-		proposals.map((p) => p.title),
+		proposals.map((p) => `${p.title} (${p.abbreviation})`),
 		proposals.map((p) => durationToReadable(p.duration)),
 		page * proposalsPerPage
 	);
