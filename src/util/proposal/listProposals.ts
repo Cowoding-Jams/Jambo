@@ -103,7 +103,7 @@ export async function viewProposalEmbed(proposal: Proposal, titleAddition: strin
 			)
 	);
 
-	if (titleAddition !== "(new)") {
+	if (titleAddition !== "(new)" && titleAddition !== "(edit)") {
 		embed.addFields({
 			name: "Votes Last Poll",
 			value: proposal.polls == 0 ? "Wasn't part of a poll yet." : proposal.votesLastPoll.toString(),
