@@ -42,7 +42,7 @@ class ActivityTrackerCommand extends Command {
 				await statsAll(interaction);
 			}
 		} else if (group === "admin") {
-			if (await !hasAdminRole(interaction)) {
+			if (!hasAdminRole(interaction)) {
 				await interaction.reply({
 					content: "You don't have the required permissions to use this command.",
 					ephemeral: true,
@@ -68,7 +68,9 @@ class ActivityTrackerCommand extends Command {
 		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
 		return new SlashCommandBuilder()
 			.setName("activity-tracker")
-			.setDescription("A game activity tracker to provide interesting insights in the people on this server.")
+			.setDescription(
+				"An (game) activity tracker to provide interesting insights in the people on this server."
+			)
 			.addSubcommand((sub) =>
 				sub
 					.setName("list")
@@ -78,7 +80,7 @@ class ActivityTrackerCommand extends Command {
 							.setName("sort")
 							.setDescription("Sort by the ...")
 							.addChoices(
-								{ name: "logs chronolocially", value: "log-history" },
+								{ name: "logs chronologically", value: "log-history" },
 								{ name: "playtime per game", value: "playtime-per-game" },
 								{ name: "number of logs per game", value: "logs-per-game" },
 								{ name: "last log date per game", value: "log-date-per-game" }
@@ -137,7 +139,7 @@ class ActivityTrackerCommand extends Command {
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("The game to blacklist - (capitalization doesnt matter)")
+									.setDescription("The game to blacklist (capitalization doesn't matter)")
 									.setAutocomplete(true)
 									.setRequired(true)
 							)
@@ -149,7 +151,7 @@ class ActivityTrackerCommand extends Command {
 							.addStringOption((opt) =>
 								opt
 									.setName("game")
-									.setDescription("The game to whitelist - (capitalization doesnt matter)")
+									.setDescription("The game to whitelist (capitalization doesn't matter)")
 									.setAutocomplete(true)
 									.setRequired(true)
 							)
@@ -172,7 +174,7 @@ class ActivityTrackerCommand extends Command {
 									.setName("really")
 									.setDescription("Are you really sure you want to delete every entry?")
 									.addChoices(
-										{ name: "No. I dont want to delete every log and blacklist entry!", value: "no" },
+										{ name: "No. I don't want to delete every log and blacklist entry!", value: "no" },
 										{ name: "Yes I am sure. I want to delete every log and blacklist entry!", value: "yes" }
 									)
 									.setRequired(true)

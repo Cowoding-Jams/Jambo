@@ -9,17 +9,27 @@ export async function initializeCountryData() {
 
 	logger.debug("Fetching the country data...");
 
-	countryData = countryDataImportToCountryData(
-		await fetch(url)
-			.then((response) => response.json())
-			.catch((err) => {
-				logger.debug(err);
-				throw err;
-			})
-			.then((res) => {
-				return res as CountryImport[];
-			})
-	).sort((a, b) => b.population - a.population);
+	const response = await fetch(url)
+		.catch((err) => {
+			throw err;
+		})
+		.then((res) =>
+			res
+				.json()
+				.catch(() => {
+					logger.error("Couldn't parse the country data. The api is probably down...");
+					return;
+				})
+				.then((res) => {
+					return res as CountryImport[];
+				})
+		);
+
+	if (!response) {
+		return;
+	}
+
+	countryData = countryDataImportToCountryData(response).sort((a, b) => b.population - a.population);
 
 	logger.debug("Initialized the country data.");
 }

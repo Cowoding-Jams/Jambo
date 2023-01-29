@@ -127,7 +127,7 @@ export async function closeEvent(channel: TextChannel, pollID: string) {
 				value: `${winner.description}\n${winner.references}`,
 			},
 			{
-				name: "Top 10 proposals",
+				name: `Top ${Math.min(10, proposals.length)} proposals`,
 				value: numberedList(
 					proposals.map((p) => p.title),
 					proposals.map((p) => `${p.votesLastPoll}`)

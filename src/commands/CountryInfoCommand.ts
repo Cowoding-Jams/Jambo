@@ -20,7 +20,7 @@ class CountryInfoCommand extends Command {
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (countryData.length === 0) {
 			interaction.reply({
-				content: "Still initiliazing the data, try again later...",
+				content: "Still initializing the data, try again later...",
 				ephemeral: true,
 			});
 			return;

@@ -24,15 +24,14 @@ export async function listProposals(
 	if (page < 0) page = pages - 1;
 	else page = page % pages;
 
-	const proposals = proposalDb.array().slice(page * proposalsPerPage, (page + 1) * proposalsPerPage);
+	const proposals = proposalDb.array();
 
 	let embed = addEmbedFooter(new EmbedBuilder().setTitle(`${proposalDb.size} Proposals`));
 
 	const list = numberedList(
 		proposals.map((p) => `${p.title} (${p.abbreviation})`),
-		proposals.map((p) => durationToReadable(p.duration)),
-		page * proposalsPerPage
-	);
+		proposals.map((p) => durationToReadable(p.duration))
+	).slice(page * proposalsPerPage, (page + 1) * proposalsPerPage);
 
 	for (const [index, proposal] of proposals.entries()) {
 		embed.addFields({
