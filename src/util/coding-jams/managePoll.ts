@@ -38,6 +38,11 @@ export async function newPoll(
 		return;
 	}
 
+	const now = DateTime.now();
+	if (start < now || end < now) {
+		interaction.reply({ content: "The start and end times must be in the future...", ephemeral: true });
+	}
+
 	// check numVotes and numProposals
 	if (numVotes > numProposals) numVotes = numProposals;
 	if (proposalDb.size < numProposals) {
@@ -90,7 +95,7 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 
 	if (poll.end < DateTime.now()) {
 		await interaction.reply({
-			content: `"${name}" has already ended, so extending it doesn't make much sense`,
+			content: `"${name}" has already ended, so extending it doesn't make much sense.`,
 			ephemeral: true,
 		});
 		return;
