@@ -35,7 +35,7 @@ export async function hasAdminRole(
 		| AutocompleteInteraction
 ): Promise<boolean> {
 	const member = await interaction.guild?.members.fetch(interaction.user);
-	return member?.roles.cache.has(config.adminRoleId) || hasAdminPerms(interaction);
+	return member?.roles.cache.has(config.adminRoleId) || (await hasAdminPerms(interaction));
 }
 
 export async function hasModeratorRole(
@@ -46,7 +46,7 @@ export async function hasModeratorRole(
 		| AutocompleteInteraction
 ): Promise<boolean> {
 	const member = await interaction.guild?.members.fetch(interaction.user);
-	return member?.roles.cache.has(config.moderatorRoleId) || hasAdminPerms(interaction);
+	return member?.roles.cache.has(config.moderatorRoleId) || (await hasAdminPerms(interaction));
 }
 
 export async function hasRole(member: GuildMember | null, roleID: string): Promise<boolean> {

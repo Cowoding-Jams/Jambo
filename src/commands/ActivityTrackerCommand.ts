@@ -42,7 +42,7 @@ class ActivityTrackerCommand extends Command {
 				await statsAll(interaction);
 			}
 		} else if (group === "admin") {
-			if (!hasAdminRole(interaction)) {
+			if (!(await hasAdminRole(interaction))) {
 				await interaction.reply({
 					content: "You don't have the required permissions to use this command.",
 					ephemeral: true,
