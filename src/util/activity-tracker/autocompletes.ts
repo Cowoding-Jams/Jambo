@@ -35,7 +35,7 @@ export async function blacklistAutocompletion(interaction: AutocompleteInteracti
 	await interaction.respond(map);
 }
 
-export async function statisticsMystats(interaction: AutocompleteInteraction) {
+export async function statsMy(interaction: AutocompleteInteraction) {
 	const allKeys = activityTrackerLogDb.keyArray();
 	let games: string[] = [];
 	allKeys.forEach((e) => {

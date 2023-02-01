@@ -61,7 +61,7 @@ class RoleCommand extends Command {
 							.addIntegerOption((option) =>
 								option
 									.setName("columns")
-									.setDescription("The number of columns to use for the color roles. (Default: 2)")
+									.setDescription("The number of columns to use for the color preview. (default: 2)")
 									.setRequired(false)
 									.setMinValue(1)
 									.setMaxValue(4)
@@ -75,11 +75,11 @@ class RoleCommand extends Command {
 			.addSubcommand((option) =>
 				option
 					.setName("delete")
-					.setDescription("Deletes generated roles.")
+					.setDescription("Deletes the generated roles.")
 					.addBooleanOption((option) =>
 						option
 							.setName("all")
-							.setDescription("Delete all generated roles. (Using the '- ... -' indicators)")
+							.setDescription("Delete all generated roles. (Using the '- ... -' indicators) (default: false)")
 							.setRequired(true)
 					)
 					.addRoleOption((option) =>

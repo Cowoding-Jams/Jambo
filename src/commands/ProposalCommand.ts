@@ -50,7 +50,7 @@ class ProposalCommand extends Command {
 			.addSubcommand((subcommand) =>
 				subcommand
 					.setName("edit")
-					.setDescription("Edit a proposals title, description or time period.")
+					.setDescription("Edit an existing proposal.")
 					.addStringOption(proposalSelectStringOption)
 			)
 			.addSubcommand((subcommand) =>
@@ -68,6 +68,6 @@ export default new ProposalCommand();
 const proposalSelectStringOption = (option: SlashCommandStringOption) =>
 	option
 		.setName("title")
-		.setDescription("The title of the proposal to select.")
+		.setDescription("The title of the proposal.")
 		.setRequired(true)
 		.setAutocomplete(true);

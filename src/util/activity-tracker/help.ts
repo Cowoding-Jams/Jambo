@@ -29,7 +29,7 @@ export async function makeStats(entries: string[]): Promise<Array<EmbedField>> {
 
 	let firstEntry = DateTime.now().plus({ years: 1000 });
 	let lastEntry = DateTime.now().minus({ years: 1000 });
-	const playTime = Duration.fromObject({ seconds: 0 });
+	let playTime = Duration.fromObject({ seconds: 0 });
 	let longestRecord = Duration.fromObject({ seconds: 0 });
 	let totalRecords = 0;
 
@@ -37,23 +37,24 @@ export async function makeStats(entries: string[]): Promise<Array<EmbedField>> {
 		const logs = activityTrackerLogDb.get(key);
 		logs?.forEach((log) => {
 			totalRecords += 1;
-			playTime.plus(log.duration);
+			playTime = playTime.plus(log.duration);
 			if (log.date < firstEntry) firstEntry = log.date;
 			if (log.date > lastEntry) lastEntry = log.date;
 			if (log.duration > longestRecord) longestRecord = log.duration;
 		});
 	});
 
-	let dayDifference = firstEntry.diff(lastEntry).as("days");
-	dayDifference = dayDifference == 0 ? 1 : dayDifference;
+	let dayDifference = lastEntry.diff(firstEntry).as("days");
+	dayDifference = dayDifference < 1 ? 1 : dayDifference;
 
 	const fields = [
 		{ name: "Record Range", value: `≈ ${Math.round(dayDifference)} days`, inline: true },
-		{ name: "Total Playtime", value: durationToReadable(playTime), inline: true },
+		{ name: "Total Playtime", value: durationToReadable(playTime, true), inline: true },
 		{
 			name: "Playtime/Day",
 			value: durationToReadable(
-				Duration.fromObject({ seconds: Math.floor(playTime.as("seconds") / dayDifference) })
+				Duration.fromObject({ seconds: Math.floor(playTime.as("seconds") / dayDifference) }),
+				true
 			),
 			inline: true,
 		},
@@ -67,7 +68,7 @@ export async function makeStats(entries: string[]): Promise<Array<EmbedField>> {
 			value: `${discordRelativeTimestamp(lastEntry)}`,
 			inline: true,
 		},
-		{ name: "Longest Record", value: durationToReadable(longestRecord), inline: true },
+		{ name: "Longest Record", value: durationToReadable(longestRecord, true), inline: true },
 		{ name: "Total Records", value: totalRecords.toString(), inline: true },
 	];
 

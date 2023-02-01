@@ -29,7 +29,7 @@ class UserInfoCommand extends Command {
 			.setName("user-info")
 			.setDescription("Get information about a user")
 			.addUserOption((option) =>
-				option.setName("user").setDescription("The user to get information about.").setRequired(true)
+				option.setName("user").setDescription("The user to spy on.").setRequired(true)
 			);
 	}
 }

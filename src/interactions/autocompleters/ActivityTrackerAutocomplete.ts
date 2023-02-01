@@ -5,7 +5,7 @@ import {
 	blacklistAutocompletion,
 	blacklistRemove,
 	gamesAutocompletion,
-	statisticsMystats,
+	statsMy,
 } from "../../util/activity-tracker/autocompletes";
 
 class ActivityTrackerAutocompleter extends Autocompleter {
@@ -20,9 +20,9 @@ class ActivityTrackerAutocompleter extends Autocompleter {
 		if (group === "admin") {
 			if (sub == "whitelist") await blacklistAutocompletion(interaction);
 			else if (sub == "blacklist") await gamesAutocompletion(interaction);
-		} else if (group === "statistics") {
-			if (sub == "my-stats") await statisticsMystats(interaction);
-			else if (sub == "game-stats") await gamesAutocompletion(interaction);
+		} else if (group === "stats") {
+			if (sub == "my") await statsMy(interaction);
+			else if (sub == "game") await gamesAutocompletion(interaction);
 		} else if (group === "blacklist") {
 			if (sub == "remove") await blacklistRemove(interaction);
 			else if (sub == "add") await blacklistAdd(interaction);

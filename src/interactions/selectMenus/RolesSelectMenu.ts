@@ -8,13 +8,15 @@ class RoleSelectMenu extends SelectMenu {
 	}
 
 	async execute(interaction: StringSelectMenuInteraction, customID: string[]): Promise<void> {
+		interaction.deferReply({ ephemeral: true });
+
 		if (customID[0] == "timezone") {
 			const timezone = interaction.values[0] ?? "None";
 			const guildRoles = await interaction.guild?.roles.fetch();
 			const member = await interaction.guild?.members.fetch(interaction.user.id);
 			const role = guildRoles?.find((r) => r.name === timezone);
 			if (!role || !member) {
-				await interaction.reply("Can't find the role or you (the member)...");
+				await interaction.reply({ content: "Can't find the role or you (the member)...", ephemeral: true });
 				logger.warn("Couldn't find a role or member. Probably is an old prompt still open.");
 				logger.error(role);
 				logger.error(member);
@@ -29,11 +31,12 @@ class RoleSelectMenu extends SelectMenu {
 
 			if (role) {
 				await member.roles.add(role);
-				await interaction.reply({ content: `Gave you the ${inlineCode(timezone)} role.`, ephemeral: true });
+				await interaction.editReply({
+					content: `Gave you the **${inlineCode(timezone)}** role.`,
+				});
 			} else {
-				await interaction.reply({
+				await interaction.editReply({
 					content: `Removed your ${currentTimezoneRoles.map((c) => inlineCode(c.name)).join(" ")} role.`,
-					ephemeral: true,
 				});
 			}
 		}

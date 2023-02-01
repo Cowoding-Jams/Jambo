@@ -20,7 +20,7 @@ class CountryInfoCommand extends Command {
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (countryData.length === 0) {
 			interaction.reply({
-				content: "Still initiliazing the data, try again later...",
+				content: "Still initializing the data, try again later...",
 				ephemeral: true,
 			});
 			return;
@@ -53,15 +53,15 @@ class CountryInfoCommand extends Command {
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("country-info")
-			.setDescription("Accessing country data.")
+			.setDescription("Lets you access the country info from a big database.")
 			.addSubcommand((option) =>
 				option
 					.setName("overview")
-					.setDescription("Lists all the data from a country.")
+					.setDescription("Lists the most important data from a country.")
 					.addStringOption(getCountryOption)
 			)
 			.addSubcommand((option) =>
-				option.setName("random").setDescription("Lists all the data from a random country.")
+				option.setName("random").setDescription("The overview command on a random country.")
 			)
 			.addSubcommand((option) =>
 				option
@@ -83,16 +83,12 @@ class CountryInfoCommand extends Command {
 			.addSubcommand((option) =>
 				option
 					.setName("query")
-					.setDescription("Lets you sort and filter the countries with queries.")
+					.setDescription("Lets you sort and filter the data with queries.")
 					.addStringOption((option) =>
 						option
 							.setName("sort-criteria")
 							.setDescription("Criteria to sort by.")
-							.addChoices(
-								{ name: "none", value: "none" },
-
-								...defaultCountryInformationChoices
-							)
+							.addChoices({ name: "none", value: "none" }, ...defaultCountryInformationChoices)
 							.setRequired(true)
 					)
 					.addStringOption((option) =>
@@ -108,7 +104,7 @@ class CountryInfoCommand extends Command {
 					.addIntegerOption((option) =>
 						option
 							.setName("scale")
-							.setDescription("Set which part you want to see.")
+							.setDescription("Set which how many data points you want to see.")
 							.addChoices(
 								{ name: "top 10", value: 10 },
 								{ name: "top 25", value: 25 },
@@ -150,7 +146,9 @@ class CountryInfoCommand extends Command {
 							.setAutocomplete(true)
 					)
 					.addBooleanOption((option) =>
-						option.setName("include-data").setDescription("Set whether or not the list includes the data.")
+						option
+							.setName("include-data")
+							.setDescription("Set whether or not the list should also include the data. (default: true)")
 					)
 			);
 	}
@@ -159,7 +157,7 @@ class CountryInfoCommand extends Command {
 function getCountryOption(option: SlashCommandStringOption) {
 	return option
 		.setName("country")
-		.setDescription("Name of the country.")
+		.setDescription("The name of the country.")
 		.setRequired(true)
 		.setAutocomplete(true);
 }

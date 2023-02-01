@@ -27,7 +27,7 @@ class EmbedCommand extends Command {
 
 		if (fields.some((field) => field.length < 1 || field.length > 256)) {
 			await interaction.reply({
-				content: "Field titles must be between 1 and 256 characters long",
+				content: "Field titles must be between 1 and 256 characters long.",
 				ephemeral: true,
 			});
 			return;
@@ -88,11 +88,14 @@ class EmbedCommand extends Command {
 			.addStringOption((option) =>
 				option
 					.setName("fields")
-					.setDescription("Titles for up to 3 fields (comma separated)")
+					.setDescription("The titles for up to 3 fields (comma separated)")
 					.setRequired(false)
 			)
 			.addBooleanOption((option) =>
-				option.setName("show-author").setDescription("Show the author of the embed").setRequired(false)
+				option
+					.setName("show-author")
+					.setDescription("Whether or not to show the author on the embed. (default: false)")
+					.setRequired(false)
 			);
 	}
 }
