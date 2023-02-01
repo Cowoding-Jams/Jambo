@@ -38,11 +38,6 @@ export async function newPoll(
 		return;
 	}
 
-	const now = DateTime.now();
-	if (start < now || end < now) {
-		interaction.reply({ content: "The start and end times must be in the future...", ephemeral: true });
-	}
-
 	// check numVotes and numProposals
 	if (numVotes > numProposals) numVotes = numProposals;
 	if (proposalDb.size < numProposals) {

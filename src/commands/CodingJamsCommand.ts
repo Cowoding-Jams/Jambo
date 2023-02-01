@@ -51,12 +51,18 @@ class CodingJamsCommand extends Command {
 		let endDate: DateTime | null;
 		let duration: Duration | null;
 
+		const now = DateTime.now();
+
 		if (subCmd === "new") {
 			startDate = await checkDate(interaction, interaction.options.getString("start-date"));
 			endDate = await checkDate(interaction, interaction.options.getString("end-date"));
 			duration = await checkDuration(interaction, interaction.options.getString("duration"));
 
 			if (!startDate) return;
+			if (startDate < now) {
+				await interaction.reply({ content: "The start date must be in the future!", ephemeral: true });
+				return;
+			}
 
 			if (!(endDate || duration) && subCmdGroup === "poll") {
 				await interaction.reply({
@@ -66,11 +72,21 @@ class CodingJamsCommand extends Command {
 				return;
 			}
 
-			if (subCmdGroup === "poll") endDate = endDate || startDate.plus(duration!);
+			if (subCmdGroup === "poll") {
+				endDate = endDate || startDate.plus(duration!);
+				if (endDate < now) {
+					await interaction.reply({ content: "The end date must be in the future!", ephemeral: true });
+					return;
+				}
+			}
 		} else if (subCmd === "extend") {
 			endDate = await checkDate(interaction, interaction.options.getString("end-date"));
 
 			if (!endDate) return;
+			if (endDate < now) {
+				await interaction.reply({ content: "The end date must be in the future!", ephemeral: true });
+				return;
+			}
 		}
 
 		if (subCmdGroup === "jam") {
