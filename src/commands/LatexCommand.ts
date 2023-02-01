@@ -57,7 +57,8 @@ class LatexCommand extends Command {
 			});
 		} else if (urlToFile === null) {
 			interaction.editReply({
-				content: "There is a problem with the LaTeX api we are using... So sorry! Go yell at the devs!",
+				content:
+					"There is a problem with the LaTeX api we are using... So sorry! Go yell at the devs to implement local rending!",
 				components: [row],
 			});
 		} else {
@@ -72,9 +73,12 @@ class LatexCommand extends Command {
 			.addSubcommand((option) =>
 				option
 					.setName("equation")
-					.setDescription("Lets you render a single LaTeX equation.")
+					.setDescription("Lets you render a single LaTeX block equation.")
 					.addStringOption((option) =>
-						option.setName("input").setDescription("Your equation in LaTeX notation.").setRequired(true)
+						option
+							.setName("input")
+							.setDescription("Your math input. (Will end up '$$ [here] $$')")
+							.setRequired(true)
 					)
 					.addBooleanOption(transparencyOption)
 			)

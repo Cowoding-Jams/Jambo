@@ -55,15 +55,11 @@ class ReminderCommand extends Command {
 					.setName("delete")
 					.setDescription("Delete a reminder with its id.")
 					.addIntegerOption((option) =>
-						option
-							.setName("id")
-							.setDescription("ID of the reminder (autocompleted).")
-							.setRequired(true)
-							.setAutocomplete(true)
+						option.setName("id").setDescription("ID of the reminder.").setRequired(true).setAutocomplete(true)
 					)
 			)
 			.addSubcommand((option) =>
-				option.setName("list").setDescription("Shows the list of active reminders.")
+				option.setName("list").setDescription("Shows the list of your active reminders.")
 			);
 	}
 }

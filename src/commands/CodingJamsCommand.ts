@@ -154,7 +154,7 @@ class CodingJamsCommand extends Command {
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("extend")
-							.setDescription("Extend a running poll in its length.")
+							.setDescription("Extend a running or future poll in its length.")
 							.addStringOption(pollNameStringOptionAutocomplete)
 							.addStringOption(requiredEndDateStringOption)
 					)
@@ -192,7 +192,7 @@ class CodingJamsCommand extends Command {
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName("extend")
-							.setDescription("Extend a running Jam in its length.")
+							.setDescription("Extend a running or future Jam in its length.")
 							.addStringOption(jamNameStringOptionAutocomplete)
 							.addStringOption(requiredEndDateStringOption)
 					)
@@ -246,7 +246,7 @@ const pollVotesIntegerOption = new SlashCommandIntegerOption()
 
 const pollProposalsIntegerOption = new SlashCommandIntegerOption()
 	.setName("num-proposals")
-	.setDescription("Number of proposals to vote for. ('proposals' > 'votes')")
+	.setDescription("Number of proposals in the poll. ('proposals' > 'votes')")
 	.setRequired(true)
 	.setMinValue(2)
 	.setMaxValue(25);
@@ -265,7 +265,7 @@ export const pollSelectionTypes = {
 
 const pollSelectionStringOption = new SlashCommandStringOption()
 	.setName("proposal-selection-type")
-	.setDescription("Determins which proposals will be selected for voting.")
+	.setDescription("Determines which proposals will be selected for voting.")
 	.setRequired(true)
 	.addChoices(
 		{ name: "Top (last time)", value: pollSelectionTypes.top },
@@ -282,14 +282,14 @@ const pollSelectionStringOption = new SlashCommandStringOption()
 // Jams
 const jamNameStringOption = new SlashCommandStringOption()
 	.setName("name")
-	.setDescription("The name of the jam.")
+	.setDescription("The unique name of the jam. (e.g. 'December 2022 Jam')")
 	.setMinLength(3)
 	.setMaxLength(30)
 	.setRequired(true);
 
 const jamNameStringOptionAutocomplete = new SlashCommandStringOption()
 	.setName("name")
-	.setDescription("The name of the jam.")
+	.setDescription("The unique name of the jam.")
 	.setMinLength(3)
 	.setMaxLength(30)
 	.setRequired(true)

@@ -13,10 +13,8 @@ class CountryInfoAutocompleter extends Autocompleter {
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
 		if (countryData.length === 0) {
-			logger.debug("can't autocomplete because the country data is still being initialized");
-			await interaction.respond([
-				{ name: "I can't autocomplete because the data is still being initialized", value: "-" },
-			]);
+			logger.debug("Can't autocomplete because the country data is still being initialized.");
+			await interaction.respond([{ name: "The data is still being initialized...", value: "-" }]);
 			return;
 		}
 

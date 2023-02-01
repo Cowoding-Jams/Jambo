@@ -16,7 +16,7 @@ class RoleSelectMenu extends SelectMenu {
 			const member = await interaction.guild?.members.fetch(interaction.user.id);
 			const role = guildRoles?.find((r) => r.name === timezone);
 			if (!role || !member) {
-				await interaction.reply("Can't find the role or you (the member)...");
+				await interaction.reply({ content: "Can't find the role or you (the member)...", ephemeral: true });
 				logger.warn("Couldn't find a role or member. Probably is an old prompt still open.");
 				logger.error(role);
 				logger.error(member);
@@ -32,7 +32,7 @@ class RoleSelectMenu extends SelectMenu {
 			if (role) {
 				await member.roles.add(role);
 				await interaction.editReply({
-					content: `Gave you the ${inlineCode(timezone)} role.`,
+					content: `Gave you the **${inlineCode(timezone)}** role.`,
 				});
 			} else {
 				await interaction.editReply({

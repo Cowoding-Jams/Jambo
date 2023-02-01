@@ -1,5 +1,5 @@
 import { SelectMenu } from "../interactionClasses";
-import { GuildMember, StringSelectMenuInteraction } from "discord.js";
+import { bold, GuildMember, StringSelectMenuInteraction } from "discord.js";
 import { logger } from "../../logger";
 import { pollDb, proposalDb } from "../../db";
 import { pollEmbed, pollSelectMenus, sortBySelectionType } from "../../util/coding-jams/managePoll";
@@ -17,7 +17,7 @@ class PollSelectMenu extends SelectMenu {
 		const poll = pollDb.get(pollKey);
 		if (!poll) {
 			await interaction.reply({ content: "Couldn't find the poll...", ephemeral: true });
-			logger.warn(`Couldn't find a poll using key "§{pollKey}"`);
+			logger.warn(`Couldn't find a poll using key "${pollKey}"`);
 			return;
 		}
 
@@ -42,7 +42,7 @@ class PollSelectMenu extends SelectMenu {
 							proposalDb.size - values.length
 						} proposals are left, which is less than the required amount of ${
 							poll.numProposals
-						} proposals. So no proposals were used.`,
+						} proposals. No proposals were used.`,
 						ephemeral: true,
 					});
 					return;
@@ -84,7 +84,7 @@ class PollSelectMenu extends SelectMenu {
 				.catch(() => null);
 			await interaction.reply({
 				content: `Thanks for voting ${member?.displayName || interaction.user}!\nYou voted for ${proposals
-					.map((e) => e.title)
+					.map((e) => bold(e.title))
 					.join(", ")}`,
 				ephemeral: true,
 			});

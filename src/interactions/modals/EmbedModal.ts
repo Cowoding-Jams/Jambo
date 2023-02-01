@@ -26,7 +26,7 @@ class EmbedModal extends Modal {
 
 		if (countEmbedCharacters(embed) > 6000) {
 			await interaction.reply({
-				content: "Embed text content must be at most 6000 characters long",
+				content: "Embed text content must be at most 6000 characters long!",
 				ephemeral: true,
 			});
 			return;
