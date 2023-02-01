@@ -10,10 +10,6 @@ export async function initializeCountryData() {
 	logger.debug("Fetching the country data...");
 
 	const response = await fetch(url)
-		.catch((err) => {
-			logger.error("Couldn't fetch the country data api.");
-			return;
-		})
 		.then((res) =>
 			res
 				.json()
@@ -24,7 +20,11 @@ export async function initializeCountryData() {
 				.then((res) => {
 					return res as CountryImport[];
 				})
-		);
+		)
+		.catch(() => {
+			logger.error("Couldn't fetch the country data api.");
+			return;
+		});
 
 	if (!response) {
 		return;
