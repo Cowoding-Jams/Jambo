@@ -11,7 +11,8 @@ export async function initializeCountryData() {
 
 	const response = await fetch(url)
 		.catch((err) => {
-			throw err;
+			logger.error("Couldn't fetch the country data api.");
+			return;
 		})
 		.then((res) =>
 			res
