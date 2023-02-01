@@ -50,8 +50,8 @@ export async function statsGame(interaction: ChatInputCommandInteraction): Promi
 	const game = interaction.options.getString("game", true).toLowerCase();
 	const showPlaytime = interaction.options.getBoolean("show-playtime") ?? false;
 
-	const entrys = await getEntries(undefined, game);
-	const fields = await makeStats(entrys);
+	const entries = await getEntries(undefined, game);
+	const fields = await makeStats(entries);
 
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(`No logs found for ${game}...`);
@@ -61,7 +61,7 @@ export async function statsGame(interaction: ChatInputCommandInteraction): Promi
 	}
 
 	const users: string[] = [];
-	entrys.forEach((e) => {
+	entries.forEach((e) => {
 		users.push(splitId(e).user);
 	});
 	if (users.length === 0) {
@@ -107,8 +107,8 @@ export async function statsGame(interaction: ChatInputCommandInteraction): Promi
 }
 
 export async function statsAll(interaction: ChatInputCommandInteraction): Promise<void> {
-	const entrys = getEntries();
-	const fields = await makeStats(entrys);
+	const entries = getEntries();
+	const fields = await makeStats(entries);
 
 	if (fields.length == 0) {
 		await interaction.reply({ content: "No logs found...", ephemeral: true });
@@ -117,7 +117,7 @@ export async function statsAll(interaction: ChatInputCommandInteraction): Promis
 
 	const users: string[] = [];
 	const games: string[] = [];
-	entrys.forEach((e) => {
+	entries.forEach((e) => {
 		const { user, game } = splitId(e);
 		if (!users.some((e) => e === user)) users.push(user);
 		if (!games.some((e) => e === game)) games.push(game);
