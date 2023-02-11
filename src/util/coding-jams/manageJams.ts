@@ -63,7 +63,7 @@ export async function editJam(interaction: CommandInteraction, name: string, end
 		return;
 	}
 
-	let jam = jamDb.get(jamKey)!;
+	const jam = jamDb.get(jamKey)!;
 	jam.end = end;
 
 	jamDb.set(jamKey, jam);
