@@ -127,7 +127,7 @@ export async function closeToEndEvent(channel: TextChannel, jamID: string) {
 			`The ${proposal.title} jam is almost over! It ends ${discordRelativeTimestamp(
 				jam.end
 			)}! I hope you're having a great time and are making good progress. If you're done let others test you're code to see if there are maybe still some hidden bugs somewhere. Make sure to share your work in ${
-				jam.resultChannelID ? `<#${jam.resultChannelID}` : "the results channel"
+				jam.resultChannelID ? `<#${jam.resultChannelID}>` : "the results channel"
 			}.`
 		);
 
@@ -145,7 +145,7 @@ export async function closeToStartEvent(channel: TextChannel, jamID: string) {
 		.setDescription(
 			`The ${proposal.title} jam is starting soon ${discordRelativeTimestamp(
 				jam.start
-			)}! Make sure to setup your coding enviroment, put on some fresh pants, get yourself some water and fruity snacks. This is going to be great :)`
+			)}! Make sure to setup your coding environment, put on some fresh pants, get yourself some water and fruity snacks. This is going to be great :)`
 		);
 
 	const jamRole =
