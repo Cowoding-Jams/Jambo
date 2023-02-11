@@ -62,9 +62,11 @@ export async function editJam(interaction: CommandInteraction, name: string, end
 		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
 		return;
 	}
-	const jam = jamDb.get(jamKey)!;
 
-	jamDb.set(jamKey, { ...jam, end: end });
+	let jam = jamDb.get(jamKey)!;
+	jam.end = end;
+
+	jamDb.set(jamKey, jam);
 
 	const diff = jam.end.diff(end);
 	const inFuture = jam.end < end;
