@@ -135,7 +135,7 @@ class CodingJamsCommand extends Command {
 						deletePoll(interaction, poll, pollKey);
 						break;
 					case "votes":
-						votesPoll(interaction, poll, pollKey);
+						votesPoll(interaction, poll);
 						break;
 				}
 			}

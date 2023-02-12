@@ -135,7 +135,7 @@ export async function deletePoll(interaction: CommandInteraction, poll: Poll, po
 	interaction.reply({ content: `${poll.title} deleted!`, ephemeral: true });
 }
 
-export async function votesPoll(interaction: CommandInteraction, poll: Poll, pollKey: string) {
+export async function votesPoll(interaction: CommandInteraction, poll: Poll) {
 	if (poll.start > DateTime.now()) {
 		await interaction.reply({ content: `Voting hasn't started yet...`, ephemeral: true });
 		return;
