@@ -15,6 +15,7 @@ import cron from "node-cron";
 import { checkDate, checkDuration } from "../util/misc/time";
 import { DateTime, Duration } from "luxon";
 import { listJams, listPolls } from "../util/coding-jams/listPollsAndJams";
+import { jamDb, pollDb } from "../db";
 
 class CodingJamsCommand extends Command {
 	constructor() {
@@ -90,37 +91,53 @@ class CodingJamsCommand extends Command {
 		}
 
 		if (subCmdGroup === "jam") {
-			switch (subCmd) {
-				case "new":
-					newJam(interaction, name, proposal, startDate!);
-					break;
-				case "extend":
-					editJam(interaction, name, endDate!);
-					break;
-				case "view":
-					viewJam(interaction, name);
-					break;
-				case "delete":
-					deleteJam(interaction, name);
-					break;
+			if (subCmd === "new") {
+				newJam(interaction, name, proposal, startDate!);
+			} else {
+				const jamKey = jamDb.findKey((j) => j.title === name);
+				if (!jamKey) {
+					interaction.reply({ content: `There is no jam with the name "${name}".`, ephemeral: true });
+					return;
+				}
+				const jam = jamDb.get(jamKey)!;
+
+				switch (subCmd) {
+					case "extend":
+						editJam(interaction, jam, jamKey, endDate!);
+						break;
+					case "view":
+						viewJam(interaction, jam, jamKey);
+						break;
+					case "delete":
+						deleteJam(interaction, jam, jamKey);
+						break;
+				}
 			}
 		} else if (subCmdGroup === "poll") {
-			switch (subCmd) {
-				case "new":
-					newPoll(interaction, name, numProposals, numVotes, selectionType, startDate!, endDate!);
-					break;
-				case "extend":
-					editPoll(interaction, name, endDate!);
-					break;
-				case "view":
-					viewPoll(interaction, name);
-					break;
-				case "delete":
-					deletePoll(interaction, name);
-					break;
-				case "votes":
-					votesPoll(interaction, name);
-					break;
+			if (subCmd === "new") {
+				newPoll(interaction, name, numProposals, numVotes, selectionType, startDate!, endDate!);
+			} else {
+				const pollKey = pollDb.findKey((poll) => poll.title === name);
+				if (!pollKey) {
+					interaction.reply({ content: `There is no jam with the name "${name}".`, ephemeral: true });
+					return;
+				}
+				const poll = pollDb.get(pollKey)!;
+
+				switch (subCmd) {
+					case "extend":
+						editPoll(interaction, poll, pollKey, endDate!);
+						break;
+					case "view":
+						viewPoll(interaction, poll, pollKey);
+						break;
+					case "delete":
+						deletePoll(interaction, poll, pollKey);
+						break;
+					case "votes":
+						votesPoll(interaction, poll, pollKey);
+						break;
+				}
 			}
 		} else if (subCmdGroup === "list") {
 			if (subCmd === "jams") {
