@@ -78,36 +78,32 @@ export async function newPoll(
 	});
 }
 
-export async function editPoll(interaction: CommandInteraction, name: string, end: DateTime) {
-	const pollKey = pollDb.findKey((poll) => poll.title === name);
-
-	if (!pollKey) {
-		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
-		return;
-	}
-
-	const poll = pollDb.get(pollKey)!;
-
+export async function editPoll(interaction: CommandInteraction, poll: Poll, pollKey: string, end: DateTime) {
 	if (poll.end < DateTime.now()) {
 		await interaction.reply({
-			content: `"${name}" has already ended, so extending it doesn't make much sense.`,
+			content: `The ${poll.title} has already ended. Extending it doesn't make much sense...`,
 			ephemeral: true,
 		});
 		return;
 	}
 
-	pollDb.set(pollKey, { ...poll, end: end });
+	poll.end = end;
+	pollDb.set(pollKey, poll);
 
-	const diff = poll.end.diff(end);
-	const inFuture = poll.end < end;
+	let messageID = null;
+	for (const key of pollEventsDb
+		.filter((event) => event.pollID === pollKey && event.type === "close")
+		.keyArray()) {
+		messageID = pollEventsDb.get(key)!.promptID;
+		pollEventsDb.delete(key);
+	}
 
-	for (const key of pollEventsDb.keyArray()) {
-		const poll = pollEventsDb.get(key)!;
-		if (!(poll.pollID === pollKey && poll.type === "close")) continue;
-		pollEventsDb.update(key, (event) => {
-			const old = event.date;
-			const newDate = inFuture ? old.plus(diff) : old.minus(diff);
-			return { ...event, date: newDate };
+	if (messageID) {
+		pollEventsDb.set(pollEventsDb.autonum, {
+			pollID: pollKey,
+			type: "close",
+			date: poll.end,
+			promptID: messageID,
 		});
 	}
 
@@ -125,47 +121,21 @@ export async function editPoll(interaction: CommandInteraction, name: string, en
 	});
 }
 
-export async function viewPoll(interaction: CommandInteraction, name: string) {
-	const pollKey = pollDb.findKey((poll) => poll.title === name);
-
-	if (!pollKey) {
-		await interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
-		return;
-	}
-
-	const poll = pollDb.get(pollKey)!;
-
+export async function viewPoll(interaction: CommandInteraction, poll: Poll, pollKey: string) {
 	await interaction.reply({ embeds: [pollEmbed(poll, pollKey, "(view)")], ephemeral: true });
 }
 
-export async function deletePoll(interaction: CommandInteraction, name: string) {
-	const pollKey = pollDb.findKey((poll) => poll.title === name);
-
-	if (!pollKey) {
-		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
-		return;
-	}
-
+export async function deletePoll(interaction: CommandInteraction, poll: Poll, pollKey: string) {
 	pollDb.delete(pollKey);
 
-	for (const key of pollEventsDb.keyArray()) {
-		const poll = pollEventsDb.get(key)!;
-		if (!(poll.pollID === pollKey)) continue;
+	for (const key of pollEventsDb.filter((e) => e.pollID === pollKey).keyArray()) {
 		pollEventsDb.delete(key);
 	}
 
-	interaction.reply({ content: `${name} deleted!`, ephemeral: true });
+	interaction.reply({ content: `${poll.title} deleted!`, ephemeral: true });
 }
 
-export async function votesPoll(interaction: CommandInteraction, name: string) {
-	const pollKey = pollDb.findKey((poll) => poll.title === name);
-
-	if (!pollKey) {
-		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
-		return;
-	}
-	const poll = pollDb.get(pollKey)!;
-
+export async function votesPoll(interaction: CommandInteraction, poll: Poll) {
 	if (poll.start > DateTime.now()) {
 		await interaction.reply({ content: `Voting hasn't started yet...`, ephemeral: true });
 		return;

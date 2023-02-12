@@ -4,6 +4,8 @@ import { Jam, jamDb, JamEvent, jamEventsDb, proposalDb } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
 import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time";
 
+const hoursBeforeEvent = 2;
+
 export async function newJam(
 	interaction: CommandInteraction,
 	name: string,
@@ -47,8 +49,8 @@ export async function newJam(
 			jamID: id,
 			date: start.plus({ milliseconds: Math.floor(end.diff(start).toMillis() / 2) }),
 		},
-		{ type: "close-to-end", jamID: id, date: end.minus({ hours: 2 }) },
-		{ type: "close-to-start", jamID: id, date: start.minus({ hours: 2 }) },
+		{ type: "close-to-end", jamID: id, date: end.minus({ hours: hoursBeforeEvent }) },
+		{ type: "close-to-start", jamID: id, date: start.minus({ hours: hoursBeforeEvent }) },
 	];
 
 	events.forEach((e) => jamEventsDb.set(jamEventsDb.autonum, e));
@@ -56,30 +58,35 @@ export async function newJam(
 	interaction.reply({ embeds: [jamEmbed(jam, id, "(new)")], ephemeral: true });
 }
 
-export async function editJam(interaction: CommandInteraction, name: string, end: DateTime) {
-	const jamKey = jamDb.findKey((j) => j.title === name);
-	if (!jamKey) {
-		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
+export async function editJam(interaction: CommandInteraction, jam: Jam, jamKey: string, end: DateTime) {
+	if (jam.end < DateTime.now()) {
+		await interaction.reply({
+			content: `The ${jam.title} has already ended. Extending it doesn't make much sense...`,
+			ephemeral: true,
+		});
 		return;
 	}
 
-	const jam = jamDb.get(jamKey)!;
 	jam.end = end;
-
 	jamDb.set(jamKey, jam);
 
-	const diff = jam.end.diff(end);
-	const inFuture = jam.end < end;
-
-	for (const key of jamEventsDb.keyArray()) {
-		const jam = jamEventsDb.get(key)!;
-		if (!(jam.jamID === jamKey && jam.type in ["halftime", "end", "close-to-end"])) continue;
-		jamEventsDb.update(key, (event) => {
-			const old = event.date;
-			const newDate = inFuture ? old.plus(diff) : old.minus(diff);
-			return { ...event, date: newDate };
-		});
+	for (const key of jamEventsDb
+		.filter((event) => event.jamID === jamKey && ["halftime", "end", "close-to-end"].includes(event.type))
+		.keyArray()) {
+		jamEventsDb.delete(key);
 	}
+
+	const events: JamEvent[] = [
+		{
+			type: "halftime",
+			jamID: jamKey,
+			date: jam.start.plus({ milliseconds: Math.floor(end.diff(jam.start).toMillis() / 2) }),
+		},
+		{ type: "close-to-end", jamID: jamKey, date: end.minus({ hours: hoursBeforeEvent }) },
+		{ type: "close-to-start", jamID: jamKey, date: jam.start.minus({ hours: hoursBeforeEvent }) },
+	];
+
+	events.forEach((e) => jamEventsDb.set(jamEventsDb.autonum, e));
 
 	if (jam.eventID) {
 		interaction.guild?.scheduledEvents.edit(jam.eventID, { scheduledEndTime: end.toISO() });
@@ -88,39 +95,22 @@ export async function editJam(interaction: CommandInteraction, name: string, end
 	interaction.reply({ embeds: [jamEmbed(jam, jamKey, "(edit)")], ephemeral: true });
 }
 
-export async function viewJam(interaction: CommandInteraction, name: string) {
-	const jamKey = jamDb.findKey((j) => j.title === name);
-	if (!jamKey) {
-		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
-		return;
-	}
-
-	const jam = jamDb.get(jamKey)!;
+export async function viewJam(interaction: CommandInteraction, jam: Jam, jamKey: string) {
 	await interaction.reply({ embeds: [jamEmbed(jam, jamKey, "(view)")], ephemeral: true });
 }
 
-export async function deleteJam(interaction: CommandInteraction, name: string) {
-	const jamKey = jamDb.findKey((j) => j.title === name);
-	if (!jamKey) {
-		interaction.reply({ content: `There is no jam with the name "${name}"`, ephemeral: true });
-		return;
-	}
-
-	const jam = jamDb.get(jamKey)!;
-
+export async function deleteJam(interaction: CommandInteraction, jam: Jam, jamKey: string) {
 	jamDb.delete(jamKey);
 
 	if (jam.eventID) {
 		interaction.guild?.scheduledEvents.delete(jam.eventID);
 	}
 
-	for (const key of jamEventsDb.keyArray()) {
-		const jam = jamEventsDb.get(key)!;
-		if (!(jam.jamID === jamKey)) continue;
+	for (const key of jamEventsDb.filter((e) => e.jamID === jamKey).keyArray()) {
 		jamEventsDb.delete(key);
 	}
 
-	interaction.reply({ content: `${name} deleted!`, ephemeral: true });
+	interaction.reply({ content: `${jam.title} deleted!`, ephemeral: true });
 }
 
 function jamEmbed(jam: Jam, jamKey: string, title: string) {
