@@ -3,7 +3,7 @@ import { ActivityType, Client } from "discord.js";
 import { ctx } from "../ctx";
 import { logger } from "../logger";
 import CodingJamsCommand from "../commands/CodingJamsCommand";
-import { validateConfigParameters } from "../config-validate";
+import { validateConfigParameters } from "../util/config/config-validate";
 import BirthdayCommand from "../commands/BirthdayCommand";
 
 export default async function ready(client: Client) {

@@ -10,12 +10,11 @@ import {
 import { Client } from "discord.js";
 import { ctx } from "./ctx";
 import { logger } from "./logger";
-import { config } from "./config";
 import { Settings } from "luxon";
 
 logger.debug("Creating client...");
 const client = new Client({
-	intents: ["Guilds", "GuildMembers", config.logActivity ? "GuildPresences" : "0"],
+	intents: ["Guilds", "GuildMembers", "GuildPresences", "0"],
 });
 
 function shutdown(info: unknown) {

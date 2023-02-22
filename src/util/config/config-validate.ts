@@ -1,5 +1,5 @@
 import { Guild } from "discord.js";
-import { config } from "./config";
+import { config } from "../../config";
 import {
 	channelExists,
 	emojiExists,
@@ -7,7 +7,8 @@ import {
 	isValidHexColor,
 	isValidURl,
 	roleExists,
-} from "./util/misc/verify";
+} from "../misc/verify";
+
 
 export async function validateConfigParameters(guild: Guild) {
 	// URLs
@@ -15,7 +16,7 @@ export async function validateConfigParameters(guild: Guild) {
 	urls
 		.map((url) => ({ url, valid: isValidURl(url) }))
 		.forEach((url) => {
-			if (!url.valid) throw new Error(`Invalid URL: ${url.url}`);
+			if (!url.valid) throw new Error(`iconURL || githubURL: ${url} is not a valid URL`);
 		});
 
 	// Colors
@@ -23,7 +24,7 @@ export async function validateConfigParameters(guild: Guild) {
 	colors
 		.map((color) => ({ color, valid: isValidHexColor(color as string) }))
 		.forEach((color) => {
-			if (!color.valid) throw new Error(`Invalid color: ${color.color}`);
+			if (!color.valid) throw new Error(`color || colorRoles: ${color} is not a valid Color`);
 		});
 
 	// Strings
@@ -33,7 +34,12 @@ export async function validateConfigParameters(guild: Guild) {
 	str
 		.map((string) => ({ string, valid: isNotEmpty(string) }))
 		.forEach((string) => {
-			if (!string.valid) throw new Error(`Invalid string: ${string.string || "[empty string]"}`);
+			if (!string.valid)
+				throw new Error(
+					`botName || serverDescription || jamRoleName || colorRoles || pronounRoles: ${
+						string.string || "[empty string]"
+					} is not a valid String`
+				);
 		});
 
 	// Roles
@@ -41,7 +47,8 @@ export async function validateConfigParameters(guild: Guild) {
 	roles
 		.map((role) => ({ role, valid: roleExists(guild, role) }))
 		.forEach(async (role) => {
-			if (!(await role.valid)) throw new Error(`Invalid role: ${role.role}`);
+			if (!(await role.valid))
+				throw new Error(`adminRoleId || moderatorRoleId: ${role.role} is not a valid role ID`);
 		});
 
 	// Channels
@@ -49,7 +56,10 @@ export async function validateConfigParameters(guild: Guild) {
 	channels
 		.map((channel) => ({ channel, valid: channelExists(guild, channel) }))
 		.forEach(async (channel) => {
-			if (!(await channel.valid)) throw new Error(`Invalid channel/category: ${channel.channel}`);
+			if (!(await channel.valid))
+				throw new Error(
+					`hamChannelId || pollChannelId || resultCategoryId: ${channel.channel} is not a valid channel/category`
+				);
 		});
 
 	// Emojis
@@ -60,6 +70,12 @@ export async function validateConfigParameters(guild: Guild) {
 			valid: typeof emoji === "string" ? emojiExists(guild, emoji) : emoji === null,
 		}))
 		.forEach(async (emoji) => {
-			if (!(await emoji.valid)) throw new Error(`Invalid emoji: ${emoji.emoji}`);
+			if (!(await emoji.valid)) throw new Error(`pronounRoles: ${emoji.emoji} is not a valid emoji`);
 		});
+
+	// Activity range
+	const activityRange = config.activityLogRange;
+	if (activityRange < 3 || activityRange > 10) {
+		throw new Error(`activityLogRange: ${activityRange} is not in range of 3 to 10`);
+	}
 }
