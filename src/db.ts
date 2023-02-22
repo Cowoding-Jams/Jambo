@@ -1,10 +1,33 @@
 import Enmap from "enmap";
 import { DateTime, Duration } from "luxon";
 
-// -- LaTeX Database --
+/*
+--------------
+- MISC typed -
+--------------
+*/
+
+export type ISODate = string; // ISO Date
+export type ISODuration = string; // ISO Duration
+export type jamID = string; // key of jamDb
+export type pollID = string; // key of pollDb
+export type proposalID = string; // key of proposalDb
+export type userID = string; // Discord user id
+
+/*
+-----------------
+-LaTeX Database -
+-----------------
+*/
+
 export const latexDb = new Enmap<string>("latex"); // key: reply id
 
-// -- Reminder Database --
+/*
+---------------------
+- Reminder Database -
+---------------------
+*/
+
 export const reminderTimeoutCache = new Map<string, NodeJS.Timeout>();
 // key: unique id
 export const reminderDb = new Enmap<Reminder, InternalReminder>({
@@ -28,42 +51,76 @@ interface InternalReminder {
 	ping: string | null;
 }
 
-// -- Activity Tracker Database --
-export const activityTrackerBlacklistDb = new Enmap<string[]>("trackerBlacklist");
-activityTrackerBlacklistDb.ensure("general-user", []);
-activityTrackerBlacklistDb.ensure("general-game", []);
+/*
+-----------------------------
+- Activity Tracker Database -
+-----------------------------
+*/
 
-// key: "[user id]-[game]"
-export const activityTrackerLogDb = new Enmap<ActivityLogEntry[], InternalActivityLogEntry[]>({
-	name: "trackerLog",
-	serializer: (data) => data.map((e) => ({ duration: e.duration.toISO(), date: e.date.toISO() })),
-	deserializer: (data) =>
-		data.map((e) => ({
-			duration: Duration.fromISO(e.duration),
-			date: DateTime.fromISO(e.date, { setZone: true }),
-		})),
-});
-
-export interface ActivityLogEntry {
-	duration: Duration;
-	date: DateTime;
+/** Interface for tracker logs */
+export interface TrackerLog {
+	/** When a log got logged */
+	time: ISODate;
+	/** How long a game got played **(in seconds!!!)** */
+	playtime: number;
+	/** User id of the User who just got logged */
+	userid: userID;
+	/** Game id of the game which just got logged */
+	gameName: string;
 }
 
-interface InternalActivityLogEntry {
-	duration: ISODuration;
-	date: ISODate;
+/** Interface for stripped down tracking logs */
+export interface TrackerSublog {
+	/** User- or Game- ID */
+	id: userID;
+	/** How often a User or Game got logged */
+	logs: number;
+	/** How long a User played a certain game
+	 * (Or the other way around)
+	 */
+	playtime: number;
 }
 
-// -- MISC --
-// Types
-export type ISODate = string; // ISO Date
-export type ISODuration = string; // ISO Duration
-export type jamID = string; // key of jamDb
-export type pollID = string; // key of pollDb
-export type proposalID = string; // key of proposalDb
-export type userID = string; // Discord user id
+/** Interface for tracking users */
+export interface TrackerUser {
+	/** How much a user played */
+	playtime: number;
+	/** Reference to the first log assosiated with the user */
+	firstlog: string;
+	/** How often a user got logged */
+	logs: number;
+	/** List of lastest logs */
+	lastlogs: string[];
+	/** Stripped down logs about how often a game got logged and how long it was played */
+	games: TrackerSublog[];
+}
 
-// -- Proposal Database --
+/** Interface for tracking games */
+export interface TrackerGame {
+	/** How much a game got played */
+	playtime: number;
+	/** Reference to the first log assosiated with the game */
+	firstlog: string;
+	/** How often a game got logged */
+	logs: number;
+	/** List of latest logs */
+	lastlogs: string[];
+	/** Stripped down logs about how often a user got logged and how long they played */
+	users: TrackerSublog[];
+}
+
+export const trackerLogs = new Enmap<TrackerLog>({ name: "trackerLogs" });
+export const trackerUsers = new Enmap<TrackerUser>({ name: "trackerUsers" });
+export const trackerGames = new Enmap<TrackerGame>({ name: "trackerGames" });
+export const trackerBlacklist = new Enmap<string[]>({ name: "trackerBlacklist" });
+trackerBlacklist.ensure("", []);
+
+/*
+---------------------
+- Proposal Database -
+---------------------
+*/
+
 // key: unique id
 export const proposalDb = new Enmap<Proposal, InternalProposal>({
 	name: "proposal",
@@ -101,7 +158,12 @@ interface InternalProposal {
 	created: ISODate;
 }
 
-// -- Poll Database --
+/*
+-----------------
+- Poll Database -
+-----------------
+*/
+
 // key: unique id
 export const pollDb = new Enmap<Poll, InternalPoll>({
 	name: "poll",
@@ -166,7 +228,12 @@ interface InternalPollEvent {
 	date: ISODate;
 }
 
-// -- Jam Database --
+/*
+----------------
+- Jam Database -
+-----..---------
+*/
+
 // key: unique id
 export const jamDb = new Enmap<Jam, InternalJam>({
 	name: "jam",
@@ -222,7 +289,12 @@ interface InternalJamEvent {
 	date: ISODate;
 }
 
-// -- Birthday Database --
+/*
+---------------------
+- Birthday Database -
+---------------------
+*/
+
 // key: user id
 export const birthdayDb = new Enmap<DateTime, string>({
 	name: "birthday",
