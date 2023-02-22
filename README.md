@@ -8,7 +8,7 @@ You can read about the full set of features in our lovely wiki [here](https://gi
 
 ## The team :)
 
-Made with love by: Antti, Lucy, Leonie, Murphy, Floschy, Amber, Wilson, Riley, Kryal, Ian ❤️  
+Made with love by: [Antti](https://github.com/Chicken), [Lucy](https://github.com/BlackDemonFire), [Leonie](https://github.com/KommentatorForAll), [Murphy](https://github.com/StrangeGirlMurph), [Floschy](https://github.com/flloschy), [Amber](https://github.com/uselessamber), [Wilson](https://github.com/WilsontheWolf), Riley, [Kryal](https://github.com/Da-Real-Kryall), [Ian](https://github.com/IanToujou) ❤️  
 We're all part of a game jam/hackothon server with monthly events and wanted to make our and your lives easier. Have fun coding!
 
 ## Usage & Development
