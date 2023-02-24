@@ -8,6 +8,8 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Ensure lowercase repository name
         run: echo "REPO_LC=${REPO,,}" >> ${GITHUB_ENV}
