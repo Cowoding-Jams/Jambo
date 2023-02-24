@@ -3,7 +3,7 @@ version: "3.3"
 services:
 bot:
   build: ./
-  image: ghcr.io/cowoding-jams/jambo:latest
+  image: local/jambo
   container_name: "jambo-container"
   restart: always
   environment:
@@ -11,9 +11,3 @@ bot:
     - DEFAULT_GUILD=[GUILD_ID]
   volumes:
     - "./data:/app/data"
-  watchtower:
-    image: containrrr/watchtower
-    command: jambo --cleanup --interval 300
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
