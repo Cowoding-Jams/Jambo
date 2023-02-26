@@ -17,7 +17,8 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 			(d) =>
 				(d.dateThisYear > now && d.dateThisYear.diffNow().as("days") <= 30) ||
 				(d.dateNextYear > now && d.dateNextYear.diffNow().as("days") <= 30)
-		);
+		)
+		.sort((a, b) => (a.date > b.date ? 1 : -1));
 
 	const answer = entries.map(
 		(entry) => `<@${entry.user}> ⁘ ${entry.date.toFormat(longDateFormatWithTimezone)}`
