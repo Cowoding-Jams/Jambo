@@ -43,11 +43,7 @@ class LatexCommand extends Command {
 
 	answerWithImage(interaction: ChatInputCommandInteraction, urlToFile: string | null = ""): void {
 		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-			new ButtonBuilder()
-				.setCustomId("latex.delete")
-				.setLabel("Retry/Delete")
-				.setStyle(ButtonStyle.Secondary)
-				.setEmoji("🔁")
+			new ButtonBuilder().setCustomId("latex.delete").setStyle(ButtonStyle.Secondary).setEmoji("🔁")
 		);
 
 		if (urlToFile === "") {
