@@ -39,7 +39,9 @@ export async function listProposals(
 			text: `Page ${page + 1}/${pages} ⁘ Proposals per page: ${proposalsPerPage}/10`,
 		});
 
-		for (const [index, proposal] of proposals.entries()) {
+		for (const [index, proposal] of proposals
+			.slice(page * proposalsPerPage, (page + 1) * proposalsPerPage)
+			.entries()) {
 			embed.addFields({
 				name: list[index],
 				value: `${proposal.description}${proposal.references != "" ? `\n${proposal.references}` : ""}`,
