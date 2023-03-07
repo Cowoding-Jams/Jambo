@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
+      contents: read
     steps:
       - name: Ensure lowercase repository name
         run: echo "REPO_LC=${REPO,,}" >> ${GITHUB_ENV}
