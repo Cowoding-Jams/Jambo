@@ -8,6 +8,9 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       - name: Ensure lowercase repository name
         run: echo "REPO_LC=${REPO,,}" >> ${GITHUB_ENV}
@@ -29,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ghcr.io/${{ env.REPO_LC }}:latest
           cache-from: type=gha
