@@ -7,8 +7,8 @@ class PingCommand extends Command {
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		const botping: number = Math.round(interaction.client.ws.ping);
-		await interaction.reply(`Pong! (Bot ping: ${botping}ms)`);
+		const ping: number = Math.round(interaction.client.ws.ping);
+		await interaction.reply(`Pong! (Bot ping: ${ping}ms)`);
 	}
 
 	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {

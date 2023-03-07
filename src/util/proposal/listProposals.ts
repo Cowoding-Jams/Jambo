@@ -26,25 +26,28 @@ export async function listProposals(
 
 	const proposals = proposalDb.array();
 
-	let embed = addEmbedFooter(new EmbedBuilder().setTitle(`${proposalDb.size} Proposals`));
-
 	const list = numberedList(
 		proposals.map((p) => `${p.title} (${p.abbreviation})`),
 		proposals.map((p) => durationToReadable(p.duration))
 	).slice(page * proposalsPerPage, (page + 1) * proposalsPerPage);
 
-	for (const [index, proposal] of proposals.entries()) {
-		embed.addFields({
-			name: list[index],
-			value: `${proposal.description}${proposal.references != "" ? `\n${proposal.references}` : ""}`,
-		});
-	}
-
-	if (proposalDb.size == 0) embed = addEmbedFooter(new EmbedBuilder().setTitle("No proposals in yet..."));
-	else
-		embed.setFooter({
+	let embed: EmbedBuilder;
+	if (proposalDb.size == 0) {
+		embed = addEmbedColor(new EmbedBuilder().setTitle("No proposals in yet..."));
+	} else {
+		embed = addEmbedFooter(new EmbedBuilder().setTitle(`${proposalDb.size} Proposals`)).setFooter({
 			text: `Page ${page + 1}/${pages} ⁘ Proposals per page: ${proposalsPerPage}/10`,
 		});
+
+		for (const [index, proposal] of proposals
+			.slice(page * proposalsPerPage, (page + 1) * proposalsPerPage)
+			.entries()) {
+			embed.addFields({
+				name: list[index],
+				value: `${proposal.description}${proposal.references != "" ? `\n${proposal.references}` : ""}`,
+			});
+		}
+	}
 
 	const row = new ActionRowBuilder<ButtonBuilder>().setComponents(
 		new ButtonBuilder()

@@ -2,7 +2,12 @@ import { SelectMenu } from "../interactionClasses";
 import { bold, GuildMember, StringSelectMenuInteraction } from "discord.js";
 import { logger } from "../../logger";
 import { pollDb, proposalDb } from "../../db";
-import { pollEmbed, pollSelectMenus, sortBySelectionType } from "../../util/coding-jams/managePoll";
+import {
+	pollEmbed,
+	pollSelectMenus,
+	sortBySelectionType,
+	unusedProposals,
+} from "../../util/coding-jams/managePoll";
 import { getFromEnmap } from "../../util/misc/enmap";
 
 class PollSelectMenu extends SelectMenu {
@@ -26,6 +31,8 @@ class PollSelectMenu extends SelectMenu {
 		if (type === "include" || type === "exclude") {
 			if (values.includes("-")) values = [];
 
+			const unused = unusedProposals();
+
 			if (type === "include") {
 				if (values.length > poll.numProposals) {
 					await interaction.reply({
@@ -36,10 +43,10 @@ class PollSelectMenu extends SelectMenu {
 				}
 				poll.include = values;
 			} else if (type === "exclude") {
-				if (proposalDb.size - values.length < poll.numProposals) {
+				if (unused.size - values.length < poll.numProposals) {
 					await interaction.reply({
 						content: `You can't exclude ${values.length} proposals because then only ${
-							proposalDb.size - values.length
+							unused.size - values.length
 						} proposals are left, which is less than the required amount of ${
 							poll.numProposals
 						} proposals. No proposals were used.`,
@@ -50,7 +57,7 @@ class PollSelectMenu extends SelectMenu {
 				poll.exclude = values;
 			}
 
-			const sorted = sortBySelectionType(poll.selectionType);
+			const sorted = sortBySelectionType(unused, poll.selectionType);
 			poll.proposals = poll.include.slice(0); // copy the array
 
 			const numExtra = poll.numProposals - poll.proposals.length;
