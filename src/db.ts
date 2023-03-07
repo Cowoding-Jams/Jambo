@@ -86,6 +86,7 @@ export interface Proposal {
 	totalVotes: number;
 	polls: number;
 	created: DateTime;
+	used: boolean;
 }
 
 interface InternalProposal {
@@ -99,6 +100,7 @@ interface InternalProposal {
 	totalVotes: number;
 	polls: number;
 	created: ISODate;
+	used: boolean;
 }
 
 // -- Poll Database --
