@@ -8,8 +8,8 @@ You can read about the full set of features in our lovely wiki [here](https://gi
 
 ## The team :)
 
-Made with love by: Antti, Lucy, Leonie, Murphy, Floschy, Amber, Wilson, Riley, Kryal, Ian ❤️  
-We're all part of a game jam/hackothon server with monthly events and wanted to make our and your lives easier. Have fun coding!
+Made with love by: Antti, Lucy, Leonie, Murphy, Flowschy, Amber, Wilson ❤️  
+We're all part of a game jam/hackathon server with monthly events and wanted to make our and your lives easier. Have fun coding!
 
 ## Usage & Development
 
