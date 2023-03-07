@@ -1,10 +1,4 @@
-import {
-	ActionRowBuilder,
-	CommandInteraction,
-	EmbedBuilder,
-	SelectMenuBuilder,
-	StringSelectMenuBuilder,
-} from "discord.js";
+import { ActionRowBuilder, CommandInteraction, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
 import { DateTime } from "luxon";
 import { pollSelectionTypes } from "../../commands/CodingJamsCommand";
 import { Poll, pollDb, PollEvent, pollEventsDb, Proposal, proposalDb } from "../../db";
@@ -30,7 +24,9 @@ export async function newPoll(
 		return;
 	}
 
-	if (proposalDb.size < 2) {
+	const unused = unusedProposals();
+
+	if (unused.size < 2) {
 		interaction.reply({
 			content: "There simply aren't enough proposals to create a poll...",
 			ephemeral: true,
@@ -40,12 +36,12 @@ export async function newPoll(
 
 	// check numVotes and numProposals
 	if (numVotes > numProposals) numVotes = numProposals;
-	if (proposalDb.size < numProposals) {
-		numProposals = proposalDb.size;
-		numVotes = proposalDb.size;
+	if (unused.size < numProposals) {
+		numProposals = unused.size;
+		numVotes = unused.size;
 	}
 
-	const sorted = sortBySelectionType(selectionType);
+	const sorted = sortBySelectionType(unused, selectionType);
 
 	const poll: Poll = {
 		title: name,
@@ -107,7 +103,7 @@ export async function editPoll(interaction: CommandInteraction, poll: Poll, poll
 		});
 	}
 
-	const sorted = sortBySelectionType(poll.selectionType);
+	const sorted = sortBySelectionType(unusedProposals(), poll.selectionType);
 
 	await interaction.reply({
 		embeds: [pollEmbed(poll, pollKey, "(edit)")],
@@ -173,7 +169,7 @@ export async function votesPoll(interaction: CommandInteraction, poll: Poll) {
 	await interaction.reply({ embeds: [addEmbedFooter(embed)], ephemeral: true });
 }
 
-export function sortBySelectionType(selectionType: string) {
+export function sortBySelectionType(proposals: typeof proposalDb, selectionType: string) {
 	const sorting: {
 		[key: string]: (a: { key: string; val: Proposal }, b: { key: string; val: Proposal }) => number;
 	} = {
@@ -188,7 +184,7 @@ export function sortBySelectionType(selectionType: string) {
 		[pollSelectionTypes.mostPolls]: (a, b) => a.val.polls - b.val.polls,
 	};
 
-	return Array.from(proposalDb.entries())
+	return Array.from(proposals.entries())
 		.map((e) => ({ key: e[0], val: e[1] }))
 		.sort(sorting[selectionType])
 		.map((e) => ({ label: e.val.title, value: e.key }));
@@ -245,10 +241,10 @@ export function pollSelectMenus(
 	includeOptions: { label: string; value: string }[],
 	excludeOptions: { label: string; value: string }[]
 ) {
-	const actionRows: ActionRowBuilder<SelectMenuBuilder>[] = [];
+	const actionRows: ActionRowBuilder<StringSelectMenuBuilder>[] = [];
 
 	actionRows.push(
-		new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+		new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
 			new StringSelectMenuBuilder()
 				.setCustomId(`poll.include.${pollKey}`)
 				.setPlaceholder("Proposals to include")
@@ -259,7 +255,7 @@ export function pollSelectMenus(
 	);
 
 	actionRows.push(
-		new ActionRowBuilder<SelectMenuBuilder>().addComponents(
+		new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
 			new StringSelectMenuBuilder()
 				.setCustomId(`poll.exclude.${pollKey}`)
 				.setPlaceholder("Proposals to exclude")
@@ -270,4 +266,8 @@ export function pollSelectMenus(
 	);
 
 	return actionRows;
+}
+
+export function unusedProposals() {
+	return proposalDb.filter((v) => v.used === false);
 }

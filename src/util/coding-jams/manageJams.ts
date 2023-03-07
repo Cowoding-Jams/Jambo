@@ -28,6 +28,9 @@ export async function newJam(
 	const proposal = proposalDb.get(proposalID)!;
 	const end = start.plus(proposal.duration);
 
+	proposal.used = true;
+	proposalDb.set(proposalID, proposal);
+
 	const jam: Jam = {
 		title: name,
 		proposal: proposalID,

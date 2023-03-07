@@ -53,6 +53,7 @@ class ProposalModal extends Modal {
 				totalVotes: 0,
 				polls: 0,
 				created: DateTime.now(),
+				used: false,
 			};
 
 			proposalDb.set(proposalDb.autonum, proposal);
@@ -72,6 +73,7 @@ class ProposalModal extends Modal {
 				totalVotes: oldProposal.totalVotes,
 				polls: oldProposal.polls,
 				created: oldProposal.created,
+				used: oldProposal.used,
 			};
 
 			proposalDb.update(key, proposal);
