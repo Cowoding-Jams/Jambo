@@ -1,7 +1,8 @@
 import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { jamDb, pollDb, proposalDb, proposalID, userID } from "../../db";
+import { jamDb, pollDb, proposalID, userID } from "../../db";
 import { autocompleteISODuration, autocompleteISOTime } from "../../util/misc/autocomplete";
+import { unusedProposals } from "../../util/coding-jams/managePoll";
 
 export const autocompleteCache: {
 	[key: userID]: { include: Map<string, proposalID[]>; exclude: Map<string, proposalID[]> };
@@ -38,7 +39,7 @@ class CodingJamsAutocompleter extends Autocompleter {
 
 		const proposalNameAutocompletion = async () =>
 			await interaction.respond(
-				proposalDb
+				unusedProposals()
 					.array()
 					.filter((k) => k.title.toLowerCase().startsWith(value))
 					.slice(0, 25)

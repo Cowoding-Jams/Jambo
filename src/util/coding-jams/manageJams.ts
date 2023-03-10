@@ -21,11 +21,21 @@ export async function newJam(
 	if (!proposalID) {
 		interaction.reply({
 			content: `Couldn't find a proposal with the name "${proposalName}". Follow the autocomplete!`,
+			ephemeral: true,
 		});
 		return;
 	}
 
 	const proposal = proposalDb.get(proposalID)!;
+
+	if (proposal.used) {
+		interaction.reply({
+			content: `The proposal "${proposal.title}" has already been used for a jam. You can't use it again.`,
+			ephemeral: true,
+		});
+		return;
+	}
+
 	const end = start.plus(proposal.duration);
 
 	proposal.used = true;
@@ -104,6 +114,10 @@ export async function viewJam(interaction: CommandInteraction, jam: Jam, jamKey:
 
 export async function deleteJam(interaction: CommandInteraction, jam: Jam, jamKey: string) {
 	jamDb.delete(jamKey);
+
+	const proposal = proposalDb.get(jam.proposal)!;
+	proposal.used = false;
+	proposalDb.set(jam.proposal, proposal);
 
 	if (jam.eventID) {
 		interaction.guild?.scheduledEvents.delete(jam.eventID);
