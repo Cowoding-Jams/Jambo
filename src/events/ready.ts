@@ -22,19 +22,24 @@ export default async function ready(client: Client) {
 		type: ActivityType.Watching,
 	});
 
-	logger.info("Publishing commands...");
+	logger.debug("Publishing commands...");
 	await client.application?.commands.set(
 		ctx.commands.map((cmd) => cmd.register().toJSON()),
 		ctx.defaultGuild
 	);
 
-	logger.info("Starting coding-jam event scheduler...");
+	if (!ctx.debugMode) {
+		logger.debug("Validating config parameters...");
+		await validateConfigParameters(guild);
+	}
+
+	logger.debug("Starting coding-jam event scheduler...");
 	CodingJamsCommand.startScheduler(client);
 
-	logger.info("Starting reminder scheduler...");
+	logger.debug("Starting reminder scheduler...");
 	ReminderCommand.startScheduler(client);
 
-	logger.info("Starting birthday scheduler...");
+	logger.debug("Starting birthday scheduler...");
 	BirthdayCommand.startScheduler(client);
 
 	if (!guild.systemChannel) {
@@ -44,10 +49,4 @@ export default async function ready(client: Client) {
 	}
 
 	logger.info("Setup successful!");
-
-	if (!ctx.debugMode) {
-		logger.debug("Validating config parameters...");
-		await validateConfigParameters(guild);
-		logger.debug("Config parameters validated!");
-	}
 }
