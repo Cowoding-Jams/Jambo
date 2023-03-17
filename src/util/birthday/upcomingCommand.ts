@@ -18,7 +18,11 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 				(d.dateThisYear > now && d.dateThisYear.diffNow().as("days") <= 30) ||
 				(d.dateNextYear > now && d.dateNextYear.diffNow().as("days") <= 30)
 		)
-		.sort((a, b) => (a.date > b.date ? 1 : -1));
+		.sort((a, b) => {
+			const daysA = Math.min(a.dateThisYear.diffNow().as("days"), a.dateNextYear.diffNow().as("days"));
+			const daysB = Math.min(b.dateThisYear.diffNow().as("days"), b.dateNextYear.diffNow().as("days"));
+			return daysA - daysB;
+		});
 
 	const answer = entries.map(
 		(entry) => `<@${entry.user}> ⁘ ${entry.date.toFormat(longDateFormatWithTimezone)}`
