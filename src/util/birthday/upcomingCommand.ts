@@ -25,7 +25,7 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 		});
 
 	const answer = entries.map(
-		(entry) => `<@${entry.user}> ⁘ ${entry.date.toFormat(longDateFormatWithTimezone)}`
+		(entry) => `${entry.date.toFormat(longDateFormatWithTimezone)} ⁘ <@${entry.user}>`
 	);
 
 	if (entries.length == 0) {
