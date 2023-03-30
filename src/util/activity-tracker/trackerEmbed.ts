@@ -59,27 +59,27 @@ export async function gameActivityTrackerEmbed(
 
 	const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.jump-left.${offset}.${pages}.${sort}.${order}`)
+			.setCustomId(`activity-tracker.jump-left.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("◀◀")
 			.setStyle(ButtonStyle.Primary)
 			.setDisabled(pages == 1),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.left.${offset}.${pages}.${sort}.${order}`)
+			.setCustomId(`activity-tracker.left.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("◀")
 			.setStyle(ButtonStyle.Primary)
 			.setDisabled(pages == 1),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.right.${offset}.${pages}.${sort}.${order}`)
+			.setCustomId(`activity-tracker.right.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("▶")
 			.setStyle(ButtonStyle.Primary)
 			.setDisabled(pages == 1),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.jump-right.${offset}.${pages}.${sort}.${order}`)
+			.setCustomId(`activity-tracker.jump-right.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("▶▶")
 			.setStyle(ButtonStyle.Primary)
 			.setDisabled(pages == 1),
 		new ButtonBuilder()
-			.setCustomId(`game-activity-tracker.reload.${offset}.${pages}.${sort}.${order}`)
+			.setCustomId(`activity-tracker.reload.${offset}.${pages}.${sort}.${order}`)
 			.setLabel("↺")
 			.setStyle(ButtonStyle.Success)
 	);
