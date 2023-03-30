@@ -6,14 +6,15 @@ import { durationToReadable } from "../misc/time";
 import { Duration } from "luxon";
 
 export async function statsMy(interaction: ChatInputCommandInteraction): Promise<void> {
+	await interaction.deferReply();
+
 	let game = interaction.options.getString("game")?.toLowerCase();
 
 	const entries = getEntries(interaction.user.id, game);
 
 	if (entries.length == 0) {
-		await interaction.reply({
+		await interaction.editReply({
 			content: "No logs found...",
-			ephemeral: true,
 		});
 		return;
 	}
@@ -31,7 +32,7 @@ export async function statsMy(interaction: ChatInputCommandInteraction): Promise
 			.addFields(fields)
 			.addFields({ name: "Games", value: `${games} unique games`, inline: true });
 		embed = addEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed] });
+		await interaction.editReply({ embeds: [embed] });
 		return;
 	}
 
@@ -43,10 +44,12 @@ export async function statsMy(interaction: ChatInputCommandInteraction): Promise
 
 	let embed = new EmbedBuilder().setTitle(`Your stats about ${game}`).addFields(fields);
 	embed = addEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed] });
+	await interaction.editReply({ embeds: [embed] });
 }
 
 export async function statsGame(interaction: ChatInputCommandInteraction): Promise<void> {
+	await interaction.deferReply();
+
 	const game = interaction.options.getString("game", true).toLowerCase();
 	const showPlaytime = interaction.options.getBoolean("show-playtime") ?? false;
 
@@ -56,7 +59,7 @@ export async function statsGame(interaction: ChatInputCommandInteraction): Promi
 	if (fields.length == 0) {
 		let embed = new EmbedBuilder().setTitle(`No logs found for ${game}...`);
 		embed = addEmbedFooter(embed);
-		await interaction.reply({ embeds: [embed] });
+		await interaction.editReply({ embeds: [embed] });
 		return;
 	}
 
@@ -65,7 +68,7 @@ export async function statsGame(interaction: ChatInputCommandInteraction): Promi
 		users.push(splitId(e).user);
 	});
 	if (users.length === 0) {
-		await interaction.reply({ content: "No records found...", ephemeral: true });
+		await interaction.editReply({ content: "No records found..." });
 		return;
 	}
 
@@ -102,16 +105,17 @@ export async function statsGame(interaction: ChatInputCommandInteraction): Promi
 	}
 
 	embed = addEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed] });
+	await interaction.editReply({ embeds: [embed] });
 	return;
 }
 
 export async function statsAll(interaction: ChatInputCommandInteraction): Promise<void> {
+	await interaction.deferReply();
 	const entries = getEntries();
 	const fields = await makeStats(entries);
 
 	if (fields.length == 0) {
-		await interaction.reply({ content: "No logs found...", ephemeral: true });
+		await interaction.editReply({ content: "No logs found..." });
 		return;
 	}
 
@@ -132,5 +136,5 @@ export async function statsAll(interaction: ChatInputCommandInteraction): Promis
 		);
 
 	embed = addEmbedFooter(embed);
-	await interaction.reply({ embeds: [embed] });
+	await interaction.editReply({ embeds: [embed] });
 }
