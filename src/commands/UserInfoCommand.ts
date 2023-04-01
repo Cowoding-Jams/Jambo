@@ -59,7 +59,7 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 				user.system ? "| System" : user.bot ? "| Bot" : ""
 			}`
 		)
-		.setThumbnail(user.displayAvatarURL({ size: 1024 }))
+		.setThumbnail(user.displayAvatarURL({ size: 1024, extension: "png" }))
 		.setDescription(user.toString());
 
 	embed.addFields({ name: "User Id", value: user.id });
