@@ -2,7 +2,8 @@ import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { birthdayDb } from "../../db";
 import { addEmbedColor } from "../misc/embeds";
 import { DateTime } from "luxon";
-import { longDateFormatWithTimezone } from "../misc/time";
+import { longDateFormatWithTimezone, shortDateFormatWithTimezone } from "../misc/time";
+import { getAge } from "./loop";
 
 export async function upcomingCommand(interaction: ChatInputCommandInteraction) {
 	const now = DateTime.now();
@@ -24,9 +25,12 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 			return daysA - daysB;
 		});
 
-	const answer = entries.map(
-		(entry) => `${entry.date.toFormat(longDateFormatWithTimezone)} ⁘ <@${entry.user}>`
-	);
+	const answer = entries.map((entry) => {
+		const age = getAge(entry.date);
+		return `${entry.date.toFormat(
+			entry.date.year != 0 ? longDateFormatWithTimezone : shortDateFormatWithTimezone
+		)}${age ? ` (${age + 1}th)` : ""} ⁘ <@${entry.user}>`;
+	});
 
 	if (entries.length == 0) {
 		const embed = new EmbedBuilder()

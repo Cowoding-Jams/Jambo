@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import cron from "node-cron";
 import { Command } from "../interactions/interactionClasses";
-import { myBirthday, setBirthday } from "../util/birthday/manageBirthday";
+import { getBirthday, setBirthday } from "../util/birthday/manageBirthday";
 import { upcomingCommand } from "../util/birthday/upcomingCommand";
 import { birthdayMessageTick } from "../util/birthday/loop";
 import { birthdayDb } from "../db";
@@ -35,8 +35,8 @@ class BirthdayCommand extends Command {
 
 		if (sub == "set") {
 			await setBirthday(interaction);
-		} else if (sub == "my") {
-			await myBirthday(interaction);
+		} else if (sub == "get") {
+			await getBirthday(interaction);
 		} else if (sub == "upcoming") {
 			await upcomingCommand(interaction);
 		}
@@ -66,7 +66,12 @@ class BirthdayCommand extends Command {
 					.addBooleanOption((opt) => opt.setName("delete").setDescription("Delete your birthday entry."))
 			)
 			.addSubcommand((option) =>
-				option.setName("my").setDescription("Show what date is stored for your birthday.")
+				option
+					.setName("get")
+					.setDescription("Show what date is stored for a members birthday. (default: your own)")
+					.addUserOption((opt) =>
+						opt.setName("user").setDescription("The user to get the birthday of.").setRequired(false)
+					)
 			)
 			.addSubcommand((option) =>
 				option.setName("upcoming").setDescription("Lists the upcoming birthdays in the next 30 days.")
