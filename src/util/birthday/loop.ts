@@ -19,8 +19,7 @@ export async function birthdayMessageTick(client: Client) {
 			return null;
 		});
 		if (!guildUser) continue;
-		const birthYear = birthdayDb.get(user)!.year;
-		const age = birthYear == 0 ? null : date.year - birthYear;
+		const age = getAge(date);
 		const embed = addEmbedFooter(
 			new EmbedBuilder()
 				.setTitle(`🎉🎊🎆 Happy Birthday ${guildUser.displayName}!!! 🎈🎇🎉`)
@@ -36,4 +35,8 @@ export async function birthdayMessageTick(client: Client) {
 		if (sysChannel) sysChannel.send({ content: guildUser.toString(), embeds: [embed] });
 		else logger.warn("Failed to send birthday message because system channel isn't set!");
 	}
+}
+
+export function getAge(date: DateTime): number | null {
+	return date.year == 0 ? null : Math.floor(date.diffNow().as("years") * -1);
 }

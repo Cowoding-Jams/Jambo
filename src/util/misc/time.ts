@@ -18,6 +18,7 @@ export function durationToReadable(duration: Duration, short = false): string {
 }
 
 export const longDateFormatWithTimezone = "dd MMMM yyyy 'UTC'Z";
+export const shortDateFormatWithTimezone = "dd MMMM 'UTC'Z";
 export const longDateTimeFormat = "dd.MM.yyyy HH:mm:ss 'UTC'Z";
 export const shortDateTimeFormat = "dd.MM.yyyy HH:mm 'UTC'Z";
 export const longTimeFormat = "HH:mm:ss 'UTC'Z";

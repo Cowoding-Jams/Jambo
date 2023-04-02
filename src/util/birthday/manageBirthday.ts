@@ -2,8 +2,9 @@ import { ChatInputCommandInteraction, inlineCode } from "discord.js";
 import { birthdayDb } from "../../db";
 import { DateTime } from "luxon";
 import { getTimezoneFromRole } from "../misc/role";
-import { longDateFormatWithTimezone } from "../misc/time";
+import { longDateFormatWithTimezone, shortDateFormatWithTimezone } from "../misc/time";
 import { config } from "../../config";
+import { getAge } from "./loop";
 
 export async function setBirthday(interaction: ChatInputCommandInteraction) {
 	const oldDate = birthdayDb.get(interaction.user.id);
@@ -55,9 +56,9 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 
 	if (oldDate) {
 		await interaction.reply({
-			content: `Changed your birthday from *${oldDate.toFormat(
+			content: `Changed your birthday from ${oldDate.toFormat(
 				longDateFormatWithTimezone
-			)}* to **${date.toFormat(longDateFormatWithTimezone)}**!`,
+			)} to **${date.toFormat(longDateFormatWithTimezone)}**!`,
 		});
 	} else {
 		await interaction.reply({
@@ -66,18 +67,36 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 	}
 }
 
-export async function myBirthday(interaction: ChatInputCommandInteraction) {
-	if (!birthdayDb.has(interaction.user.id)) {
+export async function getBirthday(interaction: ChatInputCommandInteraction) {
+	const user = interaction.options.getUser("user")!;
+	const member = interaction.guild!.members.cache.get(user.id);
+
+	if (!member) {
 		await interaction.reply({
-			content: "You haven't set your birthday yet!\nYou can do this by using `/birthday set`",
+			content: "This user is not on this server!",
 			ephemeral: true,
 		});
 		return;
 	}
 
-	const date = birthdayDb.get(interaction.user.id)!;
+	const isUserItself = interaction.user.id == user.id;
+
+	if (!birthdayDb.has(user.id)) {
+		await interaction.reply({
+			content: isUserItself
+				? "You don't have a birthday set yet!\nYou can set it with `/birthday set`!"
+				: `${member.displayName} hasn't set their birthday yet!`,
+			ephemeral: true,
+		});
+		return;
+	}
+
+	const date = birthdayDb.get(user.id)!;
+	const age = getAge(date);
 
 	await interaction.reply({
-		content: `Your birthday is set for the **${date.toFormat(longDateFormatWithTimezone)}**!`,
+		content: `${isUserItself ? "Your" : member.displayName + "s"} birthday is set for the ${date.toFormat(
+			age != null ? longDateFormatWithTimezone : shortDateFormatWithTimezone
+		)}!${age != null ? ` That means ${isUserItself ? "you" : "they"} are ${age} years old!` : ""}`,
 	});
 }
