@@ -68,8 +68,10 @@ class BirthdayCommand extends Command {
 			.addSubcommand((option) =>
 				option
 					.setName("get")
-					.setDescription("Show what date is stored for a members birthday.")
-					.addUserOption((opt) => opt.setName("user").setDescription("The user to get the birthday of."))
+					.setDescription("Show what date is stored for a members birthday. (default: your own)")
+					.addUserOption((opt) =>
+						opt.setName("user").setDescription("The user to get the birthday of.").setRequired(false)
+					)
 			)
 			.addSubcommand((option) =>
 				option.setName("upcoming").setDescription("Lists the upcoming birthdays in the next 30 days.")

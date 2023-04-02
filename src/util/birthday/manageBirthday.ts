@@ -68,7 +68,7 @@ export async function setBirthday(interaction: ChatInputCommandInteraction) {
 }
 
 export async function getBirthday(interaction: ChatInputCommandInteraction) {
-	const user = interaction.options.getUser("user")!;
+	const user = interaction.options.getUser("user") ?? interaction.user;
 	const member = interaction.guild!.members.cache.get(user.id);
 
 	if (!member) {
