@@ -12,16 +12,17 @@ export async function newJam(
 	proposalName: string,
 	start: DateTime
 ) {
+	await interaction.deferReply({ ephemeral: true });
+
 	if (jamDb.findKey((jam) => jam.title === name)) {
-		interaction.reply({ content: `A jam with the name "${name}" already exists...`, ephemeral: true });
+		interaction.editReply({ content: `A jam with the name "${name}" already exists...` });
 		return;
 	}
 
 	const proposalID = proposalDb.findKey((p) => p.title === proposalName);
 	if (!proposalID) {
-		interaction.reply({
+		interaction.editReply({
 			content: `Couldn't find a proposal with the name "${proposalName}". Follow the autocomplete!`,
-			ephemeral: true,
 		});
 		return;
 	}
@@ -29,9 +30,8 @@ export async function newJam(
 	const proposal = proposalDb.get(proposalID)!;
 
 	if (proposal.used) {
-		interaction.reply({
+		interaction.editReply({
 			content: `The proposal "${proposal.title}" has already been used for a jam. You can't use it again.`,
-			ephemeral: true,
 		});
 		return;
 	}
@@ -68,7 +68,7 @@ export async function newJam(
 
 	events.forEach((e) => jamEventsDb.set(jamEventsDb.autonum, e));
 
-	interaction.reply({ embeds: [jamEmbed(jam, id, "(new)")], ephemeral: true });
+	interaction.editReply({ embeds: [jamEmbed(jam, id, "(new)")] });
 }
 
 export async function editJam(interaction: CommandInteraction, jam: Jam, jamKey: string, end: DateTime) {
