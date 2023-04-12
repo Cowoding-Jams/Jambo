@@ -61,7 +61,7 @@ interface InternalReminder {
 export interface TrackerLog {
 	/** When a log got logged */
 	time: ISODate;
-	/** How long a game got played **(in seconds!!!)** */
+	/** How long a game got played */
 	playtime: number;
 	/** User id of the User who just got logged */
 	userid: userID;
