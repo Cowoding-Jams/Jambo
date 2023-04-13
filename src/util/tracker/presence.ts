@@ -33,7 +33,7 @@ export async function getChangedActivities(
 export function isBlacklisted(gameName: string): boolean {
 	return trackerBlacklist.get("")?.includes(gameName.toLowerCase()) || false;
 }
-
+/** Logs a new entry to the logs, user and games db */
 export async function logIt(gameName: string, userID: string, timePlayed: number): Promise<void> {
 	gameName = gameName.toLowerCase();
 	if (isBlacklisted(gameName)) return;
@@ -44,7 +44,7 @@ export async function logIt(gameName: string, userID: string, timePlayed: number
 	updateGame(gameName, userID, timePlayed, logID); // update games db entry
 	addLog(gameName, userID, timePlayed, logID); // make a db entry for this new log
 }
-
+/** Ensures that there is a entry in the user and game db before continuing*/
 function ensure(gameName: string, userID: string, logID: string) {
 	if (!trackerGames.has(gameName.toLowerCase())) {
 		const data: TrackerGame = {
@@ -67,7 +67,7 @@ function ensure(gameName: string, userID: string, logID: string) {
 		trackerUsers.set(userID, data);
 	}
 }
-
+/** updates the latest logs, logs, game and playtime of a user */
 function updateUser(gameName: string, userID: string, timePlayed: number, logID: string) {
 	gameName = gameName.toLowerCase();
 
@@ -91,7 +91,7 @@ function updateUser(gameName: string, userID: string, timePlayed: number, logID:
 
 	trackerUsers.set(userID, data);
 }
-
+/** updates the latest logs, logs, users and playtime of a game*/
 function updateGame(gameName: string, userID: string, timePlayed: number, logID: string) {
 	gameName = gameName.toLowerCase();
 
@@ -114,7 +114,7 @@ function updateGame(gameName: string, userID: string, timePlayed: number, logID:
 
 	trackerGames.set(gameName, data);
 }
-
+/** Make a new log */
 function addLog(gameName: string, userID: string, timePlayed: number, logID: string) {
 	const data: TrackerLog = {
 		gameName: gameName,

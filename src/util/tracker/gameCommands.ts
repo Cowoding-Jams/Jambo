@@ -6,29 +6,39 @@ import { makeTimeString } from "./helper";
 import { GAMENOENTRY, INVALIDFILTER } from "./messages";
 
 export async function gameStats(interaction: ChatInputCommandInteraction) {
-	const game = interaction.options.getString("game", true);
-	const db = trackerGames.get(game.toLocaleLowerCase());
+	// get game option
+	const targetGame = interaction.options.getString("game", true);
+	
+	// load tracker Games db
+	const db = trackerGames.get(targetGame.toLocaleLowerCase());
 	if (!db) {
 		await interaction.reply(GAMENOENTRY);
 		return;
 	}
 
+	// get top 5 played games and make a string
 	const mostPlayed = db.users
 		.sort((a, b) => b.playtime - a.playtime)
 		.slice(0, 5)
 		.map((user) => `<@${user.id}>: ${makeTimeString(user.playtime)}`)
 		.join("\n");
+	// get top 5 logged games and make a string
 	const mostLogged = db.users
 		.sort((a, b) => b.logs - a.logs)
 		.slice(0, 5)
 		.map((user) => `<@${user.id}>: ${user.logs} logs`)
 		.join("\n");
+	// format latest logs into a string
 	const latestLogs = db.lastlogs.map((log) => `<@${trackerLogs.get(log)?.userid}>`).join("\n");
+	// get total playtime, logs and users
 	const totalPlaytime = db.playtime;
 	const totalLogs = db.logs;
-	const firstSeen = new Date(trackerLogs.get(db.firstlog)?.time as string).getTime();
-	const range = Date.now() - firstSeen;
 	const users = db.users.length;
+	// get first log of game             (first log is iso string)
+	const firstSeen = new Date(trackerLogs.get(db.firstlog)?.time as string).getTime();
+	// calculate the range from first log to now
+	const range = Date.now() - firstSeen;
+	// calculate daly/weekly/monthy and per-log average playtime
 	const playtimePer = `day: ${makeTimeString(
 		Math.round(totalPlaytime / (range / (86400 * 1000)))
 	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / 604800000)))}\nmonth: ${makeTimeString(
@@ -36,7 +46,9 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	)}\nuser: ${makeTimeString(Math.round(totalPlaytime / users))}\nlog: ${makeTimeString(
 		Math.round(totalPlaytime / totalLogs)
 	)}`;
+	// temporary sorted list of most playtime/log (users)
 	const tmp = db.users.sort((a, b) => b.playtime / b.logs - a.playtime / a.logs)[0];
+	// make most playtime/log string
 	const mostPlaytime = `<@${tmp.id}>: ${makeTimeString(tmp.playtime / tmp.logs)} - ${
 		tmp.logs
 	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
@@ -48,7 +60,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 			iconURL: config.iconURL,
 		})
 		.setColor(config.color)
-		.setTitle(`Tracking stats about ${game}`)
+		.setTitle(`Tracking stats about ${targetGame}`)
 		.setFooter({
 			text: `Requested by ${interaction.user.tag}`,
 			iconURL: interaction.user.displayAvatarURL({ size: 16 }),
@@ -78,21 +90,31 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	await interaction.reply({ embeds: [embed] });
 }
 export async function gameLast(interaction: ChatInputCommandInteraction) {
-	const target = interaction.options.getString("game", true);
-	const db = trackerGames.get(target);
+	// get the target game
+	const targetGame = interaction.options.getString("game", true);
+	// load games db
+	const db = trackerGames.get(targetGame);
 	if (!db) {
 		await interaction.reply(GAMENOENTRY);
 		return;
 	}
 
-	const logs = db.lastlogs.slice(0, 5).reverse();
+	// get latest logs
+	const logs = db.lastlogs.reverse();
+	// store future embed fields
 	const fields: APIEmbedField[] = [];
 
+	// make embed field for every log
 	await logs.forEach(async (log) => {
+		// get and validate log (db.lastlogs is a list of numbers as strings, not the actual log)
 		const entry = trackerLogs.get(log);
 		if (!entry) return;
+		// get user who owns the log
 		const user = await interaction.client.users.fetch(entry.userid);
+		// skip if user doesnt exist anymo
 		if (!user) return;
+
+		// make field
 		fields.push({
 			inline: true,
 			name: user.username,
@@ -102,6 +124,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		});
 	});
 
+	// add a last field so embed looks better formated
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = new EmbedBuilder()
@@ -111,7 +134,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 			url: config.githubURL,
 			iconURL: config.iconURL,
 		})
-		.setTitle(`Latest logs of ${target}`)
+		.setTitle(`Latest logs of ${targetGame}`)
 		.addFields(...fields)
 		.setFooter({
 			text: `Requested by ${interaction.user.tag}`,
@@ -122,28 +145,30 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 	await interaction.reply({ embeds: [embed] });
 }
 export async function gameTop(interaction: ChatInputCommandInteraction) {
-	const target = interaction.options.getString("game", true);
-	const db = trackerGames.get(target);
+	// get target game
+	const targetGame = interaction.options.getString("game", true);
+	// load games db
+	const db = trackerGames.get(targetGame);
 	if (!db) {
 		await interaction.reply(GAMENOENTRY);
 		return;
 	}
 
+	// get and validate filter
 	const filter = interaction.options.getString("filter", true);
-	if (filter == "playtime") {
-		("");
-	} else if (filter == "logs") {
-		("");
-	} else {
+	if (!(filter == "playtime" || filter == "logs")) {
 		interaction.reply(INVALIDFILTER);
 		return;
 	}
-
+	// get users who played the game and sort them based of the filter and limit range to 0..5
 	const users = db.users
 		.sort((a, b) => (filter == "playtime" ? b.playtime - a.playtime : b.logs - a.logs))
 		.splice(0, 5);
+	
+	// future embed fields
 	const fields: APIEmbedField[] = [];
 
+	// add a field per user
 	await users.forEach(async (user) => {
 		fields.push({
 			inline: true,
@@ -155,8 +180,9 @@ export async function gameTop(interaction: ChatInputCommandInteraction) {
 		});
 	});
 
+	// add one final field for formating purposes
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
-	config.botName;
+	
 	const embed = new EmbedBuilder()
 		.setColor(config.color)
 		.setAuthor({
@@ -164,7 +190,7 @@ export async function gameTop(interaction: ChatInputCommandInteraction) {
 			url: config.githubURL,
 			iconURL: config.iconURL,
 		})
-		.setTitle(`Top user (${filter}) by ${target}`)
+		.setTitle(`Top user (${filter}) by ${targetGame}`)
 		.addFields(...fields)
 		.setFooter({
 			text: `Requested by ${interaction.user.tag}`,
