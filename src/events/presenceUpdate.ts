@@ -23,7 +23,7 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 		delete cachedUser[activity.name];
 
 		// Played time in secods ("~~" makes float to int)
-		const timePlayed = ~~((Date.now() - start));
+		const timePlayed = ~~(Date.now() - start);
 		// filter out logs under 20 seconds
 		//if (timePlayed < 20) return;
 

@@ -9,7 +9,6 @@ import {
 	roleExists,
 } from "../misc/verify";
 
-
 export async function validateConfigParameters(guild: Guild) {
 	// URLs
 	const urls = [config.iconURL, config.githubURL];
