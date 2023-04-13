@@ -49,7 +49,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 		}
 		text = `${targetUser.username} has ${makeTimeString(db.playtime)} of playtime in ${targetGame}`;
 	} else {
-		// shouldnt happen but just in case a return
+		// shouldn't happen but just in case a return
 		return;
 	}
 
@@ -126,7 +126,7 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 		})
 	);
 
-	// add empty field for better formating
+	// add empty field for better formatting
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = new EmbedBuilder()
@@ -169,7 +169,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		.splice(0, 5)
 		.map((user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${makeTimeString(user.playtime)}`)
 		.join("\n");
-	// get latest system wide lgos and make string
+	// get latest system wide logs and make string
 	const latestLogs = trackerLogs
 		.array()
 		.reverse()
@@ -190,7 +190,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	const totalLogs = trackerLogs.count;
 	// get amount of games
 	const games = trackerGames.count;
-	// get amout of users
+	// get amount of users
 	const users = trackerUsers.count;
 	// get first log               (time is iso string)
 	const firstSeen = new Date(trackerLogs.array()[0].time).getTime();

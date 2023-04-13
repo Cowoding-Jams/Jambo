@@ -60,7 +60,7 @@ class Tracker extends Command {
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("tracker")
-			.setDescription("The gameway to some cool stats about here being users")
+			.setDescription("The gateway to some cool stats about here being users")
 			.addSubcommandGroup((group) =>
 				group
 					.setName("user")

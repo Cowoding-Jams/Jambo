@@ -10,7 +10,7 @@ export const MEMBERNOTFOUND = errorEmbed(
 /** Used when the filter option is not "playtime" or "logs" */
 export const INVALIDFILTER = errorEmbed("invalid filter", 'Given filter needs to be "logs" or "playtime"');
 /** Used when a given user is not found in the tracker database */
-export const USERNOENTRY = errorEmbed("no database entry", "Given user has no entrys in the database.");
+export const USERNOENTRY = errorEmbed("no database entry", "Given user has no entries in the database.");
 /** Used when a given game is not found in users tracker database entry */
 export const USERNOGAMEENTRY = errorEmbed(
 	"no database entry",

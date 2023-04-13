@@ -12,7 +12,7 @@ export function sortGamesPlaytime(userId: string) {
 	const data = trackerUsers.get(userId);
 	return data?.games.sort((a, b) => b.playtime - a.playtime);
 }
-/** Sorts users games after amount of lofs of a user (most logs at index 0) */
+/** Sorts users games after amount of logs of a user (most logs at index 0) */
 export function sortGamesLogs(userId: string) {
 	const data = trackerUsers.get(userId);
 	return data?.games.sort((a, b) => b.logs - a.logs);
@@ -29,7 +29,7 @@ export function errorEmbed(title: string, info: string): InteractionReplyOptions
 		ephemeral: true,
 	};
 }
-/** Make an success embe */
+/** Make an success embed */
 export function confirmEmbed(title: string): InteractionReplyOptions {
 	return {
 		embeds: [new EmbedBuilder().setTitle(title).setColor([0, 255, 0])],

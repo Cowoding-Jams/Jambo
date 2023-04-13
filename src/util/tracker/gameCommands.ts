@@ -38,7 +38,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	const firstSeen = new Date(trackerLogs.get(db.firstlog)?.time as string).getTime();
 	// calculate the range from first log to now
 	const range = Date.now() - firstSeen;
-	// calculate daly/weekly/monthy and per-log average playtime
+	// calculate daily/weekly/monthly and per-log average playtime
 	const playtimePer = `day: ${makeTimeString(
 		Math.round(totalPlaytime / (range / (86400 * 1000)))
 	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / 604800000)))}\nmonth: ${makeTimeString(
@@ -67,7 +67,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 		})
 		.setTimestamp(Date.now())
 		.addFields(
-			{ inline: true, name: "Most logged user", value: mostLogged },
+			{ inline: true, name: "Most logged users", value: mostLogged },
 			{ inline: true, name: "User with most playtime", value: mostPlayed },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "Latest logs", value: latestLogs },
@@ -111,7 +111,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		if (!entry) return;
 		// get user who owns the log
 		const user = await interaction.client.users.fetch(entry.userid);
-		// skip if user doesnt exist anymo
+		// skip if user doesnt exist anymore
 		if (!user) return;
 
 		// make field
@@ -124,7 +124,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		});
 	});
 
-	// add a last field so embed looks better formated
+	// add a last field so embed looks better formatted
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = new EmbedBuilder()
@@ -180,7 +180,7 @@ export async function gameTop(interaction: ChatInputCommandInteraction) {
 		});
 	});
 
-	// add one final field for formating purposes
+	// add one final field for formatting purposes
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = new EmbedBuilder()

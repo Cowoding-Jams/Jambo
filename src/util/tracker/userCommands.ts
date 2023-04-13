@@ -18,7 +18,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 		await interaction.reply(MEMBERNOTFOUND);
 		return;
 	}
-	// load db and get taret user
+	// load db and get target user
 	const db = trackerUsers.get(target.id);
 	if (!db) {
 		await interaction.reply(USERNOENTRY);
@@ -137,7 +137,7 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 		});
 	});
 
-	// add extra field for better formating
+	// add extra field for better formatting
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = new EmbedBuilder()
@@ -202,7 +202,7 @@ export async function userTop(interaction: ChatInputCommandInteraction) {
 		});
 	});
 
-	// add one extra field for better formating
+	// add one extra field for better formatting
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = new EmbedBuilder()
