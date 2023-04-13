@@ -8,7 +8,6 @@ import {
 	TrackerUser,
 	trackerUsers,
 } from "../../db";
-import { config } from "../../config";
 
 export async function getChangedActivities(
 	oldPresence: Presence | null,
@@ -77,7 +76,7 @@ function updateUser(gameName: string, userID: string, timePlayed: number, logID:
 	if (!data) return;
 
 	// remove oldest log from the latest log history
-	if (data.lastlogs.length > config.activityLogRange) data.lastlogs.shift();
+	if (data.lastlogs.length >= 5) data.lastlogs.shift();
 	data.lastlogs.push(logID); // add newest log to the log history
 
 	data.logs += 1;
@@ -100,7 +99,7 @@ function updateGame(gameName: string, userID: string, timePlayed: number, logID:
 	if (!data) return;
 
 	// remove oldest log from the latest log history
-	if (data.lastlogs.length > config.activityLogRange) data.lastlogs.shift();
+	if (data.lastlogs.length >= 5) data.lastlogs.shift();
 	data.lastlogs.push(logID); // add newest log to the log history
 
 	data.logs += 1;

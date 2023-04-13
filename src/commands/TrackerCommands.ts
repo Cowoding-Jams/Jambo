@@ -4,20 +4,10 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import {
-	addBlacklist,
-	gameLast,
-	gameStats,
-	gameTop,
-	latest,
-	logs,
-	playtime,
-	remBlacklist,
-	stats,
-	userLast,
-	userStats,
-	userTop,
-} from "../util/tracker/commands";
+import { latest, logs, playtime, stats } from "../util/tracker/subCommands";
+import { userLast, userStats, userTop } from "../util/tracker/userCommands";
+import { gameLast, gameStats, gameTop } from "../util/tracker/gameCommands";
+import { addBlacklist, remBlacklist } from "../util/tracker/blacklistCommands";
 class Tracker extends Command {
 	constructor() {
 		super("tracker");
@@ -183,7 +173,7 @@ class Tracker extends Command {
 					.setName("playtime")
 					.setDescription("how may hours a game got played by a user")
 					.addStringOption((game) =>
-						game.setName("game").setDescription("go figure: the game").setAutocomplete(true).setRequired(true)
+						game.setName("game").setDescription("go figure: the game").setAutocomplete(true)
 					)
 					.addUserOption((usr) => usr.setName("user").setDescription("go figure: the user"))
 			)
@@ -192,7 +182,7 @@ class Tracker extends Command {
 					.setName("logs")
 					.setDescription("See how many logs a user has in a given game")
 					.addStringOption((game) =>
-						game.setName("game").setDescription("go figure: the game").setAutocomplete(true).setRequired(true)
+						game.setName("game").setDescription("go figure: the game").setAutocomplete(true)
 					)
 					.addUserOption((usr) => usr.setName("user").setDescription("go figure: the user"))
 			)
