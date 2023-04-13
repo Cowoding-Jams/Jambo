@@ -83,7 +83,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 			{ inline: true, name: "(Average) playtime per", value: playtimePer },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "(Average) most playtime/log", value: mostPlaytime },
-			{ inline: true, name:"Total played games", value:games.toString()},
+			{ inline: true, name: "Total played games", value: games.toString() },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{
 				inline: true,
@@ -136,7 +136,7 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 			)}:t>\nplayed time: ${makeTimeString(entry.playtime)}`,
 		});
 	});
-	
+
 	// add extra field for better formating
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
@@ -159,7 +159,7 @@ export async function userTop(interaction: ChatInputCommandInteraction) {
 		await interaction.reply(USERNOTFOUND);
 		return;
 	}
-	// get the member from target 
+	// get the member from target
 	const member = await interaction.guild?.members.fetch(target.id);
 	if (member == undefined) {
 		await interaction.reply(MEMBERNOTFOUND);

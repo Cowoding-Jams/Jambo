@@ -13,12 +13,14 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 	let text = ""; // used later in the final embed
 
 	// make matching text for each case
-	if (!targetUser && !targetGame) { // no user, no game
+	if (!targetUser && !targetGame) {
+		// no user, no game
 		let playtime = 0;
 		// count all played times of all games together
 		trackerGames.array().forEach((game) => (playtime += game.playtime));
 		text = `The whole system has tracked ${makeTimeString(playtime)} of playtime`;
-	} else if (!targetUser && targetGame) { // no user, game
+	} else if (!targetUser && targetGame) {
+		// no user, game
 		// load db and get target game
 		const db = trackerGames.get(targetGame.toLowerCase());
 		if (!db) {
@@ -26,7 +28,8 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 			return;
 		}
 		text = `${targetGame} has ${makeTimeString(db.playtime)} of playtime`;
-	} else if (targetUser && !targetGame) {// user, no game
+	} else if (targetUser && !targetGame) {
+		// user, no game
 		// load db and get target user
 		const db = trackerUsers.get(targetUser.id);
 		if (!db) {
@@ -34,7 +37,8 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 			return;
 		}
 		text = `${targetUser.username} has ${makeTimeString(db.playtime)} of playtime`;
-	} else if (targetUser && targetGame) { // user, game
+	} else if (targetUser && targetGame) {
+		// user, game
 		// load db and get user.games and find target game in there
 		const db = trackerUsers
 			.get(targetUser.id)
@@ -60,12 +64,14 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 	let text = ""; // used later in the final embed
 
 	// make matching text for each case
-	if (!targetUser && !targetGame) { // no u ser, no game
+	if (!targetUser && !targetGame) {
+		// no u ser, no game
 		let logs = 0;
 		// count all logs of all games together
 		trackerGames.array().forEach((game) => (logs += game.logs));
 		text = `The whole system has tracked ${logs} times`;
-	} else if (!targetUser && targetGame) { // no user, game
+	} else if (!targetUser && targetGame) {
+		// no user, game
 		// get target db game entry
 		const db = trackerGames.get(targetGame.toLowerCase());
 		if (!db) {
@@ -73,7 +79,8 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 			return;
 		}
 		text = `${targetGame} was played ${db.logs} times`;
-	} else if (targetUser && !targetGame) { // user, no game
+	} else if (targetUser && !targetGame) {
+		// user, no game
 		// get target db user entry
 		const db = trackerUsers.get(targetUser.id);
 		if (!db) {
@@ -81,7 +88,8 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 			return;
 		}
 		text = `${targetUser.username} was logged ${db.logs} times`;
-	} else if (targetUser && targetGame) { // user, game
+	} else if (targetUser && targetGame) {
+		// user, game
 		// load db and get user.games and find target game in there
 		const db = trackerUsers
 			.get(targetUser.id)
@@ -102,7 +110,7 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 export async function latest(interaction: ChatInputCommandInteraction) {
 	// future embed fields
 	const fields: APIEmbedField[] = [];
-	
+
 	// latest system logs
 	const logs = trackerLogs.array().slice(0, 5).reverse();
 	// make embed for each log
@@ -179,12 +187,12 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		.map((game) => game.playtime)
 		.reduce((partialSum, a) => partialSum + a, 0);
 	// get amount of logs
-	const totalLogs = trackerLogs.count
+	const totalLogs = trackerLogs.count;
 	// get amount of games
 	const games = trackerGames.count;
 	// get amout of users
-	const users = trackerUsers.count
-	// get first log               (time is iso string) 
+	const users = trackerUsers.count;
+	// get first log               (time is iso string)
 	const firstSeen = new Date(trackerLogs.array()[0].time).getTime();
 	// make range from first log to now
 	const range = Date.now() - firstSeen;
@@ -234,8 +242,8 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 			{ inline: true, name: "Total logs", value: totalLogs.toString() },
 			{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) },
 			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Total games", value: games.toString()},
-			{ inline: true, name: "Total users", value: users.toString()}
+			{ inline: true, name: "Total games", value: games.toString() },
+			{ inline: true, name: "Total users", value: users.toString() }
 		);
 
 	await interaction.reply({ embeds: [embed] });

@@ -8,7 +8,7 @@ import { GAMENOENTRY, INVALIDFILTER } from "./messages";
 export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// get game option
 	const targetGame = interaction.options.getString("game", true);
-	
+
 	// load tracker Games db
 	const db = trackerGames.get(targetGame.toLocaleLowerCase());
 	if (!db) {
@@ -164,7 +164,7 @@ export async function gameTop(interaction: ChatInputCommandInteraction) {
 	const users = db.users
 		.sort((a, b) => (filter == "playtime" ? b.playtime - a.playtime : b.logs - a.logs))
 		.splice(0, 5);
-	
+
 	// future embed fields
 	const fields: APIEmbedField[] = [];
 
@@ -182,7 +182,7 @@ export async function gameTop(interaction: ChatInputCommandInteraction) {
 
 	// add one final field for formating purposes
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
-	
+
 	const embed = new EmbedBuilder()
 		.setColor(config.color)
 		.setAuthor({

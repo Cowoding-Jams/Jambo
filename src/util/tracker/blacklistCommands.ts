@@ -27,7 +27,7 @@ export async function remBlacklist(interaction: ChatInputCommandInteraction) {
 		interaction.reply(ADMINONLY);
 		return;
 	}
-	
+
 	// get game option
 	const game = interaction.options.getString("game", true);
 	const db = trackerBlacklist.get("");
