@@ -24,8 +24,6 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 
 		// Played time in secods ("~~" makes float to int)
 		const timePlayed = ~~(Date.now() - start);
-		// filter out logs under 20 seconds
-		//if (timePlayed < 20) return;
 
 		await logIt(activity.name, userID, timePlayed);
 	});

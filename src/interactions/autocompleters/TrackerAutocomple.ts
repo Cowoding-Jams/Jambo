@@ -2,7 +2,7 @@ import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import { trackerGames } from "../../db";
 
-class CountryAutocompleter extends Autocompleter {
+class Tracker extends Autocompleter {
 	constructor() {
 		super("tracker");
 	}
@@ -19,4 +19,4 @@ class CountryAutocompleter extends Autocompleter {
 	}
 }
 
-export default new CountryAutocompleter();
+export default new Tracker();
