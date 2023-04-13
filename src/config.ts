@@ -49,9 +49,6 @@ export const config: BotConfig = {
 		["Sea Serpent", "#5db9cf"],
 	],
 
-	// --- Activity Tracker ---
-	activityLogRange: 5,
-
 	// --- Birthday feature ---
 	birthdayNotificationAt: 9,
 };

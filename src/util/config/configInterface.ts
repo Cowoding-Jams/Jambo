@@ -40,15 +40,6 @@ export interface BotConfig {
 	/** Max 25 color roles to pick from. First argument is the name of the role, second argument is the color. */
 	colorRoles: [string, ColorResolvable][];
 
-	// --- Activity Tracker ---
-	/** Defines the range of how many \*latest log\* get stored and shown using some commands (eg. `/.. user last`)
-	 *
-	 * Also defines the number of stored and shown top users and games (eg. `/.. game top <playtime> `)
-	 *
-	 * **Must be in range of 3 to 10!**
-	 */
-	activityLogRange: 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-
 	// --- Birthday Feature ---
 	/** Can be any integer between 0 and 23. Defines at what time the birthday message should get send. */
 	birthdayNotificationAt:

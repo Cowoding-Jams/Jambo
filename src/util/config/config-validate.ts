@@ -71,10 +71,4 @@ export async function validateConfigParameters(guild: Guild) {
 		.forEach(async (emoji) => {
 			if (!(await emoji.valid)) throw new Error(`pronounRoles: ${emoji.emoji} is not a valid emoji`);
 		});
-
-	// Activity range
-	const activityRange = config.activityLogRange;
-	if (activityRange < 3 || activityRange > 10) {
-		throw new Error(`activityLogRange: ${activityRange} is not in range of 3 to 10`);
-	}
 }
