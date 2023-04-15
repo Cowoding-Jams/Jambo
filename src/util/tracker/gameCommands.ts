@@ -61,11 +61,6 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 		})
 		.setColor(config.color)
 		.setTitle(`Tracking stats about ${targetGame}`)
-		.setFooter({
-			text: `Requested by ${interaction.user.tag}`,
-			iconURL: interaction.user.displayAvatarURL({ size: 16 }),
-		})
-		.setTimestamp(Date.now())
 		.addFields(
 			{ inline: true, name: "Most logged users", value: mostLogged },
 			{ inline: true, name: "User with most playtime", value: mostPlayed },
@@ -135,12 +130,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 			iconURL: config.iconURL,
 		})
 		.setTitle(`Latest logs of ${targetGame}`)
-		.addFields(...fields)
-		.setFooter({
-			text: `Requested by ${interaction.user.tag}`,
-			iconURL: interaction.user.displayAvatarURL({ size: 16 }),
-		})
-		.setTimestamp(Date.now());
+		.addFields(...fields);
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -191,12 +181,7 @@ export async function gameTop(interaction: ChatInputCommandInteraction) {
 			iconURL: config.iconURL,
 		})
 		.setTitle(`Top user (${filter}) by ${targetGame}`)
-		.addFields(...fields)
-		.setFooter({
-			text: `Requested by ${interaction.user.tag}`,
-			iconURL: interaction.user.displayAvatarURL({ size: 16 }),
-		})
-		.setTimestamp(Date.now());
+		.addFields(...fields);
 
 	await interaction.reply({ embeds: [embed] });
 }

@@ -201,9 +201,9 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		Math.round(totalPlaytime / (range / (86400 * 1000)))
 	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / 604800000)))}\nmonth: ${makeTimeString(
 		Math.round(totalPlaytime / (range / 2628000000))
-	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nlog: ${makeTimeString(
-		Math.round(totalPlaytime / totalLogs)
-	)}`;
+	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nuser: ${makeTimeString(
+		Math.round(totalPlaytime / users)
+	)}log: ${makeTimeString(Math.round(totalPlaytime / totalLogs))}`;
 	// temporary sorted list based on playtime/log
 	const tmp = trackerGames.array().sort((a, b) => b.playtime / b.logs - a.playtime / b.logs)[0];
 	// make string from temporary list
@@ -214,11 +214,6 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	const embed = new EmbedBuilder()
 		.setTitle("System stats")
 		.setColor(config.color)
-		.setFooter({
-			text: `Requested by ${interaction.user.tag}`,
-			iconURL: interaction.user.displayAvatarURL({ size: 16 }),
-		})
-		.setTimestamp(Date.now())
 		.addFields(
 			{ inline: true, name: "Most logged games", value: mostLoggedGame },
 			{ inline: true, name: "Most played games", value: mostPlayedGame },

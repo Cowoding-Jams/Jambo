@@ -52,7 +52,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 		Math.round(totalPlaytime / (range / (86400 * 1000)))
 	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / 604800000)))}\nmonth: ${makeTimeString(
 		Math.round(totalPlaytime / (range / 2628000000))
-	)}\nuser: ${makeTimeString(Math.round(totalPlaytime / games))}\nlog: ${makeTimeString(
+	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nlog: ${makeTimeString(
 		Math.round(totalPlaytime / totalLogs)
 	)}`;
 	// temporary sorted list of games playtime/log
@@ -70,11 +70,6 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 		})
 		.setColor(member.displayColor)
 		.setTitle(`Tracking stats about ${member.displayName}`)
-		.setFooter({
-			text: `Requested by ${interaction.user.tag}`,
-			iconURL: interaction.user.displayAvatarURL({ size: 16 }),
-		})
-		.setTimestamp(Date.now())
 		.addFields(
 			{ inline: true, name: "Most logged game", value: mostLogged },
 			{ inline: true, name: "Game with most playtime", value: mostPlayed },
