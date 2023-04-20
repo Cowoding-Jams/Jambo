@@ -113,9 +113,9 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: user.username,
-			value: `time: <t:${Math.floor(new Date(entry.time).getTime() / 1000)}:d><t:${Math.floor(
+			value: `<t:${Math.floor(new Date(entry.time).getTime() / 1000)}:d><t:${Math.floor(
 				new Date(entry.time).getTime() / 1000
-			)}:t>\nplayed time: ${makeTimeString(entry.playtime)}`,
+			)}:t>\n${makeTimeString(entry.playtime)}`,
 		});
 	});
 
