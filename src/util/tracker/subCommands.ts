@@ -114,17 +114,19 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 	const fields: APIEmbedField[] = [];
 
 	// latest system logs
-	const logs = trackerLogs.array().slice(0, 5).reverse();
+	const logs = trackerLogs
+		.array()
+		.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+		.slice(0, 5);
+
 	// make embed for each log
 	logs.forEach((log) =>
 		fields.push({
 			inline: true,
 			name: log.gameName,
-			value: `user: <@${log.userid}>\ntime: <t:${Math.floor(
+			value: `<@${log.userid}>\n<t:${Math.floor(new Date(log.time).getTime() / 1000)}:d><t:${Math.floor(
 				new Date(log.time).getTime() / 1000
-			)}:d><t:${Math.floor(new Date(log.time).getTime() / 1000)}:t>\nplayed time: ${makeTimeString(
-				log.playtime
-			)}`,
+			)}:t>\n${makeTimeString(log.playtime)}`,
 		})
 	);
 

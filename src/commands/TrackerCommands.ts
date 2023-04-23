@@ -32,70 +32,53 @@ class Tracker extends Command {
 			return;
 		}
 		const sub = interaction.options.getSubcommand();
-		const gam = interaction.options.getString("game");
 		const sta = interaction.options.getString("statistic")
 			? interaction.options.getString("statistic")
 			: "stats";
 		const act = interaction.options.getString("action");
-		let exectued = false;
-
 		switch (sub) {
 			case "user":
-				if (sta == "playtime" && gam) {
+				if (sta == "playtime") {
 					await playtime(interaction);
-					exectued = true;
-				} else if (sta == "logs" && gam) {
+				} else if (sta == "logs") {
 					await logs(interaction);
-					exectued = true;
 				} else if (sta == "general statistics") {
 					await userStats(interaction);
-					exectued = true;
 				} else if (sta == "top 5 most played games") {
 					await userTop(interaction, "playtime");
-					exectued = true;
 				} else if (sta == "top 5 most logged games") {
 					await userTop(interaction, "logs");
-					exectued = true;
-				} else if (sta == "Latest 5 logs") {
+				} else if (sta == "latest 5 logs") {
 					await userLast(interaction);
-					exectued = true;
 				}
 				return;
 			case "game":
 				if (sta == "general statistics") {
 					await gameStats(interaction);
-					exectued = true;
 				} else if (sta == "top 5 most played games") {
 					await gameTop(interaction, "playtime");
-					exectued = true;
 				} else if (sta == "top 5 most logged games") {
 					await gameTop(interaction, "logs");
-					exectued = true;
-				} else if (sta == "Latest 5 logs") {
+				} else if (sta == "latest 5 logs") {
 					await gameLast(interaction);
-					exectued = true;
 				}
 				return;
 			case "blacklist":
 				if (act == "add") {
 					await addBlacklist(interaction);
-					exectued = true;
 				} else if (act == "rem") {
 					await remBlacklist(interaction);
-					exectued = true;
 				}
 				return;
 			case "latest":
 				await latest(interaction);
-				exectued = true;
 				return;
 			case "statistics":
 				await stats(interaction);
-				exectued = true;
 				return;
 		}
 
-		if (!exectued) {
+		if (!interaction.replied) {
 			await interaction.reply({
 				embeds: [
 					new EmbedBuilder()
@@ -142,7 +125,7 @@ class Tracker extends Command {
 								{ name: "general statistics", value: "general statistics" },
 								{ name: "top 5 most played games", value: "top 5 most played games" },
 								{ name: "top 5 most logged games", value: "top 5 most logged games" },
-								{ name: "Latest 5 logs", value: "Latest 5 logs" }
+								{ name: "latest 5 logs", value: "latest 5 logs" }
 							)
 					)
 			)
