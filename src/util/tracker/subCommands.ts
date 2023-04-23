@@ -59,7 +59,9 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 }
 export async function logs(interaction: ChatInputCommandInteraction) {
 	// get target user and game
-	const targetUser = interaction.options.getUser("user");
+	const targetUser = interaction.options.getUser("user")
+		? interaction.options.getUser("user")
+		: interaction.user;
 	const targetGame = interaction.options.getString("game");
 	let text = ""; // used later in the final embed
 
@@ -203,12 +205,12 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		Math.round(totalPlaytime / (range / 2628000000))
 	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nuser: ${makeTimeString(
 		Math.round(totalPlaytime / users)
-	)}log: ${makeTimeString(Math.round(totalPlaytime / totalLogs))}`;
+	)}\nlog: ${makeTimeString(Math.round(totalPlaytime / totalLogs))}`;
 	// temporary sorted list based on playtime/log
 	const tmp = trackerGames.array().sort((a, b) => b.playtime / b.logs - a.playtime / b.logs)[0];
 	// make string from temporary list
 	const mostPlaytime = `${trackerLogs.get(tmp.lastlogs[0])?.gameName}: ${makeTimeString(
-		tmp.playtime / tmp.logs
+		Math.round(tmp.playtime / tmp.logs)
 	)} - ${tmp.logs} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
 	const embed = new EmbedBuilder()
