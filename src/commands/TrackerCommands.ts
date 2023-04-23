@@ -9,12 +9,24 @@ import { latest, logs, playtime, stats } from "../util/tracker/subCommands";
 import { userLast, userStats, userTop } from "../util/tracker/userCommands";
 import { gameLast, gameStats, gameTop } from "../util/tracker/gameCommands";
 import { addBlacklist, remBlacklist } from "../util/tracker/blacklistCommands";
+import {config } from "../config"
+
 class Tracker extends Command {
 	constructor() {
 		super("tracker");
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+		if (!config.tracking) {
+			await interaction.reply({embeds:[
+				new EmbedBuilder()
+					.setTitle("tracking disabled")
+					.setDescription("Tracking is disabled. No game activity's will be logged and tracking commands are disabled.")
+					.setColor([255, 0, 0])
+				
+			], ephemeral:true})
+			return
+		}
 		const sub = interaction.options.getSubcommand();
 		const gam = interaction.options.getString("game");
 		const sta = interaction.options.getString("statistic")
@@ -94,6 +106,9 @@ class Tracker extends Command {
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
+		if (!config.tracking) return new SlashCommandBuilder()
+			.setName("tracker")
+			.setDescription("Tracking is disabled. No game activity's will be logged and tracking commands are disabled.")
 		return new SlashCommandBuilder()
 			.setName("tracker")
 			.setDescription("The gateway to some cool stats about here being users")

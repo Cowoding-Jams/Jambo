@@ -51,4 +51,7 @@ export const config: BotConfig = {
 
 	// --- Birthday feature ---
 	birthdayNotificationAt: 9,
+
+	// --- Tracker ---
+	tracking: false
 };
