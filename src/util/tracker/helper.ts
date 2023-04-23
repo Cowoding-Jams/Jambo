@@ -24,7 +24,7 @@ export function errorEmbed(title: string, info: string): InteractionReplyOptions
 			new EmbedBuilder()
 				.setTitle(`ERROR: ${title}`)
 				.setDescription(`further info:\n\`\`\`${info}\`\`\``)
-				.setColor([0, 255, 0]),
+				.setColor([255, 0, 0]),
 		],
 		ephemeral: true,
 	};
