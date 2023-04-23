@@ -1,12 +1,11 @@
 import { Presence } from "discord.js";
 import { getChangedActivities, isBlacklisted, logIt } from "../util/tracker/presence";
-import { config } from "../config"
-
+import { config } from "../config";
 
 const userCache = new Map<string, Record<string, number>>();
 
 export default async function presenceUpdate(oldPresence: Presence | null, newPresence: Presence) {
-	if (!config.tracking) return
+	if (!config.tracking) return;
 	if (newPresence.user?.bot) return;
 
 	const { started, stopped } = await getChangedActivities(oldPresence, newPresence);
