@@ -3,7 +3,7 @@ import { config } from "../../config";
 import { trackerLogs, TrackerSublog, trackerUsers } from "../../db";
 import { discordTimestamp } from "../misc/time";
 import { makeTimeString, sortGamesLogs, sortGamesPlaytime } from "./helper";
-import { INVALIDFILTER, MEMBERNOTFOUND, USERNOENTRY, USERNOTFOUND } from "./messages";
+import { MEMBERNOTFOUND, USERNOENTRY, USERNOTFOUND } from "./messages";
 
 export async function userStats(interaction: ChatInputCommandInteraction) {
 	// get target user and default to command executer if not given
@@ -126,9 +126,9 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: entry.gameName,
-			value: `time: <t:${Math.floor(new Date(entry.time).getTime() / 1000)}:d><t:${Math.floor(
+			value: `<t:${Math.floor(new Date(entry.time).getTime() / 1000)}:d><t:${Math.floor(
 				new Date(entry.time).getTime() / 1000
-			)}:t>\nplayed time: ${makeTimeString(entry.playtime)}`,
+			)}:t>\n${makeTimeString(entry.playtime)}`,
 		});
 	});
 
@@ -147,7 +147,7 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 
 	await interaction.reply({ embeds: [embed] });
 }
-export async function userTop(interaction: ChatInputCommandInteraction) {
+export async function userTop(interaction: ChatInputCommandInteraction, filter: string) {
 	// get target user, default to executer if not given
 	const target = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
 	if (!target) {
@@ -160,8 +160,6 @@ export async function userTop(interaction: ChatInputCommandInteraction) {
 		await interaction.reply(MEMBERNOTFOUND);
 		return;
 	}
-	// get filter
-	const filter = interaction.options.getString("filter", true);
 
 	// load sorted list based on filter
 	let games: TrackerSublog[] | undefined = [];
@@ -170,7 +168,6 @@ export async function userTop(interaction: ChatInputCommandInteraction) {
 	} else if (filter == "playtime") {
 		games = sortGamesPlaytime(member.id);
 	} else {
-		await interaction.reply(INVALIDFILTER);
 		return;
 	}
 

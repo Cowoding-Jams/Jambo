@@ -1,6 +1,7 @@
 import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
+	EmbedBuilder,
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
@@ -14,182 +15,154 @@ class Tracker extends Command {
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		const group = interaction.options.getSubcommandGroup();
-		const sub = interaction.options.getSubcommand();
+		const sub = interaction.options.getSubcommand()
+		const gam = interaction.options.getString('game')
+		const sta = interaction.options.getString('statistic') ? interaction.options.getString('statistic') : "stats"
+		const act = interaction.options.getString("action")
+		let exectued = false
 
-		switch (group + sub) {
-			case "userstats":
-				await userStats(interaction);
-				return;
-			case "userlast":
-				await userLast(interaction);
-				return;
-			case "usertop":
-				await userTop(interaction);
-				return;
-			case "gamestats":
-				await gameStats(interaction);
-				return;
-			case "gamelast":
-				await gameLast(interaction);
-				return;
-			case "gametop":
-				await gameTop(interaction);
-				return;
-			case "blacklistadd":
-				await addBlacklist(interaction);
-				return;
-			case "blacklistremove":
-				await remBlacklist(interaction);
-				return;
-			case "nullplaytime":
-				await playtime(interaction);
-				return;
-			case "nulllogs":
-				await logs(interaction);
-				return;
-			case "nulllast":
-				await latest(interaction);
-				return;
-			case "nullstats":
-				await stats(interaction);
-				return;
+		switch (sub) {
+			case "user":
+				if (sta == "playtime" && gam) {
+					await playtime(interaction)
+					exectued = true
+				} else if (sta == "logs" && gam) {
+					await logs(interaction)
+					exectued = true
+				} else if (sta == "general statistics") {
+					await userStats(interaction)
+					exectued = true
+				} else if (sta == "top 5 most played games") {
+					await userTop(interaction, "playtime")
+					exectued = true
+				} else if (sta == "top 5 most logged games") {
+					await userTop(interaction, "logs")
+					exectued = true
+				} else if (sta == "Latest 5 logs") {
+					await userLast(interaction)
+					exectued = true
+				}
+				return
+			case "game":
+				if (sta == "general statistics") {
+					await gameStats(interaction)
+					exectued = true
+				} else if (sta == "top 5 most played games") {
+					await gameTop(interaction, "playtime")
+					exectued = true
+				} else if (sta == "top 5 most logged games") {
+					await gameTop(interaction, "logs")
+					exectued = true
+				} else if (sta == "Latest 5 logs") {
+					await gameLast(interaction)
+					exectued = true
+				}
+				return
+			case "blacklist":
+				if (act == "add") {
+					await addBlacklist(interaction)
+					exectued = true
+				} else if (act == "rem") {
+					await remBlacklist(interaction)
+					exectued = true
+				}
+				return
+			case "latest":
+				await latest(interaction)
+				exectued = true
+				return
+			case "statistics":
+				await stats(interaction)
+				exectued = true
+				return
 		}
+
+		if (!exectued) {
+			await interaction.reply({embeds: [
+				new EmbedBuilder()
+					.setTitle("invalid options")
+					.setDescription("this can happen when you dont follow the order of the given options. Sadly thats a bug by discord (options dont get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer.")
+					.setColor([255, 255, 0])
+				]})
+		}
+
 	}
 
 	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("tracker")
 			.setDescription("The gateway to some cool stats about here being users")
-			.addSubcommandGroup((group) =>
-				group
+			.addSubcommand((sub) =>
+				sub
 					.setName("user")
-					.setDescription("Get the Tracking data about a certain user")
-					.addSubcommand((sub) =>
-						sub
-							.setName("stats")
-							.setDescription("See some interesting statistics about a user")
-							.addUserOption((usr) => usr.setName("user").setDescription("go figure: the user"))
+					.setDescription("Get tracking stats about a user")	
+					.addUserOption((opt) =>
+						opt
+							.setName("user")
+							.setDescription("the user")
+						)
+					.addStringOption((opt) =>
+						opt
+							.setName("game")
+							.setDescription("the game")
+							.setAutocomplete(true)
 					)
-					.addSubcommand((sub) =>
-						sub
-							.setName("last")
-							.setDescription("Take a look at the latest logs of a user")
-							.addUserOption((usr) => usr.setName("user").setDescription("go figure: the user"))
-					)
-					.addSubcommand((sub) =>
-						sub
-							.setName("top")
-							.setDescription("Lists you the most logged or played game by a user")
-							.addStringOption((opt) =>
-								opt
-									.setName("filter")
-									.setDescription("logs or playtime?")
-									.addChoices({ name: "logs", value: "logs" }, { name: "playtime", value: "playtime" })
-									.setRequired(true)
-							)
-							.addUserOption((usr) => usr.setName("user").setDescription("go figure: the user"))
+					.addStringOption((opt) => 
+						opt
+							.setName("statistic")
+							.setDescription("ye")
+							.setAutocomplete(true)
 					)
 			)
-			.addSubcommandGroup((group) =>
-				group
+			.addSubcommand((sub) =>
+				sub
 					.setName("game")
-					.setDescription("Get the tracking data about a certain game")
-					.addSubcommand((sub) =>
-						sub
-							.setName("stats")
-							.setDescription("See some interesting statistics about a game")
-							.addStringOption((game) =>
-								game
-									.setName("game")
-									.setDescription("go figure: the game")
-									.setAutocomplete(true)
-									.setRequired(true)
-							)
+					.setDescription("Get tracking stats about a game")	
+					.addStringOption((opt) =>
+						opt
+							.setName("game")
+							.setDescription("the game")
+							.setRequired(true)
+							.setAutocomplete(true)
 					)
-					.addSubcommand((sub) =>
-						sub
-							.setName("last")
-							.setDescription("Take a look at the latest logs of a game")
-							.addStringOption((game) =>
-								game
-									.setName("game")
-									.setDescription("go figure: the game")
-									.setAutocomplete(true)
-									.setRequired(true)
-							)
-					)
-					.addSubcommand((sub) =>
-						sub
-							.setName("top")
-							.setDescription("Lists you the most logged or played game by a game")
-							.addStringOption((game) =>
-								game
-									.setName("game")
-									.setDescription("go figure: the game")
-									.setAutocomplete(true)
-									.setRequired(true)
-							)
-							.addStringOption((opt) =>
-								opt
-									.setName("filter")
-									.setDescription("logs or playtime?")
-									.addChoices({ name: "logs", value: "logs" }, { name: "playtime", value: "playtime" })
-									.setRequired(true)
+					.addStringOption((opt) => 
+						opt
+							.setName("statistic")
+							.setDescription("ye")
+							.addChoices(
+								{name:"general statistics", value:"general statistics"},
+								{name:"top 5 most played games", value:"top 5 most played games"},
+								{name:"top 5 most logged games", value:"top 5 most logged games"},
+								{name:"Latest 5 logs", value:"Latest 5 logs"}
 							)
 					)
 			)
-			.addSubcommandGroup((group) =>
-				group
+			.addSubcommand((sub) => 
+				sub
 					.setName("blacklist")
-					.setDescription("edit the playlist (ADMIN ONLY)")
-					.addSubcommand((sub) =>
-						sub
-							.setName("add")
-							.setDescription("choose a game which shouldn't get logged anymore")
-							.addStringOption((sub) =>
-								sub
-									.setName("game")
-									.setDescription("go figure: the game")
-									.setAutocomplete(true)
-									.setRequired(true)
+					.setDescription("ADMIN ONLY")
+					.addStringOption((opt) => 
+						opt
+							.setName("action")
+							.setDescription("yo")
+							.addChoices(
+								{name:"add", value:"add"},
+								{name:"remove", value:"rem"}
 							)
+							.setRequired(true)
 					)
-					.addSubcommand((sub) =>
-						sub
-							.setName("remove")
-							.setDescription("choose a game which should get logged again")
-							.addStringOption((sub) =>
-								sub
-									.setName("game")
-									.setDescription("go figure: the game")
-									.setAutocomplete(true)
-									.setRequired(true)
-							)
+					.addStringOption((opt) => 
+						opt
+							.setName("game")
+							.setDescription("the game")
+							.setRequired(true)
+							.setAutocomplete(true)
 					)
 			)
 			.addSubcommand((sub) =>
-				sub
-					.setName("playtime")
-					.setDescription("how may hours a game got played by a user")
-					.addStringOption((game) =>
-						game.setName("game").setDescription("go figure: the game").setAutocomplete(true)
-					)
-					.addUserOption((usr) => usr.setName("user").setDescription("go figure: the user"))
+				sub.setName("latest").setDescription("See the latest logs across the whole system")
 			)
-			.addSubcommand((sub) =>
-				sub
-					.setName("logs")
-					.setDescription("See how many logs a user has in a given game")
-					.addStringOption((game) =>
-						game.setName("game").setDescription("go figure: the game").setAutocomplete(true)
-					)
-					.addUserOption((usr) => usr.setName("user").setDescription("go figure: the user"))
-			)
-			.addSubcommand((sub) =>
-				sub.setName("last").setDescription("See the latest logs across the whole system")
-			)
-			.addSubcommand((sub) => sub.setName("stats").setDescription("See some system stats"));
+			.addSubcommand((sub) => sub.setName("statistics").setDescription("See some system stats"));
 	}
 }
 

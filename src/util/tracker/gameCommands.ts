@@ -3,7 +3,7 @@ import { config } from "../../config";
 import { trackerGames, trackerLogs } from "../../db";
 import { discordTimestamp } from "../misc/time";
 import { makeTimeString } from "./helper";
-import { GAMENOENTRY, INVALIDFILTER } from "./messages";
+import { GAMENOENTRY } from "./messages";
 
 export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// get game option
@@ -134,7 +134,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 
 	await interaction.reply({ embeds: [embed] });
 }
-export async function gameTop(interaction: ChatInputCommandInteraction) {
+export async function gameTop(interaction: ChatInputCommandInteraction, filter: string) {
 	// get target game
 	const targetGame = interaction.options.getString("game", true);
 	// load games db
@@ -144,12 +144,6 @@ export async function gameTop(interaction: ChatInputCommandInteraction) {
 		return;
 	}
 
-	// get and validate filter
-	const filter = interaction.options.getString("filter", true);
-	if (!(filter == "playtime" || filter == "logs")) {
-		interaction.reply(INVALIDFILTER);
-		return;
-	}
 	// get users who played the game and sort them based of the filter and limit range to 0..5
 	const users = db.users
 		.sort((a, b) => (filter == "playtime" ? b.playtime - a.playtime : b.logs - a.logs))
