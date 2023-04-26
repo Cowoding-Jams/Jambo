@@ -37,20 +37,35 @@ export function confirmEmbed(title: string): InteractionReplyOptions {
 	};
 }
 /** Sort database entrys, given a sorting and maping callback */
-export const sortDbEntrysToString = (db:TrackerSublog[], sortFn:(a:TrackerSublog, b:TrackerSublog) => number, mapFn:(log: TrackerSublog) => any) => db
+export const sortDbEntrysToString = (
+	db: TrackerSublog[],
+	sortFn: (a: TrackerSublog, b: TrackerSublog) => number,
+	mapFn: (log: TrackerSublog) => any
+) =>
+	db
 		.sort((a, b) => sortFn(a, b))
 		.slice(0, 5)
 		.map((log) => mapFn(log))
-		.join("\n")
+		.join("\n");
 /** Sort database games, given a sorting and maping callback */
-export const sortDbGamesToString = (db:TrackerGame[], sortFn:(a:TrackerGame, b:TrackerGame) => number, mapFn:(log: TrackerGame) => any) => db
+export const sortDbGamesToString = (
+	db: TrackerGame[],
+	sortFn: (a: TrackerGame, b: TrackerGame) => number,
+	mapFn: (log: TrackerGame) => any
+) =>
+	db
 		.sort((a, b) => sortFn(a, b))
 		.slice(0, 5)
 		.map((log) => mapFn(log))
-		.join("\n")
+		.join("\n");
 /** Sort database users, given a sorting and maping callback */
-export const sortDbUsersToString = (db:TrackerUser[], sortFn:(a:TrackerUser, b:TrackerUser) => number, mapFn:(log: TrackerUser) => any) => db
+export const sortDbUsersToString = (
+	db: TrackerUser[],
+	sortFn: (a: TrackerUser, b: TrackerUser) => number,
+	mapFn: (log: TrackerUser) => any
+) =>
+	db
 		.sort((a, b) => sortFn(a, b))
 		.slice(0, 5)
 		.map((log) => mapFn(log))
-		.join("\n")
+		.join("\n");

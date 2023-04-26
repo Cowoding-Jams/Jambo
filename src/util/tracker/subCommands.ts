@@ -142,16 +142,32 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 }
 export async function stats(interaction: ChatInputCommandInteraction) {
 	// get 5 most logged games and make string
-	const mostLoggedGame = sortDbGamesToString(trackerGames.array(), (a,b)=>b.logs-a.logs, (game)=>`${trackerLogs.get(game.lastlogs[0])?.gameName}: ${game.logs}`)
+	const mostLoggedGame = sortDbGamesToString(
+		trackerGames.array(),
+		(a, b) => b.logs - a.logs,
+		(game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${game.logs}`
+	);
 
 	// get 5 most played games and make string
-	const mostPlayedGame = sortDbGamesToString(trackerGames.array(), (a,b)=>b.playtime-a.playtime, (game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${makeTimeString(game.playtime)}`)
+	const mostPlayedGame = sortDbGamesToString(
+		trackerGames.array(),
+		(a, b) => b.playtime - a.playtime,
+		(game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${makeTimeString(game.playtime)}`
+	);
 
 	// get 5 most logged users and make string
-	const mostLoggedUser = sortDbUsersToString(trackerUsers.array(), (a,b)=>b.logs-a.logs, (user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${user.logs} logs`)
+	const mostLoggedUser = sortDbUsersToString(
+		trackerUsers.array(),
+		(a, b) => b.logs - a.logs,
+		(user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${user.logs} logs`
+	);
 
 	// get 5 most playtime users and make string
-	const mostPlayedUser = sortDbUsersToString(trackerUsers.array(), (a,b)=>b.playtime-a.playtime, (user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${makeTimeString(user.playtime)}`)
+	const mostPlayedUser = sortDbUsersToString(
+		trackerUsers.array(),
+		(a, b) => b.playtime - a.playtime,
+		(user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${makeTimeString(user.playtime)}`
+	);
 
 	// get latest system wide logs and make string
 	const latestLogs = trackerLogs

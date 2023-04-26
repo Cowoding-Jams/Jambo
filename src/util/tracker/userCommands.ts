@@ -26,10 +26,18 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	}
 
 	// make sorted list of most played games and make string
-	const mostPlayed = sortDbEntrysToString(db.games, (a,b)=>b.playtime-a.playtime, (game)=>`${game.id}: ${makeTimeString(game.playtime)}`)
+	const mostPlayed = sortDbEntrysToString(
+		db.games,
+		(a, b) => b.playtime - a.playtime,
+		(game) => `${game.id}: ${makeTimeString(game.playtime)}`
+	);
 
 	// make sorted list of most logged games and make string
-	const mostLogged = sortDbEntrysToString(db.games, (a,b)=>b.logs-a.logs, (game) => `${game.id}: ${game.logs} logs`)
+	const mostLogged = sortDbEntrysToString(
+		db.games,
+		(a, b) => b.logs - a.logs,
+		(game) => `${game.id}: ${game.logs} logs`
+	);
 
 	// get latest logs and make string
 	const latestLogs = db.lastlogs.map((log) => `${trackerLogs.get(log)?.gameName}`).join("\n");
