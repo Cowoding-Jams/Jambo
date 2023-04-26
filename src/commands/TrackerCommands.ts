@@ -19,47 +19,48 @@ class Tracker extends Command {
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (!config.tracking) {
 			await interaction.reply({
-				content: "Tracking is disabled. No game activity's will be logged and tracking commands are disabled.",
+				content:
+					"Tracking is disabled. No game activity's will be logged and tracking commands are disabled.",
 				ephemeral: true,
 			});
 			return;
 		}
-		const sub = interaction.options.getSubcommand();
-		const sta = interaction.options.getString("statistic")
+		const subCommand = interaction.options.getSubcommand();
+		const statistics = interaction.options.getString("statistic")
 			? interaction.options.getString("statistic")
 			: "stats";
-		const act = interaction.options.getString("action");
-		switch (sub) {
+		const action = interaction.options.getString("action");
+		switch (subCommand) {
 			case "user":
-				if (sta == "playtime") {
+				if (statistics == "playtime") {
 					await playtime(interaction);
-				} else if (sta == "logs") {
+				} else if (statistics == "logs") {
 					await logs(interaction);
-				} else if (sta == "general statistics") {
+				} else if (statistics == "general statistics") {
 					await userStats(interaction);
-				} else if (sta == "top 5 most played games") {
+				} else if (statistics == "top 5 most played games") {
 					await userTop(interaction, "playtime");
-				} else if (sta == "top 5 most logged games") {
+				} else if (statistics == "top 5 most logged games") {
 					await userTop(interaction, "logs");
-				} else if (sta == "latest 5 logs") {
+				} else if (statistics == "latest 5 logs") {
 					await userLast(interaction);
 				}
 				return;
 			case "game":
-				if (sta == "general statistics") {
+				if (statistics == "general statistics") {
 					await gameStats(interaction);
-				} else if (sta == "top 5 most played games") {
+				} else if (statistics == "top 5 most played games") {
 					await gameTop(interaction, "playtime");
-				} else if (sta == "top 5 most logged games") {
+				} else if (statistics == "top 5 most logged games") {
 					await gameTop(interaction, "logs");
-				} else if (sta == "latest 5 logs") {
+				} else if (statistics == "latest 5 logs") {
 					await gameLast(interaction);
 				}
 				return;
 			case "blacklist":
-				if (act == "add") {
+				if (action == "add") {
 					await addBlacklist(interaction);
-				} else if (act == "rem") {
+				} else if (action == "rem") {
 					await remBlacklist(interaction);
 				}
 				return;
