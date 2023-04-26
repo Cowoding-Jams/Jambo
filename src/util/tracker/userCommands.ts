@@ -2,7 +2,7 @@ import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discor
 import { config } from "../../config";
 import { trackerLogs, TrackerSublog, trackerUsers } from "../../db";
 import { discordTimestamp } from "../misc/time";
-import { makeTimeString, sortGamesLogs, sortGamesPlaytime } from "./helper";
+import { makeTimeString, sortDbEntrysToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
 import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 
 export async function userStats(interaction: ChatInputCommandInteraction) {
@@ -26,17 +26,11 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	}
 
 	// make sorted list of most played games and make string
-	const mostPlayed = db.games
-		.sort((a, b) => b.playtime - a.playtime)
-		.slice(0, 5)
-		.map((game) => `${game.id}: ${makeTimeString(game.playtime)}`)
-		.join("\n");
+	const mostPlayed = sortDbEntrysToString(db.games, (a,b)=>b.playtime-a.playtime, (game)=>`${game.id}: ${makeTimeString(game.playtime)}`)
+
 	// make sorted list of most logged games and make string
-	const mostLogged = db.games
-		.sort((a, b) => b.logs - a.logs)
-		.slice(0, 5)
-		.map((game) => `${game.id}: ${game.logs} logs`)
-		.join("\n");
+	const mostLogged = sortDbEntrysToString(db.games, (a,b)=>b.logs-a.logs, (game) => `${game.id}: ${game.logs} logs`)
+
 	// get latest logs and make string
 	const latestLogs = db.lastlogs.map((log) => `${trackerLogs.get(log)?.gameName}`).join("\n");
 	// get total users playtime, logs and games

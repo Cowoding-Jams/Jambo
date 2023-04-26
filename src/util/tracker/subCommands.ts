@@ -3,7 +3,7 @@ import { APIEmbedField, ChatInputCommandInteraction } from "discord.js";
 import { discordTimestamp } from "../misc/time";
 import { trackerGames, trackerLogs, trackerUsers } from "../../db";
 import { config } from "../../config";
-import { makeTimeString } from "./helper";
+import { makeTimeString, sortDbEntrysToString, sortDbGamesToString, sortDbUsersToString } from "./helper";
 import { gameNoEntry, userNoEntry, userNoGameEntry } from "./messages";
 
 export async function playtime(interaction: ChatInputCommandInteraction) {
@@ -142,37 +142,17 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 }
 export async function stats(interaction: ChatInputCommandInteraction) {
 	// get 5 most logged games and make string
-	const mostLoggedGame = trackerGames
-		.array()
-		.sort((a, b) => a.logs - b.logs)
-		.reverse()
-		.slice(0, 5)
-		.map((game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${game.logs}`)
-		.join("\n");
+	const mostLoggedGame = sortDbGamesToString(trackerGames.array(), (a,b)=>b.logs-a.logs, (game)=>`${trackerLogs.get(game.lastlogs[0])?.gameName}: ${game.logs}`)
+
 	// get 5 most played games and make string
-	const mostPlayedGame = trackerGames
-		.array()
-		.sort((a, b) => a.playtime - b.playtime)
-		.reverse()
-		.slice(0, 5)
-		.map((game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${makeTimeString(game.playtime)}`)
-		.join("\n");
+	const mostPlayedGame = sortDbGamesToString(trackerGames.array(), (a,b)=>b.playtime-a.playtime, (game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${makeTimeString(game.playtime)}`)
+
 	// get 5 most logged users and make string
-	const mostLoggedUser = trackerUsers
-		.array()
-		.sort((a, b) => a.logs - b.logs)
-		.reverse()
-		.splice(0, 5)
-		.map((user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${user.logs} logs`)
-		.join("\n");
+	const mostLoggedUser = sortDbUsersToString(trackerUsers.array(), (a,b)=>b.logs-a.logs, (user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${user.logs} logs`)
+
 	// get 5 most playtime users and make string
-	const mostPlayedUser = trackerUsers
-		.array()
-		.sort((a, b) => a.playtime - b.playtime)
-		.reverse()
-		.splice(0, 5)
-		.map((user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${makeTimeString(user.playtime)}`)
-		.join("\n");
+	const mostPlayedUser = sortDbUsersToString(trackerUsers.array(), (a,b)=>b.playtime-a.playtime, (user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${makeTimeString(user.playtime)}`)
+
 	// get latest system wide logs and make string
 	const latestLogs = trackerLogs
 		.array()
