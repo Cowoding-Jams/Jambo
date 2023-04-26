@@ -75,9 +75,9 @@ class Tracker extends Command {
 		if (!interaction.replied) {
 			await interaction.reply({
 				content:
-							"this can happen when you dont follow the order of the given options. Sadly thats a bug by discord (options dont get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer.",
-				ephemeral: true
-						});
+					"this can happen when you dont follow the order of the given options. Sadly thats a bug by discord (options dont get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer.",
+				ephemeral: true,
+			});
 		}
 	}
 
@@ -95,16 +95,34 @@ class Tracker extends Command {
 				sub
 					.setName("user")
 					.setDescription("Get tracking stats about a user.")
-					.addUserOption((opt) => opt.setName("user").setDescription("the target user, if not given defaults to you."))
-					.addStringOption((opt) => opt.setName("game").setDescription("the game of which to get playtime/logs from.").setAutocomplete(true))
-					.addStringOption((opt) => opt.setName("statistic").setDescription("select what statistics should get shown. (Options depend on if a game is given or not)").setAutocomplete(true))
+					.addUserOption((opt) =>
+						opt.setName("user").setDescription("the target user, if not given defaults to you.")
+					)
+					.addStringOption((opt) =>
+						opt
+							.setName("game")
+							.setDescription("the game of which to get playtime/logs from.")
+							.setAutocomplete(true)
+					)
+					.addStringOption((opt) =>
+						opt
+							.setName("statistic")
+							.setDescription(
+								"select what statistics should get shown. (Options depend on if a game is given or not)"
+							)
+							.setAutocomplete(true)
+					)
 			)
 			.addSubcommand((sub) =>
 				sub
 					.setName("game")
 					.setDescription("Get tracking stats about a game.")
 					.addStringOption((opt) =>
-						opt.setName("game").setDescription("the game of which to get statistics from.").setRequired(true).setAutocomplete(true)
+						opt
+							.setName("game")
+							.setDescription("the game of which to get statistics from.")
+							.setRequired(true)
+							.setAutocomplete(true)
 					)
 					.addStringOption((opt) =>
 						opt
@@ -130,13 +148,19 @@ class Tracker extends Command {
 							.setRequired(true)
 					)
 					.addStringOption((opt) =>
-						opt.setName("game").setDescription("the game on which the action should be performed.").setRequired(true).setAutocomplete(true)
+						opt
+							.setName("game")
+							.setDescription("the game on which the action should be performed.")
+							.setRequired(true)
+							.setAutocomplete(true)
 					)
 			)
 			.addSubcommand((sub) =>
 				sub.setName("latest").setDescription("See the latest logs across the whole system.")
 			)
-			.addSubcommand((sub) => sub.setName("statistics").setDescription("See general statistics across the whole system."));
+			.addSubcommand((sub) =>
+				sub.setName("statistics").setDescription("See general statistics across the whole system.")
+			);
 	}
 }
 
