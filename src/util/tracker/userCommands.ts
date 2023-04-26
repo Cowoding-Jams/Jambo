@@ -3,25 +3,25 @@ import { config } from "../../config";
 import { trackerLogs, TrackerSublog, trackerUsers } from "../../db";
 import { discordTimestamp } from "../misc/time";
 import { makeTimeString, sortGamesLogs, sortGamesPlaytime } from "./helper";
-import { MEMBERNOTFOUND, USERNOENTRY, USERNOTFOUND } from "./messages";
+import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 
 export async function userStats(interaction: ChatInputCommandInteraction) {
 	// get target user and default to command executer if not given
 	const target = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
 	if (!target) {
-		await interaction.reply(USERNOTFOUND);
+		await interaction.reply(userNotFound);
 		return;
 	}
 	// get the member (to use their display name and color)
 	const member = await interaction.guild?.members.fetch(target.id);
 	if (!member) {
-		await interaction.reply(MEMBERNOTFOUND);
+		await interaction.reply(memberNotFound);
 		return;
 	}
 	// load db and get target user
 	const db = trackerUsers.get(target.id);
 	if (!db) {
-		await interaction.reply(USERNOENTRY);
+		await interaction.reply(userNoEntry);
 		return;
 	}
 
@@ -98,19 +98,19 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 	// get target user, if not given default to executer
 	const target = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
 	if (!target) {
-		await interaction.reply(USERNOTFOUND);
+		await interaction.reply(userNotFound);
 		return;
 	}
 	// get member from target
 	const member = await interaction.guild?.members.fetch(target.id);
 	if (member == undefined) {
-		await interaction.reply(MEMBERNOTFOUND);
+		await interaction.reply(memberNotFound);
 		return;
 	}
 	// get targets db entry
 	const db = trackerUsers.get(member.id);
 	if (!db) {
-		await interaction.reply(USERNOENTRY);
+		await interaction.reply(userNoEntry);
 		return;
 	}
 	// get latest logs
@@ -151,13 +151,13 @@ export async function userTop(interaction: ChatInputCommandInteraction, filter: 
 	// get target user, default to executer if not given
 	const target = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
 	if (!target) {
-		await interaction.reply(USERNOTFOUND);
+		await interaction.reply(userNotFound);
 		return;
 	}
 	// get the member from target
 	const member = await interaction.guild?.members.fetch(target.id);
 	if (member == undefined) {
-		await interaction.reply(MEMBERNOTFOUND);
+		await interaction.reply(memberNotFound);
 		return;
 	}
 
@@ -173,7 +173,7 @@ export async function userTop(interaction: ChatInputCommandInteraction, filter: 
 
 	// return if no games are being listed
 	if (!games) {
-		await interaction.reply(USERNOENTRY);
+		await interaction.reply(userNoEntry);
 		return;
 	}
 

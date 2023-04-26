@@ -3,7 +3,17 @@ import { config } from "../../config";
 import { trackerGames, trackerLogs } from "../../db";
 import { discordTimestamp } from "../misc/time";
 import { makeTimeString } from "./helper";
-import { GAMENOENTRY } from "./messages";
+import { gameNoEntry } from "./messages";
+
+
+// 60seconds * 60 minutes * 24 hours = One day
+const dayInSeconds = 60*60*24
+// seconds of day to milliseconds
+const dayInMillis = dayInSeconds * 1000
+// 7 times a day = week
+const weekInMillis = dayInMillis*7
+// 4 times a week + 2.4 days = (average) month
+const monthInMillis = weekInMillis*4 + (dayInMillis*2.4167)  
 
 export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// get game option
@@ -12,7 +22,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// load tracker Games db
 	const db = trackerGames.get(targetGame.toLocaleLowerCase());
 	if (!db) {
-		await interaction.reply(GAMENOENTRY);
+		await interaction.reply(gameNoEntry);
 		return;
 	}
 
@@ -40,9 +50,9 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	const range = Date.now() - firstSeen;
 	// calculate daily/weekly/monthly and per-log average playtime
 	const playtimePer = `day: ${makeTimeString(
-		Math.round(totalPlaytime / (range / (86400 * 1000)))
-	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / 604800000)))}\nmonth: ${makeTimeString(
-		Math.round(totalPlaytime / (range / 2628000000))
+		Math.round(totalPlaytime / (range / dayInMillis))
+	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInMillis)))}\nmonth: ${makeTimeString(
+		Math.round(totalPlaytime / (range / monthInMillis))
 	)}\nuser: ${makeTimeString(Math.round(totalPlaytime / users))}\nlog: ${makeTimeString(
 		Math.round(totalPlaytime / totalLogs)
 	)}`;
@@ -90,7 +100,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 	// load games db
 	const db = trackerGames.get(targetGame);
 	if (!db) {
-		await interaction.reply(GAMENOENTRY);
+		await interaction.reply(gameNoEntry);
 		return;
 	}
 
@@ -140,7 +150,7 @@ export async function gameTop(interaction: ChatInputCommandInteraction, filter: 
 	// load games db
 	const db = trackerGames.get(targetGame);
 	if (!db) {
-		await interaction.reply(GAMENOENTRY);
+		await interaction.reply(gameNoEntry);
 		return;
 	}
 

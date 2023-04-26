@@ -4,7 +4,7 @@ import { discordTimestamp } from "../misc/time";
 import { trackerGames, trackerLogs, trackerUsers } from "../../db";
 import { config } from "../../config";
 import { makeTimeString } from "./helper";
-import { GAMENOENTRY, USERNOENTRY, USERNOGAMEENTRY } from "./messages";
+import { gameNoEntry, userNoEntry, userNoGameEntry } from "./messages";
 
 export async function playtime(interaction: ChatInputCommandInteraction) {
 	// get target user and game
@@ -24,7 +24,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 		// load db and get target game
 		const db = trackerGames.get(targetGame.toLowerCase());
 		if (!db) {
-			await interaction.reply(GAMENOENTRY);
+			await interaction.reply(gameNoEntry);
 			return;
 		}
 		text = `${targetGame} has ${makeTimeString(db.playtime)} of playtime`;
@@ -33,7 +33,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 		// load db and get target user
 		const db = trackerUsers.get(targetUser.id);
 		if (!db) {
-			await interaction.reply(USERNOENTRY);
+			await interaction.reply(userNoEntry);
 			return;
 		}
 		text = `${targetUser.username} has ${makeTimeString(db.playtime)} of playtime`;
@@ -44,7 +44,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 			.get(targetUser.id)
 			?.games.find((g) => g.id.toLowerCase() == targetGame.toLowerCase());
 		if (!db) {
-			await interaction.reply(USERNOGAMEENTRY);
+			await interaction.reply(userNoGameEntry);
 			return;
 		}
 		text = `${targetUser.username} has ${makeTimeString(db.playtime)} of playtime in ${targetGame}`;
@@ -77,7 +77,7 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 		// get target db game entry
 		const db = trackerGames.get(targetGame.toLowerCase());
 		if (!db) {
-			await interaction.reply(GAMENOENTRY);
+			await interaction.reply(gameNoEntry);
 			return;
 		}
 		text = `${targetGame} was played ${db.logs} times`;
@@ -86,7 +86,7 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 		// get target db user entry
 		const db = trackerUsers.get(targetUser.id);
 		if (!db) {
-			await interaction.reply(USERNOENTRY);
+			await interaction.reply(userNoEntry);
 			return;
 		}
 		text = `${targetUser.username} was logged ${db.logs} times`;
@@ -97,7 +97,7 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 			.get(targetUser.id)
 			?.games.find((g) => g.id.toLowerCase() == targetGame.toLowerCase());
 		if (!db) {
-			await interaction.reply(USERNOGAMEENTRY);
+			await interaction.reply(userNoGameEntry);
 			return;
 		}
 		text = `${targetUser.username} has played ${targetGame} ${db.logs} times`;
