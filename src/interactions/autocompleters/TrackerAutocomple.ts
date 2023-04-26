@@ -27,7 +27,7 @@ class Tracker extends Autocompleter {
 					if (trackerUsers.get(user)?.games) {
 						trackerUsers.get(user)?.games.forEach((g) => options.push(g.id));
 					} else {
-						options.push("USER HAS NOT PLAYED ANY GAMES YET");
+						options.push("[user has not played any games yet]");
 					}
 				} else {
 					options.push(...trackerGames.keyArray());
