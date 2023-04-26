@@ -74,15 +74,10 @@ class Tracker extends Command {
 
 		if (!interaction.replied) {
 			await interaction.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setTitle("invalid options")
-						.setDescription(
-							"this can happen when you dont follow the order of the given options. Sadly thats a bug by discord (options dont get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer."
-						)
-						.setColor([255, 255, 0]),
-				],
-			});
+				content:
+							"this can happen when you dont follow the order of the given options. Sadly thats a bug by discord (options dont get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer.",
+				ephemeral: true
+						});
 		}
 	}
 
@@ -91,30 +86,30 @@ class Tracker extends Command {
 			return new SlashCommandBuilder()
 				.setName("tracker")
 				.setDescription(
-					"Tracking is disabled. No game activity's will be logged and tracking commands are disabled."
+					"The tracking system is disabled which means commands are removed and tracking is paused."
 				);
 		return new SlashCommandBuilder()
 			.setName("tracker")
-			.setDescription("The gateway to some cool stats about here being users")
+			.setDescription("The gateway to some cool stats about here being users.")
 			.addSubcommand((sub) =>
 				sub
 					.setName("user")
-					.setDescription("Get tracking stats about a user")
-					.addUserOption((opt) => opt.setName("user").setDescription("the user"))
-					.addStringOption((opt) => opt.setName("game").setDescription("the game").setAutocomplete(true))
-					.addStringOption((opt) => opt.setName("statistic").setDescription("ye").setAutocomplete(true))
+					.setDescription("Get tracking stats about a user.")
+					.addUserOption((opt) => opt.setName("user").setDescription("the target user, if not given defaults to you."))
+					.addStringOption((opt) => opt.setName("game").setDescription("the game of which to get playtime/logs from.").setAutocomplete(true))
+					.addStringOption((opt) => opt.setName("statistic").setDescription("select what statistics should get shown. (Options depend on if a game is given or not)").setAutocomplete(true))
 			)
 			.addSubcommand((sub) =>
 				sub
 					.setName("game")
-					.setDescription("Get tracking stats about a game")
+					.setDescription("Get tracking stats about a game.")
 					.addStringOption((opt) =>
-						opt.setName("game").setDescription("the game").setRequired(true).setAutocomplete(true)
+						opt.setName("game").setDescription("the game of which to get statistics from.").setRequired(true).setAutocomplete(true)
 					)
 					.addStringOption((opt) =>
 						opt
 							.setName("statistic")
-							.setDescription("ye")
+							.setDescription("select what statistics should get shown.")
 							.addChoices(
 								{ name: "general statistics", value: "general statistics" },
 								{ name: "top 5 most played games", value: "top 5 most played games" },
@@ -126,22 +121,22 @@ class Tracker extends Command {
 			.addSubcommand((sub) =>
 				sub
 					.setName("blacklist")
-					.setDescription("ADMIN ONLY")
+					.setDescription("[ADMIN ONLY] edit the tracking blacklist to allow or block certain games.")
 					.addStringOption((opt) =>
 						opt
 							.setName("action")
-							.setDescription("yo")
+							.setDescription("select which action should get executed.")
 							.addChoices({ name: "add", value: "add" }, { name: "remove", value: "rem" })
 							.setRequired(true)
 					)
 					.addStringOption((opt) =>
-						opt.setName("game").setDescription("the game").setRequired(true).setAutocomplete(true)
+						opt.setName("game").setDescription("the game on which the action should be performed.").setRequired(true).setAutocomplete(true)
 					)
 			)
 			.addSubcommand((sub) =>
-				sub.setName("latest").setDescription("See the latest logs across the whole system")
+				sub.setName("latest").setDescription("See the latest logs across the whole system.")
 			)
-			.addSubcommand((sub) => sub.setName("statistics").setDescription("See some system stats"));
+			.addSubcommand((sub) => sub.setName("statistics").setDescription("See general statistics across the whole system."));
 	}
 }
 
