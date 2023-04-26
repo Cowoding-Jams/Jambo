@@ -35,7 +35,7 @@ export function user(
 export function blacklist(action: string) {
 	const results = [];
 
-	if (action == "add") {
+	if (action == "add" || action == "rem") {
 		// only show not blacklisted games when "add" is chosen as the action, else only show blacklisted games
 		results.push(
 			...trackerGames
