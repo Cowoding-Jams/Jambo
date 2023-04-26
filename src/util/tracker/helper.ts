@@ -40,7 +40,7 @@ export function confirmEmbed(title: string): InteractionReplyOptions {
 export const sortDbEntrysToString = (
 	db: TrackerSublog[],
 	sortFn: (a: TrackerSublog, b: TrackerSublog) => number,
-	mapFn: (log: TrackerSublog) => any
+	mapFn: (log: TrackerSublog) => string
 ) =>
 	db
 		.sort((a, b) => sortFn(a, b))
@@ -51,7 +51,7 @@ export const sortDbEntrysToString = (
 export const sortDbGamesToString = (
 	db: TrackerGame[],
 	sortFn: (a: TrackerGame, b: TrackerGame) => number,
-	mapFn: (log: TrackerGame) => any
+	mapFn: (log: TrackerGame) => string
 ) =>
 	db
 		.sort((a, b) => sortFn(a, b))
@@ -62,7 +62,7 @@ export const sortDbGamesToString = (
 export const sortDbUsersToString = (
 	db: TrackerUser[],
 	sortFn: (a: TrackerUser, b: TrackerUser) => number,
-	mapFn: (log: TrackerUser) => any
+	mapFn: (log: TrackerUser) => string
 ) =>
 	db
 		.sort((a, b) => sortFn(a, b))

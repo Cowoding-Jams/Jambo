@@ -7,7 +7,7 @@
 	"type": "module",
 	"scripts": {
 		"prettify": "eslint ./src/ --fix && npx prettier -w .",
-		"prettier": "eslint ./src/ --fix && npx prettier -w .",
+		"prettier": "npm run prettify",
 		"build": "tsc -p tsconfig.json",
 		"run": "node --experimental-specifier-resolution=node .",
 		"start": "npm run build && npm run run",
