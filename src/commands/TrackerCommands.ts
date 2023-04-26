@@ -19,14 +19,7 @@ class Tracker extends Command {
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (!config.tracking) {
 			await interaction.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setTitle("tracking disabled")
-						.setDescription(
-							"Tracking is disabled. No game activity's will be logged and tracking commands are disabled."
-						)
-						.setColor([255, 0, 0]),
-				],
+				content: "Tracking is disabled. No game activity's will be logged and tracking commands are disabled.",
 				ephemeral: true,
 			});
 			return;
