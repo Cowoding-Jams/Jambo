@@ -5,15 +5,14 @@ import { discordTimestamp } from "../misc/time";
 import { makeTimeString } from "./helper";
 import { gameNoEntry } from "./messages";
 
-
 // 60seconds * 60 minutes * 24 hours = One day
-const dayInSeconds = 60*60*24
+const dayInSeconds = 60 * 60 * 24;
 // seconds of day to milliseconds
-const dayInMillis = dayInSeconds * 1000
+const dayInMillis = dayInSeconds * 1000;
 // 7 times a day = week
-const weekInMillis = dayInMillis*7
+const weekInMillis = dayInMillis * 7;
 // 4 times a week + 2.4 days = (average) month
-const monthInMillis = weekInMillis*4 + (dayInMillis*2.4167)  
+const monthInMillis = weekInMillis * 4 + dayInMillis * 2.4167;
 
 export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// get game option
