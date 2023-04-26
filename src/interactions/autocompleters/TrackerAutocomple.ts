@@ -1,6 +1,6 @@
 import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { trackerBlacklist, trackerGames, trackerUsers } from "../../db";
+import { trackerGames } from "../../db";
 import { blacklist, user } from "../../util/tracker/autocompleteHelper";
 
 class Tracker extends Autocompleter {

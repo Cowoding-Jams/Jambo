@@ -3,7 +3,7 @@ import { APIEmbedField, ChatInputCommandInteraction } from "discord.js";
 import { discordTimestamp } from "../misc/time";
 import { trackerGames, trackerLogs, trackerUsers } from "../../db";
 import { config } from "../../config";
-import { makeTimeString, sortDbEntrysToString, sortDbGamesToString, sortDbUsersToString } from "./helper";
+import { makeTimeString, sortDbGamesToString, sortDbUsersToString } from "./helper";
 import { gameNoEntry, userNoEntry, userNoGameEntry } from "./messages";
 
 export async function playtime(interaction: ChatInputCommandInteraction) {
