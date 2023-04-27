@@ -15,9 +15,9 @@ export type proposalID = string; // key of proposalDb
 export type userID = string; // Discord user id
 
 /*
------------------
--LaTeX Database -
------------------
+------------------
+- LaTeX Database -
+------------------
 */
 
 export const latexDb = new Enmap<string>("latex"); // key: reply id
