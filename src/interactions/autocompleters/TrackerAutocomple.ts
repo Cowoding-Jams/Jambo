@@ -14,15 +14,11 @@ class Tracker extends Autocompleter {
 		const option = interaction.options.getFocused(true).name;
 
 		// if user-option is given, use it, else default to executer
-		const userId =
-				interaction.options.get("user")?.value ??
-				interaction.user.id;
+		const userId = interaction.options.get("user")?.value ?? interaction.user.id;
 		const game = interaction.options.get("game")?.value;
 
 		// if action-option is given, use it, else default to add
-		const action =
-				interaction.options.get("action")?.value ??
-				"add";
+		const action = interaction.options.get("action")?.value ?? "add";
 
 		// make ts happy...
 		if (typeof action != "string") return;
