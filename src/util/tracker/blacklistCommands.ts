@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { trackerBlacklist } from "../../db";
 import { hasAdminPerms } from "../misc/permissions";
-import { adminOnly, GameAdded, gameNotOnBlacklist, gameOnBlacklist, GameRemoved } from "./messages";
+import { adminOnly, makeGameAddedEmbed, gameNotOnBlacklist, gameOnBlacklist, makeGameRemovedEmbed } from "./messages";
 
 export async function addBlacklist(interaction: ChatInputCommandInteraction) {
 	// check for admin permissions
@@ -19,7 +19,7 @@ export async function addBlacklist(interaction: ChatInputCommandInteraction) {
 	}
 	// add game to blacklist
 	trackerBlacklist.push("", game.toLowerCase());
-	interaction.reply(GameAdded(game));
+	interaction.reply(makeGameAddedEmbed(game));
 }
 export async function remBlacklist(interaction: ChatInputCommandInteraction) {
 	// check for admin permissions
@@ -38,7 +38,7 @@ export async function remBlacklist(interaction: ChatInputCommandInteraction) {
 			"",
 			db.filter((g) => g.toLowerCase() != game.toLowerCase())
 		);
-		interaction.reply(GameRemoved(game));
+		interaction.reply(makeGameRemovedEmbed(game));
 		return;
 	}
 	// send error

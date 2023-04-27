@@ -23,6 +23,6 @@ export const gameOnBlacklist = errorEmbed("already on blacklist", "Given game is
 /** User when there is an attempt to remove a game from the blacklist whole its not on there */
 export const gameNotOnBlacklist = errorEmbed("not on blacklist", "Given game is not on the blacklist.");
 /** Used to confirm the adding of a given game to the blacklist */
-export const GameAdded = (game: string) => confirmEmbed(`"${game}" has been added to the blacklist!`);
+export const makeGameAddedEmbed = (game: string) => confirmEmbed(`"${game}" has been added to the blacklist!`);
 /** Used to confirm the removal of a given game from the blacklist */
-export const GameRemoved = (game: string) => confirmEmbed(`"${game}" has been removed from the blacklist!`);
+export const makeGameRemovedEmbed = (game: string) => confirmEmbed(`"${game}" has been removed from the blacklist!`);
