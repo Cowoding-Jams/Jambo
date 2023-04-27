@@ -39,8 +39,7 @@ class Tracker extends Autocompleter {
 			options = blacklist(action);
 		}
 
-		let filteredOptions = options.filter((o) => o.toLowerCase().startsWith(focus));
-		filteredOptions = filteredOptions.slice(0, 25);
+		const filteredOptions = options.filter((o) => o.toLowerCase().startsWith(focus)).slice(0, 25);
 
 		await interaction.respond(filteredOptions.map((c) => ({ name: c, value: c })));
 	}
