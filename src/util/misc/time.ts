@@ -57,7 +57,6 @@ export async function checkDuration(
 	} else return iso;
 }
 
-
 // 60seconds * 60 minutes * 24 hours = One day
 export const dayInSeconds = 60 * 60 * 24;
 // seconds of day to milliseconds

@@ -2,7 +2,7 @@ import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discor
 import { config } from "../../config";
 import { trackerGames, trackerLogs } from "../../db";
 import { dayInMillis, discordTimestamp, monthInMillis, weekInMillis } from "../misc/time";
-import { makeTimeString, sortDbEntrysToString } from "./helper";
+import { makeTimeString, sortDbEntriesToString } from "./helper";
 import { gameNoEntry } from "./messages";
 
 export async function gameStats(interaction: ChatInputCommandInteraction) {
@@ -17,14 +17,14 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	}
 
 	// get top 5 played games and make a string
-	const mostPlayed = sortDbEntrysToString(
+	const mostPlayed = sortDbEntriesToString(
 		db.users,
 		(a, b) => b.playtime - a.playtime,
 		(user) => `<@${user.id}>: ${makeTimeString(user.playtime)}`
 	);
 
 	// get top 5 logged games and make a string
-	const mostLogged = sortDbEntrysToString(
+	const mostLogged = sortDbEntriesToString(
 		db.users,
 		(a, b) => b.logs - a.logs,
 		(user) => `<@${user.id}>: ${user.logs} logs`

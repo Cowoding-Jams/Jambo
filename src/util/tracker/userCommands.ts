@@ -2,7 +2,7 @@ import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discor
 import { config } from "../../config";
 import { trackerLogs, TrackerSublog, trackerUsers } from "../../db";
 import { discordTimestamp } from "../misc/time";
-import { makeTimeString, sortDbEntrysToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
+import { makeTimeString, sortDbEntriesToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
 import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 
 export async function userStats(interaction: ChatInputCommandInteraction) {
@@ -26,14 +26,14 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	}
 
 	// make sorted list of most played games and make string
-	const mostPlayed = sortDbEntrysToString(
+	const mostPlayed = sortDbEntriesToString(
 		db.games,
 		(a, b) => b.playtime - a.playtime,
 		(game) => `${game.id}: ${makeTimeString(game.playtime)}`
 	);
 
 	// make sorted list of most logged games and make string
-	const mostLogged = sortDbEntrysToString(
+	const mostLogged = sortDbEntriesToString(
 		db.games,
 		(a, b) => b.logs - a.logs,
 		(game) => `${game.id}: ${game.logs} logs`

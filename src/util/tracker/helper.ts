@@ -36,8 +36,8 @@ export function confirmEmbed(title: string): InteractionReplyOptions {
 		ephemeral: true,
 	};
 }
-/** Sort database entrys, given a sorting and maping callback */
-export const sortDbEntrysToString = (
+/** Sort database entries, given a sorting and maping callback */
+export const sortDbEntriesToString = (
 	db: TrackerSublog[],
 	sortFn: (a: TrackerSublog, b: TrackerSublog) => number,
 	mapFn: (log: TrackerSublog) => string
