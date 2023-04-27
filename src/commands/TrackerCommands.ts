@@ -72,7 +72,7 @@ class Tracker extends Command {
 		if (!interaction.replied) {
 			await interaction.reply({
 				content:
-					"this can happen when you dont follow the order of the given options. Sadly thats a bug by discord (options dont get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer.",
+					"this can happen when you don't follow the order of the given options. Sadly thats a bug by discord (options don't get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer.",
 				ephemeral: true,
 			});
 		}
