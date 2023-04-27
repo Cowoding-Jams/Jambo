@@ -59,9 +59,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 }
 export async function logs(interaction: ChatInputCommandInteraction) {
 	// get target user and game
-	const targetUser = interaction.options.getUser("user")
-		? interaction.options.getUser("user")
-		: interaction.user;
+	const targetUser = interaction.options.getUser("user") ?? interaction.user;
 	const targetGame = interaction.options.getString("game");
 	let text = ""; // used later in the final embed
 

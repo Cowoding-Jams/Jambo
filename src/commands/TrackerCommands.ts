@@ -25,9 +25,7 @@ class Tracker extends Command {
 			return;
 		}
 		const subCommand = interaction.options.getSubcommand();
-		const statistics = interaction.options.getString("statistic")
-			? interaction.options.getString("statistic")
-			: "general statistics";
+		const statistics = interaction.options.getString("statistic") ?? "general statistics";
 		const action = interaction.options.getString("action");
 		switch (subCommand) {
 			case "user":

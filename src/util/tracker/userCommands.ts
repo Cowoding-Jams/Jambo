@@ -7,7 +7,7 @@ import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 
 export async function userStats(interaction: ChatInputCommandInteraction) {
 	// get target user and default to command executer if not given
-	const target = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
+	const target = interaction.options.getUser("user") ?? interaction.user;
 	if (!target) {
 		await interaction.reply(userNotFound);
 		return;
@@ -98,7 +98,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 }
 export async function userLast(interaction: ChatInputCommandInteraction) {
 	// get target user, if not given default to executer
-	const target = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
+	const target = interaction.options.getUser("user") ?? interaction.user;
 	if (!target) {
 		await interaction.reply(userNotFound);
 		return;
@@ -151,7 +151,7 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 }
 export async function userTop(interaction: ChatInputCommandInteraction, filter: string) {
 	// get target user, default to executer if not given
-	const target = interaction.options.getUser("user") ? interaction.options.getUser("user") : interaction.user;
+	const target = interaction.options.getUser("user") ?? interaction.user;
 	if (!target) {
 		await interaction.reply(userNotFound);
 		return;

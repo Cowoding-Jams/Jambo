@@ -1,7 +1,13 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import { trackerBlacklist } from "../../db";
 import { hasAdminPerms } from "../misc/permissions";
-import { adminOnly, makeGameAddedEmbed, gameNotOnBlacklist, gameOnBlacklist, makeGameRemovedEmbed } from "./messages";
+import {
+	adminOnly,
+	gameNotOnBlacklist,
+	gameOnBlacklist,
+	makeGameAddedEmbed,
+	makeGameRemovedEmbed,
+} from "./messages";
 
 export async function addBlacklist(interaction: ChatInputCommandInteraction) {
 	// check for admin permissions
