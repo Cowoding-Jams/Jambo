@@ -15,16 +15,14 @@ class Tracker extends Autocompleter {
 
 		// if user-option is given, use it, else default to executer
 		const userId =
-			typeof interaction.options.get("user")?.value == "string"
-				? interaction.options.get("user")?.value
-				: interaction.user.id;
+				interaction.options.get("user")?.value ??
+				interaction.user.id;
 		const game = interaction.options.get("game")?.value;
 
 		// if action-option is given, use it, else default to add
 		const action =
-			typeof interaction.options.get("action")?.value == "string"
-				? interaction.options.get("action")?.value
-				: "add";
+				interaction.options.get("action")?.value ??
+				"add";
 
 		// make ts happy...
 		if (typeof action != "string") return;
