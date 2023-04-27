@@ -1,18 +1,9 @@
 import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { config } from "../../config";
 import { trackerGames, trackerLogs } from "../../db";
-import { discordTimestamp } from "../misc/time";
+import { dayInMillis, discordTimestamp, monthInMillis, weekInMillis } from "../misc/time";
 import { makeTimeString, sortDbEntrysToString } from "./helper";
 import { gameNoEntry } from "./messages";
-
-// 60seconds * 60 minutes * 24 hours = One day
-const dayInSeconds = 60 * 60 * 24;
-// seconds of day to milliseconds
-const dayInMillis = dayInSeconds * 1000;
-// 7 times a day = week
-const weekInMillis = dayInMillis * 7;
-// 4 times a week + 2.4 days = (average) month
-const monthInMillis = weekInMillis * 4 + dayInMillis * 2.4167;
 
 export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// get game option

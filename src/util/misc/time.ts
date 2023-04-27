@@ -56,3 +56,13 @@ export async function checkDuration(
 		return null;
 	} else return iso;
 }
+
+
+// 60seconds * 60 minutes * 24 hours = One day
+export const dayInSeconds = 60 * 60 * 24;
+// seconds of day to milliseconds
+export const dayInMillis = dayInSeconds * 1000;
+// 7 times a day = week
+export const weekInMillis = dayInMillis * 7;
+// 4 times a week + 2.4 days = (average) month
+export const monthInMillis = weekInMillis * 4 + dayInMillis * 2.4167;
