@@ -5,8 +5,7 @@ import { config } from "../config";
 const userCache = new Map<string, Record<string, number>>();
 
 export default async function presenceUpdate(oldPresence: Presence | null, newPresence: Presence) {
-	if (!config.tracking) return;
-	if (newPresence.user?.bot) return;
+	if (!config.tracking || newPresence.user?.bot) return;
 
 	const { started, stopped } = await getChangedActivities(oldPresence, newPresence);
 	if (!started.length && !stopped.length) return;
