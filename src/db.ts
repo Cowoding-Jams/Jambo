@@ -104,7 +104,7 @@ export interface TrackerGame {
 	firstlog: TrackerLog;
 	/** How often a game got logged */
 	logs: number;
-	//** List of the latest 5 logs in form of the log ID*/
+	/** List of the latest 5 logs in form of the log ID*/
 	lastlogs: TrackerLog[];
 	/** Little infos about the users who played the game (id, log amount, time played in total)*/
 	users: TrackerSublog[];

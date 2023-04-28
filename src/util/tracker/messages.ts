@@ -14,7 +14,7 @@ export const userNoGameEntry = errorEmbed(
 	"no database entry",
 	"Given user has no entrys in the database associated with given the game."
 );
-//** Used when a given game is not found in the tracker database */
+/** Used when a given game is not found in the tracker database */
 export const gameNoEntry = errorEmbed("no database entry", "Given game has no entry in the database.");
 /** Used when a non admin user tryes to use a admin only command */
 export const adminOnly = errorEmbed("admin only", "This command can only be executed by an admin.");
