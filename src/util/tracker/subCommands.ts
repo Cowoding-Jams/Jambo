@@ -42,7 +42,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 		// load db and get user.games and find target game in there
 		const db = trackerUsers
 			.get(targetUser.id)
-			?.games.find((g) => g.id.toLowerCase() == targetGame.toLowerCase());
+			?.games.find((g) => g.name.toLowerCase() == targetGame.toLowerCase());
 		if (!db) {
 			await interaction.reply(userNoGameEntry);
 			return;
@@ -93,7 +93,7 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 		// load db and get user.games and find target game in there
 		const db = trackerUsers
 			.get(targetUser.id)
-			?.games.find((g) => g.id.toLowerCase() == targetGame.toLowerCase());
+			?.games.find((g) => g.name.toLowerCase() == targetGame.toLowerCase());
 		if (!db) {
 			await interaction.reply(userNoGameEntry);
 			return;
@@ -114,7 +114,7 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 	// latest system logs
 	const logs = trackerLogs
 		.array()
-		.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+		.sort((a, b) => b.date.getTime() - a.date.getTime())
 		.slice(0, 5);
 
 	// make embed for each log
@@ -122,7 +122,9 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: log.gameName,
-			value: `<@${log.userid}>\n${shortDateAndShortTimeTimestamp(new Date(log.time).getTime() / 1000)}\n${makeTimeString(log.playtime)}`,
+			value: `<@${log.userID}>\n${shortDateAndShortTimeTimestamp(
+				log.date.getTime() / 1000
+			)}\n${makeTimeString(log.playtime)}`,
 		})
 	);
 
@@ -141,28 +143,28 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	const mostLoggedGame = sortDbGamesToString(
 		trackerGames.array(),
 		(a, b) => b.logs - a.logs,
-		(game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${game.logs}`
+		(game) => `${game.lastlogs[0].gameName}: ${game.logs}`
 	);
 
 	// get 5 most played games and make string
 	const mostPlayedGame = sortDbGamesToString(
 		trackerGames.array(),
 		(a, b) => b.playtime - a.playtime,
-		(game) => `${trackerLogs.get(game.lastlogs[0])?.gameName}: ${makeTimeString(game.playtime)}`
+		(game) => `${game.lastlogs[0].gameName}: ${makeTimeString(game.playtime)}`
 	);
 
 	// get 5 most logged users and make string
 	const mostLoggedUser = sortDbUsersToString(
 		trackerUsers.array(),
 		(a, b) => b.logs - a.logs,
-		(user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${user.logs} logs`
+		(user) => `<@${user.lastlogs[0].userID}>: ${user.logs} logs`
 	);
 
 	// get 5 most playtime users and make string
 	const mostPlayedUser = sortDbUsersToString(
 		trackerUsers.array(),
 		(a, b) => b.playtime - a.playtime,
-		(user) => `<@${trackerLogs.get(user.lastlogs[0])?.userid}>: ${makeTimeString(user.playtime)}`
+		(user) => `<@${user.lastlogs[0].userID}>: ${makeTimeString(user.playtime)}`
 	);
 
 	// get latest system wide logs and make string
@@ -172,7 +174,9 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		.slice(0, 5)
 		.map(
 			(log) =>
-				`${shortDateAndShortTimeTimestamp(new Date(log.time).getTime() / 1000)} <@${log.userid}> ${log.gameName}: ${makeTimeString(log.playtime)}`
+				`${shortDateAndShortTimeTimestamp(log.date.getTime() / 1000)} <@${log.userID}> ${
+					log.gameName
+				}: ${makeTimeString(log.playtime)}`
 		)
 		.join("\n");
 	// get total playtime of all games
@@ -187,7 +191,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	// get amount of users
 	const users = trackerUsers.count;
 	// get first log               (time is iso string)
-	const firstSeen = new Date(trackerLogs.array()[0].time).getTime();
+	const firstSeen = trackerLogs.array()[0].date.getTime();
 	// make range from first log to now
 	const range = Date.now() - firstSeen;
 	// calculate average playtime per day/week/month/game/log
@@ -201,7 +205,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	// temporary sorted list based on playtime/log
 	const tmp = trackerGames.array().sort((a, b) => b.playtime / b.logs - a.playtime / b.logs)[0];
 	// make string from temporary list
-	const mostPlaytime = `${trackerLogs.get(tmp.lastlogs[0])?.gameName}: ${makeTimeString(
+	const mostPlaytime = `${tmp.lastlogs[0].gameName}: ${makeTimeString(
 		Math.round(tmp.playtime / tmp.logs)
 	)} - ${tmp.logs} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 

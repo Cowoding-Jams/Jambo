@@ -52,66 +52,124 @@ interface InternalReminder {
 }
 
 /*
------------------------------
-- Activity Tracker Database -
------------------------------
+--------------------
+- Tracker Database -
+--------------------
 */
 
 /** Interface for tracker logs */
 export interface TrackerLog {
+	/** id of the log */
+	id: string;
 	/** When a log got logged */
-	time: ISODate;
-	/** How long a game got played */
+	date: Date;
+	/** How long a game got played in ms*/
 	playtime: number;
 	/** User id of the User who just got logged */
-	userid: userID;
-	/** Game id of the game which just got logged */
+	userID: userID;
+	/** Game name of the game which just got logged */
 	gameName: string;
 }
 
 /** Interface for stripped down tracking logs */
 export interface TrackerSublog {
 	/** User- or Game- ID */
-	id: userID;
+	name: userID;
 	/** How often a User or Game got logged */
 	logs: number;
-	/** How long a User played a certain game
-	 * (Or the other way around)
-	 */
+	/** How long a User played a certain game in ms
+	 * (Or the other way around) */
 	playtime: number;
 }
 
 /** Interface for tracking users */
 export interface TrackerUser {
-	/** How much a user played */
+	/** How long a user played a game in ms*/
 	playtime: number;
-	/** Reference to the first log assosiated with the user */
-	firstlog: string;
+	/** ID of the first log associated with the user */
+	firstlog: TrackerLog;
 	/** How often a user got logged */
 	logs: number;
-	/** List of lastest logs */
-	lastlogs: string[];
-	/** Stripped down logs about how often a game got logged and how long it was played */
+	/** List of the latest 5 logs in form of the log ID*/
+	lastlogs: TrackerLog[];
+	/** Little infos about the game which the user played (id, log amount, time played in total)*/
 	games: TrackerSublog[];
 }
 
 /** Interface for tracking games */
 export interface TrackerGame {
-	/** How much a game got played */
+	/** How long a game got played in ms*/
 	playtime: number;
-	/** Reference to the first log assosiated with the game */
-	firstlog: string;
+	/** ID of the first log associated with the game */
+	firstlog: TrackerLog;
 	/** How often a game got logged */
 	logs: number;
-	/** List of latest logs */
-	lastlogs: string[];
-	/** Stripped down logs about how often a user got logged and how long they played */
+	//** List of the latest 5 logs in form of the log ID*/
+	lastlogs: TrackerLog[];
+	/** Little infos about the users who played the game (id, log amount, time played in total)*/
 	users: TrackerSublog[];
 }
 
-export const trackerLogs = new Enmap<TrackerLog>({ name: "trackerLogs" });
-export const trackerUsers = new Enmap<TrackerUser>({ name: "trackerUsers" });
-export const trackerGames = new Enmap<TrackerGame>({ name: "trackerGames" });
+interface internalTrackerLog {
+	id: string;
+	date: ISODate;
+	playtime: number;
+	userID: userID;
+	gameName: string;
+}
+interface internalTrackerGameAndUser {
+	playtime: number;
+	firstlog: string;
+	logs: number;
+	lastlogs: string[];
+	games: TrackerSublog[];
+	users: TrackerSublog[];
+}
+
+// just in case a referenced log wasnt found.
+// Although there really isnt any reason why there should accrue such a case.
+// Better safe than sorry and to make ts happy of course!
+const unknownTrackerLog: TrackerLog = {
+	id: "-1",
+	date: new Date(2000, 4, 0, 4),
+	playtime: -1,
+	userID: "0000000000000000000",
+	gameName: "[unknown log]",
+};
+
+export const trackerLogs = new Enmap<TrackerLog, internalTrackerLog>({
+	name: "trackerLogs",
+	serializer: (data) => ({ ...data, date: data.date.toISOString() }),
+	deserializer: (data) => ({ ...data, date: new Date(data.date) }),
+});
+export const trackerUsers = new Enmap<TrackerUser, internalTrackerGameAndUser>({
+	name: "trackerUsers",
+	serializer: (data) => ({
+		...data,
+		firstlog: data.firstlog.id,
+		lastlogs: data.lastlogs.map((log) => log.id),
+		users: [],
+	}),
+	deserializer: (data) => ({
+		...data,
+		firstlog: trackerLogs.get(data.firstlog) ?? unknownTrackerLog,
+		lastlogs: data.lastlogs.map((logID) => trackerLogs.get(logID) ?? unknownTrackerLog),
+	}),
+});
+export const trackerGames = new Enmap<TrackerGame, internalTrackerGameAndUser>({
+	name: "trackerGames",
+	serializer: (data) => ({
+		...data,
+		firstlog: data.firstlog.id,
+		lastlogs: data.lastlogs.map((log) => log.id),
+		games: [],
+	}),
+	deserializer: (data) => ({
+		...data,
+		firstlog: trackerLogs.get(data.firstlog) ?? unknownTrackerLog,
+		lastlogs: data.lastlogs.map((logID) => trackerLogs.get(logID) ?? unknownTrackerLog),
+	}),
+});
 export const trackerBlacklist = new Enmap<string[]>({ name: "trackerBlacklist" });
 trackerBlacklist.ensure("", []);
 
@@ -231,7 +289,7 @@ interface InternalPollEvent {
 /*
 ----------------
 - Jam Database -
------..---------
+----------------
 */
 
 // key: unique id

@@ -39,17 +39,17 @@ export async function logIt(gameName: string, userID: string, timePlayed: number
 	if (isBlacklisted(gameName)) return;
 
 	const logID = (trackerLogs.count + 1).toString(); // make new a unique ID for the new log
-	ensure(gameName, userID, logID); // make sure user and game exist
-	updateUser(gameName, userID, timePlayed, logID); // update users db entry
-	updateGame(gameName, userID, timePlayed, logID); // update games db entry
-	addLog(gameName, userID, timePlayed, logID); // make a db entry for this new log
+	const log = addLog(gameName, userID, timePlayed, logID); // make a db entry for this new log
+	ensure(gameName, userID, log); // make sure user and game exist
+	updateUser(gameName, userID, timePlayed, log); // update users db entry
+	updateGame(gameName, userID, timePlayed, log); // update games db entry
 }
 /** Ensures that there is a entry in the user and game db before continuing*/
-function ensure(gameName: string, userID: string, logID: string) {
+function ensure(gameName: string, userID: string, log: TrackerLog) {
 	if (!trackerGames.has(gameName.toLowerCase())) {
 		const data: TrackerGame = {
 			playtime: 0,
-			firstlog: logID,
+			firstlog: log,
 			logs: 0,
 			lastlogs: [],
 			users: [],
@@ -59,7 +59,7 @@ function ensure(gameName: string, userID: string, logID: string) {
 	if (!trackerUsers.has(userID)) {
 		const data: TrackerUser = {
 			playtime: 0,
-			firstlog: logID,
+			firstlog: log,
 			logs: 0,
 			lastlogs: [],
 			games: [],
@@ -68,7 +68,7 @@ function ensure(gameName: string, userID: string, logID: string) {
 	}
 }
 /** updates the latest logs, logs, game and playtime of a user */
-function updateUser(gameName: string, userID: string, timePlayed: number, logID: string) {
+function updateUser(gameName: string, userID: string, timePlayed: number, log: TrackerLog) {
 	gameName = gameName.toLowerCase();
 
 	const data: TrackerUser | undefined = trackerUsers.get(userID);
@@ -77,14 +77,14 @@ function updateUser(gameName: string, userID: string, timePlayed: number, logID:
 
 	// remove oldest log from the latest log history
 	if (data.lastlogs.length >= 5) data.lastlogs.shift();
-	data.lastlogs.push(logID); // add newest log to the log history
+	data.lastlogs.push(log); // add newest log to the log history
 
 	data.logs += 1;
 	data.playtime += timePlayed;
 
-	let gamelog = data.games.find((e) => e.id == gameName);
+	let gamelog = data.games.find((g) => g.name == gameName);
 	if (!gamelog) {
-		gamelog = data.games[data.games.push({ id: gameName, logs: 0, playtime: 0 }) - 1];
+		gamelog = data.games[data.games.push({ name: gameName, logs: 0, playtime: 0 }) - 1];
 	}
 	gamelog.logs += 1;
 	gamelog.playtime += timePlayed;
@@ -92,7 +92,7 @@ function updateUser(gameName: string, userID: string, timePlayed: number, logID:
 	trackerUsers.set(userID, data);
 }
 /** updates the latest logs, logs, users and playtime of a game*/
-function updateGame(gameName: string, userID: string, timePlayed: number, logID: string) {
+function updateGame(gameName: string, userID: string, timePlayed: number, log: TrackerLog) {
 	gameName = gameName.toLowerCase();
 
 	const data: TrackerGame | undefined = trackerGames.get(gameName);
@@ -100,14 +100,14 @@ function updateGame(gameName: string, userID: string, timePlayed: number, logID:
 
 	// remove oldest log from the latest log history
 	if (data.lastlogs.length >= 5) data.lastlogs.shift();
-	data.lastlogs.push(logID); // add newest log to the log history
+	data.lastlogs.push(log); // add newest log to the log history
 
 	data.logs += 1;
 	data.playtime += timePlayed;
 
-	let gamelog = data.users.find((e) => e.id == userID);
+	let gamelog = data.users.find((e) => e.name == userID);
 	if (!gamelog) {
-		gamelog = data.users[data.users.push({ id: userID, logs: 0, playtime: 0 }) - 1];
+		gamelog = data.users[data.users.push({ name: userID, logs: 0, playtime: 0 }) - 1];
 	}
 	gamelog.logs += 1;
 	gamelog.playtime += timePlayed;
@@ -117,10 +117,12 @@ function updateGame(gameName: string, userID: string, timePlayed: number, logID:
 /** Make a new log */
 function addLog(gameName: string, userID: string, timePlayed: number, logID: string) {
 	const data: TrackerLog = {
+		id: logID,
 		gameName: gameName,
-		userid: userID,
-		time: new Date().toISOString(),
+		userID: userID,
+		date: new Date(),
 		playtime: timePlayed,
 	};
 	trackerLogs.set(logID, data);
+	return data;
 }

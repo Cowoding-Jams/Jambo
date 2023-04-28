@@ -10,7 +10,7 @@ class Tracker extends Autocompleter {
 
 	async execute(interaction: AutocompleteInteraction): Promise<void> {
 		const sub = interaction.options.getSubcommand();
-		const focus = interaction.options.getFocused().toLowerCase() as string;
+		const focus = (interaction.options.getFocused() as string).toLowerCase();
 		const option = interaction.options.getFocused(true).name;
 
 		// if user-option is given, use it, else default to executer

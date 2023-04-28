@@ -1,7 +1,13 @@
 import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { config } from "../../config";
 import { trackerGames, trackerLogs } from "../../db";
-import { dayInMillis, discordTimestamp, monthInMillis, weekInMillis } from "../misc/time";
+import {
+	dayInMillis,
+	discordTimestamp,
+	monthInMillis,
+	shortDateAndShortTimeTimestamp,
+	weekInMillis,
+} from "../misc/time";
 import { makeTimeString, sortDbEntriesToString } from "./helper";
 import { gameNoEntry } from "./messages";
 
@@ -20,24 +26,24 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	const mostPlayed = sortDbEntriesToString(
 		db.users,
 		(a, b) => b.playtime - a.playtime,
-		(user) => `<@${user.id}>: ${makeTimeString(user.playtime)}`
+		(user) => `<@${user.name}>: ${makeTimeString(user.playtime)}`
 	);
 
 	// get top 5 logged games and make a string
 	const mostLogged = sortDbEntriesToString(
 		db.users,
 		(a, b) => b.logs - a.logs,
-		(user) => `<@${user.id}>: ${user.logs} logs`
+		(user) => `<@${user.name}>: ${user.logs} logs`
 	);
 
 	// format latest logs into a string
-	const latestLogs = db.lastlogs.map((log) => `<@${trackerLogs.get(log)?.userid}>`).join("\n");
+	const latestLogs = db.lastlogs.map((log) => `<@${trackerLogs.get(log.id)?.userID}>`).join("\n");
 	// get total playtime, logs and users
 	const totalPlaytime = db.playtime;
 	const totalLogs = db.logs;
 	const users = db.users.length;
 	// get first log of game             (first log is iso string)
-	const firstSeen = new Date(trackerLogs.get(db.firstlog)?.time as string).getTime();
+	const firstSeen = db.firstlog.date.getTime();
 	// calculate the range from first log to now
 	const range = Date.now() - firstSeen;
 	// calculate daily/weekly/monthly and per-log average playtime
@@ -51,7 +57,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// temporary sorted list of most playtime/log (users)
 	const tmp = db.users.sort((a, b) => b.playtime / b.logs - a.playtime / a.logs)[0];
 	// make most playtime/log string
-	const mostPlaytime = `<@${tmp.id}>: ${makeTimeString(tmp.playtime / tmp.logs)} - ${
+	const mostPlaytime = `<@${tmp.name}>: ${makeTimeString(tmp.playtime / tmp.logs)} - ${
 		tmp.logs
 	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
@@ -104,10 +110,9 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 	// make embed field for every log
 	await logs.forEach(async (log) => {
 		// get and validate log (db.lastlogs is a list of numbers as strings, not the actual log)
-		const entry = trackerLogs.get(log);
-		if (!entry) return;
+		if (!log) return;
 		// get user who owns the log
-		const user = await interaction.client.users.fetch(entry.userid);
+		const user = await interaction.client.users.fetch(log.userID);
 		// skip if user doesnt exist anymore
 		if (!user) return;
 
@@ -115,9 +120,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: user.username,
-			value: `<t:${Math.floor(new Date(entry.time).getTime() / 1000)}:d><t:${Math.floor(
-				new Date(entry.time).getTime() / 1000
-			)}:t>\n${makeTimeString(entry.playtime)}`,
+			value: `${shortDateAndShortTimeTimestamp(log.date.getTime() / 1000)}\n${makeTimeString(log.playtime)}`,
 		});
 	});
 
@@ -158,7 +161,7 @@ export async function gameTop(interaction: ChatInputCommandInteraction, filter: 
 	await users.forEach(async (user) => {
 		fields.push({
 			inline: true,
-			name: (await interaction.client.users.fetch(user.id)).username,
+			name: (await interaction.client.users.fetch(user.name)).username,
 			value:
 				filter == "playtime"
 					? makeTimeString(user.playtime) + "\n" + user.logs + " logs"

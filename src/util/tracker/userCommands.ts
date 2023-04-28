@@ -1,7 +1,13 @@
 import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { config } from "../../config";
-import { trackerLogs, TrackerSublog, trackerUsers } from "../../db";
-import { dayInMillis, discordTimestamp, monthInMillis, shortDateAndShortTimeTimestamp, weekInMillis } from "../misc/time";
+import { TrackerSublog, trackerUsers } from "../../db";
+import {
+	dayInMillis,
+	discordTimestamp,
+	monthInMillis,
+	shortDateAndShortTimeTimestamp,
+	weekInMillis,
+} from "../misc/time";
 import { makeTimeString, sortDbEntriesToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
 import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 
@@ -29,24 +35,24 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	const mostPlayed = sortDbEntriesToString(
 		db.games,
 		(a, b) => b.playtime - a.playtime,
-		(game) => `${game.id}: ${makeTimeString(game.playtime)}`
+		(game) => `${game.name}: ${makeTimeString(game.playtime)}`
 	);
 
 	// make sorted list of most logged games and make string
 	const mostLogged = sortDbEntriesToString(
 		db.games,
 		(a, b) => b.logs - a.logs,
-		(game) => `${game.id}: ${game.logs} logs`
+		(game) => `${game.name}: ${game.logs} logs`
 	);
 
 	// get latest logs and make string
-	const latestLogs = db.lastlogs.map((log) => `${trackerLogs.get(log)?.gameName}`).join("\n");
+	const latestLogs = db.lastlogs.map((log) => `${log.gameName}`).join("\n");
 	// get total users playtime, logs and games
 	const totalPlaytime = db.playtime;
 	const games = db.games.length;
 	const totalLogs = db.logs;
 	// get first  log							    (time is iso string)
-	const firstSeen = new Date(trackerLogs.get(db.firstlog)?.time as string).getTime();
+	const firstSeen = db.firstlog.date.getTime();
 	// make range from first log to now
 	const range = Date.now() - firstSeen;
 	// calculate average paytime per day/week/month/user/log
@@ -60,7 +66,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	// temporary sorted list of games playtime/log
 	const tmp = db.games.sort((a, b) => b.playtime / b.logs - a.playtime / a.logs)[0];
 	// make string from first element of temporary list
-	const mostPlaytime = `${tmp.id}: ${makeTimeString(tmp.playtime / tmp.logs)} - ${
+	const mostPlaytime = `${tmp.name}: ${makeTimeString(tmp.playtime / tmp.logs)} - ${
 		tmp.logs
 	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
@@ -122,13 +128,11 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 
 	// make field for every log
 	logs.forEach((log) => {
-		// get log entry (latest logs is list of number as string, not the actual log data)
-		const entry = trackerLogs.get(log);
-		if (!entry) return;
+		if (!log) return;
 		fields.push({
 			inline: true,
-			name: entry.gameName,
-			value: `${shortDateAndShortTimeTimestamp(new Date(entry.time).getTime() / 1000)}\n${makeTimeString(entry.playtime)}`,
+			name: log.gameName,
+			value: `${shortDateAndShortTimeTimestamp(log.date.getTime() / 1000)}\n${makeTimeString(log.playtime)}`,
 		});
 	});
 
@@ -186,7 +190,7 @@ export async function userTop(interaction: ChatInputCommandInteraction, filter: 
 	games.forEach((game) => {
 		fields.push({
 			inline: true,
-			name: game.id,
+			name: game.name,
 			value:
 				filter == "playtime"
 					? `${makeTimeString(new Date(game.playtime).getTime())}\n${game.logs} logs`

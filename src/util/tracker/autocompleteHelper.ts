@@ -11,7 +11,7 @@ export function user(
 		if (typeof userid == "string") {
 			if (trackerUsers.get(userid)?.games) {
 				// list games a user has played (if user has played anything)
-				trackerUsers.get(userid)?.games.forEach((g) => results.push(g.id));
+				trackerUsers.get(userid)?.games.forEach((g) => results.push(g.name));
 			} else {
 				// show this when user didnt play any games
 				results.push("[user has not played any games yet]");
