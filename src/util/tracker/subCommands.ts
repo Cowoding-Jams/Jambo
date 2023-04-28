@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import { APIEmbedField, ChatInputCommandInteraction } from "discord.js";
-import { discordTimestamp } from "../misc/time";
+import { discordTimestamp, shortDateAndShortTimeTimestamp } from "../misc/time";
 import { trackerGames, trackerLogs, trackerUsers } from "../../db";
 import { config } from "../../config";
 import { makeTimeString, sortDbGamesToString, sortDbUsersToString } from "./helper";
@@ -122,9 +122,7 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: log.gameName,
-			value: `<@${log.userid}>\n<t:${Math.floor(new Date(log.time).getTime() / 1000)}:d><t:${Math.floor(
-				new Date(log.time).getTime() / 1000
-			)}:t>\n${makeTimeString(log.playtime)}`,
+			value: `<@${log.userid}>\n${shortDateAndShortTimeTimestamp(new Date(log.time).getTime() / 1000)}\n${makeTimeString(log.playtime)}`,
 		})
 	);
 
@@ -174,9 +172,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		.slice(0, 5)
 		.map(
 			(log) =>
-				`<t:${Math.floor(new Date(log.time).getTime() / 1000)}:d><t:${Math.floor(
-					new Date(log.time).getTime() / 1000
-				)}:t> <@${log.userid}> ${log.gameName}: ${makeTimeString(log.playtime)}`
+				`${shortDateAndShortTimeTimestamp(new Date(log.time).getTime() / 1000)} <@${log.userid}> ${log.gameName}: ${makeTimeString(log.playtime)}`
 		)
 		.join("\n");
 	// get total playtime of all games

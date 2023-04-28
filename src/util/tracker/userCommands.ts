@@ -1,7 +1,7 @@
 import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { config } from "../../config";
 import { trackerLogs, TrackerSublog, trackerUsers } from "../../db";
-import { discordTimestamp } from "../misc/time";
+import { dayInMillis, discordTimestamp, monthInMillis, shortDateAndShortTimeTimestamp, weekInMillis } from "../misc/time";
 import { makeTimeString, sortDbEntriesToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
 import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 
@@ -51,9 +51,9 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	const range = Date.now() - firstSeen;
 	// calculate average paytime per day/week/month/user/log
 	const playtimePer = `day: ${makeTimeString(
-		Math.round(totalPlaytime / (range / (86400 * 1000)))
-	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / 604800000)))}\nmonth: ${makeTimeString(
-		Math.round(totalPlaytime / (range / 2628000000))
+		Math.round(totalPlaytime / (range / dayInMillis))
+	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / weekInMillis))}\nmonth: ${makeTimeString(
+		Math.round(totalPlaytime / (range / monthInMillis))
 	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nlog: ${makeTimeString(
 		Math.round(totalPlaytime / totalLogs)
 	)}`;
@@ -128,9 +128,7 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: entry.gameName,
-			value: `<t:${Math.floor(new Date(entry.time).getTime() / 1000)}:d><t:${Math.floor(
-				new Date(entry.time).getTime() / 1000
-			)}:t>\n${makeTimeString(entry.playtime)}`,
+			value: `${shortDateAndShortTimeTimestamp(new Date(entry.time).getTime() / 1000)}\n${makeTimeString(entry.playtime)}`,
 		});
 	});
 
