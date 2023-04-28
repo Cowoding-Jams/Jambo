@@ -1,0 +1,4 @@
+I didnt test the serializing stuff because the values in the interfaces changed and the new obviously code doesnt work on them anymore.
+There are at least no problems starting the bot but there might still be issues when executing commands.
+Ill let the bot run for a bit and then test. 
+Once tested this note will be removed.
