@@ -129,10 +129,8 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = addEmbedFooter(
-			new EmbedBuilder()
-				.setTitle(`Latest logs of ${targetGame}`)
-				.addFields(...fields)
-		)
+		new EmbedBuilder().setTitle(`Latest logs of ${targetGame}`).addFields(...fields)
+	);
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -170,10 +168,8 @@ export async function gameTop(interaction: ChatInputCommandInteraction, filter: 
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
 	const embed = addEmbedFooter(
-		new EmbedBuilder()
-			.setTitle(`Top user (${filter}) by ${targetGame}`)
-			.addFields(...fields)
-		)
+		new EmbedBuilder().setTitle(`Top user (${filter}) by ${targetGame}`).addFields(...fields)
+	);
 
 	await interaction.reply({ embeds: [embed] });
 }

@@ -19,7 +19,10 @@ export const gameNoEntry = errorMessage("no database entry", "Given game has no 
 /** Used when a non admin user tryes to use a admin only command */
 export const adminOnly = errorMessage("admin only", "This command can only be executed by an admin.");
 /** Used when there is an attempt to add a game to the blacklist while its already on there */
-export const gameOnBlacklist = errorMessage("already on blacklist", "Given game is already on the blacklist.");
+export const gameOnBlacklist = errorMessage(
+	"already on blacklist",
+	"Given game is already on the blacklist."
+);
 /** User when there is an attempt to remove a game from the blacklist whole its not on there */
 export const gameNotOnBlacklist = errorMessage("not on blacklist", "Given game is not on the blacklist.");
 /** Used to confirm the adding of a given game to the blacklist */

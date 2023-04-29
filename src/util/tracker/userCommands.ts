@@ -70,9 +70,8 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 		tmp.logs
 	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
-	const embed = addEmbedFooter(new EmbedBuilder()
-		.setTitle(`Tracking stats about ${member.displayName}`)
-		.addFields(
+	const embed = addEmbedFooter(
+		new EmbedBuilder().setTitle(`Tracking stats about ${member.displayName}`).addFields(
 			{ inline: true, name: "Most logged game", value: mostLogged },
 			{ inline: true, name: "Game with most playtime", value: mostPlayed },
 			{ inline: false, name: "_ _", value: "_ _" },
@@ -92,7 +91,8 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "Total logs", value: totalLogs.toString() },
 			{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) }
-		))
+		)
+	);
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -133,9 +133,9 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 	// add extra field for better formatting
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
-	const embed = addEmbedFooter(new EmbedBuilder()
-		.setTitle(`Latest logs by ${member?.displayName}`)
-		.addFields(...fields))
+	const embed = addEmbedFooter(
+		new EmbedBuilder().setTitle(`Latest logs by ${member?.displayName}`).addFields(...fields)
+	);
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -189,9 +189,9 @@ export async function userTop(interaction: ChatInputCommandInteraction, filter: 
 	// add one extra field for better formatting
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
-	const embed = addEmbedFooter(new EmbedBuilder()
-		.setTitle(`Top games (${filter}) by ${member?.displayName}`)
-		.addFields(...fields))
+	const embed = addEmbedFooter(
+		new EmbedBuilder().setTitle(`Top games (${filter}) by ${member?.displayName}`).addFields(...fields)
+	);
 
 	await interaction.reply({ embeds: [embed] });
 }
