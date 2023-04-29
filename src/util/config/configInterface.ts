@@ -68,7 +68,7 @@ export interface BotConfig {
 		| 22
 		| 23;
 
-	// tracker
+	// --- Tracker ---
 	/** Enable or Disable the tracking feature (if disabled, tracking-commands and logging wont be available anymore, but tracking-Database wont be cleared!) */
 	tracking: boolean;
 }
