@@ -38,11 +38,7 @@ export function confirmEmbed(title: string): InteractionReplyOptions {
 }
 
 /** Sort database entries, given a sorting and maping callback */
-export function sortDbToString<T> (
-	db: T[],
-	sortFn: (a: T, b:T) => number,
-	mapFn: (log: T) => string
-) {
+export function sortDbToString<T>(db: T[], sortFn: (a: T, b: T) => number, mapFn: (log: T) => string) {
 	return db
 		.sort((a, b) => sortFn(a, b))
 		.slice(0, 5)
