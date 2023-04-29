@@ -29,37 +29,35 @@ class Tracker extends Command {
 		const action = interaction.options.getString("action");
 		switch (subCommand) {
 			case "user":
-				if (statistics == "playtime") {
+				if (statistics == "playtime")
 					await playtime(interaction);
-				} else if (statistics == "logs") {
+				else if (statistics == "logs")
 					await logs(interaction);
-				} else if (statistics == "general statistics") {
+				else if (statistics == "general statistics")
 					await userStats(interaction);
-				} else if (statistics == "top 5 most played games") {
+				else if (statistics == "top 5 most played games")
 					await userTop(interaction, "playtime");
-				} else if (statistics == "top 5 most logged games") {
+				else if (statistics == "top 5 most logged games")
 					await userTop(interaction, "logs");
-				} else if (statistics == "latest 5 logs") {
+				else if (statistics == "latest 5 logs")
 					await userLast(interaction);
-				}
 				return;
 			case "game":
-				if (statistics == "general statistics") {
+				if (statistics == "general statistics")
 					await gameStats(interaction);
-				} else if (statistics == "top 5 most played games") {
+				else if (statistics == "top 5 most played games") 
 					await gameTop(interaction, "playtime");
-				} else if (statistics == "top 5 most logged games") {
+				else if (statistics == "top 5 most logged games") 
 					await gameTop(interaction, "logs");
-				} else if (statistics == "latest 5 logs") {
+				else if (statistics == "latest 5 logs") 
 					await gameLast(interaction);
-				}
+				
 				return;
 			case "blacklist":
-				if (action == "add") {
+				if (action == "add")
 					await addBlacklist(interaction);
-				} else if (action == "rem") {
+				else if (action == "rem")
 					await remBlacklist(interaction);
-				}
 				return;
 			case "latest":
 				await latest(interaction);
@@ -87,25 +85,25 @@ class Tracker extends Command {
 				);
 		return new SlashCommandBuilder()
 			.setName("tracker")
-			.setDescription("The gateway to some cool stats about here being users.")
+			.setDescription("The gateway to some cool stats about the people on this server.")
 			.addSubcommand((sub) =>
 				sub
 					.setName("user")
 					.setDescription("Get tracking stats about a user.")
 					.addUserOption((opt) =>
-						opt.setName("user").setDescription("the target user, if not given defaults to you.")
+						opt.setName("user").setDescription("The target user, if not given defaults to you.")
 					)
 					.addStringOption((opt) =>
 						opt
 							.setName("game")
-							.setDescription("the game of which to get playtime/logs from.")
+							.setDescription("The game of which to get playtime/logs from.")
 							.setAutocomplete(true)
 					)
 					.addStringOption((opt) =>
 						opt
 							.setName("statistic")
 							.setDescription(
-								"select what statistics should get shown. (Options depend on if a game is given or not)"
+								"Select what statistics should get shown. (Options depend on if a game is given or not)"
 							)
 							.setAutocomplete(true)
 					)
@@ -117,14 +115,14 @@ class Tracker extends Command {
 					.addStringOption((opt) =>
 						opt
 							.setName("game")
-							.setDescription("the game of which to get statistics from.")
+							.setDescription("The game of which to get statistics from.")
 							.setRequired(true)
 							.setAutocomplete(true)
 					)
 					.addStringOption((opt) =>
 						opt
 							.setName("statistic")
-							.setDescription("select what statistics should get shown.")
+							.setDescription("Select what statistics should get shown.")
 							.addChoices(
 								{ name: "general statistics", value: "general statistics" },
 								{ name: "top 5 most played games", value: "top 5 most played games" },
@@ -140,14 +138,14 @@ class Tracker extends Command {
 					.addStringOption((opt) =>
 						opt
 							.setName("action")
-							.setDescription("select which action should get executed.")
+							.setDescription("Select which action should get executed.")
 							.addChoices({ name: "add", value: "add" }, { name: "remove", value: "rem" })
 							.setRequired(true)
 					)
 					.addStringOption((opt) =>
 						opt
 							.setName("game")
-							.setDescription("the game on which the action should be performed.")
+							.setDescription("The game on which the action should be performed.")
 							.setRequired(true)
 							.setAutocomplete(true)
 					)
