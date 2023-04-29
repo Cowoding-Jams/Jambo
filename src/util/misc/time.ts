@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, CommandInteraction, ModalSubmitInteraction
 import { DateTime, Duration } from "luxon";
 
 function makeTimestamp(datetime: DateTime | number, end?: string): string {
-	return `<t:${datetime instanceof DateTime ? Math.floor(datetime.toSeconds()) : datetime}${
+	return `<t:${datetime instanceof DateTime ? Math.floor(datetime.toSeconds()) : Math.floor(datetime)}${
 		end ? ":" + end : ""
 	}>`;
 }
