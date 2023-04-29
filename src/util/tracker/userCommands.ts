@@ -8,7 +8,7 @@ import {
 	shortDateAndShortTimeTimestamp,
 	weekInMillis,
 } from "../misc/time";
-import { makeTimeString, sortDbEntriesToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
+import { makeTimeString, sortDbToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
 import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 
 export async function userStats(interaction: ChatInputCommandInteraction) {
@@ -32,14 +32,14 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	}
 
 	// make sorted list of most played games and make string
-	const mostPlayed = sortDbEntriesToString(
+	const mostPlayed = sortDbToString<TrackerSublog>(
 		db.games,
 		(a, b) => b.playtime - a.playtime,
 		(game) => `${game.name}: ${makeTimeString(game.playtime)}`
 	);
 
 	// make sorted list of most logged games and make string
-	const mostLogged = sortDbEntriesToString(
+	const mostLogged = sortDbToString<TrackerSublog>(
 		db.games,
 		(a, b) => b.logs - a.logs,
 		(game) => `${game.name}: ${game.logs} logs`

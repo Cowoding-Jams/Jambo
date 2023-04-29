@@ -1,6 +1,6 @@
 import { EmbedBuilder, InteractionReplyOptions } from "discord.js";
 import { Duration } from "luxon";
-import { TrackerGame, TrackerSublog, TrackerUser, trackerUsers } from "../../db";
+import { trackerUsers } from "../../db";
 import { durationToReadable } from "../misc/time";
 
 /** Uses `durationToReadable` from src/util/misc/time.ts but without the need to parse a Duration object */
@@ -36,36 +36,16 @@ export function confirmEmbed(title: string): InteractionReplyOptions {
 		ephemeral: true,
 	};
 }
+
 /** Sort database entries, given a sorting and maping callback */
-export const sortDbEntriesToString = (
-	db: TrackerSublog[],
-	sortFn: (a: TrackerSublog, b: TrackerSublog) => number,
-	mapFn: (log: TrackerSublog) => string
-) =>
-	db
+export function sortDbToString<T> (
+	db: T[],
+	sortFn: (a: T, b:T) => number,
+	mapFn: (log: T) => string
+) {
+	return db
 		.sort((a, b) => sortFn(a, b))
 		.slice(0, 5)
 		.map((log) => mapFn(log))
 		.join("\n");
-/** Sort database games, given a sorting and maping callback */
-export const sortDbGamesToString = (
-	db: TrackerGame[],
-	sortFn: (a: TrackerGame, b: TrackerGame) => number,
-	mapFn: (log: TrackerGame) => string
-) =>
-	db
-		.sort((a, b) => sortFn(a, b))
-		.slice(0, 5)
-		.map((log) => mapFn(log))
-		.join("\n");
-/** Sort database users, given a sorting and maping callback */
-export const sortDbUsersToString = (
-	db: TrackerUser[],
-	sortFn: (a: TrackerUser, b: TrackerUser) => number,
-	mapFn: (log: TrackerUser) => string
-) =>
-	db
-		.sort((a, b) => sortFn(a, b))
-		.slice(0, 5)
-		.map((log) => mapFn(log))
-		.join("\n");
+}

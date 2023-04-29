@@ -1,6 +1,6 @@
 import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { config } from "../../config";
-import { trackerGames, trackerLogs } from "../../db";
+import { trackerGames, trackerLogs, TrackerSublog } from "../../db";
 import {
 	dayInMillis,
 	discordTimestamp,
@@ -8,7 +8,7 @@ import {
 	shortDateAndShortTimeTimestamp,
 	weekInMillis,
 } from "../misc/time";
-import { makeTimeString, sortDbEntriesToString } from "./helper";
+import { makeTimeString, sortDbToString } from "./helper";
 import { gameNoEntry } from "./messages";
 
 export async function gameStats(interaction: ChatInputCommandInteraction) {
@@ -23,14 +23,14 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	}
 
 	// get top 5 played games and make a string
-	const mostPlayed = sortDbEntriesToString(
+	const mostPlayed = sortDbToString<TrackerSublog>(
 		db.users,
 		(a, b) => b.playtime - a.playtime,
 		(user) => `<@${user.name}>: ${makeTimeString(user.playtime)}`
 	);
 
 	// get top 5 logged games and make a string
-	const mostLogged = sortDbEntriesToString(
+	const mostLogged = sortDbToString<TrackerSublog>(
 		db.users,
 		(a, b) => b.logs - a.logs,
 		(user) => `<@${user.name}>: ${user.logs} logs`
