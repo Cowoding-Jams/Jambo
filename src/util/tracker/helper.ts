@@ -1,4 +1,4 @@
-import { EmbedBuilder, InteractionReplyOptions } from "discord.js";
+import { InteractionReplyOptions } from "discord.js";
 import { Duration } from "luxon";
 import { trackerUsers } from "../../db";
 import { durationToReadable } from "../misc/time";
