@@ -18,21 +18,16 @@ export function sortGamesLogs(userId: string) {
 	return data?.games.sort((a, b) => b.logs - a.logs);
 }
 /** Make an error embed */
-export function errorEmbed(title: string, info: string): InteractionReplyOptions {
+export function errorMessage(title: string, info: string): InteractionReplyOptions {
 	return {
-		embeds: [
-			new EmbedBuilder()
-				.setTitle(`ERROR: ${title}`)
-				.setDescription(`further info:\n\`\`\`${info}\`\`\``)
-				.setColor([255, 0, 0]),
-		],
+		content: `${title}: ${info}`,
 		ephemeral: true,
 	};
 }
 /** Make an success embed */
-export function confirmEmbed(title: string): InteractionReplyOptions {
+export function confirmMessage(title: string): InteractionReplyOptions {
 	return {
-		embeds: [new EmbedBuilder().setTitle(title).setColor([0, 255, 0])],
+		content: title,
 		ephemeral: true,
 	};
 }

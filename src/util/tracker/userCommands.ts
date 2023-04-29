@@ -1,6 +1,6 @@
 import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { config } from "../../config";
 import { TrackerSublog, trackerUsers } from "../../db";
+import { addEmbedFooter } from "../misc/embeds";
 import {
 	dayInMillis,
 	discordTimestamp,
@@ -70,13 +70,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 		tmp.logs
 	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
-	const embed = new EmbedBuilder()
-		.setAuthor({
-			name: config.botName,
-			url: config.githubURL,
-			iconURL: config.iconURL,
-		})
-		.setColor(member.displayColor)
+	const embed = addEmbedFooter(new EmbedBuilder()
 		.setTitle(`Tracking stats about ${member.displayName}`)
 		.addFields(
 			{ inline: true, name: "Most logged game", value: mostLogged },
@@ -98,7 +92,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "Total logs", value: totalLogs.toString() },
 			{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) }
-		);
+		))
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -139,15 +133,9 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 	// add extra field for better formatting
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
-	const embed = new EmbedBuilder()
-		.setColor(member.displayColor)
-		.setAuthor({
-			name: config.botName,
-			url: config.githubURL,
-			iconURL: config.iconURL,
-		})
+	const embed = addEmbedFooter(new EmbedBuilder()
 		.setTitle(`Latest logs by ${member?.displayName}`)
-		.addFields(...fields);
+		.addFields(...fields))
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -201,15 +189,9 @@ export async function userTop(interaction: ChatInputCommandInteraction, filter: 
 	// add one extra field for better formatting
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
-	const embed = new EmbedBuilder()
-		.setColor(member.displayColor)
-		.setAuthor({
-			name: config.botName,
-			url: config.githubURL,
-			iconURL: config.iconURL,
-		})
+	const embed = addEmbedFooter(new EmbedBuilder()
 		.setTitle(`Top games (${filter}) by ${member?.displayName}`)
-		.addFields(...fields);
+		.addFields(...fields))
 
 	await interaction.reply({ embeds: [embed] });
 }

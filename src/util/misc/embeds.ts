@@ -1,8 +1,8 @@
 import { EmbedBuilder } from "discord.js";
 import { config } from "../../config";
 
-export function addEmbedFooter(embed: EmbedBuilder, timestamp = false): EmbedBuilder {
-	embed = embed.setColor(config.color).setAuthor({
+export function addEmbedFooter(embed: EmbedBuilder, timestamp = false, color = config.color): EmbedBuilder {
+	embed = embed.setColor(color).setAuthor({
 		name: `Made by me, ${config.botName} :)`,
 		iconURL: config.iconURL,
 		url: config.githubURL,

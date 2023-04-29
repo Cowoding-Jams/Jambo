@@ -1,6 +1,7 @@
 import { APIEmbedField, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { config } from "../../config";
 import { trackerGames, trackerLogs, TrackerSublog } from "../../db";
+import { addEmbedFooter } from "../misc/embeds";
 import {
 	dayInMillis,
 	discordTimestamp,
@@ -127,15 +128,11 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 	// add a last field so embed looks better formatted
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
-	const embed = new EmbedBuilder()
-		.setColor(config.color)
-		.setAuthor({
-			name: config.botName,
-			url: config.githubURL,
-			iconURL: config.iconURL,
-		})
-		.setTitle(`Latest logs of ${targetGame}`)
-		.addFields(...fields);
+	const embed = addEmbedFooter(
+			new EmbedBuilder()
+				.setTitle(`Latest logs of ${targetGame}`)
+				.addFields(...fields)
+		)
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -172,15 +169,11 @@ export async function gameTop(interaction: ChatInputCommandInteraction, filter: 
 	// add one final field for formatting purposes
 	fields.push({ inline: true, name: "_ _", value: "_ _" });
 
-	const embed = new EmbedBuilder()
-		.setColor(config.color)
-		.setAuthor({
-			name: config.botName,
-			url: config.githubURL,
-			iconURL: config.iconURL,
-		})
-		.setTitle(`Top user (${filter}) by ${targetGame}`)
-		.addFields(...fields);
+	const embed = addEmbedFooter(
+		new EmbedBuilder()
+			.setTitle(`Top user (${filter}) by ${targetGame}`)
+			.addFields(...fields)
+		)
 
 	await interaction.reply({ embeds: [embed] });
 }

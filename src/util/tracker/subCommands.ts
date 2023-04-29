@@ -5,6 +5,7 @@ import { TrackerGame, trackerGames, trackerLogs, TrackerUser, trackerUsers } fro
 import { config } from "../../config";
 import { makeTimeString, sortDbToString } from "./helper";
 import { gameNoEntry, userNoEntry, userNoGameEntry } from "./messages";
+import { addEmbedFooter } from "../misc/embeds";
 
 export async function playtime(interaction: ChatInputCommandInteraction) {
 	// get target user and game
@@ -209,35 +210,36 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		Math.round(tmp.playtime / tmp.logs)
 	)} - ${tmp.logs} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
-	const embed = new EmbedBuilder()
-		.setTitle("System stats")
-		.setColor(config.color)
-		.addFields(
-			{ inline: true, name: "Most logged games", value: mostLoggedGame },
-			{ inline: true, name: "Most played games", value: mostPlayedGame },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Most logged users", value: mostLoggedUser },
-			{ inline: true, name: "Users with most playtime", value: mostPlayedUser },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Latest logs", value: latestLogs },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "(Average) playtime per", value: playtimePer },
-			{ inline: true, name: "(Average) most playtime/log", value: mostPlaytime },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{
-				inline: true,
-				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
-					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Date.now() - firstSeen)}`,
-			},
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Total logs", value: totalLogs.toString() },
-			{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Total games", value: games.toString() },
-			{ inline: true, name: "Total users", value: users.toString() }
-		);
+	const embed = addEmbedFooter(
+			new EmbedBuilder()
+				.setTitle("System stats")
+				.addFields(
+					{ inline: true, name: "Most logged games", value: mostLoggedGame },
+					{ inline: true, name: "Most played games", value: mostPlayedGame },
+					{ inline: false, name: "_ _", value: "_ _" },
+					{ inline: true, name: "Most logged users", value: mostLoggedUser },
+					{ inline: true, name: "Users with most playtime", value: mostPlayedUser },
+					{ inline: false, name: "_ _", value: "_ _" },
+					{ inline: true, name: "Latest logs", value: latestLogs },
+					{ inline: false, name: "_ _", value: "_ _" },
+					{ inline: true, name: "(Average) playtime per", value: playtimePer },
+					{ inline: true, name: "(Average) most playtime/log", value: mostPlaytime },
+					{ inline: false, name: "_ _", value: "_ _" },
+					{
+						inline: true,
+						name: "Record range",
+						value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
+							Math.floor(Date.now() / 1000)
+						)}(now)\n${makeTimeString(Date.now() - firstSeen)}`,
+					},
+					{ inline: false, name: "_ _", value: "_ _" },
+					{ inline: true, name: "Total logs", value: totalLogs.toString() },
+					{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) },
+					{ inline: false, name: "_ _", value: "_ _" },
+					{ inline: true, name: "Total games", value: games.toString() },
+					{ inline: true, name: "Total users", value: users.toString() }
+				)
+			)
 
 	await interaction.reply({ embeds: [embed] });
 }

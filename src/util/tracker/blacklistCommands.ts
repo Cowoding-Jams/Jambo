@@ -5,8 +5,8 @@ import {
 	adminOnly,
 	gameNotOnBlacklist,
 	gameOnBlacklist,
-	makeGameAddedEmbed,
-	makeGameRemovedEmbed,
+	makeGameAddedMessage,
+	makeGameRemovedMessage,
 } from "./messages";
 
 export async function addBlacklist(interaction: ChatInputCommandInteraction) {
@@ -25,7 +25,7 @@ export async function addBlacklist(interaction: ChatInputCommandInteraction) {
 	}
 	// add game to blacklist
 	trackerBlacklist.push("", game.toLowerCase());
-	interaction.reply(makeGameAddedEmbed(game));
+	interaction.reply(makeGameAddedMessage(game));
 }
 export async function remBlacklist(interaction: ChatInputCommandInteraction) {
 	// check for admin permissions
@@ -44,7 +44,7 @@ export async function remBlacklist(interaction: ChatInputCommandInteraction) {
 			"",
 			db.filter((g) => g.toLowerCase() != game.toLowerCase())
 		);
-		interaction.reply(makeGameRemovedEmbed(game));
+		interaction.reply(makeGameRemovedMessage(game));
 		return;
 	}
 	// send error
