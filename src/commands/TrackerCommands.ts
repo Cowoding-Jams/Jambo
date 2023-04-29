@@ -29,35 +29,23 @@ class Tracker extends Command {
 		const action = interaction.options.getString("action");
 		switch (subCommand) {
 			case "user":
-				if (statistics == "playtime")
-					await playtime(interaction);
-				else if (statistics == "logs")
-					await logs(interaction);
-				else if (statistics == "general statistics")
-					await userStats(interaction);
-				else if (statistics == "top 5 most played games")
-					await userTop(interaction, "playtime");
-				else if (statistics == "top 5 most logged games")
-					await userTop(interaction, "logs");
-				else if (statistics == "latest 5 logs")
-					await userLast(interaction);
+				if (statistics == "playtime") await playtime(interaction);
+				else if (statistics == "logs") await logs(interaction);
+				else if (statistics == "general statistics") await userStats(interaction);
+				else if (statistics == "top 5 most played games") await userTop(interaction, "playtime");
+				else if (statistics == "top 5 most logged games") await userTop(interaction, "logs");
+				else if (statistics == "latest 5 logs") await userLast(interaction);
 				return;
 			case "game":
-				if (statistics == "general statistics")
-					await gameStats(interaction);
-				else if (statistics == "top 5 most played games") 
-					await gameTop(interaction, "playtime");
-				else if (statistics == "top 5 most logged games") 
-					await gameTop(interaction, "logs");
-				else if (statistics == "latest 5 logs") 
-					await gameLast(interaction);
-				
+				if (statistics == "general statistics") await gameStats(interaction);
+				else if (statistics == "top 5 most played games") await gameTop(interaction, "playtime");
+				else if (statistics == "top 5 most logged games") await gameTop(interaction, "logs");
+				else if (statistics == "latest 5 logs") await gameLast(interaction);
+
 				return;
 			case "blacklist":
-				if (action == "add")
-					await addBlacklist(interaction);
-				else if (action == "rem")
-					await remBlacklist(interaction);
+				if (action == "add") await addBlacklist(interaction);
+				else if (action == "rem") await remBlacklist(interaction);
 				return;
 			case "latest":
 				await latest(interaction);
