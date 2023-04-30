@@ -52,13 +52,13 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	const games = db.games.length;
 	const totalLogs = db.logs;
 	// get first  log							    (time is iso string)
-	const firstSeen = db.firstlog.date.getTime();
+	const firstSeen = db.firstlog.date;
 	// make range from first log to now
 	const range = Date.now() - firstSeen;
 	// calculate average paytime per day/week/month/user/log
 	const playtimePer = `day: ${makeTimeString(
 		Math.round(totalPlaytime / (range / dayInMillis))
-	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / weekInMillis))}\nmonth: ${makeTimeString(
+	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInMillis)))}\nmonth: ${makeTimeString(
 		Math.round(totalPlaytime / (range / monthInMillis))
 	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nlog: ${makeTimeString(
 		Math.round(totalPlaytime / totalLogs)
@@ -126,7 +126,7 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: log.gameName,
-			value: `${shortDateAndShortTimeTimestamp(log.date.getTime() / 1000)}\n${makeTimeString(log.playtime)}`,
+			value: `${shortDateAndShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(log.playtime)}`,
 		});
 	});
 
@@ -181,8 +181,8 @@ export async function userTop(interaction: ChatInputCommandInteraction, filter: 
 			name: game.name,
 			value:
 				filter == "playtime"
-					? `${makeTimeString(new Date(game.playtime).getTime())}\n${game.logs} logs`
-					: `${game.logs} logs\n${makeTimeString(new Date(game.playtime).getTime())}`,
+					? `${makeTimeString(game.playtime)}\n${game.logs} logs`
+					: `${game.logs} logs\n${makeTimeString(game.playtime)}`,
 		});
 	});
 

@@ -1,6 +1,12 @@
 import { EmbedBuilder } from "discord.js";
 import { APIEmbedField, ChatInputCommandInteraction } from "discord.js";
-import { discordTimestamp, shortDateAndShortTimeTimestamp } from "../misc/time";
+import {
+	dayInMillis,
+	discordTimestamp,
+	monthInMillis,
+	shortDateAndShortTimeTimestamp,
+	weekInMillis,
+} from "../misc/time";
 import { TrackerGame, trackerGames, trackerLogs, TrackerUser, trackerUsers } from "../../db";
 import { config } from "../../config";
 import { makeTimeString, sortDbToString } from "./helper";
@@ -115,7 +121,7 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 	// latest system logs
 	const logs = trackerLogs
 		.array()
-		.sort((a, b) => b.date.getTime() - a.date.getTime())
+		.sort((a, b) => b.date - a.date)
 		.slice(0, 5);
 
 	// make embed for each log
@@ -123,9 +129,9 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: log.gameName,
-			value: `<@${log.userID}>\n${shortDateAndShortTimeTimestamp(
-				log.date.getTime() / 1000
-			)}\n${makeTimeString(log.playtime)}`,
+			value: `<@${log.userID}>\n${shortDateAndShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(
+				log.playtime
+			)}`,
 		})
 	);
 
@@ -175,7 +181,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		.slice(0, 5)
 		.map(
 			(log) =>
-				`${shortDateAndShortTimeTimestamp(log.date.getTime() / 1000)} <@${log.userID}> ${
+				`${shortDateAndShortTimeTimestamp(log.date / 1000)} <@${log.userID}> ${
 					log.gameName
 				}: ${makeTimeString(log.playtime)}`
 		)
@@ -192,14 +198,14 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	// get amount of users
 	const users = trackerUsers.count;
 	// get first log               (time is iso string)
-	const firstSeen = trackerLogs.array()[0].date.getTime();
+	const firstSeen = trackerLogs.array()[0].date;
 	// make range from first log to now
 	const range = Date.now() - firstSeen;
 	// calculate average playtime per day/week/month/game/log
 	const playtimePer = `day: ${makeTimeString(
-		Math.round(totalPlaytime / (range / (86400 * 1000)))
-	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / 604800000)))}\nmonth: ${makeTimeString(
-		Math.round(totalPlaytime / (range / 2628000000))
+		Math.round(totalPlaytime / (range / dayInMillis))
+	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInMillis)))}\nmonth: ${makeTimeString(
+		Math.round(totalPlaytime / (range / monthInMillis))
 	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nuser: ${makeTimeString(
 		Math.round(totalPlaytime / users)
 	)}\nlog: ${makeTimeString(Math.round(totalPlaytime / totalLogs))}`;

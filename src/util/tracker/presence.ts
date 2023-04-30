@@ -120,7 +120,7 @@ function addLog(gameName: string, userID: string, timePlayed: number, logID: str
 		id: logID,
 		gameName: gameName,
 		userID: userID,
-		date: new Date(),
+		date: Date.now(),
 		playtime: timePlayed,
 	};
 	trackerLogs.set(logID, data);

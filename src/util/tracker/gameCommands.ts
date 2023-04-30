@@ -44,7 +44,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	const totalLogs = db.logs;
 	const users = db.users.length;
 	// get first log of game             (first log is iso string)
-	const firstSeen = db.firstlog.date.getTime();
+	const firstSeen = db.firstlog.date;
 	// calculate the range from first log to now
 	const range = Date.now() - firstSeen;
 	// calculate daily/weekly/monthly and per-log average playtime
@@ -121,7 +121,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: user.username,
-			value: `${shortDateAndShortTimeTimestamp(log.date.getTime() / 1000)}\n${makeTimeString(log.playtime)}`,
+			value: `${shortDateAndShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(log.playtime)}`,
 		});
 	});
 

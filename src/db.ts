@@ -61,8 +61,8 @@ interface InternalReminder {
 export interface TrackerLog {
 	/** id of the log */
 	id: string;
-	/** When a log got logged */
-	date: Date;
+	/** When a log got logged (Date.now()) */
+	date: number;
 	/** How long a game got played in ms*/
 	playtime: number;
 	/** User id of the User who just got logged */
@@ -126,12 +126,12 @@ interface internalTrackerGameAndUser {
 	users: TrackerSublog[];
 }
 
-// just in case a referenced log wasnt found.
+// Just in case a referenced log wasnt found.
 // Although there really isnt any reason why there should accrue such a case.
 // Better safe than sorry and to make ts happy of course!
 const unknownTrackerLog: TrackerLog = {
 	id: "-1",
-	date: new Date(2000, 4, 0, 4),
+	date: 404,
 	playtime: -1,
 	userID: "0000000000000000000",
 	gameName: "[unknown log]",
@@ -139,8 +139,8 @@ const unknownTrackerLog: TrackerLog = {
 
 export const trackerLogs = new Enmap<TrackerLog, internalTrackerLog>({
 	name: "trackerLogs",
-	serializer: (data) => ({ ...data, date: data.date.toISOString() }),
-	deserializer: (data) => ({ ...data, date: new Date(data.date) }),
+	serializer: (data) => ({ ...data, date: new Date(data.date).toISOString() }),
+	deserializer: (data) => ({ ...data, date: new Date(data.date).getTime() }),
 });
 export const trackerUsers = new Enmap<TrackerUser, internalTrackerGameAndUser>({
 	name: "trackerUsers",
