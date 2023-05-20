@@ -33,7 +33,7 @@ const description = () =>
 		.setPlaceholder("Add a suiting description!")
 		.setStyle(TextInputStyle.Paragraph)
 		.setMinLength(20)
-		.setMaxLength(200);
+		.setMaxLength(500);
 
 const duration = () =>
 	new TextInputBuilder()
@@ -52,7 +52,7 @@ const references = () =>
 			"Add any references you may have like links to videos! (please make it a pretty bullet list)"
 		)
 		.setStyle(TextInputStyle.Paragraph)
-		.setMaxLength(200)
+		.setMaxLength(500)
 		.setRequired(false);
 
 export async function addProposal(interaction: ChatInputCommandInteraction): Promise<void> {
