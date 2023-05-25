@@ -29,7 +29,7 @@ export async function upcomingCommand(interaction: ChatInputCommandInteraction) 
 		const age = getAge(entry.date);
 		return `${entry.date.toFormat(
 			entry.date.year != 0 ? longDateFormatWithTimezone : shortDateFormatWithTimezone
-		)}${age ? ` (${age + 1}th)` : ""} ⁘ <@${entry.user}>`;
+		)}${age ? ` (${age}th)` : ""} ⁘ <@${entry.user}>`;
 	});
 
 	if (entries.length == 0) {
