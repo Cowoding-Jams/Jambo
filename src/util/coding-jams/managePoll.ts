@@ -53,7 +53,7 @@ export async function newPoll(
 		exclude: [],
 		include: [],
 		votingPrompt: null,
-		proposals: sorted.slice(0, numProposals).map((e) => e.value),
+		proposals: sorted.slice(0, numProposals).map((e) => e.key),
 		votes: new Map<string, string[]>(),
 	};
 
@@ -69,7 +69,7 @@ export async function newPoll(
 
 	interaction.reply({
 		embeds: [pollEmbed(poll, id, "(new)")],
-		components: pollSelectMenus(poll, id, sorted, sorted),
+		components: pollSelectMenus(id, sorted.slice(numProposals), sorted.slice(0, numProposals)),
 		ephemeral: true,
 	});
 }
@@ -108,10 +108,9 @@ export async function editPoll(interaction: CommandInteraction, poll: Poll, poll
 	await interaction.reply({
 		embeds: [pollEmbed(poll, pollKey, "(edit)")],
 		components: pollSelectMenus(
-			poll,
 			pollKey,
-			sorted.filter((e) => !poll.exclude.includes(e.value)),
-			sorted.filter((e) => !poll.include.includes(e.value))
+			sorted.filter((e) => !poll.exclude.includes(e.key)),
+			sorted.filter((e) => !poll.include.includes(e.key))
 		),
 		ephemeral: true,
 	});
@@ -171,23 +170,22 @@ export async function votesPoll(interaction: CommandInteraction, poll: Poll) {
 
 export function sortBySelectionType(proposals: typeof proposalDb, selectionType: string) {
 	const sorting: {
-		[key: string]: (a: { key: string; val: Proposal }, b: { key: string; val: Proposal }) => number;
+		[key: string]: (a: { key: string; proposal: Proposal }, b: { key: string; proposal: Proposal }) => number;
 	} = {
 		[pollSelectionTypes.random]: () => (Math.random() > 0.5 ? 1 : -1),
-		[pollSelectionTypes.newest]: (a, b) => (a.val.created >= b.val.created ? 1 : -1),
-		[pollSelectionTypes.oldest]: (a, b) => (a.val.created <= b.val.created ? 1 : -1),
-		[pollSelectionTypes.top]: (a, b) => b.val.votesLastPoll - a.val.votesLastPoll,
-		[pollSelectionTypes.bottom]: (a, b) => a.val.votesLastPoll - b.val.votesLastPoll,
-		[pollSelectionTypes.topAll]: (a, b) => b.val.totalVotes - a.val.totalVotes,
-		[pollSelectionTypes.bottomAll]: (a, b) => a.val.totalVotes - b.val.totalVotes,
-		[pollSelectionTypes.fewestPolls]: (a, b) => b.val.polls - a.val.polls,
-		[pollSelectionTypes.mostPolls]: (a, b) => a.val.polls - b.val.polls,
+		[pollSelectionTypes.newest]: (a, b) => (a.proposal.created >= b.proposal.created ? 1 : -1),
+		[pollSelectionTypes.oldest]: (a, b) => (a.proposal.created <= b.proposal.created ? 1 : -1),
+		[pollSelectionTypes.top]: (a, b) => b.proposal.votesLastPoll - a.proposal.votesLastPoll,
+		[pollSelectionTypes.bottom]: (a, b) => a.proposal.votesLastPoll - b.proposal.votesLastPoll,
+		[pollSelectionTypes.topAll]: (a, b) => b.proposal.totalVotes - a.proposal.totalVotes,
+		[pollSelectionTypes.bottomAll]: (a, b) => a.proposal.totalVotes - b.proposal.totalVotes,
+		[pollSelectionTypes.fewestPolls]: (a, b) => b.proposal.polls - a.proposal.polls,
+		[pollSelectionTypes.mostPolls]: (a, b) => a.proposal.polls - b.proposal.polls,
 	};
 
 	return Array.from(proposals.entries())
-		.map((e) => ({ key: e[0], val: e[1] }))
-		.sort(sorting[selectionType])
-		.map((e) => ({ label: e.val.title, value: e.key }));
+		.map((e) => ({ key: e[0], proposal: e[1] }))
+		.sort(sorting[selectionType]);
 }
 
 export function pollEmbed(poll: Poll, pollKey: string, title: string) {
@@ -236,36 +234,34 @@ export function pollEmbed(poll: Poll, pollKey: string, title: string) {
 }
 
 export function pollSelectMenus(
-	poll: Poll,
 	pollKey: string,
-	includeOptions: { label: string; value: string }[],
-	excludeOptions: { label: string; value: string }[]
+	includeOptions: { key: string; proposal: Proposal }[],
+	excludeOptions: { key: string; proposal: Proposal }[]
 ) {
-	const actionRows: ActionRowBuilder<StringSelectMenuBuilder>[] = [];
-
-	actionRows.push(
+	return [
 		new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
 			new StringSelectMenuBuilder()
 				.setCustomId(`poll.include.${pollKey}`)
 				.setPlaceholder("Proposals to include")
-				.setOptions({ label: "[reset]", value: "-" }, ...includeOptions.slice(0, 24))
+				.setOptions(
+					{ label: "[reset]", value: "-" },
+					...includeOptions.slice(0, 24).map((e) => ({ label: e.proposal.title, value: e.key }))
+				)
 				.setMinValues(0)
 				.setMaxValues(Math.min(includeOptions.length + 1, 25))
-		)
-	);
-
-	actionRows.push(
+		),
 		new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
 			new StringSelectMenuBuilder()
 				.setCustomId(`poll.exclude.${pollKey}`)
 				.setPlaceholder("Proposals to exclude")
-				.setOptions({ label: "[reset]", value: "-" }, ...excludeOptions.slice(0, 24))
+				.setOptions(
+					{ label: "[reset]", value: "-" },
+					...excludeOptions.slice(0, 24).map((e) => ({ label: e.proposal.title, value: e.key }))
+				)
 				.setMinValues(0)
 				.setMaxValues(Math.min(excludeOptions.length + 1, 25))
-		)
-	);
-
-	return actionRows;
+		),
+	];
 }
 
 export function unusedProposals() {
