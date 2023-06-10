@@ -63,11 +63,6 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
 	const embed = new EmbedBuilder()
-		.setAuthor({
-			name: config.botName,
-			url: config.githubURL,
-			iconURL: config.iconURL,
-		})
 		.setColor(config.color)
 		.setTitle(`Tracking stats about ${targetGame}`)
 		.addFields(
@@ -91,7 +86,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 			{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) }
 		);
 
-	await interaction.reply({ embeds: [embed] });
+	await interaction.reply({ embeds: [addEmbedFooter(embed)] });
 }
 export async function gameLast(interaction: ChatInputCommandInteraction) {
 	// get the target game
