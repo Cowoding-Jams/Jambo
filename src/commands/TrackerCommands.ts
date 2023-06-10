@@ -79,19 +79,19 @@ class Tracker extends Command {
 					.setName("user")
 					.setDescription("Get tracking stats about a user.")
 					.addUserOption((opt) =>
-						opt.setName("user").setDescription("The target user, if not given defaults to you.")
+						opt.setName("user").setDescription("The target user. default: you")
 					)
 					.addStringOption((opt) =>
 						opt
 							.setName("game")
-							.setDescription("The game of which to get playtime/logs from.")
+							.setDescription("The game of which to get playtime/logs from. default: every game")
 							.setAutocomplete(true)
 					)
 					.addStringOption((opt) =>
 						opt
 							.setName("statistic")
 							.setDescription(
-								"Select what statistics should get shown. (Options depend on if a game is given or not)"
+								"Select what statistics should get shown. default: general statistics"
 							)
 							.setAutocomplete(true)
 					)
@@ -110,7 +110,7 @@ class Tracker extends Command {
 					.addStringOption((opt) =>
 						opt
 							.setName("statistic")
-							.setDescription("Select what statistics should get shown.")
+							.setDescription("Select what statistics should get shown. default: general statistics")
 							.addChoices(
 								{ name: "general statistics", value: "general statistics" },
 								{ name: "top 5 most played games", value: "top 5 most played games" },
