@@ -4,8 +4,8 @@ import { trackerUsers } from "../../db";
 import { durationToReadable } from "../misc/time";
 
 /** Uses `durationToReadable` from src/util/misc/time.ts but without the need to parse a Duration object */
-export function makeTimeString(timeMS: number) {
-	return durationToReadable(Duration.fromMillis(timeMS), true);
+export function makeTimeString(timeSeconds: number) {
+	return durationToReadable(Duration.fromMillis(timeSeconds * 1000), true);
 }
 /** Sorts users games after playtime of a user (most playtime at index 0)*/
 export function sortGamesPlaytime(userId: string) {

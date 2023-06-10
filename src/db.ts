@@ -63,7 +63,7 @@ export interface TrackerLog {
 	id: string;
 	/** When a log got logged (Date.now()) */
 	date: number;
-	/** How long a game got played in ms*/
+	/** How long a game got played in seconds*/
 	playtime: number;
 	/** User id of the User who just got logged */
 	userID: userID;
@@ -77,14 +77,14 @@ export interface TrackerSublog {
 	name: userID;
 	/** How often a User or Game got logged */
 	logs: number;
-	/** How long a User played a certain game in ms
+	/** How long a User played a certain game in seconds
 	 * (Or the other way around) */
 	playtime: number;
 }
 
 /** Interface for tracking users */
 export interface TrackerUser {
-	/** How long a user played a game in ms*/
+	/** How long a user played a game in seconds */
 	playtime: number;
 	/** ID of the first log associated with the user */
 	firstlog: TrackerLog;
@@ -98,7 +98,7 @@ export interface TrackerUser {
 
 /** Interface for tracking games */
 export interface TrackerGame {
-	/** How long a game got played in ms*/
+	/** How long a game got played in seconds */
 	playtime: number;
 	/** ID of the first log associated with the game */
 	firstlog: TrackerLog;

@@ -23,8 +23,8 @@ export default async function presenceUpdate(oldPresence: Presence | null, newPr
 		if (!start) return;
 		delete cachedUser[activity.name];
 
-		// Played time in secods ("~~" makes float to int)
-		const timePlayed = ~~(Date.now() - start);
+		// Played time in seconds ("~~" makes float to int)
+		const timePlayed = ~~((Date.now() - start) / 1000);
 
 		await logIt(activity.name, userID, timePlayed);
 	});

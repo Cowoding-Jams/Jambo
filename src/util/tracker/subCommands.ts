@@ -1,11 +1,11 @@
 import { EmbedBuilder } from "discord.js";
 import { APIEmbedField, ChatInputCommandInteraction } from "discord.js";
 import {
-	dayInMillis,
+	dayInSeconds,
 	discordTimestamp,
-	monthInMillis,
+	monthInSeconds,
 	shortDateAndShortTimeTimestamp,
-	weekInMillis,
+	weekInSeconds,
 } from "../misc/time";
 import { TrackerGame, trackerGames, trackerLogs, TrackerUser, trackerUsers } from "../../db";
 import { config } from "../../config";
@@ -203,9 +203,9 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	const range = Date.now() - firstSeen;
 	// calculate average playtime per day/week/month/game/log
 	const playtimePer = `day: ${makeTimeString(
-		Math.round(totalPlaytime / (range / dayInMillis))
-	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInMillis)))}\nmonth: ${makeTimeString(
-		Math.round(totalPlaytime / (range / monthInMillis))
+		Math.round(totalPlaytime / (range / dayInSeconds))
+	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInSeconds)))}\nmonth: ${makeTimeString(
+		Math.round(totalPlaytime / (range / monthInSeconds))
 	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nuser: ${makeTimeString(
 		Math.round(totalPlaytime / users)
 	)}\nlog: ${makeTimeString(Math.round(totalPlaytime / totalLogs))}`;
