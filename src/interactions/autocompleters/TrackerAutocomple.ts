@@ -1,6 +1,6 @@
 import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { trackerGames } from "../../db";
+import { trackerGames, trackerUsers } from "../../db";
 import { blacklist, user } from "../../util/tracker/autocompleteHelper";
 
 class Tracker extends Autocompleter {
@@ -15,6 +15,7 @@ class Tracker extends Autocompleter {
 
 		// if user-option is given, use it, else default to executer
 		const userId = interaction.options.get("user")?.value ?? interaction.user.id;
+		if (typeof userId !== "string") return
 		const game = interaction.options.get("game")?.value;
 
 		// if action-option is given, use it, else default to add
@@ -28,9 +29,15 @@ class Tracker extends Autocompleter {
 		if (sub == "user") {
 			options = user(option, userId, game);
 		} else if (sub == "game") {
-			trackerGames.keyArray().forEach((e) => options.push(e));
+			options = trackerGames.keyArray().map(g => g)
 		} else if (sub == "blacklist") {
 			options = blacklist(action);
+		} else if (sub == "general") {
+			if (interaction.options.get("user")) {
+				options = trackerUsers.get(userId)?.games.map(g => g.name) ?? ["[no games played yet]"]
+			} else {
+				options = trackerGames.keyArray().map(g => g)
+			}
 		}
 
 		const filteredOptions = options.filter((o) => o.toLowerCase().startsWith(focus)).slice(0, 25);

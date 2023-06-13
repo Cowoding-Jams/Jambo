@@ -10,12 +10,14 @@ import { gameLast, gameStats, gameTop } from "../util/tracker/gameCommands";
 import { addBlacklist, remBlacklist } from "../util/tracker/blacklistCommands";
 import { config } from "../config";
 
+
 class Tracker extends Command {
 	constructor() {
 		super("tracker");
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+		await interaction.deferReply()
 		if (!config.tracking) {
 			await interaction.reply({
 				content:
@@ -27,11 +29,11 @@ class Tracker extends Command {
 		const subCommand = interaction.options.getSubcommand();
 		const statistics = interaction.options.getString("statistic") ?? "general statistics";
 		const action = interaction.options.getString("action");
+
+
 		switch (subCommand) {
 			case "user":
-				if (statistics == "playtime") await playtime(interaction);
-				else if (statistics == "logs") await logs(interaction);
-				else if (statistics == "general statistics") await userStats(interaction);
+				if (statistics == "general statistics") await userStats(interaction);
 				else if (statistics == "top 5 most played games") await userTop(interaction, "playtime");
 				else if (statistics == "top 5 most logged games") await userTop(interaction, "logs");
 				else if (statistics == "latest 5 logs") await userLast(interaction);
@@ -41,7 +43,10 @@ class Tracker extends Command {
 				else if (statistics == "top 5 most played games") await gameTop(interaction, "playtime");
 				else if (statistics == "top 5 most logged games") await gameTop(interaction, "logs");
 				else if (statistics == "latest 5 logs") await gameLast(interaction);
-
+				return;
+			case "general":
+				if (statistics == "playtime") await playtime(interaction);
+				else if (statistics == "logs") await logs(interaction);
 				return;
 			case "blacklist":
 				if (action == "add") await addBlacklist(interaction);
@@ -54,7 +59,7 @@ class Tracker extends Command {
 				await stats(interaction);
 				return;
 		}
-
+		
 		if (!interaction.replied) {
 			await interaction.reply({
 				content:
@@ -78,9 +83,7 @@ class Tracker extends Command {
 				sub
 					.setName("user")
 					.setDescription("Get tracking stats about a user.")
-					.addUserOption((opt) =>
-						opt.setName("user").setDescription("The target user. default: you")
-					)
+					.addUserOption((opt) => opt.setName("user").setDescription("The target user. default: you"))
 					.addStringOption((opt) =>
 						opt
 							.setName("game")
@@ -90,9 +93,7 @@ class Tracker extends Command {
 					.addStringOption((opt) =>
 						opt
 							.setName("statistic")
-							.setDescription(
-								"Select what statistics should get shown. default: general statistics"
-							)
+							.setDescription("Select what statistics should get shown. default: general statistics")
 							.setAutocomplete(true)
 					)
 			)
@@ -119,6 +120,34 @@ class Tracker extends Command {
 							)
 					)
 			)
+			.addSubcommand((sub) => 
+				sub
+					.setName("general")
+					.setDescription("overall statistics without the need to specify a user or game")
+					.addStringOption((opt) =>
+						opt
+							.setName("statistic")
+							.setDescription("Choose the statistic which should get shown.")
+							.addChoices(
+								{name:"playtime", value:"playtime"},
+								{name:"logs", value:"logs"}
+							)
+							.setRequired(true)
+					)
+					.addUserOption((opt) =>
+						opt
+							.setName("user")
+							.setDescription("The Target User")
+					)
+					.addStringOption((opt) =>
+						opt
+							.setName("game")
+							.setDescription("The target Game")
+							.setAutocomplete(true)
+					)
+			)
+
+
 			.addSubcommand((sub) =>
 				sub
 					.setName("blacklist")

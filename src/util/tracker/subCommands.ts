@@ -43,7 +43,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 			await interaction.reply(userNoEntry);
 			return;
 		}
-		text = `${targetUser.username} has ${makeTimeString(db.playtime)} of playtime`;
+		text = `${targetUser} has ${makeTimeString(db.playtime)} of playtime`;
 	} else if (targetUser && targetGame) {
 		// user, game
 		// load db and get user.games and find target game in there
@@ -54,19 +54,18 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 			await interaction.reply(userNoGameEntry);
 			return;
 		}
-		text = `${targetUser.username} has ${makeTimeString(db.playtime)} of playtime in ${targetGame}`;
+		text = `${targetUser} has ${makeTimeString(db.playtime)} of playtime in ${targetGame}`;
 	} else {
-		// shouldn't happen but just in case a return
-		return;
+		text = "error";
 	}
 
-	await interaction.reply({
-		embeds: [new EmbedBuilder().setTitle(text).setColor(config.color)],
+	await interaction.editReply({
+		embeds: [new EmbedBuilder().setTitle("playtime").setDescription(text).setColor(config.color)],
 	});
 }
 export async function logs(interaction: ChatInputCommandInteraction) {
 	// get target user and game
-	const targetUser = interaction.options.getUser("user") ?? interaction.user;
+	const targetUser = interaction.options.getUser("user");
 	const targetGame = interaction.options.getString("game");
 	let text = ""; // used later in the final embed
 
@@ -107,11 +106,11 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 		}
 		text = `${targetUser.username} has played ${targetGame} ${db.logs} times`;
 	} else {
-		return;
+		text = "error"
 	}
 
 	await interaction.reply({
-		embeds: [new EmbedBuilder().setTitle(text).setColor(config.color)],
+		embeds: [new EmbedBuilder().setTitle("logs").setDescription(text).setColor(config.color)],
 	});
 }
 export async function latest(interaction: ChatInputCommandInteraction) {
