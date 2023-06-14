@@ -57,3 +57,5 @@ export async function checkDuration(
 		return null;
 	} else return iso;
 }
+
+export const isInFuture = (date: DateTime) => date > DateTime.now();
