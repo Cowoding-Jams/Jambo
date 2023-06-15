@@ -10,14 +10,13 @@ import { gameLast, gameStats, gameTop } from "../util/tracker/gameCommands";
 import { addBlacklist, remBlacklist } from "../util/tracker/blacklistCommands";
 import { config } from "../config";
 
-
 class Tracker extends Command {
 	constructor() {
 		super("tracker");
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		await interaction.deferReply()
+		await interaction.deferReply();
 		if (!config.tracking) {
 			await interaction.reply({
 				content:
@@ -29,7 +28,6 @@ class Tracker extends Command {
 		const subCommand = interaction.options.getSubcommand();
 		const statistics = interaction.options.getString("statistic") ?? "general statistics";
 		const action = interaction.options.getString("action");
-
 
 		switch (subCommand) {
 			case "user":
@@ -59,7 +57,7 @@ class Tracker extends Command {
 				await stats(interaction);
 				return;
 		}
-		
+
 		if (!interaction.replied) {
 			await interaction.reply({
 				content:
@@ -120,7 +118,7 @@ class Tracker extends Command {
 							)
 					)
 			)
-			.addSubcommand((sub) => 
+			.addSubcommand((sub) =>
 				sub
 					.setName("general")
 					.setDescription("overall statistics without the need to specify a user or game")
@@ -128,25 +126,14 @@ class Tracker extends Command {
 						opt
 							.setName("statistic")
 							.setDescription("Choose the statistic which should get shown.")
-							.addChoices(
-								{name:"playtime", value:"playtime"},
-								{name:"logs", value:"logs"}
-							)
+							.addChoices({ name: "playtime", value: "playtime" }, { name: "logs", value: "logs" })
 							.setRequired(true)
 					)
-					.addUserOption((opt) =>
-						opt
-							.setName("user")
-							.setDescription("The Target User")
-					)
+					.addUserOption((opt) => opt.setName("user").setDescription("The Target User"))
 					.addStringOption((opt) =>
-						opt
-							.setName("game")
-							.setDescription("The target Game")
-							.setAutocomplete(true)
+						opt.setName("game").setDescription("The target Game").setAutocomplete(true)
 					)
 			)
-
 
 			.addSubcommand((sub) =>
 				sub

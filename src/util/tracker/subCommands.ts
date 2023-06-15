@@ -106,7 +106,7 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 		}
 		text = `${targetUser.username} has played ${targetGame} ${db.logs} times`;
 	} else {
-		text = "error"
+		text = "error";
 	}
 
 	await interaction.reply({

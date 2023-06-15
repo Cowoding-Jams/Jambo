@@ -5,7 +5,7 @@ export function user(
 	userid: string | number | boolean | undefined,
 	game: string | number | boolean | undefined
 ) {
-	const results:string[] = [];
+	const results: string[] = [];
 
 	if (option == "game") {
 		if (typeof userid == "string") {
@@ -22,11 +22,7 @@ export function user(
 		}
 	} else if (option == "statistic") {
 		// only show playtime and logs if a game is given, else show standard options
-		results.push(
-			"general statistics",
-			"top 5 most played games",
-			"top 5 most logged games",
-			"latest 5 logs");
+		results.push("general statistics", "top 5 most played games", "top 5 most logged games", "latest 5 logs");
 	}
 
 	return results;
