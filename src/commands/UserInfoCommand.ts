@@ -55,8 +55,9 @@ const badges = {
 function getUserEmbed(user: User, member: GuildMember | null | undefined): EmbedBuilder {
 	const embed = new EmbedBuilder()
 		.setTitle(
-			`${user.discriminator === '0' ? user.username : user.tag}${member?.nickname ? " aka. " + member.nickname : ""} ${user.system ? "| System" : user.bot ? "| Bot" : ""
-			}`
+			`${user.discriminator === "0" ? user.username : user.tag}${
+				member?.nickname ? " aka. " + member.nickname : ""
+			} ${user.system ? "| System" : user.bot ? "| Bot" : ""}`
 		)
 		.setThumbnail(user.displayAvatarURL({ size: 1024, extension: "png" }))
 		.setDescription(user.toString());
@@ -94,13 +95,12 @@ function getUserEmbed(user: User, member: GuildMember | null | undefined): Embed
 				name: "Discord Badges",
 				value: user.flags
 					.toArray()
-					.filter(v => !v.match(/^\d+$/))
+					.filter((v) => !v.match(/^\d+$/))
 					.map((v) => badges[v as keyof typeof badges] || v.replace(/[A-Z0-9]/g, " $&").trim())
 					.join(", "),
 			});
 		}
-		if (roles)
-			embed.addFields({ name: "Roles", value: roles });
+		if (roles) embed.addFields({ name: "Roles", value: roles });
 	}
 	return addEmbedFooter(embed);
 }
