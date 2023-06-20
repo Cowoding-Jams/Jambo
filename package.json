@@ -8,7 +8,7 @@
 	"scripts": {
 		"prettify": "eslint ./src/ --fix && npx prettier -w .",
 		"build": "tsc -p tsconfig.json",
-		"run": "node --experimental-specifier-resolution=node .",
+		"run": "node --experimental-specifier-resolution=node --enable-source-maps .",
 		"start": "npm run build && npm run run",
 		"prepare": "husky install"
 	},
