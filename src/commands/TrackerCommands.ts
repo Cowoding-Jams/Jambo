@@ -16,7 +16,6 @@ class Tracker extends Command {
 	}
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-		await interaction.deferReply();
 		if (!config.tracking) {
 			await interaction.reply({
 				content:

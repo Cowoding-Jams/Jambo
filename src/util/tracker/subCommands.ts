@@ -59,7 +59,7 @@ export async function playtime(interaction: ChatInputCommandInteraction) {
 		text = "error";
 	}
 
-	await interaction.editReply({
+	await interaction.reply({
 		embeds: [new EmbedBuilder().setTitle("playtime").setDescription(text).setColor(config.color)],
 	});
 }
@@ -71,7 +71,7 @@ export async function logs(interaction: ChatInputCommandInteraction) {
 
 	// make matching text for each case
 	if (!targetUser && !targetGame) {
-		// no u ser, no game
+		// no user, no game
 		let logs = 0;
 		// count all logs of all games together
 		trackerGames.array().forEach((game) => (logs += game.logs));
