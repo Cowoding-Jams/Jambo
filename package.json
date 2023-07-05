@@ -6,13 +6,14 @@
 	"private": "true",
 	"type": "module",
 	"scripts": {
-		"rmdist": "rm ./dist -r",
+		"rmDist": "rm ./dist -r",
 		"lint": "eslint ./src/",
 		"format": "npx prettier -w .",
 		"tidy": "npm run lint && npm run format",
 		"build": "tsc -p tsconfig.json",
 		"run": "node --experimental-specifier-resolution=node .",
-		"start": "npm run rmdist && npm run build && npm run run",
+		"start": "npm run build && npm run run",
+		"freshStart": "npm run rmDist && mpm run start",
 		"prepare": "husky install"
 	},
 	"repository": {

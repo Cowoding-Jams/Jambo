@@ -4,9 +4,9 @@ import { trackerGames, trackerLogs, TrackerSublog } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
 import {
 	dayInMillis,
+	discordLongDateWithShortTimeTimestamp,
 	discordTimestamp,
 	monthInMillis,
-	shortDateAndShortTimeTimestamp,
 	weekInMillis,
 } from "../misc/time";
 import { makeTimeString, sortDbToString } from "./helper";
@@ -38,7 +38,9 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	);
 
 	// format latest logs into a string
-	const latestLogs = db.lastlogs.map((log) => `<@${trackerLogs.get(log.id)?.userID}>`).join("\n");
+	const latestLogs = db.lastlogs
+		.map((log) => `${discordLongDateWithShortTimeTimestamp(log.date)} <@${trackerLogs.get(log.id)?.userID}>`)
+		.join("\n");
 	// get total playtime, logs and users
 	const totalPlaytime = db.playtime;
 	const totalLogs = db.logs;
@@ -66,13 +68,17 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 		.setColor(config.color)
 		.setTitle(`Tracking stats about ${targetGame}`)
 		.addFields(
-			{ inline: true, name: "Most logged users", value: mostLogged },
-			{ inline: true, name: "User with most playtime", value: mostPlayed },
+			{ inline: true, name: "Most playtime", value: mostPlayed },
+			{ inline: true, name: "Most logs", value: mostLogged },
 			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Latest logs", value: latestLogs },
+			{
+				inline: true,
+				name: "Total...",
+				value: "Playtime: " + makeTimeString(totalPlaytime) + "\nlogs: " + totalLogs.toString(),
+			},
+			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "(Average) playtime per", value: playtimePer },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "(Average) most playtime/log", value: mostPlaytime },
+			{ inline: true, name: "(Average) playtime/log", value: mostPlaytime },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{
 				inline: true,
@@ -82,8 +88,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 				)}(now)\n${makeTimeString(Date.now() - firstSeen)}`,
 			},
 			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Total logs", value: totalLogs.toString() },
-			{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) }
+			{ inline: true, name: "Latest logs", value: latestLogs }
 		);
 
 	await interaction.reply({ embeds: [addEmbedFooter(embed)] });
@@ -116,7 +121,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: user.username,
-			value: `${shortDateAndShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(log.playtime)}`,
+			value: `${discordLongDateWithShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(log.playtime)}`,
 		});
 	});
 

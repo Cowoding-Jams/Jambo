@@ -5,8 +5,8 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { latest, logs, playtime, stats } from "../util/tracker/subCommands";
-import { userLast, userStats, userTop } from "../util/tracker/userCommands";
-import { gameLast, gameStats, gameTop } from "../util/tracker/gameCommands";
+import { userStats } from "../util/tracker/userCommands";
+import { gameStats } from "../util/tracker/gameCommands";
 import { addBlacklist, remBlacklist } from "../util/tracker/blacklistCommands";
 import { config } from "../config";
 
@@ -30,16 +30,10 @@ class Tracker extends Command {
 
 		switch (subCommand) {
 			case "user":
-				if (statistics == "general statistics") await userStats(interaction);
-				else if (statistics == "top 5 most played games") await userTop(interaction, "playtime");
-				else if (statistics == "top 5 most logged games") await userTop(interaction, "logs");
-				else if (statistics == "latest 5 logs") await userLast(interaction);
+				await userStats(interaction);
 				return;
 			case "game":
-				if (statistics == "general statistics") await gameStats(interaction);
-				else if (statistics == "top 5 most played games") await gameTop(interaction, "playtime");
-				else if (statistics == "top 5 most logged games") await gameTop(interaction, "logs");
-				else if (statistics == "latest 5 logs") await gameLast(interaction);
+				await gameStats(interaction);
 				return;
 			case "general":
 				if (statistics == "playtime") await playtime(interaction);
@@ -87,12 +81,6 @@ class Tracker extends Command {
 							.setDescription("The game of which to get playtime/logs from. default: every game")
 							.setAutocomplete(true)
 					)
-					.addStringOption((opt) =>
-						opt
-							.setName("statistic")
-							.setDescription("Select what statistics should get shown. default: general statistics")
-							.setAutocomplete(true)
-					)
 			)
 			.addSubcommand((sub) =>
 				sub
@@ -104,17 +92,6 @@ class Tracker extends Command {
 							.setDescription("The game of which to get statistics from.")
 							.setRequired(true)
 							.setAutocomplete(true)
-					)
-					.addStringOption((opt) =>
-						opt
-							.setName("statistic")
-							.setDescription("Select what statistics should get shown. default: general statistics")
-							.addChoices(
-								{ name: "general statistics", value: "general statistics" },
-								{ name: "top 5 most played games", value: "top 5 most played games" },
-								{ name: "top 5 most logged games", value: "top 5 most logged games" },
-								{ name: "latest 5 logs", value: "latest 5 logs" }
-							)
 					)
 			)
 			.addSubcommand((sub) =>
@@ -154,7 +131,18 @@ class Tracker extends Command {
 					)
 			)
 			.addSubcommand((sub) =>
-				sub.setName("latest").setDescription("See the latest logs across the whole system.")
+				sub
+					.setName("latest")
+					.setDescription("See the latest logs across the whole system.")
+					.addStringOption((opt) =>
+						opt
+							.setName("game")
+							.setDescription("The game of which the latest logs should get shown.") // bad wording and it sounds bad, ik
+							.setAutocomplete(true)
+					)
+					.addUserOption(
+						(opt) => opt.setName("user").setDescription("The user who's latest logs should get show.") // bad wording and it sounds bad, ik
+					)
 			)
 			.addSubcommand((sub) =>
 				sub.setName("statistics").setDescription("See general statistics across the whole system.")

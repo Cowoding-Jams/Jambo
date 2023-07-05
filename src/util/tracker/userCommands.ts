@@ -3,9 +3,9 @@ import { TrackerSublog, trackerUsers } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
 import {
 	dayInMillis,
+	discordLongDateWithShortTimeTimestamp,
 	discordTimestamp,
 	monthInMillis,
-	shortDateAndShortTimeTimestamp,
 	weekInMillis,
 } from "../misc/time";
 import { makeTimeString, sortDbToString, sortGamesLogs, sortGamesPlaytime } from "./helper";
@@ -14,14 +14,9 @@ import { memberNotFound, userNoEntry, userNotFound } from "./messages";
 export async function userStats(interaction: ChatInputCommandInteraction) {
 	// get target user and default to command executer if not given
 	const target = interaction.options.getUser("user") ?? interaction.user;
+	const targetGame = interaction.options.getString("game");
 	if (!target) {
 		await interaction.reply(userNotFound);
-		return;
-	}
-	// get the member (to use their display name and color)
-	const member = await interaction.guild?.members.fetch(target.id);
-	if (!member) {
-		await interaction.reply(memberNotFound);
 		return;
 	}
 	// load db and get target user
@@ -30,39 +25,57 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 		await interaction.reply(userNoEntry);
 		return;
 	}
-
+	// get the member (to use their display name and color)
+	const member = await interaction.guild?.members.fetch(target.id);
+	if (!member) {
+		await interaction.reply(memberNotFound);
+		return;
+	}
 	// make sorted list of most played games and make string
 	const mostPlayed = sortDbToString<TrackerSublog>(
-		db.games,
+		db.games.filter((v) => (targetGame ? v.name == targetGame : true)),
 		(a, b) => b.playtime - a.playtime,
 		(game) => `${game.name}: ${makeTimeString(game.playtime)}`
 	);
 
 	// make sorted list of most logged games and make string
 	const mostLogged = sortDbToString<TrackerSublog>(
-		db.games,
+		db.games.filter((v) => (targetGame ? v.name == targetGame : true)),
 		(a, b) => b.logs - a.logs,
 		(game) => `${game.name}: ${game.logs} logs`
 	);
 
 	// get latest logs and make string
-	const latestLogs = db.lastlogs.map((log) => `${log.gameName}`).join("\n");
+	const latestLogs = db.lastlogs
+		.reverse()
+		.map((log) => `${discordLongDateWithShortTimeTimestamp(log.date)} ${log.gameName}`)
+		.join("\n");
 	// get total users playtime, logs and games
-	const totalPlaytime = db.playtime;
+	const totalPlaytime = targetGame
+		? db.games
+				.filter((v) => v.name == targetGame)
+				.map((v) => v.playtime)
+				.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+		: db.playtime;
 	const games = db.games.length;
-	const totalLogs = db.logs;
-	// get first  log							    (time is iso string)
+	const totalLogs = targetGame
+		? db.games
+				.filter((v) => v.name == targetGame)
+				.map((v) => v.logs)
+				.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+		: db.logs;
+	// get first log
 	const firstSeen = db.firstlog.date;
 	// make range from first log to now
 	const range = Date.now() - firstSeen;
-	// calculate average paytime per day/week/month/user/log
+	// calculate average playtime per day/week/month/user/log
 	const playtimePer = `day: ${makeTimeString(
 		Math.round(totalPlaytime / (range / dayInMillis))
 	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInMillis)))}\nmonth: ${makeTimeString(
 		Math.round(totalPlaytime / (range / monthInMillis))
-	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nlog: ${makeTimeString(
-		Math.round(totalPlaytime / totalLogs)
-	)}`;
+	)}${
+		targetGame ? "" : "\ngame: " + makeTimeString(Math.round(totalPlaytime / games))
+	}\nlog: ${makeTimeString(Math.round(totalPlaytime / totalLogs))}`;
 	// temporary sorted list of games playtime/log
 	const tmp = db.games.sort((a, b) => b.playtime / b.logs - a.playtime / a.logs)[0];
 	// make string from first element of temporary list
@@ -70,29 +83,45 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 		tmp.logs
 	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
 
-	const embed = addEmbedFooter(
-		new EmbedBuilder().setTitle(`Tracking stats about ${member.displayName}`).addFields(
-			{ inline: true, name: "Most logged game", value: mostLogged },
-			{ inline: true, name: "Game with most playtime", value: mostPlayed },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Latest logs", value: latestLogs },
-			{ inline: true, name: "(Average) playtime per", value: playtimePer },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "(Average) most playtime/log", value: mostPlaytime },
-			{ inline: true, name: "Total played games", value: games.toString() },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{
-				inline: true,
-				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
-					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Date.now() - firstSeen)}`,
-			},
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Total logs", value: totalLogs.toString() },
-			{ inline: true, name: "Total playtime", value: makeTimeString(totalPlaytime) }
-		)
+	const embed = new EmbedBuilder().setTitle(
+		targetGame
+			? `${member.displayName}'s tracking stats about ${targetGame}`
+			: `Tracking stats about ${member.displayName}`
 	);
+	if (!targetGame)
+		embed.addFields(
+			{ inline: true, name: "Most playtime", value: mostPlayed },
+			{ inline: true, name: "Most logs", value: mostLogged },
+			{ inline: false, name: "_ _", value: "_ _" }
+		);
+	embed.addFields(
+		{
+			inline: true,
+			name: "Total...",
+			value:
+				"playtime: " +
+				makeTimeString(totalPlaytime) +
+				"\nlogs: " +
+				totalLogs.toString() +
+				(targetGame ? "" : "\ngames: " + games.toString()),
+		},
+		{ inline: false, name: "_ _", value: "_ _" },
+		{ inline: true, name: "(Average) playtime per", value: playtimePer },
+		{ inline: true, name: "(Average) playtime/log", value: mostPlaytime },
+		{ inline: false, name: "_ _", value: "_ _" },
+		{
+			inline: true,
+			name: "Record range",
+			value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
+				Math.floor(Date.now() / 1000)
+			)}(now)\n${makeTimeString(Date.now() - firstSeen)}`,
+		}
+	);
+	if (!targetGame)
+		embed.addFields(
+			{ inline: false, name: "_ _", value: "_ _" },
+			{ inline: true, name: "Latest logs", value: latestLogs }
+		);
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -126,7 +155,7 @@ export async function userLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: log.gameName,
-			value: `${shortDateAndShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(log.playtime)}`,
+			value: `${discordLongDateWithShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(log.playtime)}`,
 		});
 	});
 

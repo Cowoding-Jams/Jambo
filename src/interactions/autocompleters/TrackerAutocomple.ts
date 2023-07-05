@@ -16,7 +16,6 @@ class Tracker extends Autocompleter {
 		// if user-option is given, use it, else default to executer
 		const userId = interaction.options.get("user")?.value ?? interaction.user.id;
 		if (typeof userId !== "string") return;
-		const game = interaction.options.get("game")?.value;
 
 		// if action-option is given, use it, else default to add
 		const action = interaction.options.get("action")?.value ?? "add";
@@ -26,8 +25,8 @@ class Tracker extends Autocompleter {
 
 		let options: string[] = [];
 
-		if (sub == "user") {
-			options = user(option, userId, game);
+		if (sub == "user" || option == "game") {
+			options = user(option, userId);
 		} else if (sub == "game") {
 			options = trackerGames.keyArray().map((g) => g);
 		} else if (sub == "blacklist") {
