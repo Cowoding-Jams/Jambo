@@ -13,7 +13,7 @@
 		"build": "tsc -p tsconfig.json",
 		"run": "node --experimental-specifier-resolution=node .",
 		"start": "npm run build && npm run run",
-		"freshStart": "npm run rmDist && mpm run start",
+		"freshStart": "npm run rmDist && npm run start",
 		"prepare": "husky install"
 	},
 	"repository": {
