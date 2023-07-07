@@ -61,7 +61,7 @@ interface InternalReminder {
 export interface TrackerLog {
 	/** id of the log */
 	id: string;
-	/** When a log got logged (Date.now()) */
+	/** When a log gets logged (Date.now())*/
 	date: number;
 	/** How long a game got played in seconds*/
 	playtime: number;
@@ -140,7 +140,7 @@ const unknownTrackerLog: TrackerLog = {
 export const trackerLogs = new Enmap<TrackerLog, internalTrackerLog>({
 	name: "trackerLogs",
 	serializer: (data) => ({ ...data, date: new Date(data.date).toISOString() }),
-	deserializer: (data) => ({ ...data, date: new Date(data.date).getTime() }),
+	deserializer: (data) => ({ ...data, date: new Date(data.date).getTime() / 1000 }),
 });
 export const trackerUsers = new Enmap<TrackerUser, internalTrackerGameAndUser>({
 	name: "trackerUsers",

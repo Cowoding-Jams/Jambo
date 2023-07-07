@@ -25,18 +25,20 @@ class Tracker extends Autocompleter {
 
 		let options: string[] = [];
 
-		if (sub == "user" || option == "game") {
+		if (sub == "user") {
 			options = user(option, userId);
 		} else if (sub == "game") {
-			options = trackerGames.keyArray().map((g) => g);
+			options = trackerGames.keyArray();
 		} else if (sub == "blacklist") {
 			options = blacklist(action);
 		} else if (sub == "general") {
 			if (interaction.options.get("user")) {
 				options = trackerUsers.get(userId)?.games.map((g) => g.name) ?? ["[no games played yet]"];
 			} else {
-				options = trackerGames.keyArray().map((g) => g);
+				options = trackerGames.keyArray();
 			}
+		} else if (option == "game") {
+			options = user(option, false)
 		}
 
 		const filteredOptions = options.filter((o) => o.toLowerCase().startsWith(focus)).slice(0, 25);

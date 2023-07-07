@@ -138,7 +138,7 @@ export async function latest(interaction: ChatInputCommandInteraction) {
 			fields.push({
 				inline: true,
 				name: log.gameName,
-				value: `<@${log.userID}>\n${discordLongDateWithShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(
+				value: `<@${log.userID}>\n${discordLongDateWithShortTimeTimestamp(log.date)}\n${makeTimeString(
 					log.playtime
 				)}`,
 			})
@@ -190,7 +190,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		.slice(0, 5)
 		.map(
 			(log) =>
-				`${shortDateAndShortTimeTimestamp(log.date / 1000)} <@${log.userID}> ${
+				`${shortDateAndShortTimeTimestamp(log.date)} <@${log.userID}> ${
 					log.gameName
 				}: ${makeTimeString(log.playtime)}`
 		)
@@ -241,9 +241,9 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 			{
 				inline: true,
 				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
+				value: `${discordTimestamp(Math.floor(firstSeen))} -> ${discordTimestamp(
 					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Date.now() - firstSeen)}`,
+				)}(now)\n${makeTimeString(Math.floor(Date.now() / 1000 - firstSeen))}`,
 			},
 			{ inline: false, name: "_ _", value: "_ _" },
 			{

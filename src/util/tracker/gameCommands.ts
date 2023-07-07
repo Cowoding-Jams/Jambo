@@ -45,7 +45,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	const totalPlaytime = db.playtime;
 	const totalLogs = db.logs;
 	const users = db.users.length;
-	// get first log of game             (first log is iso string)
+	// get first log of game
 	const firstSeen = db.firstlog.date;
 	// calculate the range from first log to now
 	const range = Date.now() - firstSeen;
@@ -83,9 +83,9 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 			{
 				inline: true,
 				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
+				value: `${discordTimestamp(Math.floor(firstSeen))} -> ${discordTimestamp(
 					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Date.now() - firstSeen)}`,
+				)}(now)\n${makeTimeString(Math.floor(Date.now()/1000 - firstSeen))}`,
 			},
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "Latest logs", value: latestLogs }
@@ -121,7 +121,7 @@ export async function gameLast(interaction: ChatInputCommandInteraction) {
 		fields.push({
 			inline: true,
 			name: user.username,
-			value: `${discordLongDateWithShortTimeTimestamp(log.date / 1000)}\n${makeTimeString(log.playtime)}`,
+			value: `${discordLongDateWithShortTimeTimestamp(log.date)}\n${makeTimeString(log.playtime)}`,
 		});
 	});
 
