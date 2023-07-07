@@ -38,7 +38,7 @@ class Tracker extends Autocompleter {
 				options = trackerGames.keyArray();
 			}
 		} else if (option == "game") {
-			options = user(option, false)
+			options = user(option, false);
 		}
 
 		const filteredOptions = options.filter((o) => o.toLowerCase().startsWith(focus)).slice(0, 25);

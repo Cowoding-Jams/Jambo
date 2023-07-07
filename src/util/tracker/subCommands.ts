@@ -190,9 +190,9 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 		.slice(0, 5)
 		.map(
 			(log) =>
-				`${shortDateAndShortTimeTimestamp(log.date)} <@${log.userID}> ${
-					log.gameName
-				}: ${makeTimeString(log.playtime)}`
+				`${shortDateAndShortTimeTimestamp(log.date)} <@${log.userID}> ${log.gameName}: ${makeTimeString(
+					log.playtime
+				)}`
 		)
 		.join("\n");
 	// get total playtime of all games
@@ -206,7 +206,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	const games = trackerGames.count;
 	// get amount of users
 	const users = trackerUsers.count;
-	// get first log               (time is iso string)
+	// get first log
 	const firstSeen = trackerLogs.array()[0].date;
 	// make range from first log to now
 	const range = Date.now() - firstSeen;

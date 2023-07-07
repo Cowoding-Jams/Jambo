@@ -114,7 +114,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 			name: "Record range",
 			value: `${discordTimestamp(Math.floor(firstSeen))} -> ${discordTimestamp(
 				Math.floor(Date.now() / 1000)
-			)}(now)\n${makeTimeString(Math.floor(Date.now()/1000 - firstSeen))}`,
+			)}(now)\n${makeTimeString(Math.floor(Date.now() / 1000 - firstSeen))}`,
 		}
 	);
 	if (!targetGame)

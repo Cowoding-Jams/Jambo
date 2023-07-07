@@ -85,7 +85,7 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 				name: "Record range",
 				value: `${discordTimestamp(Math.floor(firstSeen))} -> ${discordTimestamp(
 					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Math.floor(Date.now()/1000 - firstSeen))}`,
+				)}(now)\n${makeTimeString(Math.floor(Date.now() / 1000 - firstSeen))}`,
 			},
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "Latest logs", value: latestLogs }
