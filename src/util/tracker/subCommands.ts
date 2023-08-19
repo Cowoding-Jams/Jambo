@@ -4,6 +4,7 @@ import {
 	dayInSeconds,
 	discordLongDateWithShortTimeTimestamp,
 	discordTimestamp,
+	hourInSeconds,
 	monthInSeconds,
 	shortDateAndShortTimeTimestamp,
 	weekInSeconds,
@@ -209,21 +210,23 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	// get first log
 	const firstSeen = trackerLogs.array()[0].date;
 	// make range from first log to now
-	const range = Date.now() - firstSeen;
-	// calculate average playtime per day/week/month/game/log
-	const playtimePer = `day: ${makeTimeString(
-		Math.round(totalPlaytime / (range / dayInSeconds))
-	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInSeconds)))}\nmonth: ${makeTimeString(
-		Math.round(totalPlaytime / (range / monthInSeconds))
-	)}\ngame: ${makeTimeString(Math.round(totalPlaytime / games))}\nuser: ${makeTimeString(
-		Math.round(totalPlaytime / users)
-	)}\nlog: ${makeTimeString(Math.round(totalPlaytime / totalLogs))}`;
-	// temporary sorted list based on playtime/log
-	const tmp = trackerGames.array().sort((a, b) => b.playtime / b.logs - a.playtime / b.logs)[0];
-	// make string from temporary list
-	const mostPlaytime = `${tmp.lastlogs[0].gameName}: ${makeTimeString(
-		Math.round(tmp.playtime / tmp.logs)
-	)} - ${tmp.logs} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
+	const range = ~~((Date.now() - firstSeen) / 1000);
+
+	const playtimePerDay = makeTimeString(totalPlaytime / (range / dayInSeconds))
+	const playtimePerWeek = makeTimeString(totalPlaytime / (range / weekInSeconds))
+	const playtimePerMonth = makeTimeString(totalPlaytime / (range / monthInSeconds))
+	const playtimePerGame = makeTimeString(totalPlaytime / games)
+	const playtimePerUser = makeTimeString(totalPlaytime / users)
+	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs)
+	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\ngame: ${playtimePerGame}\nuser: ${playtimePerUser}\nhour: ${playtimePerLog}`
+
+	const logsPerDay = Math.round(totalLogs / (range / dayInSeconds));
+	const logsPerWeek = Math.round(totalLogs / (range / weekInSeconds));
+	const logsPerMonth = Math.round(totalLogs / (range / monthInSeconds));
+	const logsPerUser = Math.round(totalLogs / users);
+	const logsPerGame = Math.round(totalLogs / games);
+	const logsPerHour = Math.round(totalLogs / (totalPlaytime / hourInSeconds));
+	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\ngame: ${logsPerGame}\nuser: ${logsPerUser}\nhour: ${logsPerHour}`
 
 	const embed = addEmbedFooter(
 		new EmbedBuilder().setTitle("System stats").addFields(
@@ -236,14 +239,14 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 			{ inline: true, name: "Latest logs", value: latestLogs },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "(Average) playtime per", value: playtimePer },
-			{ inline: true, name: "(Average) playtime/log", value: mostPlaytime },
+			{ inline: true, name: "(Average) logs per", value: logsPer },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{
 				inline: true,
 				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen))} -> ${discordTimestamp(
+				value: `${discordTimestamp(Math.floor(firstSeen/1000))} -> ${discordTimestamp(
 					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Math.floor(Date.now() / 1000 - firstSeen))}`,
+				)}(now)\n${makeTimeString(Math.floor((Date.now() - firstSeen)/100))}`,
 			},
 			{ inline: false, name: "_ _", value: "_ _" },
 			{

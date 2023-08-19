@@ -140,7 +140,7 @@ const unknownTrackerLog: TrackerLog = {
 export const trackerLogs = new Enmap<TrackerLog, internalTrackerLog>({
 	name: "trackerLogs",
 	serializer: (data) => ({ ...data, date: new Date(data.date).toISOString() }),
-	deserializer: (data) => ({ ...data, date: new Date(data.date).getTime() / 1000 }),
+	deserializer: (data) => ({ ...data, date: new Date(data.date).getTime() }),
 });
 export const trackerUsers = new Enmap<TrackerUser, internalTrackerGameAndUser>({
 	name: "trackerUsers",

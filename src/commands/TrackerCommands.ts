@@ -27,34 +27,37 @@ class Tracker extends Command {
 		const subCommand = interaction.options.getSubcommand();
 		const statistics = interaction.options.getString("statistic") ?? "general statistics";
 		const action = interaction.options.getString("action");
+		let err = false;
 
-		switch (subCommand) {
-			case "user":
-				await userStats(interaction);
-				return;
-			case "game":
-				await gameStats(interaction);
-				return;
-			case "general":
-				if (statistics == "playtime") await playtime(interaction);
-				else if (statistics == "logs") await logs(interaction);
-				return;
-			case "blacklist":
-				if (action == "add") await addBlacklist(interaction);
-				else if (action == "rem") await remBlacklist(interaction);
-				return;
-			case "latest":
-				await latest(interaction);
-				return;
-			case "statistics":
-				await stats(interaction);
-				return;
-		}
+		try {
+			switch (subCommand) {
+				case "user":
+					await userStats(interaction);
+					return;
+				case "game":
+					await gameStats(interaction);
+					return;
+				case "general":
+					if (statistics == "playtime") await playtime(interaction);
+					else if (statistics == "logs") await logs(interaction);
+					return;
+				case "blacklist":
+					if (action == "add") await addBlacklist(interaction);
+					else if (action == "rem") await remBlacklist(interaction);
+					return;
+				case "latest":
+					await latest(interaction);
+					return;
+				case "statistics":
+					await stats(interaction);
+					return;
+			}
+		} catch (e) {err = true}
 
-		if (!interaction.replied) {
+		if (!interaction.replied || err) {
 			await interaction.reply({
 				content:
-					"This can happen when you don't follow the order of the given options. Sadly thats a bug by discord (options don't get updated correctly when not in order)\nJust execute the command again in the right order and everything should work!\nIf not, please get in touch with a developer.",
+					"The command you where trying to executed failed... This can happen because there are no logs fitting the given criteria, or you used the wrong order of inputs, which might result in options being available although they shouldn't. Sadly, this is an issue on discords side.",
 				ephemeral: true,
 			});
 		}

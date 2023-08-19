@@ -110,9 +110,12 @@ export async function checkDuration(
 	} else return iso;
 }
 
-// 60seconds * 60 minutes * 24 hours = One day
-export const dayInSeconds = 60 * 60 * 24;
-export const dayInMillis = dayInSeconds * 1000;
+// 60 seconds * 60minutes
+export const hourInSeconds = 60 * 60;
+export const hourInMillis = hourInSeconds * 1000;
+// 1 hour * 24 hours = One day
+export const dayInSeconds = hourInSeconds * 24;
+export const dayInMillis = hourInMillis * 24;
 // 7 times a day = week
 export const weekInSeconds = dayInSeconds * 7;
 export const weekInMillis = dayInMillis * 7;

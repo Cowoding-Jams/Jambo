@@ -3,11 +3,12 @@ import { config } from "../../config";
 import { trackerGames, trackerLogs, TrackerSublog } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
 import {
-	dayInMillis,
+	dayInSeconds,
 	discordLongDateWithShortTimeTimestamp,
 	discordTimestamp,
-	monthInMillis,
-	weekInMillis,
+	hourInSeconds,
+	monthInSeconds,
+	weekInSeconds,
 } from "../misc/time";
 import { makeTimeString, sortDbToString } from "./helper";
 import { gameNoEntry } from "./messages";
@@ -48,21 +49,22 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	// get first log of game
 	const firstSeen = db.firstlog.date;
 	// calculate the range from first log to now
-	const range = Date.now() - firstSeen;
-	// calculate daily/weekly/monthly and per-log average playtime
-	const playtimePer = `day: ${makeTimeString(
-		Math.round(totalPlaytime / (range / dayInMillis))
-	)}\nweek: ${makeTimeString(Math.round(totalPlaytime / (range / weekInMillis)))}\nmonth: ${makeTimeString(
-		Math.round(totalPlaytime / (range / monthInMillis))
-	)}\nuser: ${makeTimeString(Math.round(totalPlaytime / users))}\nlog: ${makeTimeString(
-		Math.round(totalPlaytime / totalLogs)
-	)}`;
-	// temporary sorted list of most playtime/log (users)
-	const tmp = db.users.sort((a, b) => b.playtime / b.logs - a.playtime / a.logs)[0];
-	// make most playtime/log string
-	const mostPlaytime = `<@${tmp.name}>: ${makeTimeString(tmp.playtime / tmp.logs)} - ${
-		tmp.logs
-	} logs\nTotal playtime: ${makeTimeString(tmp.playtime)}`;
+	const range = ~~((Date.now() - firstSeen) / 1000);
+
+	const playtimePerDay = makeTimeString(totalPlaytime / (range / dayInSeconds))
+	const playtimePerWeek = makeTimeString(totalPlaytime / (range / weekInSeconds))
+	const playtimePerMonth = makeTimeString(totalPlaytime / (range / monthInSeconds))
+	const playtimePerUser = makeTimeString(totalPlaytime / users)
+	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs)
+	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\nuser: ${playtimePerUser}\nhour: ${playtimePerLog}`
+
+	const logsPerDay = Math.round(totalLogs / (range / dayInSeconds));
+	const logsPerWeek = Math.round(totalLogs / (range / weekInSeconds));
+	const logsPerMonth = Math.round(totalLogs / (range / monthInSeconds));
+	const logsPerUser = Math.round(totalLogs / users);
+	const logsPerHour = Math.round(totalLogs / (totalPlaytime / hourInSeconds));
+	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\nuser: ${logsPerUser}\nhour: ${logsPerHour}`
+
 
 	const embed = new EmbedBuilder()
 		.setColor(config.color)
@@ -71,24 +73,24 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 			{ inline: true, name: "Most playtime", value: mostPlayed },
 			{ inline: true, name: "Most logs", value: mostLogged },
 			{ inline: false, name: "_ _", value: "_ _" },
-			{
-				inline: true,
-				name: "Total...",
-				value: "Playtime: " + makeTimeString(totalPlaytime) + "\nlogs: " + totalLogs.toString(),
-			},
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "(Average) playtime per", value: playtimePer },
-			{ inline: true, name: "(Average) playtime/log", value: mostPlaytime },
+			{ inline: true, name: "(Average) logs per", value: logsPer },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{
 				inline: true,
 				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen))} -> ${discordTimestamp(
+				value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
 					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Math.floor(Date.now() / 1000 - firstSeen))}`,
+					)}(now)\n${makeTimeString(Math.floor((Date.now() - firstSeen)/1000))}`,
 			},
 			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Latest logs", value: latestLogs }
+			{ inline: true, name: "Latest logs", value: latestLogs },
+			{
+				inline: false,
+				name: "Total...",
+				value: "Playtime: " + makeTimeString(totalPlaytime) + "\nlogs: " + totalLogs.toString(),
+			},
 		);
 
 	await interaction.reply({ embeds: [addEmbedFooter(embed)] });
