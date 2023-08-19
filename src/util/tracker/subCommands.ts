@@ -212,13 +212,13 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	// make range from first log to now
 	const range = ~~((Date.now() - firstSeen) / 1000);
 
-	const playtimePerDay = makeTimeString(totalPlaytime / (range / dayInSeconds))
-	const playtimePerWeek = makeTimeString(totalPlaytime / (range / weekInSeconds))
-	const playtimePerMonth = makeTimeString(totalPlaytime / (range / monthInSeconds))
-	const playtimePerGame = makeTimeString(totalPlaytime / games)
-	const playtimePerUser = makeTimeString(totalPlaytime / users)
-	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs)
-	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\ngame: ${playtimePerGame}\nuser: ${playtimePerUser}\nhour: ${playtimePerLog}`
+	const playtimePerDay = makeTimeString(totalPlaytime / (range / dayInSeconds));
+	const playtimePerWeek = makeTimeString(totalPlaytime / (range / weekInSeconds));
+	const playtimePerMonth = makeTimeString(totalPlaytime / (range / monthInSeconds));
+	const playtimePerGame = makeTimeString(totalPlaytime / games);
+	const playtimePerUser = makeTimeString(totalPlaytime / users);
+	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs);
+	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\ngame: ${playtimePerGame}\nuser: ${playtimePerUser}\nhour: ${playtimePerLog}`;
 
 	const logsPerDay = Math.round(totalLogs / (range / dayInSeconds));
 	const logsPerWeek = Math.round(totalLogs / (range / weekInSeconds));
@@ -226,7 +226,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	const logsPerUser = Math.round(totalLogs / users);
 	const logsPerGame = Math.round(totalLogs / games);
 	const logsPerHour = Math.round(totalLogs / (totalPlaytime / hourInSeconds));
-	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\ngame: ${logsPerGame}\nuser: ${logsPerUser}\nhour: ${logsPerHour}`
+	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\ngame: ${logsPerGame}\nuser: ${logsPerUser}\nhour: ${logsPerHour}`;
 
 	const embed = addEmbedFooter(
 		new EmbedBuilder().setTitle("System stats").addFields(
@@ -244,9 +244,9 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 			{
 				inline: true,
 				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen/1000))} -> ${discordTimestamp(
+				value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
 					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Math.floor((Date.now() - firstSeen)/100))}`,
+				)}(now)\n${makeTimeString(Math.floor((Date.now() - firstSeen) / 100))}`,
 			},
 			{ inline: false, name: "_ _", value: "_ _" },
 			{

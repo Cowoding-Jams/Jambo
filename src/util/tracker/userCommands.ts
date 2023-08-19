@@ -69,28 +69,29 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	// get first log
 	const firstSeen = db.firstlog.date;
 	// make range from first log to now
-	const range = ~~((Date.now() - firstSeen)/1000);
+	const range = ~~((Date.now() - firstSeen) / 1000);
 
-	const playtimePerDay = makeTimeString(totalPlaytime / (range / dayInSeconds))
-	const playtimePerWeek = makeTimeString(totalPlaytime / (range / weekInSeconds))
-	const playtimePerMonth = makeTimeString(totalPlaytime / (range / monthInSeconds))
-	const playtimePerGame = makeTimeString(totalPlaytime / games)
-	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs)
-	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\ngame: ${playtimePerGame}\nhour: ${playtimePerLog}`
+	const playtimePerDay = makeTimeString(totalPlaytime / (range / dayInSeconds));
+	const playtimePerWeek = makeTimeString(totalPlaytime / (range / weekInSeconds));
+	const playtimePerMonth = makeTimeString(totalPlaytime / (range / monthInSeconds));
+	const playtimePerGame = makeTimeString(totalPlaytime / games);
+	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs);
+	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\ngame: ${playtimePerGame}\nhour: ${playtimePerLog}`;
 
 	const logsPerDay = Math.round(totalLogs / (range / dayInSeconds));
 	const logsPerWeek = Math.round(totalLogs / (range / weekInSeconds));
 	const logsPerMonth = Math.round(totalLogs / (range / monthInSeconds));
 	const logsPerGame = Math.round(totalLogs / games);
 	const logsPerHour = Math.round(totalLogs / (totalPlaytime / hourInSeconds));
-	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\ngame: ${logsPerGame}\nhour: ${logsPerHour}`
+	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\ngame: ${logsPerGame}\nhour: ${logsPerHour}`;
 
-	const embed = new EmbedBuilder().setTitle(
-		targetGame
-			? `${member.displayName}'s tracking stats about ${targetGame}`
-			: `Tracking stats about ${member.displayName}`
-		).setColor(config.color)
-		;
+	const embed = new EmbedBuilder()
+		.setTitle(
+			targetGame
+				? `${member.displayName}'s tracking stats about ${targetGame}`
+				: `Tracking stats about ${member.displayName}`
+		)
+		.setColor(config.color);
 	if (!targetGame)
 		embed.addFields(
 			{ inline: true, name: "Most playtime", value: mostPlayed },
@@ -107,7 +108,7 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 			name: "Record range",
 			value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
 				Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Math.floor((Date.now() - firstSeen) / 1000))}`,
+			)}(now)\n${makeTimeString(Math.floor((Date.now() - firstSeen) / 1000))}`,
 		}
 	);
 	if (!targetGame)
@@ -116,18 +117,16 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 			{ inline: true, name: "Latest logs", value: latestLogs }
 		);
 
-	embed.addFields(
-		{
-			inline: false,
-			name: "Total...",
-			value:
-				"playtime: " +
-				makeTimeString(totalPlaytime) +
-				"\nlogs: " +
-				totalLogs.toString() +
-				(targetGame ? "" : "\ngames: " + games.toString()),
-		}
-	)
+	embed.addFields({
+		inline: false,
+		name: "Total...",
+		value:
+			"playtime: " +
+			makeTimeString(totalPlaytime) +
+			"\nlogs: " +
+			totalLogs.toString() +
+			(targetGame ? "" : "\ngames: " + games.toString()),
+	});
 
 	await interaction.reply({ embeds: [embed] });
 }
@@ -209,7 +208,7 @@ export async function userTop(interaction: ChatInputCommandInteraction, filter: 
 
 	// future embed fields
 	const fields: APIEmbedField[] = [];
-	
+
 	// add one extra field for better formatting
 	// make field for every game based on filter
 	games.forEach((game) => {

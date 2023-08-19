@@ -52,7 +52,9 @@ class Tracker extends Command {
 					await stats(interaction);
 					return;
 			}
-		} catch (e) {err = true}
+		} catch (e) {
+			err = true;
+		}
 
 		if (!interaction.replied || err) {
 			await interaction.reply({
