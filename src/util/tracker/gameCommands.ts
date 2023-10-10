@@ -40,7 +40,10 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 
 	// format latest logs into a string
 	const latestLogs = db.lastlogs
-		.map((log) => `${discordLongDateWithShortTimeTimestamp(log.date)} <@${trackerLogs.get(log.id)?.userID}>`)
+		.map(
+			(log) =>
+				`${discordLongDateWithShortTimeTimestamp(log.date / 1000)} <@${trackerLogs.get(log.id)?.userID}>`
+		)
 		.join("\n");
 	// get total playtime, logs and users
 	const totalPlaytime = db.playtime;
@@ -71,7 +74,6 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 		.addFields(
 			{ inline: true, name: "Most playtime", value: mostPlayed },
 			{ inline: true, name: "Most logs", value: mostLogged },
-			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: false, name: "_ _", value: "_ _" },
 			{ inline: true, name: "(Average) playtime per", value: playtimePer },
 			{ inline: true, name: "(Average) logs per", value: logsPer },
