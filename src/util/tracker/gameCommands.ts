@@ -4,9 +4,9 @@ import { trackerGames, trackerLogs, TrackerSublog } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
 import {
 	dayInSeconds,
+	discordLongDateTimestamp,
 	discordLongDateWithShortTimeTimestamp,
-	discordTimestamp,
-	hourInSeconds,
+	discordShortDateTimestamp,
 	monthInSeconds,
 	weekInSeconds,
 } from "../misc/time";
@@ -40,10 +40,8 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 
 	// format latest logs into a string
 	const latestLogs = db.lastlogs
-		.map(
-			(log) =>
-				`${discordLongDateWithShortTimeTimestamp(log.date / 1000)} <@${trackerLogs.get(log.id)?.userID}>`
-		)
+		.reverse()
+		.map((log) => `${discordShortDateTimestamp(log.date / 1000)} <@${trackerLogs.get(log.id)?.userID}>`)
 		.join("\n");
 	// get total playtime, logs and users
 	const totalPlaytime = db.playtime;
@@ -58,15 +56,13 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 	const playtimePerWeek = makeTimeString(totalPlaytime / (range / weekInSeconds));
 	const playtimePerMonth = makeTimeString(totalPlaytime / (range / monthInSeconds));
 	const playtimePerUser = makeTimeString(totalPlaytime / users);
-	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs);
-	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\nuser: ${playtimePerUser}\nlog: ${playtimePerLog}`;
+	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\nuser: ${playtimePerUser}`;
 
 	const logsPerDay = Math.round(totalLogs / (range / dayInSeconds));
 	const logsPerWeek = Math.round(totalLogs / (range / weekInSeconds));
 	const logsPerMonth = Math.round(totalLogs / (range / monthInSeconds));
 	const logsPerUser = Math.round(totalLogs / users);
-	const logsPerHour = Math.round(totalLogs / (totalPlaytime / hourInSeconds));
-	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\nuser: ${logsPerUser}\nhour: ${logsPerHour}`;
+	const logsPer = `day: ${logsPerDay}\nweek: ${logsPerWeek}\nmonth: ${logsPerMonth}\nuser: ${logsPerUser}`;
 
 	const embed = new EmbedBuilder()
 		.setColor(config.color)
@@ -74,24 +70,20 @@ export async function gameStats(interaction: ChatInputCommandInteraction) {
 		.addFields(
 			{ inline: true, name: "Most playtime", value: mostPlayed },
 			{ inline: true, name: "Most logs", value: mostLogged },
-			{ inline: false, name: "_ _", value: "_ _" },
+			{ inline: true, name: "\u200B", value: "\u200B" },
 			{ inline: true, name: "(Average) playtime per", value: playtimePer },
 			{ inline: true, name: "(Average) logs per", value: logsPer },
-			{ inline: false, name: "_ _", value: "_ _" },
-			{
-				inline: true,
-				name: "Record range",
-				value: `${discordTimestamp(Math.floor(firstSeen / 1000))} -> ${discordTimestamp(
-					Math.floor(Date.now() / 1000)
-				)}(now)\n${makeTimeString(Math.floor((Date.now() - firstSeen) / 1000))}`,
-			},
-			{ inline: false, name: "_ _", value: "_ _" },
-			{ inline: true, name: "Latest logs", value: latestLogs },
+			{ inline: true, name: "\u200B", value: "\u200B" },
 			{
 				inline: false,
-				name: "Total...",
-				value: "Playtime: " + makeTimeString(totalPlaytime) + "\nlogs: " + totalLogs.toString(),
-			}
+				name: "In total",
+				value: `Time range: ${discordLongDateTimestamp(
+					Math.floor(firstSeen / 1000)
+				)} -> ${discordLongDateTimestamp(db.lastlogs.reverse()[0].date / 1000)}\nPlaytime: ${makeTimeString(
+					totalPlaytime
+				)}\nLogs: ${totalLogs}, Users: ${users}`,
+			},
+			{ inline: false, name: "Latest logs", value: latestLogs }
 		);
 
 	await interaction.reply({ embeds: [addEmbedFooter(embed)] });

@@ -9,6 +9,7 @@ import { userStats } from "../util/tracker/userCommands";
 import { gameStats } from "../util/tracker/gameCommands";
 import { addBlacklist, remBlacklist } from "../util/tracker/blacklistCommands";
 import { config } from "../config";
+import { logger } from "../logger";
 
 class Tracker extends Command {
 	constructor() {
@@ -53,6 +54,7 @@ class Tracker extends Command {
 					return;
 			}
 		} catch (e) {
+			logger.error(e);
 			err = true;
 		}
 
