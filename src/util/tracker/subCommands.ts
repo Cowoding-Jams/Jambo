@@ -218,7 +218,7 @@ export async function stats(interaction: ChatInputCommandInteraction) {
 	const playtimePerGame = makeTimeString(totalPlaytime / games);
 	const playtimePerUser = makeTimeString(totalPlaytime / users);
 	const playtimePerLog = makeTimeString(totalPlaytime / totalLogs);
-	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\ngame: ${playtimePerGame}\nuser: ${playtimePerUser}\nhour: ${playtimePerLog}`;
+	const playtimePer = `day: ${playtimePerDay}\nweek: ${playtimePerWeek}\nmonth: ${playtimePerMonth}\ngame: ${playtimePerGame}\nuser: ${playtimePerUser}\nlog: ${playtimePerLog}`;
 
 	const logsPerDay = Math.round(totalLogs / (range / dayInSeconds));
 	const logsPerWeek = Math.round(totalLogs / (range / weekInSeconds));
