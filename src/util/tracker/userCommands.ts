@@ -99,7 +99,6 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 			{ inline: false, name: "_ _", value: "_ _" }
 		);
 	embed.addFields(
-		{ inline: false, name: "_ _", value: "_ _" },
 		{ inline: true, name: "(Average) playtime per", value: playtimePer },
 		{ inline: true, name: "(Average) logs per", value: logsPer },
 		{ inline: false, name: "_ _", value: "_ _" },
