@@ -55,16 +55,16 @@ export async function userStats(interaction: ChatInputCommandInteraction) {
 	// get total users playtime, logs and games
 	const totalPlaytime = targetGame
 		? db.games
-			.filter((v) => v.name == targetGame)
-			.map((v) => v.playtime)
-			.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+				.filter((v) => v.name == targetGame)
+				.map((v) => v.playtime)
+				.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
 		: db.playtime;
 	const games = db.games.length;
 	const totalLogs = targetGame
 		? db.games
-			.filter((v) => v.name == targetGame)
-			.map((v) => v.logs)
-			.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+				.filter((v) => v.name == targetGame)
+				.map((v) => v.logs)
+				.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
 		: db.logs;
 	// get first log
 	const firstSeen = db.firstlog.date;
