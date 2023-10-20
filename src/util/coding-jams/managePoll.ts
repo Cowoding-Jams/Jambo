@@ -42,6 +42,7 @@ export async function newPoll(
 	}
 
 	const sorted = sortBySelectionType(unused, selectionType);
+	const proposals = sorted.slice(0, numProposals);
 
 	const poll: Poll = {
 		title: name,
@@ -53,7 +54,7 @@ export async function newPoll(
 		exclude: [],
 		include: [],
 		votingPrompt: null,
-		proposals: sorted.slice(0, numProposals).map((e) => e.key),
+		proposals: proposals.map((e) => e.key),
 		votes: new Map<string, string[]>(),
 	};
 
@@ -69,7 +70,11 @@ export async function newPoll(
 
 	interaction.reply({
 		embeds: [pollEmbed(poll, id, "(new)")],
-		components: pollSelectMenus(id, sorted.slice(numProposals), sorted.slice(0, numProposals)),
+		components: pollSelectMenus(
+			id,
+			sorted.filter((v) => !proposals.includes(v)),
+			sorted.filter((v) => proposals.includes(v))
+		),
 		ephemeral: true,
 	});
 }
@@ -109,8 +114,8 @@ export async function editPoll(interaction: CommandInteraction, poll: Poll, poll
 		embeds: [pollEmbed(poll, pollKey, "(edit)")],
 		components: pollSelectMenus(
 			pollKey,
-			sorted.filter((e) => !poll.exclude.includes(e.key)),
-			sorted.filter((e) => !poll.include.includes(e.key))
+			sorted.filter((e) => !poll.exclude.includes(e.key)).filter((v) => !poll.proposals.includes(v.key)),
+			sorted.filter((e) => !poll.include.includes(e.key)).filter((v) => poll.proposals.includes(v.key))
 		),
 		ephemeral: true,
 	});

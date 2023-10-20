@@ -74,8 +74,8 @@ class PollSelectMenu extends SelectMenu {
 				embeds: [pollEmbed(poll, pollKey, "(include/exclude)")],
 				components: pollSelectMenus(
 					pollKey,
-					sorted.filter((e) => !poll.exclude.includes(e.key)),
-					sorted.filter((e) => !poll.include.includes(e.key))
+					sorted.filter((e) => !poll.exclude.includes(e.key)).filter((v) => !poll.proposals.includes(v.key)),
+					sorted.filter((e) => !poll.include.includes(e.key)).filter((v) => poll.proposals.includes(v.key))
 				),
 			});
 		} else if (type === "vote") {
