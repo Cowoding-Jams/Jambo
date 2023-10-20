@@ -2,7 +2,7 @@ import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { DateTime } from "luxon";
 import { Jam, jamDb, JamEvent, jamEventsDb, proposalDb } from "../../db";
 import { addEmbedFooter } from "../misc/embeds";
-import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time";
+import { discordRelativeTimestamp, discordTimestamp, durationToReadable, isInFuture } from "../misc/time";
 
 const hoursBeforeEvent = 2;
 
@@ -90,14 +90,18 @@ export async function editJam(interaction: CommandInteraction, jam: Jam, jamKey:
 	}
 
 	const events: JamEvent[] = [
-		{
+		{ type: "close-to-end", jamID: jamKey, date: end.minus({ hours: hoursBeforeEvent }) },
+		{ type: "end", jamID: jamKey, date: jam.end },
+	];
+
+	const halftime = jam.start.plus({ milliseconds: Math.floor(end.diff(jam.start).toMillis() / 2) });
+	if (isInFuture(halftime)) {
+		events.push({
 			type: "halftime",
 			jamID: jamKey,
-			date: jam.start.plus({ milliseconds: Math.floor(end.diff(jam.start).toMillis() / 2) }),
-		},
-		{ type: "close-to-end", jamID: jamKey, date: end.minus({ hours: hoursBeforeEvent }) },
-		{ type: "close-to-start", jamID: jamKey, date: jam.start.minus({ hours: hoursBeforeEvent }) },
-	];
+			date: halftime,
+		});
+	}
 
 	events.forEach((e) => jamEventsDb.set(jamEventsDb.autonum, e));
 

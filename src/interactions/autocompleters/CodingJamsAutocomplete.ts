@@ -35,6 +35,7 @@ class CodingJamsAutocompleter extends Autocompleter {
 					.filter((k) => k.title.toLowerCase().startsWith(value))
 					.slice(0, 25)
 					.map((c) => ({ name: c.title, value: c.title }))
+					.reverse()
 			);
 
 		const proposalNameAutocompletion = async () =>
@@ -57,13 +58,7 @@ class CodingJamsAutocompleter extends Autocompleter {
 			}
 		} else if (subCmd == "extend") {
 			if (optionName == "name") {
-				await interaction.respond(
-					jamDb
-						.array()
-						.filter((k) => k.title.toLowerCase().startsWith(value))
-						.slice(0, 25)
-						.map((c) => ({ name: c.title, value: c.title }))
-				);
+				jamNameAutocompletion();
 			} else {
 				if (value.length == 0) {
 					const name = interaction.options.getString("name") || "";
@@ -97,6 +92,7 @@ class CodingJamsAutocompleter extends Autocompleter {
 					.filter((k) => k.title.toLowerCase().startsWith(value))
 					.slice(0, 25)
 					.map((c) => ({ name: c.title, value: c.title }))
+					.reverse()
 			);
 
 		if (subCmd == "new") {
