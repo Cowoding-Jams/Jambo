@@ -10,7 +10,10 @@ class DataCommand extends Command {
 
 	async execute(interaction: ChatInputCommandInteraction): Promise<void> {
 		if (await hasAdminRole(interaction)) {
-			await interaction.reply({ files: ["./data/enmap.sqlite"], ephemeral: true });
+			await interaction.reply({
+				files: ["./data/enmap.sqlite", "./data/enmap.sqlite-shm", "./data/enmap.sqlite-wal"],
+				ephemeral: true,
+			});
 		} else {
 			await interaction.reply({
 				content: "Only admins can use this.",
