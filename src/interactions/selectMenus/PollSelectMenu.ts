@@ -63,8 +63,8 @@ class PollSelectMenu extends SelectMenu {
 			const numExtra = poll.numProposals - poll.proposals.length;
 			poll.proposals.push(
 				...sorted
-					.filter((e) => !poll.exclude.includes(e.value) && !poll.include.includes(e.value))
-					.map((e) => e.value)
+					.filter((e) => !poll.exclude.includes(e.key) && !poll.include.includes(e.key))
+					.map((e) => e.key)
 					.slice(0, numExtra)
 			);
 
@@ -73,10 +73,9 @@ class PollSelectMenu extends SelectMenu {
 			await interaction.update({
 				embeds: [pollEmbed(poll, pollKey, "(include/exclude)")],
 				components: pollSelectMenus(
-					poll,
 					pollKey,
-					sorted.filter((e) => !poll.exclude.includes(e.value)),
-					sorted.filter((e) => !poll.include.includes(e.value))
+					sorted.filter((e) => !poll.exclude.includes(e.key)).filter((v) => !poll.proposals.includes(v.key)),
+					sorted.filter((e) => !poll.include.includes(e.key)).filter((v) => poll.proposals.includes(v.key))
 				),
 			});
 		} else if (type === "vote") {
