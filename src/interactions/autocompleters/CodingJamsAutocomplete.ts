@@ -32,7 +32,7 @@ class CodingJamsAutocompleter extends Autocompleter {
 			await interaction.respond(
 				jamDb
 					.array()
-					.filter((k) => k.title.toLowerCase().startsWith(value))
+					.filter((k) => k.title.toLowerCase().includes(value))
 					.slice(0, 25)
 					.map((c) => ({ name: c.title, value: c.title }))
 					.reverse()
@@ -42,7 +42,7 @@ class CodingJamsAutocompleter extends Autocompleter {
 			await interaction.respond(
 				unusedProposals()
 					.array()
-					.filter((k) => k.title.toLowerCase().startsWith(value))
+					.filter((k) => k.title.toLowerCase().includes(value))
 					.slice(0, 25)
 					.map((c) => ({ name: c.title, value: c.title }))
 			);
@@ -50,10 +50,8 @@ class CodingJamsAutocompleter extends Autocompleter {
 		if (subCmd == "new") {
 			if (optionName == "proposal") {
 				proposalNameAutocompletion();
-			} else if (optionName == "duration") {
-				await autocompleteISODuration(interaction);
 			} else {
-				// start-date or end-date
+				// start-date
 				await autocompleteISOTime(interaction);
 			}
 		} else if (subCmd == "extend") {
@@ -89,7 +87,7 @@ class CodingJamsAutocompleter extends Autocompleter {
 			await interaction.respond(
 				pollDb
 					.array()
-					.filter((k) => k.title.toLowerCase().startsWith(value))
+					.filter((k) => k.title.toLowerCase().includes(value))
 					.slice(0, 25)
 					.map((c) => ({ name: c.title, value: c.title }))
 					.reverse()
