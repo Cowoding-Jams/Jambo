@@ -107,7 +107,9 @@ export async function halftimeEvent(channel: TextChannel, jamID: string) {
 		.setDescription(
 			`The ${proposal.title} jam is halfway over! Don't forget it ends ${discordTimestamp(
 				jam.end
-			)}! I hope you're having a great time and are making good progress. If you're stuck or need help, ask for it. There are always people willing to help. If you're done, make sure to share your work in ${
+			)} (${discordRelativeTimestamp(
+				jam.end
+			)})! I hope you're having a great time and are making good progress. If you're stuck or need help, ask for it. There are always people willing to help. If you're done, make sure to share your work in ${
 				jam.resultChannelID ? `<#${jam.resultChannelID}>` : "the results channel"
 			}.`
 		);
