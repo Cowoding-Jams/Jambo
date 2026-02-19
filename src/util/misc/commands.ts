@@ -1,5 +1,5 @@
 import { CommandInteraction } from "discord.js";
-import { logger } from "../../logger";
+import { logger } from "../../logger.js";
 
 export function unknownSubcommandReply(interaction: CommandInteraction) {
 	logger.debug("Unknown subcommand");

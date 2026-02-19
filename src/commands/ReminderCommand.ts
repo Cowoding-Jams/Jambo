@@ -1,4 +1,3 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	Client,
@@ -8,9 +7,10 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { reminderDelete, reminderList, reminderSet } from "../util/reminder/manageReminder";
-import { schedulerTick as reminderSchedulerTick } from "../util/reminder/reminderUtil";
 import cron from "node-cron";
+import { Command } from "../interactions/interactionClasses.js";
+import { reminderDelete, reminderList, reminderSet } from "../util/reminder/manageReminder.js";
+import { schedulerTick as reminderSchedulerTick } from "../util/reminder/reminderUtil.js";
 
 class ReminderCommand extends Command {
 	constructor() {

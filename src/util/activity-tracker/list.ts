@@ -1,9 +1,9 @@
-import { activityTrackerLogDb } from "../../db";
 import { ChatInputCommandInteraction } from "discord.js";
-import { splitId } from "./help";
-import { gameActivityTrackerEmbed } from "./trackerEmbed";
-import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time";
 import { DateTime, Duration } from "luxon";
+import { activityTrackerLogDb } from "../../db.js";
+import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time.js";
+import { splitId } from "./help.js";
+import { gameActivityTrackerEmbed } from "./trackerEmbed.js";
 
 interface log {
 	user: string;

@@ -2,14 +2,14 @@ import Enmap from "enmap";
 import { DateTime, Duration } from "luxon";
 
 // -- LaTeX Database --
-export const latexDb = new Enmap<string>("latex"); // key: reply id
+export const latexDb = new Enmap<string, string>("latex"); // key: reply id
 
 // -- Reminder Database --
 export const reminderTimeoutCache = new Map<string, NodeJS.Timeout>();
 // key: unique id
-export const reminderDb = new Enmap<Reminder, InternalReminder>({
+export const reminderDb = new Enmap<string, Reminder, InternalReminder>({
 	name: "reminder",
-	serializer: (data) => ({ ...data, timestamp: data.timestamp.toISO() }),
+	serializer: (data) => ({ ...data, timestamp: data.timestamp.toISO()! }),
 	deserializer: (data) => ({ ...data, timestamp: DateTime.fromISO(data.timestamp, { setZone: true }) }),
 });
 export interface Reminder {
@@ -29,14 +29,14 @@ interface InternalReminder {
 }
 
 // -- Activity Tracker Database --
-export const activityTrackerBlacklistDb = new Enmap<string[]>("trackerBlacklist");
+export const activityTrackerBlacklistDb = new Enmap<string, string[]>("trackerBlacklist");
 activityTrackerBlacklistDb.ensure("general-user", []);
 activityTrackerBlacklistDb.ensure("general-game", []);
 
 // key: "[user id]-[game]"
-export const activityTrackerLogDb = new Enmap<ActivityLogEntry[], InternalActivityLogEntry[]>({
+export const activityTrackerLogDb = new Enmap<string, ActivityLogEntry[], InternalActivityLogEntry[]>({
 	name: "trackerLog",
-	serializer: (data) => data.map((e) => ({ duration: e.duration.toISO(), date: e.date.toISO() })),
+	serializer: (data) => data.map((e) => ({ duration: e.duration.toISO()!, date: e.date.toISO()! })),
 	deserializer: (data) =>
 		data.map((e) => ({
 			duration: Duration.fromISO(e.duration),
@@ -65,9 +65,9 @@ export type userID = string; // Discord user id
 
 // -- Proposal Database --
 // key: unique id
-export const proposalDb = new Enmap<Proposal, InternalProposal>({
+export const proposalDb = new Enmap<string, Proposal, InternalProposal>({
 	name: "proposal",
-	serializer: (data) => ({ ...data, created: data.created.toISO(), duration: data.duration.toISO() }),
+	serializer: (data) => ({ ...data, created: data.created.toISO()!, duration: data.duration.toISO()! }),
 	deserializer: (data) => ({
 		...data,
 		created: DateTime.fromISO(data.created, { setZone: true }),
@@ -105,12 +105,12 @@ interface InternalProposal {
 
 // -- Poll Database --
 // key: unique id
-export const pollDb = new Enmap<Poll, InternalPoll>({
+export const pollDb = new Enmap<string, Poll, InternalPoll>({
 	name: "poll",
 	serializer: (data) => ({
 		...data,
-		start: data.start.toISO(),
-		end: data.end.toISO(),
+		start: data.start.toISO()!,
+		end: data.end.toISO()!,
 	}),
 	deserializer: (data) => ({
 		...data,
@@ -148,9 +148,9 @@ interface InternalPoll {
 
 export const pollTimeoutCache = new Map<string, NodeJS.Timeout>();
 // key: unique id
-export const pollEventsDb = new Enmap<PollEvent, InternalPollEvent>({
+export const pollEventsDb = new Enmap<string, PollEvent, InternalPollEvent>({
 	name: "pollEvents",
-	serializer: (data) => ({ ...data, date: data.date.toISO() }),
+	serializer: (data) => ({ ...data, date: data.date.toISO()! }),
 	deserializer: (data) => ({ ...data, date: DateTime.fromISO(data.date, { setZone: true }) }),
 });
 
@@ -170,12 +170,12 @@ interface InternalPollEvent {
 
 // -- Jam Database --
 // key: unique id
-export const jamDb = new Enmap<Jam, InternalJam>({
+export const jamDb = new Enmap<string, Jam, InternalJam>({
 	name: "jam",
 	serializer: (data) => ({
 		...data,
-		start: data.start.toISO(),
-		end: data.end.toISO(),
+		start: data.start.toISO()!,
+		end: data.end.toISO()!,
 	}),
 	deserializer: (data) => ({
 		...data,
@@ -206,9 +206,9 @@ interface InternalJam {
 
 export const jamTimeoutCache = new Map<string, NodeJS.Timeout>();
 // key: unique id
-export const jamEventsDb = new Enmap<JamEvent, InternalJamEvent>({
+export const jamEventsDb = new Enmap<string, JamEvent, InternalJamEvent>({
 	name: "jamEvents",
-	serializer: (data) => ({ ...data, date: data.date.toISO() }),
+	serializer: (data) => ({ ...data, date: data.date.toISO()! }),
 	deserializer: (data) => ({ ...data, date: DateTime.fromISO(data.date, { setZone: true }) }),
 });
 
@@ -226,8 +226,8 @@ interface InternalJamEvent {
 
 // -- Birthday Database --
 // key: user id
-export const birthdayDb = new Enmap<DateTime, string>({
+export const birthdayDb = new Enmap<string, DateTime, string>({
 	name: "birthday",
-	serializer: (data) => data.toISO(),
+	serializer: (data) => data.toISO()!,
 	deserializer: (data) => DateTime.fromISO(data, { setZone: true }),
 });

@@ -3,9 +3,10 @@ import {
 	ButtonInteraction,
 	ChatInputCommandInteraction,
 	ModalSubmitInteraction,
-	SelectMenuInteraction,
 	SlashCommandBuilder,
+	SlashCommandOptionsOnlyBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
+	StringSelectMenuInteraction,
 } from "discord.js";
 
 export abstract class Command {
@@ -16,8 +17,9 @@ export abstract class Command {
 	public readonly name: string;
 	abstract execute(interaction: ChatInputCommandInteraction): Promise<void>;
 	abstract register():
+		| SlashCommandBuilder
 		| SlashCommandSubcommandsOnlyBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
+		| SlashCommandOptionsOnlyBuilder;
 }
 
 export abstract class Button {
@@ -37,7 +39,7 @@ export abstract class SelectMenu {
 		this.name = name;
 	}
 
-	abstract execute(interaction: SelectMenuInteraction, args: string[]): Promise<void>;
+	abstract execute(interaction: StringSelectMenuInteraction, args: string[]): Promise<void>;
 }
 
 export abstract class Modal {

@@ -1,9 +1,12 @@
-FROM node:18-bullseye-slim
+FROM node:22-bullseye-slim
 
 WORKDIR /app
 
 RUN mkdir /app/data && \
     chown -R node:node /app
+
+RUN npm install -g corepack@latest
+RUN corepack enable
 
 RUN apt update && \
     apt upgrade -y && \
@@ -14,15 +17,13 @@ RUN apt update && \
 
 USER node:node
 
-COPY --chown=node:node package-lock.json package.json tsconfig.json ./
+COPY --chown=node:node package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json ./
 
-RUN sed -i 's/"prepare": "husky install"/"prepare": ""/' ./package.json
-
-RUN npm install
+RUN pnpm install
 
 COPY --chown=node:node src/ src/
 
-RUN npm run build
+RUN pnpm build
 
 ENTRYPOINT [ "/usr/bin/dumb-init", "--" ]
-CMD [ "npm", "run", "run" ]
+CMD [ "pnpm", "start" ]

@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { birthdayDb } from "../../db";
-import { addEmbedColor } from "../misc/embeds";
 import { DateTime } from "luxon";
-import { longDateFormatWithTimezone, shortDateFormatWithTimezone } from "../misc/time";
-import { getAge } from "./loop";
+import { birthdayDb } from "../../db.js";
+import { addEmbedColor } from "../misc/embeds.js";
+import { longDateFormatWithTimezone, shortDateFormatWithTimezone } from "../misc/time.js";
+import { getAge } from "./loop.js";
 
 export async function upcomingCommand(interaction: ChatInputCommandInteraction) {
 	const now = DateTime.now();

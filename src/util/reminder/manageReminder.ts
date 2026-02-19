@@ -1,11 +1,11 @@
-import { hasModeratorRole, hasRoleMentionPerms } from "../misc/permissions";
 import { ChatInputCommandInteraction, EmbedBuilder, GuildMember, inlineCode, Role } from "discord.js";
-import { reminderDb, reminderTimeoutCache } from "../../db";
-import { addEmbedColor } from "../misc/embeds";
-import { checkDate, checkDuration, discordRelativeTimestamp } from "../misc/time";
-import { elapse } from "./reminderUtil";
 import { DateTime, Duration } from "luxon";
-import { getUserOrRole } from "../misc/user";
+import { reminderDb, reminderTimeoutCache } from "../../db.js";
+import { addEmbedColor } from "../misc/embeds.js";
+import { hasModeratorRole, hasRoleMentionPerms } from "../misc/permissions.js";
+import { checkDate, checkDuration, discordRelativeTimestamp } from "../misc/time.js";
+import { getUserOrRole } from "../misc/user.js";
+import { elapse } from "./reminderUtil.js";
 
 export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const message = interaction.options.getString("message") || "";
@@ -25,7 +25,7 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 			: Duration.fromObject({
 					minutes: minutes,
 					hours: hours,
-			  });
+				});
 
 	if (!dateIso && dateIsoString) return;
 	if (!durationIso && durationIsoString) return;
@@ -33,8 +33,8 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 	const timestamp = dateIso
 		? dateIso
 		: durationIso
-		? DateTime.now().plus(durationIso)
-		: DateTime.now().plus(duration);
+			? DateTime.now().plus(durationIso)
+			: DateTime.now().plus(duration);
 
 	if (timestamp <= DateTime.now()) {
 		await interaction.reply({
@@ -62,7 +62,7 @@ export async function reminderSet(interaction: ChatInputCommandInteraction) {
 
 	const member = await interaction.guild!.members.fetch(interaction.user);
 
-	const id = reminderDb.autonum as string;
+	const id = String(reminderDb.autonum);
 
 	reminderDb.set(id, {
 		timestamp: timestamp,

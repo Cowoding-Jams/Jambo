@@ -1,6 +1,6 @@
-import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactions/interactionClasses";
 import { Collection } from "discord.js";
-import { config } from "./config";
+import { config } from "./config.js";
+import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactions/interactionClasses.js";
 
 class Context {
 	public readonly defaultGuild;

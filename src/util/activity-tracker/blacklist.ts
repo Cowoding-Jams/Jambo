@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
-import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
-import { getBlacklist, splitId } from "./help";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db.js";
+import { addEmbedColor, addEmbedFooter } from "../misc/embeds.js";
+import { getBlacklist, splitId } from "./help.js";
 
 export const blacklistCodes = {
 	emptyBlacklist: "empty-blacklist",

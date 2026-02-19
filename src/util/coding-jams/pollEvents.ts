@@ -1,10 +1,10 @@
 import { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder, TextChannel } from "discord.js";
-import { pollDb, pollEventsDb, proposalDb } from "../../db";
-import { config } from "../../config";
-import { addEmbedFooter } from "../misc/embeds";
-import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time";
-import { getFromEnmap } from "../misc/enmap";
-import { numberedList } from "../misc/format";
+import { config } from "../../config.js";
+import { pollDb, pollEventsDb, proposalDb } from "../../db.js";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { getFromEnmap } from "../misc/enmap.js";
+import { numberedList } from "../misc/format.js";
+import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time.js";
 
 export async function beforeEvent(channel: TextChannel, pollID: string) {
 	const poll = pollDb.get(pollID)!;
@@ -73,7 +73,7 @@ export async function openEvent(channel: TextChannel, pollID: string) {
 	poll.votingPrompt = message.id;
 	pollDb.set(pollID, poll);
 
-	pollEventsDb.set(pollEventsDb.autonum, {
+	pollEventsDb.set(String(pollEventsDb.autonum), {
 		pollID: pollID,
 		type: "close",
 		date: poll.end,

@@ -1,10 +1,10 @@
-import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { typeOfCountryProperty } from "../../util/country-info/countryDataManager";
-import { countryData } from "../../util/country-info/countryDataLoader";
-import { CountryKey } from "../../util/country-info/typesCountryCommand";
-import { logger } from "../../logger";
-import { returnChoiceWithSameValues } from "../../util/country-info/generalCountryCommandUtil";
+import { logger } from "../../logger.js";
+import { countryData } from "../../util/country-info/countryDataLoader.js";
+import { typeOfCountryProperty } from "../../util/country-info/countryDataManager.js";
+import { returnChoiceWithSameValues } from "../../util/country-info/generalCountryCommandUtil.js";
+import { CountryKey } from "../../util/country-info/typesCountryCommand.js";
+import { Autocompleter } from "../interactionClasses.js";
 
 class CountryInfoAutocompleter extends Autocompleter {
 	constructor() {

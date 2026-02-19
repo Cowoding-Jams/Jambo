@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
-import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
-import { getBlacklist } from "./help";
-import { logger } from "../../logger";
-import { blacklistCodes } from "./blacklist";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db.js";
+import { logger } from "../../logger.js";
+import { addEmbedColor, addEmbedFooter } from "../misc/embeds.js";
+import { blacklistCodes } from "./blacklist.js";
+import { getBlacklist } from "./help.js";
 
 export async function adminReset(interaction: ChatInputCommandInteraction): Promise<void> {
 	const sure: boolean = interaction.options.getBoolean("sure", true);

@@ -1,12 +1,13 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ActionRowBuilder,
 	ChatInputCommandInteraction,
 	ModalBuilder,
 	SlashCommandBuilder,
+	SlashCommandOptionsOnlyBuilder,
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js";
+import { Command } from "../interactions/interactionClasses.js";
 
 class EmbedCommand extends Command {
 	fieldCache = new Map<string, string[]>();
@@ -81,7 +82,7 @@ class EmbedCommand extends Command {
 		await interaction.showModal(modal);
 	}
 
-	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): SlashCommandOptionsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("embed")
 			.setDescription("Creates an embed for you.")

@@ -1,6 +1,6 @@
 import Enmap from "enmap";
 
-export function getFromEnmap<T>(enmap: Enmap<T>, keys: string[]): T[] {
+export function getFromEnmap<T>(enmap: Enmap<string, T>, keys: string[]): T[] {
 	const values = keys.map((k) => enmap.get(k));
 	if (values.includes(undefined)) {
 		const index = values.findIndex((v) => v === undefined);

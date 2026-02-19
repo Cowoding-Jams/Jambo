@@ -1,8 +1,8 @@
 import { CommandInteraction, EmbedBuilder } from "discord.js";
 import { DateTime } from "luxon";
-import { Jam, jamDb, JamEvent, jamEventsDb, proposalDb } from "../../db";
-import { addEmbedFooter } from "../misc/embeds";
-import { discordRelativeTimestamp, discordTimestamp, durationToReadable, isInFuture } from "../misc/time";
+import { Jam, jamDb, JamEvent, jamEventsDb, proposalDb } from "../../db.js";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { discordRelativeTimestamp, discordTimestamp, durationToReadable, isInFuture } from "../misc/time.js";
 
 const hoursBeforeEvent = 2;
 
@@ -50,7 +50,7 @@ export async function newJam(
 		eventID: null,
 	};
 
-	const id = jamDb.autonum;
+	const id = String(jamDb.autonum);
 	jamDb.set(id, jam);
 
 	const events: JamEvent[] = [
@@ -66,7 +66,7 @@ export async function newJam(
 		{ type: "close-to-start", jamID: id, date: start.minus({ hours: hoursBeforeEvent }) },
 	];
 
-	events.forEach((e) => jamEventsDb.set(jamEventsDb.autonum, e));
+	events.forEach((e) => jamEventsDb.set(String(jamEventsDb.autonum), e));
 
 	interaction.editReply({ embeds: [jamEmbed(jam, id, "(new)")] });
 }
@@ -103,10 +103,10 @@ export async function editJam(interaction: CommandInteraction, jam: Jam, jamKey:
 		});
 	}
 
-	events.forEach((e) => jamEventsDb.set(jamEventsDb.autonum, e));
+	events.forEach((e) => jamEventsDb.set(String(jamEventsDb.autonum), e));
 
 	if (jam.eventID) {
-		interaction.guild?.scheduledEvents.edit(jam.eventID, { scheduledEndTime: end.toISO() });
+		interaction.guild?.scheduledEvents.edit(jam.eventID, { scheduledEndTime: end.toISO()! });
 	}
 
 	interaction.reply({ embeds: [jamEmbed(jam, jamKey, "(edit)")], ephemeral: true });
@@ -143,7 +143,7 @@ function jamEmbed(jam: Jam, jamKey: string, title: string) {
 		},
 		{
 			name: "Proposal",
-			value: `${proposal?.title} ⁘ ${proposal?.abbreviation}` || "Unknown...",
+			value: proposal ? `${proposal?.title} ⁘ ${proposal?.abbreviation}` : "Unknown...",
 		},
 		{
 			name: "Events",

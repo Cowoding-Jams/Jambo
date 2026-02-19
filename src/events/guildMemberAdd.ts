@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildMember, inlineCode } from "discord.js";
-import { addEmbedFooter } from "../util/misc/embeds";
-import { config } from "../config";
+import { config } from "../config.js";
+import { addEmbedFooter } from "../util/misc/embeds.js";
 
 const ordinalRules = new Intl.PluralRules("en-US", { type: "ordinal" });
 
@@ -12,7 +12,7 @@ const getOrdinalSuffix = (n: number) =>
 		few: "rd",
 		many: "th",
 		other: "th",
-	}[ordinalRules.select(n)]);
+	})[ordinalRules.select(n)];
 
 export default async function guildMemberAdd(member: GuildMember) {
 	let embed = new EmbedBuilder()

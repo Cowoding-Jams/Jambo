@@ -5,12 +5,12 @@ import {
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import cron from "node-cron";
-import { Command } from "../interactions/interactionClasses";
-import { getBirthday, setBirthday } from "../util/birthday/manageBirthday";
-import { upcomingCommand } from "../util/birthday/upcomingCommand";
-import { birthdayMessageTick } from "../util/birthday/loop";
-import { birthdayDb } from "../db";
-import { config } from "../config";
+import { config } from "../config.js";
+import { birthdayDb } from "../db.js";
+import { Command } from "../interactions/interactionClasses.js";
+import { birthdayMessageTick } from "../util/birthday/loop.js";
+import { getBirthday, setBirthday } from "../util/birthday/manageBirthday.js";
+import { upcomingCommand } from "../util/birthday/upcomingCommand.js";
 
 class BirthdayCommand extends Command {
 	constructor() {
@@ -42,10 +42,7 @@ class BirthdayCommand extends Command {
 		}
 	}
 
-	register():
-		| SlashCommandBuilder
-		| SlashCommandSubcommandsOnlyBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("birthday")
 			.setDescription("Set your birthday so others can see when they need to congratulate you!")

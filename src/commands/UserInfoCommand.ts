@@ -1,14 +1,15 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 	GuildMember,
 	roleMention,
 	SlashCommandBuilder,
+	SlashCommandOptionsOnlyBuilder,
 	User,
 } from "discord.js";
-import { addEmbedFooter } from "../util/misc/embeds";
-import { discordRelativeTimestamp, discordTimestamp } from "../util/misc/time";
+import { Command } from "../interactions/interactionClasses.js";
+import { addEmbedFooter } from "../util/misc/embeds.js";
+import { discordRelativeTimestamp, discordTimestamp } from "../util/misc/time.js";
 
 class UserInfoCommand extends Command {
 	constructor() {
@@ -24,7 +25,7 @@ class UserInfoCommand extends Command {
 		await interaction.reply({ embeds: [getUserEmbed(user, member)] });
 	}
 
-	register(): Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): SlashCommandOptionsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("user-info")
 			.setDescription("Get information about a user")

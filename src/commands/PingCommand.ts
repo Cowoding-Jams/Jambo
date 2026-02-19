@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { Command } from "../interactions/interactionClasses";
+import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { Command } from "../interactions/interactionClasses.js";
 
 class PingCommand extends Command {
 	constructor() {
@@ -11,7 +11,7 @@ class PingCommand extends Command {
 		await interaction.reply(`Pong! (Bot ping: ${ping}ms)`);
 	}
 
-	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): SlashCommandOptionsOnlyBuilder {
 		return new SlashCommandBuilder().setName("ping").setDescription("Replies pong and the bots ping.");
 	}
 }

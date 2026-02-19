@@ -1,6 +1,6 @@
-import { SelectMenu } from "../interactionClasses";
 import { inlineCode, StringSelectMenuInteraction } from "discord.js";
-import { logger } from "../../logger";
+import { logger } from "../../logger.js";
+import { SelectMenu } from "../interactionClasses.js";
 
 class RoleSelectMenu extends SelectMenu {
 	constructor() {

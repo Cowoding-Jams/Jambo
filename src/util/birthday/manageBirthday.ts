@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, inlineCode } from "discord.js";
-import { birthdayDb } from "../../db";
 import { DateTime } from "luxon";
-import { getTimezoneFromRole } from "../misc/role";
-import { longDateFormatWithTimezone, shortDateFormatWithTimezone } from "../misc/time";
-import { config } from "../../config";
-import { getAge } from "./loop";
+import { config } from "../../config.js";
+import { birthdayDb } from "../../db.js";
+import { getTimezoneFromRole } from "../misc/role.js";
+import { longDateFormatWithTimezone, shortDateFormatWithTimezone } from "../misc/time.js";
+import { getAge } from "./loop.js";
 
 export async function setBirthday(interaction: ChatInputCommandInteraction) {
 	const oldDate = birthdayDb.get(interaction.user.id);

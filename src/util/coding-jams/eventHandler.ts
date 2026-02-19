@@ -1,8 +1,8 @@
 import { Client, TextChannel } from "discord.js";
 import { DateTime, Duration } from "luxon";
-import { jamEventsDb, jamTimeoutCache, pollEventsDb, pollTimeoutCache } from "../../db";
-import { logger } from "../../logger";
-import { config } from "../../config";
+import { config } from "../../config.js";
+import { jamEventsDb, jamTimeoutCache, pollEventsDb, pollTimeoutCache } from "../../db.js";
+import { logger } from "../../logger.js";
 import {
 	closeToEndEvent,
 	closeToStartEvent,
@@ -10,8 +10,8 @@ import {
 	endEvent,
 	halftimeEvent,
 	startEvent,
-} from "./jamEvents";
-import { beforeEvent, closeEvent, openEvent } from "./pollEvents";
+} from "./jamEvents.js";
+import { beforeEvent, closeEvent, openEvent } from "./pollEvents.js";
 
 export async function elapseJamEvent(client: Client, eventID: string, jamID: string): Promise<void> {
 	const event = jamEventsDb.get(eventID);

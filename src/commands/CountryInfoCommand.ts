@@ -1,15 +1,15 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { countryData, initializeCountryData } from "../util/country-info/countryDataLoader";
-import { overviewSubcommand, randomOverviewSubcommand } from "../util/country-info/overviewSubcommand";
-import { specificCommand } from "../util/country-info/specificSubcommand";
-import { querySubcommand } from "../util/country-info/querySubcommand";
-import { unknownSubcommandReply } from "../util/misc/commands";
+import { Command } from "../interactions/interactionClasses.js";
+import { countryData, initializeCountryData } from "../util/country-info/countryDataLoader.js";
+import { overviewSubcommand, randomOverviewSubcommand } from "../util/country-info/overviewSubcommand.js";
+import { querySubcommand } from "../util/country-info/querySubcommand.js";
+import { specificCommand } from "../util/country-info/specificSubcommand.js";
+import { unknownSubcommandReply } from "../util/misc/commands.js";
 
 class CountryInfoCommand extends Command {
 	constructor() {

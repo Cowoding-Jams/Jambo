@@ -6,7 +6,7 @@ import {
 	ModalSubmitInteraction,
 	Role,
 } from "discord.js";
-import { config } from "../../config";
+import { config } from "../../config.js";
 
 export async function hasRoleMentionPerms(
 	interaction: ChatInputCommandInteraction,

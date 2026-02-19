@@ -1,6 +1,6 @@
-import { Button } from "../interactionClasses";
 import { ButtonInteraction, inlineCode } from "discord.js";
-import { logger } from "../../logger";
+import { logger } from "../../logger.js";
+import { Button } from "../interactionClasses.js";
 
 class RoleButton extends Button {
 	constructor() {

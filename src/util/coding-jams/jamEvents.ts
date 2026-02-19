@@ -5,11 +5,11 @@ import {
 	GuildScheduledEventPrivacyLevel,
 	TextChannel,
 } from "discord.js";
-import { config } from "../../config";
-import { jamDb, proposalDb } from "../../db";
-import { addEmbedFooter } from "../misc/embeds";
-import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time";
-import { viewProposalEmbed } from "../proposal/listProposals";
+import { config } from "../../config.js";
+import { jamDb, proposalDb } from "../../db.js";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { discordRelativeTimestamp, discordTimestamp, durationToReadable } from "../misc/time.js";
+import { viewProposalEmbed } from "../proposal/listProposals.js";
 
 export async function createScheduledEventEvent(channel: TextChannel, jamID: string) {
 	const jam = jamDb.get(jamID)!;
@@ -18,8 +18,8 @@ export async function createScheduledEventEvent(channel: TextChannel, jamID: str
 	const options: GuildScheduledEventCreateOptions = {
 		name: proposal.title + " jam",
 		description: `for the ${jam.title}.\n${proposal.description}`,
-		scheduledStartTime: jam.start.toISO(),
-		scheduledEndTime: jam.end.toISO(),
+		scheduledStartTime: jam.start.toISO()!,
+		scheduledEndTime: jam.end.toISO()!,
 		privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
 		entityType: GuildScheduledEventEntityType.External,
 		entityMetadata: { location: "Here!" },

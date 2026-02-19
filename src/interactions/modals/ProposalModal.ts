@@ -1,9 +1,9 @@
-import { Modal } from "../interactionClasses";
 import { ModalSubmitInteraction } from "discord.js";
-import { proposalDb } from "../../db";
-import { viewProposalEmbed } from "../../util/proposal/listProposals";
 import { DateTime } from "luxon";
-import { checkDuration } from "../../util/misc/time";
+import { proposalDb } from "../../db.js";
+import { checkDuration } from "../../util/misc/time.js";
+import { viewProposalEmbed } from "../../util/proposal/listProposals.js";
+import { Modal } from "../interactionClasses.js";
 
 class ProposalModal extends Modal {
 	constructor() {
@@ -56,7 +56,7 @@ class ProposalModal extends Modal {
 				used: false,
 			};
 
-			proposalDb.set(proposalDb.autonum, proposal);
+			proposalDb.set(String(proposalDb.autonum), proposal);
 		} else {
 			// (customId[0] == "edit")
 			const key = customId[1];

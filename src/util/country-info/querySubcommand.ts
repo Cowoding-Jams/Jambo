@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { addEmbedFooter } from "../misc/embeds";
-import { formatNumber } from "../misc/numbers";
-import { shuffleList } from "../misc/random";
-import { countryData } from "./countryDataLoader";
-import { getFilteredCountryDataBy, sortCountryDataBy, typeOfCountryProperty } from "./countryDataManager";
-import { Country, CountryKey } from "./typesCountryCommand";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { formatNumber } from "../misc/numbers.js";
+import { shuffleList } from "../misc/random.js";
+import { countryData } from "./countryDataLoader.js";
+import { getFilteredCountryDataBy, sortCountryDataBy, typeOfCountryProperty } from "./countryDataManager.js";
+import { Country, CountryKey } from "./typesCountryCommand.js";
 
 export function querySubcommand(interaction: ChatInputCommandInteraction) {
 	const sortCriteria: CountryKey = (interaction.options.getString("sort-criteria") ?? "none") as CountryKey;

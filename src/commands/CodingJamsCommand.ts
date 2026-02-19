@@ -1,4 +1,3 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	Client,
@@ -7,15 +6,16 @@ import {
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { hasAdminPerms } from "../util/misc/permissions";
-import { deleteJam, editJam, newJam, viewJam } from "../util/coding-jams/manageJams";
-import { deletePoll, editPoll, newPoll, viewPoll, votesPoll } from "../util/coding-jams/managePoll";
-import { jamSchedulerTick } from "../util/coding-jams/eventHandler";
-import cron from "node-cron";
-import { checkDate, checkDuration } from "../util/misc/time";
 import { DateTime, Duration } from "luxon";
-import { listJams, listPolls } from "../util/coding-jams/listPollsAndJams";
-import { jamDb, pollDb } from "../db";
+import cron from "node-cron";
+import { jamDb, pollDb } from "../db.js";
+import { Command } from "../interactions/interactionClasses.js";
+import { jamSchedulerTick } from "../util/coding-jams/eventHandler.js";
+import { listJams, listPolls } from "../util/coding-jams/listPollsAndJams.js";
+import { deleteJam, editJam, newJam, viewJam } from "../util/coding-jams/manageJams.js";
+import { deletePoll, editPoll, newPoll, viewPoll, votesPoll } from "../util/coding-jams/managePoll.js";
+import { hasAdminPerms } from "../util/misc/permissions.js";
+import { checkDate, checkDuration } from "../util/misc/time.js";
 
 class CodingJamsCommand extends Command {
 	constructor() {

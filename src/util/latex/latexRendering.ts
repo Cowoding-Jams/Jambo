@@ -1,6 +1,6 @@
-import fetch from "node-fetch";
 import fs from "fs";
-import { logger } from "../../logger";
+import fetch from "node-fetch";
+import { logger } from "../../logger.js";
 
 const pathToTemplate = "./src/util/latex/template.tex";
 const apiUrl = "http://rtex.probablyaweb.site/api/v2";

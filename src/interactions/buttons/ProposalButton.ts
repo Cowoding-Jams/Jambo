@@ -1,6 +1,6 @@
-import { Button } from "../interactionClasses";
 import { ButtonInteraction } from "discord.js";
-import { listProposals } from "../../util/proposal/listProposals";
+import { listProposals } from "../../util/proposal/listProposals.js";
+import { Button } from "../interactionClasses.js";
 
 class ProposalButton extends Button {
 	constructor() {

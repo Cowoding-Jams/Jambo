@@ -1,11 +1,11 @@
 import { ChatInputCommandInteraction, EmbedBuilder, inlineCode } from "discord.js";
-import { handleUndefinedCountry } from "./generalCountryCommandUtil";
-import { getCountryByName } from "./countryDataManager";
-import { pickRandomFromList } from "../misc/random";
-import { formatNumber } from "../misc/numbers";
-import { Country } from "./typesCountryCommand";
-import { countryData } from "./countryDataLoader";
-import { addEmbedFooter } from "../misc/embeds";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { formatNumber } from "../misc/numbers.js";
+import { pickRandomFromList } from "../misc/random.js";
+import { countryData } from "./countryDataLoader.js";
+import { getCountryByName } from "./countryDataManager.js";
+import { handleUndefinedCountry } from "./generalCountryCommandUtil.js";
+import { Country } from "./typesCountryCommand.js";
 
 export function overviewSubcommand(interaction: ChatInputCommandInteraction) {
 	const country: Country | undefined = getCountryByName(interaction.options.getString("country", true));

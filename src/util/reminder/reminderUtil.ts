@@ -1,13 +1,13 @@
-import { addEmbedColor } from "../misc/embeds";
-import { reminderDb, reminderTimeoutCache } from "../../db";
-import { Client, EmbedBuilder, TextBasedChannel, userMention } from "discord.js";
+import { Client, EmbedBuilder, SendableChannels, userMention } from "discord.js";
 import { Duration } from "luxon";
-import { getUserOrRole } from "../misc/user";
+import { reminderDb, reminderTimeoutCache } from "../../db.js";
+import { addEmbedColor } from "../misc/embeds.js";
+import { getUserOrRole } from "../misc/user.js";
 
 export async function elapse(client: Client, id: string): Promise<void> {
 	const reminder = reminderDb.get(id);
 	if (!reminder) return;
-	const channel = (await client.channels.fetch(reminder.channelID)) as TextBasedChannel;
+	const channel = (await client.channels.fetch(reminder.channelID)) as SendableChannels;
 
 	const ping = reminder.ping ? await getUserOrRole(reminder.ping, client.guilds.cache.first()!) : null;
 

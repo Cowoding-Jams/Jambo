@@ -15,26 +15,26 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: 18
+          node-version: 22
 
       - name: Restore CI Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         id: cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-18-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-22-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Install Dependencies
         if: ${{ !steps.cache.outputs.cache-hit }}
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run ESLint
-        run: npx eslint src --ext ts
+        run: pnpm eslint src --ext ts
 
       - name: Run Prettier
-        run: npx prettier --check .
+        run: pnpm prettier --check .

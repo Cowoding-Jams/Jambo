@@ -1,14 +1,14 @@
-import { SelectMenu } from "../interactionClasses";
 import { bold, GuildMember, StringSelectMenuInteraction } from "discord.js";
-import { logger } from "../../logger";
-import { pollDb, proposalDb } from "../../db";
+import { pollDb, proposalDb } from "../../db.js";
+import { logger } from "../../logger.js";
 import {
 	pollEmbed,
 	pollSelectMenus,
 	sortBySelectionType,
 	unusedProposals,
-} from "../../util/coding-jams/managePoll";
-import { getFromEnmap } from "../../util/misc/enmap";
+} from "../../util/coding-jams/managePoll.js";
+import { getFromEnmap } from "../../util/misc/enmap.js";
+import { SelectMenu } from "../interactionClasses.js";
 
 class PollSelectMenu extends SelectMenu {
 	constructor() {

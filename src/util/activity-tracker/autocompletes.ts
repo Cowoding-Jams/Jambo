@@ -1,8 +1,8 @@
 import { AutocompleteInteraction } from "discord.js";
-import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
-import { splitId } from "./help";
-import { hasAdminRole } from "../misc/permissions";
-import { blacklistCodes } from "./blacklist";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db.js";
+import { hasAdminRole } from "../misc/permissions.js";
+import { blacklistCodes } from "./blacklist.js";
+import { splitId } from "./help.js";
 
 export async function blacklistAutocompletion(interaction: AutocompleteInteraction) {
 	if (await hasAdminRole(interaction)) {

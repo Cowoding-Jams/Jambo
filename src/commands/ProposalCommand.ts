@@ -1,12 +1,12 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	SlashCommandStringOption,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { addProposal, deleteProposal, editProposal } from "../util/proposal/manageProposals";
-import { listProposals, viewProposal } from "../util/proposal/listProposals";
+import { Command } from "../interactions/interactionClasses.js";
+import { listProposals, viewProposal } from "../util/proposal/listProposals.js";
+import { addProposal, deleteProposal, editProposal } from "../util/proposal/manageProposals.js";
 
 class ProposalCommand extends Command {
 	constructor() {

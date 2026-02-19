@@ -1,9 +1,9 @@
-import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { reminderDb } from "../../db";
-import { autocompleteISODuration, autocompleteISOTime } from "../../util/misc/autocomplete";
-import { shortDateTimeFormat } from "../../util/misc/time";
-import { getUsernameOrRolename } from "../../util/misc/user";
+import { reminderDb } from "../../db.js";
+import { autocompleteISODuration, autocompleteISOTime } from "../../util/misc/autocomplete.js";
+import { shortDateTimeFormat } from "../../util/misc/time.js";
+import { getUsernameOrRolename } from "../../util/misc/user.js";
+import { Autocompleter } from "../interactionClasses.js";
 
 class ReminderAutocompleter extends Autocompleter {
 	constructor() {

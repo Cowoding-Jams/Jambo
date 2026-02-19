@@ -3,18 +3,18 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { Command } from "../interactions/interactionClasses";
-import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/activity-tracker/blacklist";
-import { statsAll, statsGame, statsMy } from "../util/activity-tracker/statistics";
+import { Command } from "../interactions/interactionClasses.js";
 import {
 	adminBlacklistGame,
 	adminLook,
 	adminReset,
 	adminShow,
 	adminWhitelistGame,
-} from "../util/activity-tracker/admin";
-import { list } from "../util/activity-tracker/list";
-import { hasAdminRole } from "../util/misc/permissions";
+} from "../util/activity-tracker/admin.js";
+import { blacklistAdd, blacklistRemove, blacklistShow } from "../util/activity-tracker/blacklist.js";
+import { list } from "../util/activity-tracker/list.js";
+import { statsAll, statsGame, statsMy } from "../util/activity-tracker/statistics.js";
+import { hasAdminRole } from "../util/misc/permissions.js";
 
 class ActivityTrackerCommand extends Command {
 	constructor() {
@@ -63,9 +63,7 @@ class ActivityTrackerCommand extends Command {
 		}
 	}
 
-	register():
-		| SlashCommandSubcommandsOnlyBuilder
-		| Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): SlashCommandSubcommandsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("activity-tracker")
 			.setDescription("A game activity tracker to provide interesting insights in the people on this server.")

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import { config } from "../../config";
+import { config } from "../../config.js";
 
 export function addEmbedFooter(embed: EmbedBuilder, timestamp = false): EmbedBuilder {
 	embed = embed.setColor(config.color).setAuthor({

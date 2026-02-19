@@ -1,10 +1,10 @@
-import ReminderCommand from "../commands/ReminderCommand";
-import { ActivityType, Client } from "discord.js";
-import { ctx } from "../ctx";
-import { logger } from "../logger";
-import CodingJamsCommand from "../commands/CodingJamsCommand";
-import { validateConfigParameters } from "../config-validate";
-import BirthdayCommand from "../commands/BirthdayCommand";
+import { ActivityType, Client, PresenceUpdateStatus } from "discord.js";
+import BirthdayCommand from "../commands/BirthdayCommand.js";
+import CodingJamsCommand from "../commands/CodingJamsCommand.js";
+import ReminderCommand from "../commands/ReminderCommand.js";
+import { validateConfigParameters } from "../config-validate.js";
+import { ctx } from "../ctx.js";
+import { logger } from "../logger.js";
 
 export default async function ready(client: Client) {
 	const guild = client.guilds.cache.get(ctx.defaultGuild)!;
@@ -17,9 +17,14 @@ export default async function ready(client: Client) {
 	logger.info(`Successfully logged in as ${client.user?.username}.`);
 	logger.info(`Watching over ${guild.name}.`);
 
-	client.user?.setStatus("online");
-	client.user?.setActivity("you succeed :)", {
-		type: ActivityType.Watching,
+	client.user?.setPresence({
+		status: PresenceUpdateStatus.Online,
+		activities: [
+			{
+				name: "I believe in you :3",
+				type: ActivityType.Custom,
+			},
+		],
 	});
 
 	logger.debug("Publishing commands...");

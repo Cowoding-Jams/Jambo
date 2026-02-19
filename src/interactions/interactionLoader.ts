@@ -1,28 +1,27 @@
-import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactionClasses";
-import { logger } from "../logger";
 import { Client, Collection } from "discord.js";
-import { config } from "../config";
 import fs from "fs";
+import path from "path";
+import { config } from "../config.js";
+import { logger } from "../logger.js";
+import { Autocompleter, Button, Command, Modal, SelectMenu } from "./interactionClasses.js";
 
 export async function loadEvents(client: Client) {
 	logger.debug("Loading events...");
-	const dir = "./dist/events";
-	checkDir(dir);
+	const dir = path.join(import.meta.dirname, "../events");
 	await Promise.all(
 		fs
 			.readdirSync(dir)
 			.filter(isActive)
 			.map(async (filename) => {
 				const { default: fun } = await import(`../events/${filename}`);
-				client.on(filename.replace(".js", ""), fun);
+				client.on(filename.replace(/\.(js|ts)$/, ""), fun);
 			})
 	);
 }
 
 export async function loadCommands(): Promise<Collection<string, Command>> {
 	logger.debug("Loading commands...");
-	const dir = "./dist/commands";
-	checkDir(dir);
+	const dir = path.join(import.meta.dirname, "../commands");
 	const loadedCommands = new Collection<string, Command>();
 	await Promise.all(
 		fs
@@ -41,8 +40,7 @@ export async function loadCommands(): Promise<Collection<string, Command>> {
 
 export async function loadButtons(): Promise<Collection<string, Button>> {
 	logger.debug("Loading buttons...");
-	const dir = "./dist/interactions/buttons";
-	checkDir(dir);
+	const dir = path.join(import.meta.dirname, "./buttons");
 	const loadedButtons = new Collection<string, Button>();
 	await Promise.all(
 		fs
@@ -58,8 +56,7 @@ export async function loadButtons(): Promise<Collection<string, Button>> {
 
 export async function loadSelectMenus(): Promise<Collection<string, SelectMenu>> {
 	logger.debug("Loading select menus...");
-	const dir = "./dist/interactions/selectMenus";
-	checkDir(dir);
+	const dir = path.join(import.meta.dirname, "./selectMenus");
 	const loadedSelectMenus = new Collection<string, SelectMenu>();
 	await Promise.all(
 		fs
@@ -75,8 +72,7 @@ export async function loadSelectMenus(): Promise<Collection<string, SelectMenu>>
 
 export async function loadModals(): Promise<Collection<string, Modal>> {
 	logger.debug("Loading modals...");
-	const dir = "./dist/interactions/modals";
-	checkDir(dir);
+	const dir = path.join(import.meta.dirname, "./modals");
 	const loadedModals = new Collection<string, Modal>();
 	await Promise.all(
 		fs
@@ -92,8 +88,7 @@ export async function loadModals(): Promise<Collection<string, Modal>> {
 
 export async function loadAutocompleters(): Promise<Collection<string, Autocompleter>> {
 	logger.debug("Loading autocompleters...");
-	const dir = "./dist/interactions/autocompleters";
-	checkDir(dir);
+	const dir = path.join(import.meta.dirname, "./autocompleters");
 	const loadedAutocompleters = new Collection<string, Autocompleter>();
 	await Promise.all(
 		fs
@@ -108,11 +103,5 @@ export async function loadAutocompleters(): Promise<Collection<string, Autocompl
 }
 
 function isActive(f: string): boolean {
-	return f.endsWith(".js") && !f.startsWith("sample");
-}
-
-function checkDir(dir: string) {
-	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir);
-	}
+	return (f.endsWith(".js") || f.endsWith(".ts")) && !f.startsWith("sample");
 }

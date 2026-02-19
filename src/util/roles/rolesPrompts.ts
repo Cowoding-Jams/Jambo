@@ -1,5 +1,4 @@
-import { config } from "../../config";
-import { logger } from "../../logger";
+import { createCanvas } from "@napi-rs/canvas";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -8,10 +7,11 @@ import {
 	EmbedBuilder,
 	StringSelectMenuBuilder,
 } from "discord.js";
-import { addEmbedFooter } from "../misc/embeds";
-import { createCanvas } from "@napi-rs/canvas";
-import { bringIntoButtonGrid, setUpRoles } from "./rolesUtil";
-import { timezoneRoles } from "../misc/role";
+import { config } from "../../config.js";
+import { logger } from "../../logger.js";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { timezoneRoles } from "../misc/role.js";
+import { bringIntoButtonGrid, setUpRoles } from "./rolesUtil.js";
 
 export async function pronounPrompt(interaction: ChatInputCommandInteraction): Promise<void> {
 	const prompt: EmbedBuilder = new EmbedBuilder()

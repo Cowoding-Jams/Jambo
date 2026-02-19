@@ -1,36 +1,50 @@
 import fetch from "node-fetch";
-import { logger } from "../../logger";
-import { Country, CountryImport, CountryKey, MainCountryDataTypes } from "./typesCountryCommand";
+import { logger } from "../../logger.js";
+import { Country, CountryImport, CountryKey, MainCountryDataTypes } from "./typesCountryCommand.js";
 
 export let countryData: Country[] = [];
 
 export async function initializeCountryData() {
-	const url = "https://restcountries.com/v3.1/all";
+	const fields = [
+		// use cca2 as id, max 10 per group
+		["cca2", "name", "tld", "unMember", "population", "capital", "languages", "currencies"],
+		["cca2", "timezones", "region", "subregion", "area", "latlng", "maps", "flags"],
+	];
+	const baseUrl = "https://restcountries.com/v3.1/all?fields=";
 
 	logger.debug("Fetching the country data...");
 
-	const response = await fetch(url)
-		.then((res) =>
-			res
-				.json()
-				.catch(() => {
-					logger.error("Couldn't parse the country data. The api is probably down...");
-					return;
-				})
-				.then((res) => {
-					return res as CountryImport[];
-				})
-		)
-		.catch(() => {
-			logger.error("Couldn't fetch the country data api.");
-			return;
-		});
+	let data: CountryImport[] | null = null;
 
-	if (!response) {
-		return;
+	for (const fieldGroup of fields) {
+		const response = await fetch(baseUrl + fieldGroup.join(","))
+			.then((res) =>
+				res
+					.json()
+					.catch(() => {
+						logger.error("Couldn't parse the country data. The api is probably down...");
+						return;
+					})
+					.then((res) => {
+						return res as CountryImport[];
+					})
+			)
+			.catch(() => {
+				logger.error("Couldn't fetch the country data api.");
+				return;
+			});
+		if (response && data == null) data = response;
+		if (response && data != null) {
+			for (const country of response) {
+				const idx = data.findIndex((c) => c.cca2 == country.cca2);
+				if (idx != -1) data[idx] = { ...data[idx], ...country };
+			}
+		}
 	}
 
-	countryData = countryDataImportToCountryData(response).sort((a, b) => b.population - a.population);
+	if (!data) return;
+
+	countryData = countryDataImportToCountryData(data).sort((a, b) => b.population - a.population);
 
 	logger.debug("Initialized the country data.");
 }

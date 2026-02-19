@@ -1,4 +1,3 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -8,9 +7,10 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { unknownSubcommandEdit } from "../util/misc/commands";
-import { latexEquation, latexMixed } from "../util/latex/latexRendering";
-import { latexDb } from "../db";
+import { latexDb } from "../db.js";
+import { Command } from "../interactions/interactionClasses.js";
+import { latexEquation, latexMixed } from "../util/latex/latexRendering.js";
+import { unknownSubcommandEdit } from "../util/misc/commands.js";
 
 class LatexCommand extends Command {
 	constructor() {

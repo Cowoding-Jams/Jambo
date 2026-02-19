@@ -1,6 +1,6 @@
-import { Button } from "../interactionClasses";
 import { ButtonInteraction, inlineCode, Message } from "discord.js";
-import { latexDb } from "../../db";
+import { latexDb } from "../../db.js";
+import { Button } from "../interactionClasses.js";
 
 class LatexButton extends Button {
 	constructor() {

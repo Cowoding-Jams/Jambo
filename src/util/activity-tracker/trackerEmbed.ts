@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
-import { logDatePerGameList, logHistoryList, logsPerGameList, playtimePerGameList } from "./list";
-import { addEmbedFooter } from "../../util/misc/embeds";
+import { addEmbedFooter } from "../../util/misc/embeds.js";
+import { logDatePerGameList, logHistoryList, logsPerGameList, playtimePerGameList } from "./list.js";
 
 export async function gameActivityTrackerEmbed(
 	sort: string,

@@ -1,7 +1,7 @@
-import { Modal } from "../interactionClasses";
 import { EmbedBuilder, ModalSubmitInteraction } from "discord.js";
-import { addEmbedColor, addEmbedFooter, countEmbedCharacters } from "../../util/misc/embeds";
-import EmbedCommand from "../../commands/EmbedCommand";
+import EmbedCommand from "../../commands/EmbedCommand.js";
+import { addEmbedColor, addEmbedFooter, countEmbedCharacters } from "../../util/misc/embeds.js";
+import { Modal } from "../interactionClasses.js";
 
 class EmbedModal extends Modal {
 	constructor() {

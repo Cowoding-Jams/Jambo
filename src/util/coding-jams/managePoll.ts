@@ -1,11 +1,11 @@
 import { ActionRowBuilder, CommandInteraction, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
 import { DateTime } from "luxon";
-import { pollSelectionTypes } from "../../commands/CodingJamsCommand";
-import { Poll, pollDb, PollEvent, pollEventsDb, Proposal, proposalDb } from "../../db";
-import { addEmbedFooter } from "../misc/embeds";
-import { numberedList } from "../misc/format";
-import { getFromEnmap } from "../misc/enmap";
-import { discordRelativeTimestamp, discordTimestamp } from "../misc/time";
+import { pollSelectionTypes } from "../../commands/CodingJamsCommand.js";
+import { Poll, pollDb, PollEvent, pollEventsDb, Proposal, proposalDb } from "../../db.js";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { getFromEnmap } from "../misc/enmap.js";
+import { numberedList } from "../misc/format.js";
+import { discordRelativeTimestamp, discordTimestamp } from "../misc/time.js";
 
 export async function newPoll(
 	interaction: CommandInteraction,
@@ -58,7 +58,7 @@ export async function newPoll(
 		votes: new Map<string, string[]>(),
 	};
 
-	const id = pollDb.autonum;
+	const id = String(pollDb.autonum);
 	pollDb.set(id, poll);
 
 	const events: PollEvent[] = [
@@ -66,7 +66,7 @@ export async function newPoll(
 		{ pollID: id, type: "open", promptID: null, date: start },
 	];
 
-	events.forEach((e) => pollEventsDb.set(pollEventsDb.autonum, e));
+	events.forEach((e) => pollEventsDb.set(String(pollEventsDb.autonum), e));
 
 	interaction.reply({
 		embeds: [pollEmbed(poll, id, "(new)")],
@@ -100,7 +100,7 @@ export async function editPoll(interaction: CommandInteraction, poll: Poll, poll
 	}
 
 	if (messageID) {
-		pollEventsDb.set(pollEventsDb.autonum, {
+		pollEventsDb.set(String(pollEventsDb.autonum), {
 			pollID: pollKey,
 			type: "close",
 			date: poll.end,

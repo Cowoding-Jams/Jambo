@@ -1,5 +1,5 @@
-import { Autocompleter } from "../interactions/interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
+import { Autocompleter } from "../interactions/interactionClasses.js";
 
 class CountryAutocompleter extends Autocompleter {
 	constructor() {

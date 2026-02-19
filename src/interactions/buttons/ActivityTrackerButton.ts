@@ -1,6 +1,6 @@
-import { Button } from "../interactionClasses";
 import { ButtonInteraction } from "discord.js";
-import { gameActivityTrackerEmbed } from "../../util/activity-tracker/trackerEmbed";
+import { gameActivityTrackerEmbed } from "../../util/activity-tracker/trackerEmbed.js";
+import { Button } from "../interactionClasses.js";
 
 class ActivityTrackerButton extends Button {
 	constructor() {

@@ -1,5 +1,5 @@
 import { Guild } from "discord.js";
-import { config } from "./config";
+import { config } from "./config.js";
 import {
 	channelExists,
 	emojiExists,
@@ -7,7 +7,7 @@ import {
 	isValidHexColor,
 	isValidURl,
 	roleExists,
-} from "./util/misc/verify";
+} from "./util/misc/verify.js";
 
 export async function validateConfigParameters(guild: Guild) {
 	// URLs

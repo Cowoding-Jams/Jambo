@@ -1,7 +1,7 @@
-import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { EmbedField } from "discord.js";
-import { discordRelativeTimestamp, durationToReadable } from "../misc/time";
 import { DateTime, Duration } from "luxon";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db.js";
+import { discordRelativeTimestamp, durationToReadable } from "../misc/time.js";
 
 export async function getBlacklist(userid: string): Promise<string[] | undefined> {
 	if (!activityTrackerBlacklistDb.has(userid)) return [];

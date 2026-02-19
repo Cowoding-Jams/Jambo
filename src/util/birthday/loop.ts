@@ -1,9 +1,9 @@
 import { Client, EmbedBuilder } from "discord.js";
-import { birthdayDb } from "../../db";
-import { ctx } from "../../ctx";
-import { addEmbedFooter } from "../misc/embeds";
 import { DateTime } from "luxon";
-import { logger } from "../../logger";
+import { ctx } from "../../ctx.js";
+import { birthdayDb } from "../../db.js";
+import { logger } from "../../logger.js";
+import { addEmbedFooter } from "../misc/embeds.js";
 
 export async function birthdayMessageTick(client: Client) {
 	const defaultGuild = await client.guilds.fetch(ctx.defaultGuild);

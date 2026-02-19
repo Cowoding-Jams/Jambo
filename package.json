@@ -1,16 +1,16 @@
 {
 	"name": "jambo",
-	"version": "1.0.0",
+	"version": "0.0.0",
 	"description": "A bot to manage a whole game jam server from a fully functional poll-system to managing color roles.",
 	"main": "dist/start.js",
-	"private": "true",
+	"private": true,
 	"type": "module",
 	"scripts": {
-		"prettify": "eslint ./src/ --fix && npx prettier -w .",
+		"lint": "eslint ./src/ --fix",
+		"format": "npx prettier -w .",
 		"build": "tsc -p tsconfig.json",
-		"run": "node --experimental-specifier-resolution=node --enable-source-maps .",
-		"start": "npm run build && npm run run",
-		"prepare": "husky install"
+		"start": "node --enable-source-maps .",
+		"dev": "tsx src/start.ts"
 	},
 	"repository": {
 		"type": "git",
@@ -33,26 +33,33 @@
 		"url": "https://github.com/Cowoding-Jams/Jambo/issues"
 	},
 	"homepage": "https://github.com/Cowoding-Jams/Jambo",
-	"devDependencies": {
-		"@types/luxon": "^3.2.0",
-		"@types/node-cron": "^3.0.7",
-		"@typescript-eslint/eslint-plugin": "^5.57.0",
-		"@typescript-eslint/parser": "^5.57.0",
-		"discord-api-types": "^0.37.37",
-		"eslint": "^8.36.0",
-		"eslint-config-prettier": "^8.8.0",
-		"husky": "^8.0.3",
-		"prettier": "^2.8.7",
-		"typescript": "^5.0.2"
-	},
 	"dependencies": {
-		"@napi-rs/canvas": "^0.1.39",
-		"discord.js": "^14.8.0",
-		"dotenv": "^16.0.3",
-		"enmap": "github:Cowoding-Jams/enmap",
-		"luxon": "^3.3.0",
-		"node-cron": "^3.0.2",
-		"node-fetch": "^3.3.1",
-		"winston": "^3.8.2"
-	}
+		"@napi-rs/canvas": "^0.1.93",
+		"discord.js": "^14.25.1",
+		"dotenv": "^17.3.1",
+		"enmap": "5.9.10",
+		"luxon": "^3.7.2",
+		"node-cron": "^4.2.1",
+		"node-fetch": "^3.3.2",
+		"winston": "^3.19.0"
+	},
+	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@types/luxon": "^3.7.1",
+		"@types/node": "^22.19.11",
+		"discord-api-types": "^0.38.39",
+		"eslint": "^10.0.0",
+		"eslint-config-prettier": "^10.1.8",
+		"prettier": "^3.8.1",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.56.0"
+	},
+	"resolutions": {
+		"better-sqlite3": "^12.6.2"
+	},
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"packageManager": "pnpm@10.17.1"
 }

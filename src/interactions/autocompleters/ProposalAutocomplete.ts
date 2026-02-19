@@ -1,7 +1,7 @@
-import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { proposalDb } from "../../db";
-import { hasModeratorRole } from "../../util/misc/permissions";
+import { proposalDb } from "../../db.js";
+import { hasModeratorRole } from "../../util/misc/permissions.js";
+import { Autocompleter } from "../interactionClasses.js";
 
 class ProposalAutocompleter extends Autocompleter {
 	constructor() {

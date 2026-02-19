@@ -1,8 +1,8 @@
-import { config } from "../config";
-import { Command } from "../interactions/interactionClasses";
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { hasAdminRole } from "../util/misc/permissions";
-import { logger } from "../logger";
+import { ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { config } from "../config.js";
+import { Command } from "../interactions/interactionClasses.js";
+import { logger } from "../logger.js";
+import { hasAdminRole } from "../util/misc/permissions.js";
 
 class DataCommand extends Command {
 	constructor() {
@@ -31,7 +31,7 @@ class DataCommand extends Command {
 		}
 	}
 
-	register(): SlashCommandBuilder {
+	register(): SlashCommandOptionsOnlyBuilder {
 		return new SlashCommandBuilder()
 			.setName("data")
 			.setDescription(

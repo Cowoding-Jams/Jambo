@@ -6,10 +6,10 @@ import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 } from "discord.js";
-import { Proposal, proposalDb } from "../../db";
-import { addEmbedColor, addEmbedFooter } from "../misc/embeds";
-import { discordTimestamp, durationToReadable } from "../misc/time";
-import { numberedList } from "../misc/format";
+import { Proposal, proposalDb } from "../../db.js";
+import { addEmbedColor, addEmbedFooter } from "../misc/embeds.js";
+import { numberedList } from "../misc/format.js";
+import { discordTimestamp, durationToReadable } from "../misc/time.js";
 
 export async function listProposals(
 	interaction: ChatInputCommandInteraction | ButtonInteraction,

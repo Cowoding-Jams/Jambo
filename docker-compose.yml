@@ -5,8 +5,6 @@ services:
     build: ./
     image: local/jambo
     restart: always
-    environment:
-      - TOKEN=[YOUR_TOKEN_HERE]
-      - DEFAULT_GUILD=[GUILD_ID]
+    env_file: .env
     volumes:
       - "./data:/app/data"

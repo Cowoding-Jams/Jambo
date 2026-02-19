@@ -1,6 +1,6 @@
 import { Activity, ActivityType, Presence } from "discord.js";
-import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db";
 import { DateTime, Duration } from "luxon";
+import { activityTrackerBlacklistDb, activityTrackerLogDb } from "../../db.js";
 
 export async function getChangedActivities(
 	oldPresence: Presence | null,

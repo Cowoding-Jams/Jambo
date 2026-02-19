@@ -1,8 +1,8 @@
-import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
-import { jamDb, pollDb, proposalID, userID } from "../../db";
-import { autocompleteISODuration, autocompleteISOTime } from "../../util/misc/autocomplete";
-import { unusedProposals } from "../../util/coding-jams/managePoll";
+import { jamDb, pollDb, proposalID, userID } from "../../db.js";
+import { unusedProposals } from "../../util/coding-jams/managePoll.js";
+import { autocompleteISODuration, autocompleteISOTime } from "../../util/misc/autocomplete.js";
+import { Autocompleter } from "../interactionClasses.js";
 
 export const autocompleteCache: {
 	[key: userID]: { include: Map<string, proposalID[]>; exclude: Map<string, proposalID[]> };
@@ -63,8 +63,8 @@ class CodingJamsAutocompleter extends Autocompleter {
 					const endDate = jamDb.find((e) => e.title === name)?.end;
 					interaction.respond([
 						{
-							name: endDate ? endDate.toISO() : "Enter the name to get the current end date!",
-							value: endDate ? endDate.toISO() : "-",
+							name: endDate ? endDate.toISO()! : "Enter the name to get the current end date!",
+							value: endDate ? endDate.toISO()! : "-",
 						},
 					]);
 					return;
@@ -109,8 +109,8 @@ class CodingJamsAutocompleter extends Autocompleter {
 					const endDate = pollDb.find((e) => e.title === name)?.end;
 					interaction.respond([
 						{
-							name: endDate ? endDate.toISO() : "Enter the name to get the current end date!",
-							value: endDate ? endDate.toISO() : "-",
+							name: endDate ? endDate.toISO()! : "Enter the name to get the current end date!",
+							value: endDate ? endDate.toISO()! : "-",
 						},
 					]);
 					return;

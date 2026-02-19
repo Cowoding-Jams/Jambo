@@ -1,4 +1,7 @@
+import { Client } from "discord.js";
 import "dotenv/config";
+import { Settings } from "luxon";
+import { config } from "./config.js";
 import {
 	loadAutocompleters,
 	loadButtons,
@@ -6,12 +9,9 @@ import {
 	loadEvents,
 	loadModals,
 	loadSelectMenus,
-} from "./interactions/interactionLoader";
-import { Client } from "discord.js";
-import { ctx } from "./ctx";
-import { logger } from "./logger";
-import { config } from "./config";
-import { Settings } from "luxon";
+} from "./interactions/interactionLoader.js";
+import { logger } from "./logger.js";
+import { ctx } from "./ctx.js";
 
 logger.debug("Creating client...");
 const client = new Client({

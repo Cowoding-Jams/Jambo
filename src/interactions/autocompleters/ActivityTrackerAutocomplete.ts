@@ -1,4 +1,3 @@
-import { Autocompleter } from "../interactionClasses";
 import { AutocompleteInteraction } from "discord.js";
 import {
 	blacklistAdd,
@@ -6,7 +5,8 @@ import {
 	blacklistRemove,
 	gamesAutocompletion,
 	statsMy,
-} from "../../util/activity-tracker/autocompletes";
+} from "../../util/activity-tracker/autocompletes.js";
+import { Autocompleter } from "../interactionClasses.js";
 
 class ActivityTrackerAutocompleter extends Autocompleter {
 	constructor() {

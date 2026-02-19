@@ -1,6 +1,6 @@
 import { Presence } from "discord.js";
-import { config } from "../config";
-import { blacklistCheck, getChangedActivities, logTime } from "../util/activity-tracker/presence";
+import { config } from "../config.js";
+import { blacklistCheck, getChangedActivities, logTime } from "../util/activity-tracker/presence.js";
 
 const userCache = new Map<string, Record<string, number>>();
 

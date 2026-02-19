@@ -1,5 +1,5 @@
-import { countryData } from "./countryDataLoader";
-import { Country, CountryKey, MainCountryDataTypes } from "./typesCountryCommand";
+import { countryData } from "./countryDataLoader.js";
+import { Country, CountryKey, MainCountryDataTypes } from "./typesCountryCommand.js";
 
 export function getCountryByName(name: string): Country | undefined {
 	return countryData.find((c) => c.name === name);

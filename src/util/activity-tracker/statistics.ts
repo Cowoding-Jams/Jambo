@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import { getEntries, makeStats, splitId } from "./help";
-import { addEmbedFooter } from "../misc/embeds";
-import { activityTrackerLogDb } from "../../db";
-import { durationToReadable } from "../misc/time";
 import { Duration } from "luxon";
+import { activityTrackerLogDb } from "../../db.js";
+import { addEmbedFooter } from "../misc/embeds.js";
+import { durationToReadable } from "../misc/time.js";
+import { getEntries, makeStats, splitId } from "./help.js";
 
 export async function statsMy(interaction: ChatInputCommandInteraction): Promise<void> {
 	await interaction.deferReply();

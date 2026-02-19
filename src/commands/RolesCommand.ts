@@ -1,12 +1,12 @@
-import { Command } from "../interactions/interactionClasses";
 import {
 	ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
-import { hasAdminPerms } from "../util/misc/permissions";
-import { colorPrompt, jamPrompt, pronounPrompt, timezonePrompt } from "../util/roles/rolesPrompts";
-import { deleteRoles } from "../util/roles/rolesUtil";
+import { Command } from "../interactions/interactionClasses.js";
+import { hasAdminPerms } from "../util/misc/permissions.js";
+import { colorPrompt, jamPrompt, pronounPrompt, timezonePrompt } from "../util/roles/rolesPrompts.js";
+import { deleteRoles } from "../util/roles/rolesUtil.js";
 
 class RoleCommand extends Command {
 	constructor() {

@@ -5,8 +5,8 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js";
-import { pollDb, proposalDb } from "../../db";
-import { hasAdminRole } from "../misc/permissions";
+import { pollDb, proposalDb } from "../../db.js";
+import { hasAdminRole } from "../misc/permissions.js";
 
 const title = () =>
 	new TextInputBuilder()
@@ -129,7 +129,7 @@ export async function editProposal(interaction: ChatInputCommandInteraction): Pr
 		new ActionRowBuilder<TextInputBuilder>().addComponents(title().setValue(proposal.title)),
 		new ActionRowBuilder<TextInputBuilder>().addComponents(abbreviation().setValue(proposal.abbreviation)),
 		new ActionRowBuilder<TextInputBuilder>().addComponents(description().setValue(proposal.description)),
-		new ActionRowBuilder<TextInputBuilder>().addComponents(duration().setValue(proposal.duration.toISO())),
+		new ActionRowBuilder<TextInputBuilder>().addComponents(duration().setValue(proposal.duration.toISO()!)),
 		new ActionRowBuilder<TextInputBuilder>().addComponents(references().setValue(proposal.references))
 	);
 

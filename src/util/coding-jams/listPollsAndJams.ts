@@ -1,7 +1,7 @@
 import { CommandInteraction, EmbedBuilder } from "discord.js";
-import { jamDb, pollDb } from "../../db";
-import { addEmbedColor } from "../misc/embeds";
-import { discordTimestamp } from "../misc/time";
+import { jamDb, pollDb } from "../../db.js";
+import { addEmbedColor } from "../misc/embeds.js";
+import { discordTimestamp } from "../misc/time.js";
 
 export async function listJams(interaction: CommandInteraction) {
 	const jams = jamDb.array();

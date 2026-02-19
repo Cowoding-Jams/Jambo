@@ -1,5 +1,10 @@
-import { Command } from "../interactions/interactionClasses";
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import {
+	ChatInputCommandInteraction,
+	SlashCommandBuilder,
+	SlashCommandOptionsOnlyBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
+import { Command } from "../interactions/interactionClasses.js";
 
 // set the class name, the export at the bottom and the file name to your desired command name (same as the one in the register function)
 class CommandName extends Command {
@@ -14,7 +19,7 @@ class CommandName extends Command {
 		await interaction.reply("🐇".repeat(num));
 	}
 
-	register(): SlashCommandBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> {
+	register(): SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder {
 		// set the name and description shown in discord here (these are necessary)
 		// (name: string.length = 1-32, description string.length = 1-100)(the name has to be lowercase!)
 		// here you can also add things like options to your command

@@ -1,12 +1,12 @@
 import { Interaction } from "discord.js";
-import { logger } from "../logger";
 import {
 	handleAutocompleteInteraction,
 	handleButtonInteractions,
 	handleCommandInteractions,
 	handleModalInteractions,
 	handleSelectMenuInteractions,
-} from "../interactions/interactionHandler";
+} from "../interactions/interactionHandler.js";
+import { logger } from "../logger.js";
 
 export default async function interactionCreate(interaction: Interaction) {
 	try {

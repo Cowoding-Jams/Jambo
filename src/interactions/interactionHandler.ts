@@ -1,12 +1,12 @@
-import { ctx } from "../ctx";
-import { logger } from "../logger";
 import {
 	AutocompleteInteraction,
 	ButtonInteraction,
 	ChatInputCommandInteraction,
 	ModalSubmitInteraction,
-	SelectMenuInteraction,
+	StringSelectMenuInteraction,
 } from "discord.js";
+import { ctx } from "../ctx.js";
+import { logger } from "../logger.js";
 
 export async function handleCommandInteractions(interaction: ChatInputCommandInteraction) {
 	const command = ctx.commands.get(interaction.commandName);
@@ -36,7 +36,7 @@ export async function handleButtonInteractions(interaction: ButtonInteraction) {
 	}
 }
 
-export async function handleSelectMenuInteractions(interaction: SelectMenuInteraction) {
+export async function handleSelectMenuInteractions(interaction: StringSelectMenuInteraction) {
 	const args = interaction.customId.split(".");
 	const menuName = args.shift() || "";
 	const selected = ctx.selectMenus.get(menuName);
