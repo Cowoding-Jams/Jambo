@@ -188,6 +188,7 @@ export interface Jam {
 	start: DateTime;
 	end: DateTime;
 	resultChannelID: string | null;
+	/** ID of the scheduled event */
 	eventID: string | null;
 	//pollID: string | null;
 }
