@@ -96,6 +96,8 @@ export async function endEvent(channel: TextChannel, jamID: string) {
 	const jamRole =
 		channel.guild.roles.cache.find((v) => v.name === config.jamRoleName) || channel.guild.roles.everyone;
 	channel.send({ embeds: [addEmbedFooter(embed)], content: jamRole.toString() });
+
+	proposalDb.delete(jam.proposal);
 }
 
 export async function halftimeEvent(channel: TextChannel, jamID: string) {

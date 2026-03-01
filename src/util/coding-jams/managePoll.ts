@@ -24,9 +24,7 @@ export async function newPoll(
 		return;
 	}
 
-	const unused = unusedProposals();
-
-	if (unused.size < 2) {
+	if (proposalDb.size < 2) {
 		interaction.reply({
 			content: "There simply aren't enough proposals to create a poll...",
 			ephemeral: true,
@@ -36,12 +34,12 @@ export async function newPoll(
 
 	// check numVotes and numProposals
 	if (numVotes > numProposals) numVotes = numProposals;
-	if (unused.size < numProposals) {
-		numProposals = unused.size;
-		numVotes = unused.size;
+	if (proposalDb.size < numProposals) {
+		numProposals = proposalDb.size;
+		numVotes = proposalDb.size;
 	}
 
-	const sorted = sortBySelectionType(unused, selectionType);
+	const sorted = sortBySelectionType(proposalDb, selectionType);
 	const proposals = sorted.slice(0, numProposals);
 
 	const poll: Poll = {
@@ -108,7 +106,7 @@ export async function editPoll(interaction: CommandInteraction, poll: Poll, poll
 		});
 	}
 
-	const sorted = sortBySelectionType(unusedProposals(), poll.selectionType);
+	const sorted = sortBySelectionType(proposalDb, poll.selectionType);
 
 	await interaction.reply({
 		embeds: [pollEmbed(poll, pollKey, "(edit)")],
@@ -267,8 +265,4 @@ export function pollSelectMenus(
 				.setMaxValues(Math.min(excludeOptions.length + 1, 25))
 		),
 	];
-}
-
-export function unusedProposals() {
-	return proposalDb.filter((v) => v.used === false);
 }

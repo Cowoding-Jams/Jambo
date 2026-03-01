@@ -29,16 +29,8 @@ export async function newJam(
 
 	const proposal = proposalDb.get(proposalID)!;
 
-	if (proposal.used) {
-		interaction.editReply({
-			content: `The proposal "${proposal.title}" has already been used for a jam. You can't use it again.`,
-		});
-		return;
-	}
-
 	const end = start.plus(proposal.duration);
 
-	proposal.used = true;
 	proposalDb.set(proposalID, proposal);
 
 	const jam: Jam = {
@@ -120,7 +112,6 @@ export async function deleteJam(interaction: CommandInteraction, jam: Jam, jamKe
 	jamDb.delete(jamKey);
 
 	const proposal = proposalDb.get(jam.proposal)!;
-	proposal.used = false;
 	proposalDb.set(jam.proposal, proposal);
 
 	if (jam.eventID) {
