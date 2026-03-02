@@ -25,7 +25,9 @@ export async function createScheduledEventEvent(channel: TextChannel, jamID: str
 		entityMetadata: { location: "Here!" },
 	};
 
-	channel.guild.scheduledEvents.create(options);
+	const event = await channel.guild.scheduledEvents.create(options);
+	jam.scheduledEventID = event.id;
+	jamDb.set(jamID, jam);
 
 	const embed = new EmbedBuilder()
 		.setTitle(`${proposal.title} coming up!`)
@@ -34,7 +36,7 @@ export async function createScheduledEventEvent(channel: TextChannel, jamID: str
 				jam.start
 			)}! That's ${discordRelativeTimestamp(
 				jam.start
-			)}! Make sure your calender is free :) I hope you can make it!\nThe current end is planned for ${discordTimestamp(
+			)}! Make sure your calender is free :) I hope you can make it!\nCurrently the end is planned for ${discordTimestamp(
 				jam.end
 			)}. That would be ${durationToReadable(jam.end.diff(jam.start))}.`
 		)
@@ -96,6 +98,8 @@ export async function endEvent(channel: TextChannel, jamID: string) {
 	const jamRole =
 		channel.guild.roles.cache.find((v) => v.name === config.jamRoleName) || channel.guild.roles.everyone;
 	channel.send({ embeds: [addEmbedFooter(embed)], content: jamRole.toString() });
+
+	proposalDb.delete(jam.proposal);
 }
 
 export async function halftimeEvent(channel: TextChannel, jamID: string) {

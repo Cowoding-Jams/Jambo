@@ -86,7 +86,6 @@ export interface Proposal {
 	totalVotes: number;
 	polls: number;
 	created: DateTime;
-	used: boolean;
 }
 
 interface InternalProposal {
@@ -100,7 +99,6 @@ interface InternalProposal {
 	totalVotes: number;
 	polls: number;
 	created: ISODate;
-	used: boolean;
 }
 
 // -- Poll Database --
@@ -190,7 +188,8 @@ export interface Jam {
 	start: DateTime;
 	end: DateTime;
 	resultChannelID: string | null;
-	eventID: string | null;
+	/** ID of the scheduled event. Only available during the jam. */
+	scheduledEventID: string | null;
 	//pollID: string | null;
 }
 
@@ -200,7 +199,7 @@ interface InternalJam {
 	start: ISODate;
 	end: ISODate;
 	resultChannelID: string | null;
-	eventID: string | null;
+	scheduledEventID: string | null;
 	//pollID: string | null;
 }
 
