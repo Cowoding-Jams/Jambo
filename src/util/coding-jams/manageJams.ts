@@ -1,8 +1,9 @@
-import { CommandInteraction, EmbedBuilder } from "discord.js";
+import { CommandInteraction, EmbedBuilder, TextChannel } from "discord.js";
 import { DateTime } from "luxon";
 import { Jam, jamDb, JamEvent, jamEventsDb, proposalDb } from "../../db.js";
 import { addEmbedFooter } from "../misc/embeds.js";
 import { discordRelativeTimestamp, discordTimestamp, durationToReadable, isInFuture } from "../misc/time.js";
+import { config } from "../../config.js";
 
 const hoursBeforeEvent = 2;
 
@@ -39,7 +40,7 @@ export async function newJam(
 		resultChannelID: null,
 		start: start,
 		end: end,
-		eventID: null,
+		scheduledEventID: null,
 	};
 
 	const id = String(jamDb.autonum);
@@ -97,8 +98,22 @@ export async function editJam(interaction: CommandInteraction, jam: Jam, jamKey:
 
 	events.forEach((e) => jamEventsDb.set(String(jamEventsDb.autonum), e));
 
-	if (jam.eventID) {
-		interaction.guild?.scheduledEvents.edit(jam.eventID, { scheduledEndTime: end.toISO()! });
+	if (jam.scheduledEventID)
+		interaction.guild?.scheduledEvents.edit(jam.scheduledEventID, { scheduledEndTime: end.toISO()! });
+
+	if (jam.start < DateTime.now()) {
+		const proposal = proposalDb.get(jam.proposal)!;
+
+		const embed = new EmbedBuilder()
+			.setTitle(`More time to finish!`)
+			.setDescription(
+				`The ${proposal.title} jam has been extended to the ${discordTimestamp(jam.end)}. That's ${discordRelativeTimestamp(jam.end)}! Happy jamming :)`
+			);
+
+		const channel = (await interaction.client.channels.fetch(config.jamChannelId)) as TextChannel;
+		const jamRole =
+			channel.guild.roles.cache.find((v) => v.name === config.jamRoleName) || channel.guild.roles.everyone;
+		await channel.send({ embeds: [addEmbedFooter(embed)], content: jamRole.toString() });
 	}
 
 	interaction.reply({ embeds: [jamEmbed(jam, jamKey, "(edit)")], ephemeral: true });
@@ -114,9 +129,7 @@ export async function deleteJam(interaction: CommandInteraction, jam: Jam, jamKe
 	const proposal = proposalDb.get(jam.proposal)!;
 	proposalDb.set(jam.proposal, proposal);
 
-	if (jam.eventID) {
-		interaction.guild?.scheduledEvents.delete(jam.eventID);
-	}
+	if (jam.scheduledEventID) interaction.guild?.scheduledEvents.delete(jam.scheduledEventID);
 
 	for (const key of jamEventsDb.filter((e) => e.jamID === jamKey).keyArray()) {
 		jamEventsDb.delete(key);

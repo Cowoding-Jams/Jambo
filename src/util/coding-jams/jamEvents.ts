@@ -26,7 +26,7 @@ export async function createScheduledEventEvent(channel: TextChannel, jamID: str
 	};
 
 	const event = await channel.guild.scheduledEvents.create(options);
-	jam.eventID = event.id;
+	jam.scheduledEventID = event.id;
 	jamDb.set(jamID, jam);
 
 	const embed = new EmbedBuilder()
